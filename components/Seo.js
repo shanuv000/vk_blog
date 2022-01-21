@@ -11,7 +11,7 @@ export default function Seo({ post }) {
         openGraph={{
           type: "website",
           url: "https://vk-blog.vercel.app",
-          title: `${title} | originally posted on myawesomewebsite.com`,
+          title: `${title} | originally posted on vk-blog.vercel.app`,
           description: excerpt,
           locale: "en_EN",
           images: [
@@ -26,7 +26,7 @@ export default function Seo({ post }) {
         }}
         twitter={{
           handle: "@shanuv000",
-          site: "https://vk-blog.vercel.app",
+          site: `https://vk-blog.vercel.app/post/${slug}`,
           cardType: "summary",
         }}
       />
