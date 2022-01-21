@@ -3,11 +3,12 @@ import { RichText } from "@graphcms/rich-text-react-renderer";
 import Seo from "../components/Seo";
 import moment from "moment";
 import Link from "next/link";
+import { Head } from "next/document";
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
-
-  <Seo post={post} />;
-
+  <Head>
+    <Seo post={post} />;
+  </Head>;
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
     console.log(type === "code-block");
