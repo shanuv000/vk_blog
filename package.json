@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "shanu": "next dev"
+    "start": "next start"
   },
   "dependencies": {
     "@graphcms/rich-text-react-renderer": "^0.4.2",
