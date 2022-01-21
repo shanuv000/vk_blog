@@ -5,7 +5,7 @@ const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
 export const getPosts = async () => {
   const query = gql`
     query MyQuery {
-      postsConnection(orderBy: createdAt_DESC, first: 5) {
+      postsConnection(first: 10) {
         edges {
           node {
             author {
@@ -186,7 +186,9 @@ export const getCategoryPost = async (slug) => {
 export const getFeaturedPosts = async () => {
   const query = gql`
     query GetCategoryPost() {
-      posts(where: {featuredpost: true}) {
+      posts(where: {featuredpost: true} 
+      orderBy: createdAt_DESC
+       ) {
         author {
           name
           photo {
