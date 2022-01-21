@@ -7,7 +7,6 @@ export const getPosts = async () => {
     query MyQuery {
       postsConnection(orderBy: createdAt_DESC, first: 5) {
         edges {
-          cursor
           node {
             author {
               bio
