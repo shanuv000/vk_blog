@@ -26,8 +26,8 @@ export default function Seo({ post }) {
         }}
         twitter={{
           handle: "@shanuv000",
-          site: `https://vk-blog.vercel.app/post/${slug}`,
-          cardType: "summary",
+          site: "https://vk-blog.vercel.app",
+          cardType: "summary_large_image",
         }}
       />
     </>
