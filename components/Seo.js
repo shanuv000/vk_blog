@@ -9,10 +9,10 @@ export default function Seo({ post }) {
         title={title}
         description={excerpt}
         // canonical={`https://vk-blog.vercel.app/post/${slug}`}
-        canonical={`https://vk-blog.vercel.app/post/${slug}`}
+        canonical={`http://www.keytosuccess.me/post/${slug}`}
         openGraph={{
           type: "website",
-          url: "https://vk-blog.vercel.app",
+          url: "http://www.keytosuccess.me/",
           title: `${title} | originally posted on vk-blog.vercel.app`,
           description: excerpt,
           locale: "en_EN",
@@ -24,11 +24,11 @@ export default function Seo({ post }) {
               alt: `hero image for ${title}`,
             },
           ],
-          site_name: "vk-blog.vercel.app",
+          site_name: "www.keytosuccess.me",
         }}
         twitter={{
           handle: "@shanuv000",
-          site: "https://vk-blog.vercel.app",
+          site: "http://www.keytosuccess.me/",
           cardType: "summary_large_image",
         }}
       />
