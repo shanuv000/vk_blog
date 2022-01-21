@@ -1,12 +1,14 @@
 import { NextSeo } from "next-seo";
 
 export default function Seo({ post }) {
-  const { title, excerpt, slug, coverImage } = post;
+  const { title, excerpt, slug } = post;
+  coverImage = post.featuredImage.url;
   return (
     <>
       <NextSeo
         title={title}
         description={excerpt}
+        // canonical={`https://vk-blog.vercel.app/post/${slug}`}
         canonical={`https://vk-blog.vercel.app/post/${slug}`}
         openGraph={{
           type: "website",
@@ -16,7 +18,7 @@ export default function Seo({ post }) {
           locale: "en_EN",
           images: [
             {
-              url: post.featuredImage.url,
+              url: { coverImage },
               width: 800,
               height: 600,
               alt: `hero image for ${title}`,
