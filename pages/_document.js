@@ -11,10 +11,7 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <title>VK BLOG</title>
-          <link
-            rel="icon"
-            href="https://raw.githubusercontent.com/shanuv000/shanuv000/main/dear.png"
-          />
+          <link rel="icon" href="/dear.png" />
           {/* </Head> */}
           {/* <meta name="viewport" content="width=device-width,minimum-scale=1, initial-scale=1" /> */}
         </Head>

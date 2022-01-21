@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { RichText } from "@graphcms/rich-text-react-renderer";
-
+import Seo from "../components/Seo";
 import moment from "moment";
 import Link from "next/link";
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
+
+  <Seo post={post} />;
 
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
