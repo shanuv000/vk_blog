@@ -22,11 +22,11 @@ export default function Seo({ post }) {
               alt: `hero image for ${title}`,
             },
           ],
-          site_name: "myawesomewebsite.com",
+          site_name: "vk-blog.vercel.app",
         }}
         twitter={{
-          handle: "@myawesometwittername",
-          site: "myawesomewebsite.com",
+          handle: "@shanuv000",
+          site: "https://vk-blog.vercel.app",
           cardType: "summary",
         }}
       />
