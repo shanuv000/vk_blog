@@ -3,6 +3,8 @@ import { PostCard, Categories, PostWidget } from "../components";
 import { getPosts } from "../services";
 
 export default function Home({ posts }) {
+  // console.log(getPosts());
+
   return (
     <div className="container mx-auto px-10 mb-8">
       <FeaturedPosts />
@@ -25,7 +27,7 @@ export default function Home({ posts }) {
 
 // Fetch data at build time
 export async function getStaticProps() {
-  const posts = (await getPosts()) || [];
+  const posts = await getPosts();
   return {
     props: { posts },
   };
