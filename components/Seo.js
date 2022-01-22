@@ -26,11 +26,11 @@ export default function Seo({ post }) {
           ],
           site_name: "www.keytosuccess.me",
         }}
-        twitter={{
-          handle: "@shanuv000",
-          site: "http://www.keytosuccess.me/",
-          cardType: "summary_large_image",
-        }}
+        // twitter={{
+        //   handle: "@shanuv000",
+        //   site: "http://www.keytosuccess.me/",
+        //   cardType: "summary_large_image",
+        // }}
       />
     </>
   );

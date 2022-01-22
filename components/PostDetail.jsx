@@ -3,11 +3,21 @@ import { RichText } from "@graphcms/rich-text-react-renderer";
 import Seo from "../components/Seo";
 import moment from "moment";
 import Link from "next/link";
-import { Head } from "next/document";
+import Document, { Html, Head, Main, NextScript } from "next/document";
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
   <Head>
     <Seo post={post} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charSet="utf-8" />
+    {/* twitter */}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charSet="utf-8" />
+    <meta name="description" content={post.excerpt}></meta>
+    + <meta property="og:title" content={post.title} key="ogtitle" />
+    + <meta property="og:description" content={post.excerpt} key="ogdesc" />
+    {/* twitter */}
+    <title>{post.title}</title>
   </Head>;
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
