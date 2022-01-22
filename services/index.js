@@ -258,3 +258,54 @@ export const getRecentPosts = async () => {
 
   return result.posts;
 };
+// export const getAuthorPost = async (slug) => {
+//   const query = gql`
+//     query GetAuthorPost($slug: String!) {
+//       postsConnection(where: { author_some: { slug: $slug } }) {
+//         edges {
+//           cursor
+//           node {
+//             author {
+//               bio
+//               name
+//               id
+//               photo {
+//                 url
+//               }
+//             }
+//             createdAt
+//             slug
+//             title
+//             excerpt
+//             featuredImage {
+//               url
+//             }
+//             categories {
+//               name
+//               slug
+//             }
+//           }
+//         }
+//       }
+//     }
+//   `;
+
+//   const result = await request(graphqlAPI, query, { slug });
+
+//   return result.postsConnection.edges;
+// };
+
+// export const getAuthor = async () => {
+//   const query = gql`
+//     query GetAuthor {
+//       author(orderBy: createdAt_DESC) {
+//         name
+//         slug
+//       }
+//     }
+//   `;
+
+//   const result = await request(graphqlAPI, query);
+
+//   return result.categories;
+// };

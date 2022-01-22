@@ -24,7 +24,7 @@ export default function Seo({ post }) {
               alt: `hero image for ${title}`,
             },
           ],
-          site_name: "www.keytosuccess.me",
+          site_name: "https://www.keytosuccess.me",
         }}
         // twitter={{
         //   handle: "@shanuv000",

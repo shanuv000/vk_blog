@@ -13,7 +13,7 @@ const PostDetail = ({ post }) => {
     {/* twitter */}
     {/* Twitter */}
     <meta name="twitter:card" content="summary" key="twcard" />
-    <meta name="twitter:creator" content={shanuv000} key="twhandle" />
+    <meta name="twitter:creator" content={"@shanuv000"} key="twhandle" />
 
     {/* Open Graph */}
     <meta
