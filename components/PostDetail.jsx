@@ -7,14 +7,14 @@ import { Head } from "next/document";
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
   <Head>
-    <Seo post={post} />;
+    <Seo post={post} />
   </Head>;
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
-    console.log(type === "code-block");
+    // console.log(type === "code-block");
     // const stats = readingTime(text);
     // console.log(readingTime(text));
-    console.log(type);
+    // console.log(type);
     if (obj) {
       // if (obj.type === "code-block") {
       //   <div className="bg-red">
