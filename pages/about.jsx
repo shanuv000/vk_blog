@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Footer from "../components/footer/Footer";
 
 const about = () => {
   const [showEmail, setShowEmail] = useState(false);
@@ -61,6 +62,7 @@ const about = () => {
           </button> */}
         </div>
       </div>
+      <Footer />
     </section>
   );
 };
