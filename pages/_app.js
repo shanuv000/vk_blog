@@ -11,6 +11,11 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>{"VK BLOG"}</title>
         <link rel="icon" href="/dear.png" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5634941748977646"
+          crossorigin="anonymous"
+        ></script>
       </Head>
       <Component {...pageProps} />
     </Layout>

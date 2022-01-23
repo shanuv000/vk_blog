@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import validator from "validator";
+
 import { submitComment } from "../services";
 const CommentsForm = ({ slug }) => {
   const [error, setError] = useState(false);
   const [localStorage, setLocalStorage] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [ErrorMessage, ShowErrorMessage] = useState("All Fields are required");
   const commentEl = useRef();
   const nameEl = useRef();
   const emailEl = useRef();
@@ -35,6 +38,12 @@ const CommentsForm = ({ slug }) => {
 
     if (!comment || !name || !email) {
       setError(true);
+      ShowErrorMessage("All Fields are required");
+      return;
+    }
+    if (!validator.isEmail(email)) {
+      setError(true);
+      ShowErrorMessage("Email is not Valid");
       return;
     }
 
@@ -102,9 +111,7 @@ const CommentsForm = ({ slug }) => {
           </label>
         </div>
       </div>
-      {error && (
-        <p className="text-xs text-red-500 ">All fields are required.</p>
-      )}
+      {error && <p className="text-xs text-red-500 ">{ErrorMessage}</p>}
       <div className="mt-8">
         <button
           type="button"
