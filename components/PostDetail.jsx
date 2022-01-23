@@ -92,7 +92,7 @@ const PostDetail = ({ post }) => {
         return modifiedText;
     }
   };
-
+  console.log(`http://www.keytosuccess.me/post/${post.slug}`);
   return (
     <>
       <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
@@ -103,12 +103,20 @@ const PostDetail = ({ post }) => {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta charSet="utf-8" />
           <meta property="og:title" content={post.title} />
-          <meta property="og:image" content={post.featuredImage.url} />
+          <meta
+            property="og:image"
+            itemprop="image"
+            content={post.featuredImage.url}
+          />
           <meta property="og:description" content={post.excerpt} />
           <meta
             property="og:url"
             content={`http://www.keytosuccess.me/post/${post.slug}`}
           />
+          <meta property="og:updated_time" content={post.createdAt} />
+
+          <meta property="og:type" content="website" />
+
           <title>{post.title}</title>
           <meta
             name="viewport"
