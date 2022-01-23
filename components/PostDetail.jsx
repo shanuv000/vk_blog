@@ -108,6 +108,18 @@ const PostDetail = ({ post }) => {
             name="viewport"
             content="width=device-width,minimum-scale=1, initial-scale=1"
           />
+          {/* twitter */}
+          <meta name="twitter:card" content={post.title} />
+          <meta name="twitter:site" content="@shanuv0000" />
+          <meta name="twitter:creator" content="@shanuv0000" />
+          <meta
+            property="og:url"
+            content={`http://www.keytosuccess.me/post/${slug}`}
+          />
+          <meta property="og:title" content={post.title} />
+          <meta property="og:description" content={post.excerpt} />
+          <meta property="og:image" content={post.featuredImage.url} />
+          {/* twitter */}
         </Head>
         {/* Seo */}
         <div className="relative overflow-hidden shadow-md mb-6">
