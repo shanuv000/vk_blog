@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { RichText } from "@graphcms/rich-text-react-renderer";
 import { NextSeo } from "next-seo";
-import YouTube from "react-youtube";
 import moment from "moment";
 import Link from "next/link";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import Head from "next/head";
 import Seo from "./Seo";
+import { Tweet } from "react-twitter-widgets";
 
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
-  // console.log(post);
+  console.log(post);
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
 
@@ -95,6 +95,21 @@ const PostDetail = ({ post }) => {
             allowfullscreen
           ></iframe>
         );
+      case "block-quote":
+        return (
+          <div key={index} className="md:flex">
+            {modifiedText.map(
+              (item, i) => (
+                <Tweet
+                  tweetId={item}
+                  className="md:shrink-0 h-48 w-full object-cover md:h-full md:w-48"
+                />
+              )
+              // <React.Fragment key={i}>{item}</React.Fragment>
+            )}
+          </div>
+        );
+
       default:
         return modifiedText;
     }
