@@ -76,6 +76,7 @@ const PostDetail = ({ post }) => {
       case "image":
         return (
           <img
+            className="rounded-lg"
             key={index}
             alt={obj.title}
             height={obj.height}
@@ -86,7 +87,7 @@ const PostDetail = ({ post }) => {
       case "iframe":
         return (
           <iframe
-            className="w-full h-full aspect-video"
+            className="w-full h-full aspect-video rounded-lg"
             src={obj.url}
             height={obj.height}
             width={obj.width}
@@ -97,12 +98,12 @@ const PostDetail = ({ post }) => {
         );
       case "block-quote":
         return (
-          <div key={index} className="md:flex">
+          <div key={index} className="flex  ">
             {modifiedText.map(
               (item, i) => (
                 <Tweet
                   tweetId={item}
-                  className="md:shrink-0 h-48 w-full object-cover md:h-full md:w-48"
+                  className="shrink-0  sm:h-48 w-full object-cover md:h-full md:w-full"
                 />
               )
               // <React.Fragment key={i}>{item}</React.Fragment>
