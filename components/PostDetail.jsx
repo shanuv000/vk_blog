@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { RichText } from "@graphcms/rich-text-react-renderer";
 import { NextSeo } from "next-seo";
-
+import YouTube from "react-youtube";
 import moment from "moment";
 import Link from "next/link";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
@@ -10,21 +10,11 @@ import Seo from "./Seo";
 
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
-
+  // console.log(post);
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
-    // console.log(type === "code-block");
-    // const stats = readingTime(text);
-    // console.log(readingTime(text));
-    // console.log(type);
-    if (obj) {
-      // if (obj.type === "code-block") {
-      //   <div className="bg-red">
-      //     <h1>{obj.children[0].text}</h1>
-      //   </div>;
-      //   // console.log()
-      // }
 
+    if (obj) {
       if (obj.bold) {
         modifiedText = <b key={index}>{text}</b>;
       }
@@ -38,7 +28,11 @@ const PostDetail = ({ post }) => {
       }
       if (obj.type === "link") {
         modifiedText = (
-          <button className="text-red-500 hover:text-blue-500 hover:underline underline-offset-auto	">
+          <button
+            classnpm
+            i
+            react-youtubeName="text-red-500 hover:text-blue-500 hover:underline underline-offset-auto	"
+          >
             <a href={obj.href} target="_blank">
               {obj.children[0].text}
             </a>
@@ -54,6 +48,7 @@ const PostDetail = ({ post }) => {
             {text}
           </h1>
         );
+
       case "heading-three":
         return (
           <h3 key={index} className="text-xl font-semibold mb-4">
@@ -87,6 +82,18 @@ const PostDetail = ({ post }) => {
             width={obj.width}
             src={obj.src}
           />
+        );
+      case "iframe":
+        return (
+          <iframe
+            className="w-full h-full aspect-video"
+            src={obj.url}
+            height={obj.height}
+            width={obj.width}
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
         );
       default:
         return modifiedText;
