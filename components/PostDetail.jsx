@@ -6,6 +6,7 @@ import moment from "moment";
 import Link from "next/link";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import Head from "next/head";
+import Seo from "./Seo";
 
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
@@ -99,15 +100,7 @@ const PostDetail = ({ post }) => {
         <Head>
           {/* <Seo post={post} /> */}
 
-          <NextSeo title={post.title} description={post.excerpt} />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta charSet="utf-8" />
-
-          <title>{post.title}</title>
-          <meta
-            name="viewport"
-            content="width=device-width,minimum-scale=1, initial-scale=1"
-          />
+          <Seo />
         </Head>
         {/* Seo */}
         <div className="relative overflow-hidden shadow-md mb-6">
