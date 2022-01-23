@@ -123,7 +123,7 @@ const PostDetail = ({ post }) => {
             content="width=device-width,minimum-scale=1, initial-scale=1"
           />
           {/* twitter */}
-          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:site" content="@shanuv0000" />
           <meta name="twitter:creator" content="@shanuv0000" />
           <meta
