@@ -27,13 +27,9 @@ export default function Home({ posts }) {
 
 // Fetch data at build time
 export async function getStaticProps() {
-  try {
-    const posts = (await getPosts()) || [];
-    return {
-      props: { posts },
-    };
-  } catch (err) {
-    console.log(err);
-    alert("error");
-  }
+  const posts = (await getPosts()) || [];
+  console.log(posts);
+  return {
+    props: { posts },
+  };
 }
