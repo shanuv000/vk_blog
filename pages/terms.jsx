@@ -103,8 +103,6 @@ const Terms = () => {
         and agree to its terms.
       </h3>
     </div>
-    //   </div>
-    // </div>
   );
 };
 

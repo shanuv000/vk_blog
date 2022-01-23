@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <Layout>
       <Head>
-        <title>{"VK BLOG"}</title>
+        <title>{"key2success"}</title>
         <link rel="icon" href="/dear.png" />
         <script
           async
