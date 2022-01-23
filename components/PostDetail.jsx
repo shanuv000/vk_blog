@@ -98,11 +98,17 @@ const PostDetail = ({ post }) => {
       <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
         {/* Seo */}
         <Head>
-          <Seo post={post} />
+          {/* <Seo post={post} /> */}
 
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta charSet="utf-8" />
-
+          <meta property="og:title" content={post.title} />
+          <meta property="og:image" content={post.featuredImage.url} />
+          <meta property="og:description" content={post.excerpt} />
+          <meta
+            property="og:url"
+            content={`http://www.keytosuccess.me/post/${post.slug}`}
+          />
           <title>{post.title}</title>
           <meta
             name="viewport"
