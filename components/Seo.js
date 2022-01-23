@@ -2,7 +2,8 @@ import { NextSeo } from "next-seo";
 
 export default function Seo({ post }) {
   const { title, excerpt, slug } = post;
-  coverImage = post.featuredImage.url;
+  let coverImage = post.featuredImage.url;
+  // console.log(post.featuredImage.url);
   return (
     <>
       <NextSeo
