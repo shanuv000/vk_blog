@@ -114,7 +114,7 @@ const PostDetail = ({ post }) => {
           <meta name="twitter:creator" content="@shanuv0000" />
           <meta
             property="og:url"
-            content={`http://www.keytosuccess.me/post/${slug}`}
+            content={`http://www.keytosuccess.me/post/${post.slug}`}
           />
           <meta property="og:title" content={post.title} />
           <meta property="og:description" content={post.excerpt} />
