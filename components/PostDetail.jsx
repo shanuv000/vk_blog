@@ -10,7 +10,7 @@ import { Tweet } from "react-twitter-widgets";
 
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
-  console.log(post);
+  // console.log(post);
 
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
