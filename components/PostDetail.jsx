@@ -11,6 +11,7 @@ import { Tweet } from "react-twitter-widgets";
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
   console.log(post);
+
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
 
@@ -97,14 +98,14 @@ const PostDetail = ({ post }) => {
           ></iframe>
         );
       case "block-quote":
+        // if (window.innerWidth < 410) {
+        //   return;
+        // }
         return (
-          <div key={index} className="flex  ">
+          <div key={index} className="">
             {modifiedText.map(
               (item, i) => (
-                <Tweet
-                  tweetId={item}
-                  className="shrink-0  sm:h-48 w-full object-cover md:h-full md:w-full"
-                />
+                <Tweet tweetId={item} className=" w-full aspect-video" />
               )
               // <React.Fragment key={i}>{item}</React.Fragment>
             )}
