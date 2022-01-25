@@ -11,7 +11,7 @@ import { Tweet } from "react-twitter-widgets";
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
   // console.log(post);
-
+  google_client_id = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.GOOGLE_CLIENT_ID}`;
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
 
@@ -159,11 +159,12 @@ const PostDetail = ({ post }) => {
           <meta property="og:image" content={post.featuredImage.url} />
           {/* twitter */}
           {/* google Ad */}
-          <script
+          {/* <script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5634941748977646"
             crossorigin="anonymous"
-          ></script>
+          ></script> */}
+          <script async src={google_client_id} crossorigin="anonymous"></script>
           {/* google Ad */}
         </Head>
         {/* Seo */}
