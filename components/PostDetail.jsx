@@ -11,7 +11,7 @@ import { Tweet } from "react-twitter-widgets";
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
   // console.log(post);
-  google_client_id = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.GOOGLE_CLIENT_ID}`;
+
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
 
