@@ -159,12 +159,12 @@ const PostDetail = ({ post }) => {
           <meta property="og:image" content={post.featuredImage.url} />
           {/* twitter */}
           {/* google Ad */}
-          {/* <script
+          <script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5634941748977646"
             crossorigin="anonymous"
-          ></script> */}
-          <script async src={google_client_id} crossorigin="anonymous"></script>
+          ></script>
+          {/* <script async src={google_client_id} crossorigin="anonymous"></script> */}
           {/* google Ad */}
         </Head>
         {/* Seo */}
