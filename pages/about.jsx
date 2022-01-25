@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Footer from "../components/footer/Footer";
-
+import Link from "next/link";
 const about = () => {
   const [showEmail, setShowEmail] = useState(false);
   return (
@@ -62,6 +62,19 @@ const about = () => {
           </button> */}
         </div>
       </div>
+
+      <section className="py-6 dark:bg-slate-600	 dark:text-white">
+        <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8 md:p-10 lg:space-y-0 lg:flex-row lg:justify-between">
+          <h1 className=" text-3xl font-semibold leading-tight text-center lg:text-left">
+            If you Got any Queries?
+          </h1>
+          <Link href="contact" className="cursor-pointer">
+            <div className="px-8 py-3 text-lg font-semibold cursor-pointer rounded dark:bg-violet-400 dark:text-white">
+              Contact
+            </div>
+          </Link>
+        </div>
+      </section>
       <Footer />
     </section>
   );
