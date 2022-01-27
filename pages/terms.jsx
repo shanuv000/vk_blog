@@ -7,10 +7,13 @@ const Terms = () => {
     <div className="container mx-auto px-10 mb-8 bg-white py-2 rounded">
       {/* <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="col-span-1 lg:col-span-8 "> */}
-      <h1 className="text-gray-600 text-center">
+      <h1 className="text-gray-600 text-center text-xl lg:text-4xl font-semibold	">
         Privacy Policy for keytosuccess
       </h1>
-      <h3 className="text-gray-800 my-4">
+      <p
+        className="text-gray-800 my-4 leading-relaxed
+ lg:leading-loose text-l font-normal		"
+      >
         At keytosuccess, accessible from{" "}
         {
           <a
@@ -101,7 +104,7 @@ const Terms = () => {
         information collected offline or via channels other than this website.
         Consent By using our website, you hereby consent to our Privacy Policy
         and agree to its terms.
-      </h3>
+      </p>
     </div>
   );
 };
