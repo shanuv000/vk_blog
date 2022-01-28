@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }) {
     <Layout>
       <Head>
         <title>{"key2success"}</title>
-        <link rel="icon" href="/dear.png" />
+        <link rel="icon" href="/logo10.svg" />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5634941748977646"

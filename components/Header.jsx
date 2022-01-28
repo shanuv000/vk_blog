@@ -16,7 +16,7 @@ const Header = () => {
         <div className="md:float-left block">
           <Link href="/">
             <span className="cursor-pointer font-bold text-4xl text-white">
-              key2Success
+              <img src="/logo10.svg" alt="logos" width="180" height="100" />
             </span>
           </Link>
         </div>
