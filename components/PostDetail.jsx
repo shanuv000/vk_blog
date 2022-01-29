@@ -211,7 +211,7 @@ const PostDetail = ({ post }) => {
           <nav class="flex justify-center space-x-4 lg:mb-2 mb-1">
             <a
               target={"_blank"}
-              href={`https://twitter.com/intent/tweet?text=https://www.keytosuccess.me/post/${post.slug}`}
+              href={`https://twitter.com/intent/tweet?text=${post.title}&url=https://www.keytosuccess.me/post/${post.slug}&via=shanuv0000`}
               class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
             >
               <img src="/twitter.svg" width={30} alt="" />
