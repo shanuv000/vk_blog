@@ -159,6 +159,7 @@ const PostDetail = ({ post }) => {
           <meta property="og:image" content={post.featuredImage.url} />
           {/* twitter */}
           {/* google Ad */}
+
           <script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5634941748977646"
