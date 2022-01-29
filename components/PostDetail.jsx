@@ -214,14 +214,14 @@ const PostDetail = ({ post }) => {
               href={`https://twitter.com/intent/tweet?text=${post.title}&url=https://www.keytosuccess.me/post/${post.slug}&via=shanuv0000`}
               class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
             >
-              <img src="/twitter.svg" width={30} alt="" />
+              <img src="/twitter.svg" width={45} alt="" />
             </a>
             <a
               target={"_blank"}
               href={`https://www.facebook.com/sharer/sharer.php?u=https://www.keytosuccess.me/post/${post.slug}`}
               class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
             >
-              <img src="/facebook.svg" width={30} alt="" />
+              <img src="/facebook.svg" width={45} alt="" />
             </a>
             {/* <a
               href="/projects"
@@ -234,7 +234,7 @@ const PostDetail = ({ post }) => {
               href={`http://pinterest.com/pin/create/button/?url=https://www.keytosuccess.me/post/${post.slug}`}
               class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
             >
-              <img src="/pin.svg" width={30} alt="" />
+              <img src="/pin.svg" width={45} alt="" />
             </a>
           </nav>
           <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
