@@ -39,7 +39,13 @@ function MyApp({ Component, pageProps }) {
             });
           `,
         }}
-      />
+      /><title>{"key2success"}</title>
+        <link rel="icon" href="/logo10.svg" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5634941748977646"
+          crossorigin="anonymous"
+        ></script>
     <Layout>
       {/* <Head>
         <title>{"key2success"}</title>
