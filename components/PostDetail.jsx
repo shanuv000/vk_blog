@@ -1,25 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { RichText } from "@graphcms/rich-text-react-renderer";
-import { NextSeo } from "next-seo";
-import {
-  TwitterTimelineEmbed,
-  TwitterShareButton,
-  TwitterFollowButton,
-  TwitterHashtagButton,
-  TwitterMentionButton,
-  TwitterTweetEmbed,
-  TwitterMomentShare,
-  TwitterDMButton,
-  TwitterVideoEmbed,
-  TwitterOnAirButton,
-} from "react-twitter-embed";
+import React, { useEffect } from "react";
+import { TwitterTweetEmbed } from "react-twitter-embed";
 import moment from "moment";
-import Link from "next/link";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import Head from "next/head";
 import Seo from "./Seo";
-import { Tweet } from "react-twitter-widgets";
 
 const PostDetail = ({ post }) => {
   // Google Ads Config
@@ -122,7 +107,7 @@ const PostDetail = ({ post }) => {
       case "iframe":
         return (
           <iframe
-            className="w-full h-full aspect-video rounded-lg my-4"
+            className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
             src={obj.url}
             height={obj.height}
             width={obj.width}
@@ -140,11 +125,8 @@ const PostDetail = ({ post }) => {
             {modifiedText.map(
               (item, i) => (
                 // <Tweet tweetId={item} className=" w-full aspect-video" />
-                <div className="w-full my-4 overflow-x-auto				">
-                  <TwitterTweetEmbed
-                    tweetId={`${item}`}
-                    className="w-full aspect-[4/4] 	"
-                  />
+                <div className="w-full  my-4 overflow-hidden	">
+                  <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
                 </div>
               )
               // <React.Fragment key={i}>{item}</React.Fragment>

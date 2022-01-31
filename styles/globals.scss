@@ -13,6 +13,8 @@ body {
     border-style: solid;
     border-color: theme("borderColor.DEFAULT", currentColor);
   }
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
   font-family: "Montserrat", sans-serif;
