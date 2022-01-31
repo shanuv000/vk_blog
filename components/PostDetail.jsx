@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { RichText } from "@graphcms/rich-text-react-renderer";
 import { NextSeo } from "next-seo";
 import moment from "moment";
-import Link from "next/link";
+import Link from "next/link";import { LazyLoadImage } from 'react-lazy-load-image-component';
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import Head from "next/head";
 import Seo from "./Seo";
@@ -10,7 +10,7 @@ import { Tweet } from "react-twitter-widgets";
 
 const PostDetail = ({ post }) => {
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
-  // console.log(post);
+  
 
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
@@ -76,14 +76,21 @@ const PostDetail = ({ post }) => {
         );
       case "image":
         return (
-          <img
-            className="rounded-lg"
-            key={index}
-            alt={obj.title}
-            height={obj.height}
-            width={obj.width}
-            src={obj.src}
-          />
+            <LazyLoadImage
+      alt={'images'} 
+      className="rounded-lg"
+      height={obj.height}
+     width={obj.width}
+      src={obj.src} // use normal <img> attributes as props
+       />
+          // <img
+          //   className="rounded-lg"
+          //   key={index}
+          //   alt={obj.title}
+          //   height={obj.height}
+          //   width={obj.width}
+          //   src={obj.src}
+          // />
         );
       case "iframe":
         return (
@@ -116,7 +123,7 @@ const PostDetail = ({ post }) => {
         return modifiedText;
     }
   };
-  console.log(`http://www.keytosuccess.me/post/${post.slug}`);
+  
   return (
     <>
       <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
@@ -132,6 +139,8 @@ const PostDetail = ({ post }) => {
             itemprop="image"
             content={post.featuredImage.url}
           />
+          <meta property="fb:app_id" content="677336189940107"/>
+
           <meta property="og:description" content={post.excerpt} />
           <meta
             property="og:url"
@@ -146,6 +155,8 @@ const PostDetail = ({ post }) => {
             name="viewport"
             content="width=device-width,minimum-scale=1, initial-scale=1"
           />
+          <meta property="article:author" content={post.author.name}/>
+
           {/* twitter */}
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:site" content="@shanuv0000" />
@@ -223,6 +234,14 @@ const PostDetail = ({ post }) => {
               class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
             >
               <img src="/facebook.svg" width={45} alt="" />
+            </a>
+            <a
+              target={"_blank"}
+              href={`http://www.reddit.com/submit?url=https://www.keytosuccess.me/post/${post.slug}&title=${post.title}&via=u/smattyvaibhav
+`}
+              class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+            >
+              <img src="/reddit.png" width={45} alt="" />
             </a>
             {/* <a
               href="/projects"

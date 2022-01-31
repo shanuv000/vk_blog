@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import Link from "next/link";
+import Link from "next/link";import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { getRecentPosts, getSimilarPosts } from "../services";
 const PostWidget = ({ categories, slug }) => {
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -25,13 +25,18 @@ const PostWidget = ({ categories, slug }) => {
       {relatedPosts.map((post) => (
         <div className="flex items-center w-full mb-4" key={post.title}>
           <div className="w-16 flex-none">
-            <img
+           <LazyLoadImage
+      alt={post.title}
+      height={'60px'} className="align-middle rounded-full"
+      src={post.featuredImage.url} // use normal <img> attributes as props
+      width={'60px'} />
+            {/* <img
               src={post.featuredImage.url}
               alt={post.title}
               height="60px"
               width="60px"
               className="align-middle rounded-full"
-            />
+            /> */}
           </div>
           <div className="flex-grow ml-4">
             <p className="text-gray-500 font-xs">
