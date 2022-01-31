@@ -105,7 +105,7 @@ const PostDetail = ({ post }) => {
         return (
           <LazyLoadImage
             alt={"images"}
-            className="rounded-lg"
+            className="rounded-lg my-4"
             height={obj.height}
             width={obj.width}
             src={obj.src} // use normal <img> attributes as props
@@ -122,7 +122,7 @@ const PostDetail = ({ post }) => {
       case "iframe":
         return (
           <iframe
-            className="w-full h-full aspect-video rounded-lg"
+            className="w-full h-full aspect-video rounded-lg my-4"
             src={obj.url}
             height={obj.height}
             width={obj.width}
@@ -140,10 +140,12 @@ const PostDetail = ({ post }) => {
             {modifiedText.map(
               (item, i) => (
                 // <Tweet tweetId={item} className=" w-full aspect-video" />
-                <TwitterTweetEmbed
-                  tweetId={`${item}`}
-                  className=" w-full aspect-video"
-                />
+                <div className="w-full my-4 overflow-x-auto				">
+                  <TwitterTweetEmbed
+                    tweetId={`${item}`}
+                    className="w-full aspect-[4/4] 	"
+                  />
+                </div>
               )
               // <React.Fragment key={i}>{item}</React.Fragment>
             )}
