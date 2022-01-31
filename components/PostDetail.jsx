@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { RichText } from "@graphcms/rich-text-react-renderer";
 import { NextSeo } from "next-seo";
+import {
+  TwitterTimelineEmbed,
+  TwitterShareButton,
+  TwitterFollowButton,
+  TwitterHashtagButton,
+  TwitterMentionButton,
+  TwitterTweetEmbed,
+  TwitterMomentShare,
+  TwitterDMButton,
+  TwitterVideoEmbed,
+  TwitterOnAirButton,
+} from "react-twitter-embed";
 import moment from "moment";
-import Link from "next/link";import { LazyLoadImage } from 'react-lazy-load-image-component';
+import Link from "next/link";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import Head from "next/head";
 import Seo from "./Seo";
@@ -25,7 +38,6 @@ const PostDetail = ({ post }) => {
   }, []);
   // // Google Ads Config
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
-  
 
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
@@ -91,13 +103,13 @@ const PostDetail = ({ post }) => {
         );
       case "image":
         return (
-            <LazyLoadImage
-      alt={'images'} 
-      className="rounded-lg"
-      height={obj.height}
-     width={obj.width}
-      src={obj.src} // use normal <img> attributes as props
-       />
+          <LazyLoadImage
+            alt={"images"}
+            className="rounded-lg"
+            height={obj.height}
+            width={obj.width}
+            src={obj.src} // use normal <img> attributes as props
+          />
           // <img
           //   className="rounded-lg"
           //   key={index}
@@ -127,7 +139,11 @@ const PostDetail = ({ post }) => {
           <div key={index} className="">
             {modifiedText.map(
               (item, i) => (
-                <Tweet tweetId={item} className=" w-full aspect-video" />
+                // <Tweet tweetId={item} className=" w-full aspect-video" />
+                <TwitterTweetEmbed
+                  tweetId={`${item}`}
+                  className=" w-full aspect-video"
+                />
               )
               // <React.Fragment key={i}>{item}</React.Fragment>
             )}
@@ -138,7 +154,7 @@ const PostDetail = ({ post }) => {
         return modifiedText;
     }
   };
-  
+
   return (
     <>
       <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
@@ -154,7 +170,7 @@ const PostDetail = ({ post }) => {
             itemprop="image"
             content={post.featuredImage.url}
           />
-          <meta property="fb:app_id" content="677336189940107"/>
+          <meta property="fb:app_id" content="677336189940107" />
 
           <meta property="og:description" content={post.excerpt} />
           <meta
@@ -170,7 +186,7 @@ const PostDetail = ({ post }) => {
             name="viewport"
             content="width=device-width,minimum-scale=1, initial-scale=1"
           />
-          <meta property="article:author" content={post.author.name}/>
+          <meta property="article:author" content={post.author.name} />
 
           {/* twitter */}
           <meta name="twitter:card" content="summary_large_image" />
@@ -195,7 +211,7 @@ const PostDetail = ({ post }) => {
           {/* google Ad */}
         </Head>
         {/* Seo */}
-        
+
         <div className="relative overflow-hidden shadow-md mb-6">
           <img
             src={post.featuredImage.url}
@@ -273,13 +289,14 @@ const PostDetail = ({ post }) => {
               <img src="/pin.svg" width={45} alt="" />
             </a>
           </nav>
-          <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1><ins
-      className="adsbygoogle"
-      style={{ display: "block" }}
-      data-ad-client="ca-pub-5634941748977646"
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-    ></ins>
+          <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
+          <ins
+            className="adsbygoogle"
+            style={{ display: "block" }}
+            data-ad-client="ca-pub-5634941748977646"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
 
           {/* 
         {post.content.raw.children.map((typeObj, index) => {

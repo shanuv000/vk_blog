@@ -2,13 +2,28 @@ import React from "react";
 import Head from "next/head";
 import { Tweet } from "react-twitter-widgets";
 import InstagramEmbed from "react-instagram-embed";
+import {
+  TwitterTimelineEmbed,
+  TwitterShareButton,
+  TwitterFollowButton,
+  TwitterHashtagButton,
+  TwitterMentionButton,
+  TwitterTweetEmbed,
+  TwitterMomentShare,
+  TwitterDMButton,
+  TwitterVideoEmbed,
+  TwitterOnAirButton,
+} from "react-twitter-embed";
 
 const contact = () => {
   <Head></Head>;
   return (
     <>
-      <div className="container mx-auto px-10 mb-8">
-        <form class="w-full max-w-lg">
+      <div className="container mx-auto px-10 mb-8 bg-white-800 h-100">
+        <TwitterTweetEmbed tweetId={"1488226839617277958"} />
+        <Tweet tweetId={1488226839617277958} className=" w-full" />
+
+        {/* <form class="w-full max-w-lg">
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
               <label
@@ -85,7 +100,7 @@ const contact = () => {
             </div>
             <div class="md:w-2/3"></div>
           </div>
-        </form>
+        </form> */}
       </div>
     </>
   );
