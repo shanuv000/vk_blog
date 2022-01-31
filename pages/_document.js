@@ -21,6 +21,9 @@ class MyDocument extends Document {
             });
             `,
             }} />
+            {/* Other google verification */}
+            <meta name="google-site-verification" content="OtU3I9K9VQouEQU7IVbz1zVxsnFktZDt2dn2FSwWqZA" />
+            {/* Other google verification */}
 </Head> <body>
           <Main />
           <NextScript />
