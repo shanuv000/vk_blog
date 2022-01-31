@@ -9,7 +9,8 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head>
+        <Head> <title>{"key2success"}</title>
+        <link rel="icon" href="/logo10.svg" />
     {/* google adsense */}
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" />
     <script dangerouslySetInnerHTML={{
