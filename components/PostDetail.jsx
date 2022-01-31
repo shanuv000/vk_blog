@@ -9,6 +9,21 @@ import Seo from "./Seo";
 import { Tweet } from "react-twitter-widgets";
 
 const PostDetail = ({ post }) => {
+  // Google Ads Config
+  const loadAds = () => {
+    try {
+      if (typeof window !== "undefined") {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      }
+    } catch (error) {
+      console.log("adsense error", error.message);
+    }
+  };
+
+  useEffect(() => {
+    loadAds();
+  }, []);
+  // // Google Ads Config
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
   
 
@@ -180,6 +195,13 @@ const PostDetail = ({ post }) => {
           {/* google Ad */}
         </Head>
         {/* Seo */}
+        <ins
+      className="adsbygoogle"
+      style={{ display: "block" }}
+      data-ad-client="ca-pub-5634941748977646"
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
         <div className="relative overflow-hidden shadow-md mb-6">
           <img
             src={post.featuredImage.url}
