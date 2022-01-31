@@ -1,6 +1,5 @@
 import React from "react";
 import Head from "next/head";
-import { Tweet } from "react-twitter-widgets";
 import InstagramEmbed from "react-instagram-embed";
 import {
   TwitterTimelineEmbed,
