@@ -195,13 +195,7 @@ const PostDetail = ({ post }) => {
           {/* google Ad */}
         </Head>
         {/* Seo */}
-        <ins
-      className="adsbygoogle"
-      style={{ display: "block" }}
-      data-ad-client="ca-pub-5634941748977646"
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-    ></ins>
+        
         <div className="relative overflow-hidden shadow-md mb-6">
           <img
             src={post.featuredImage.url}
@@ -279,7 +273,13 @@ const PostDetail = ({ post }) => {
               <img src="/pin.svg" width={45} alt="" />
             </a>
           </nav>
-          <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
+          <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1><ins
+      className="adsbygoogle"
+      style={{ display: "block" }}
+      data-ad-client="ca-pub-5634941748977646"
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
 
           {/* 
         {post.content.raw.children.map((typeObj, index) => {
