@@ -19,7 +19,7 @@ const Footer = () => {
         <div className="flex flex-col justify-center pt-6 lg:pt-0">
           <div className="flex justify-center space-x-4">
             <a
-              href="#"
+              href="https://www.instagram.com/lifepoem8/"
               title="Instagram"
               className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
             >
@@ -33,7 +33,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://in.pinterest.com/smattyvaibhav/key-to-success/"
               title="Pinterest"
               className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
             >
@@ -47,7 +47,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://twitter.com/shanuv0000"
               title="Twitter"
               className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
             >
@@ -61,7 +61,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://www.facebook.com/shanuv00000"
               title="Facebook"
               className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
             >

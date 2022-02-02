@@ -46,7 +46,11 @@ const PostDetail = ({ post }) => {
             i
             react-youtubeName="text-red-500 hover:text-blue-500 hover:underline underline-offset-auto	"
           >
-            <a href={obj.href} target="_blank">
+            <a
+              href={obj.href}
+              target="_blank"
+              className="text-red-500 hover:text-blue-500 hover:underline underline-offset-auto"
+            >
               {obj.children[0].text}
             </a>
           </button>
@@ -57,14 +61,20 @@ const PostDetail = ({ post }) => {
     switch (type) {
       case "code":
         return (
-          <h1 className="text-xl font-semibold mb-4" key={index}>
+          <h1
+            className="text-xl font-semibold mb-4 font-serif lg:font-sans"
+            key={index}
+          >
             {text}
           </h1>
         );
 
       case "heading-three":
         return (
-          <h3 key={index} className="text-xl font-semibold mb-4">
+          <h3
+            key={index}
+            className="font-serif lg:font-sans text-xl font-semibold mb-4"
+          >
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
             ))}
@@ -72,7 +82,7 @@ const PostDetail = ({ post }) => {
         );
       case "paragraph":
         return (
-          <p key={index} className="mb-8">
+          <p key={index} className="mb-8 font-serif lg:font-sans">
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
             ))}
@@ -80,7 +90,10 @@ const PostDetail = ({ post }) => {
         );
       case "heading-four":
         return (
-          <h4 key={index} className="text-md font-semibold mb-4">
+          <h4
+            key={index}
+            className="font-serif lg:font-sans text-md font-semibold mb-4"
+          >
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
             ))}
@@ -141,7 +154,7 @@ const PostDetail = ({ post }) => {
 
   return (
     <>
-      <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
+      <div className="bg-white shadow-lg rounded-lg lg:p-6 pb-12 mb-8">
         {/* Seo */}
         <Head>
           {/* <Seo post={post} /> */}
@@ -196,7 +209,7 @@ const PostDetail = ({ post }) => {
         </Head>
         {/* Seo */}
 
-        <div className="relative overflow-hidden shadow-md mb-6">
+        <div className="relative overflow-hidden shadow-md mb-6 ">
           <img
             src={post.featuredImage.url}
             alt={post.title}
