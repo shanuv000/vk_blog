@@ -82,7 +82,10 @@ const PostDetail = ({ post }) => {
         );
       case "paragraph":
         return (
-          <p key={index} className="mb-8 font-serif lg:font-sans">
+          <p
+            key={index}
+            className="antialiased md:subpixel-antialiased mb-6 tracking-wide lg:tracking-wide leading-relaxed font-serif lg:font-sans whitespace-normal"
+          >
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
             ))}
