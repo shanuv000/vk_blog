@@ -1,9 +1,10 @@
 import React from "react";
-
+import Head from "next/head";
 const HeadPostDetails = ({ post }) => {
   return (
-    <>
+    <Head>
       {/* <Seo post={post} /> */}
+
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta charSet="utf-8" />
       <meta property="og:title" content={post.title} />
@@ -46,7 +47,7 @@ const HeadPostDetails = ({ post }) => {
       ></script>
       {/* <script async src={google_client_id} crossorigin="anonymous"></script> */}
       {/* google Ad */}
-    </>
+    </Head>
   );
 };
 

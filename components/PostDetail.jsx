@@ -4,7 +4,7 @@ import moment from "moment";
 import HeadPostDetails from "./HeadPostDetails";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
-import Head from "next/head";
+// import Head from "next/head";
 import Seo from "./Seo";
 
 const PostDetail = ({ post }) => {
@@ -160,9 +160,7 @@ const PostDetail = ({ post }) => {
     <>
       <div className="bg-white shadow-lg rounded-lg lg:p-6 pb-12 mb-8">
         {/* Seo */}
-        <Head>
-          <HeadPostDetails post={post} />
-        </Head>
+        <HeadPostDetails post={post} />
         {/* Seo */}
 
         <div className="relative overflow-hidden shadow-md mb-6 ">
