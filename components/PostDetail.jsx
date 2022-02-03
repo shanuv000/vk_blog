@@ -234,6 +234,21 @@ const PostDetail = ({ post }) => {
             </a> */}
             <a
               target={"_blank"}
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=https://www.keytosuccess.me/post/${post.slug}
+`}
+              class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+            >
+              <img src="/linkedin.svg" width={45} alt="" />
+            </a>
+            <a
+              target={"_blank"}
+              href={`https://www.tumblr.com/widgets/share/tool?canonicalUrl=https://www.keytosuccess.me/post/${post.slug}&title=${post.title}&caption=${post.excerpt}&tags={#key2success}`}
+              class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+            >
+              <img src="/tumblr.svg" width={45} alt="" />
+            </a>
+            <a
+              target={"_blank"}
               href={`http://pinterest.com/pin/create/button/?url=https://www.keytosuccess.me/post/${post.slug}`}
               class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
             >
