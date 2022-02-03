@@ -84,7 +84,7 @@ const PostDetail = ({ post }) => {
         return (
           <p
             key={index}
-            className="antialiased md:subpixel-antialiased mb-6 tracking-wide lg:tracking-wide leading-relaxed font-serif lg:font-sans whitespace-normal"
+            className=" mb-6 tracking-wide lg:tracking-wide leading-8	 font-sans text-lg font-normal	md:font-light	text-shanu-black "
           >
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
@@ -229,7 +229,7 @@ const PostDetail = ({ post }) => {
                 width="30px"
                 className="align-middle rounded-full"
               />
-              <p className="inline align-middle text-gray-700 ml-2 text-lg">
+              <p className="inline align-middle text-gray-700 ml-2  text-lg	">
                 {post.author.name}
               </p>
             </div>
