@@ -255,14 +255,19 @@ const PostDetail = ({ post }) => {
               <img src="/pin.svg" width={45} alt="" />
             </a>
           </nav>
-          <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
-          <ins
+          <h1
+            className="mb-8 font-serif	 md:font-mono			 text-3xl lg:text-5xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug				
+          "
+          >
+            {post.title}
+          </h1>
+          {/* <ins
             className="adsbygoogle"
             style={{ display: "block" }}
             data-ad-client="ca-pub-5634941748977646"
             data-ad-format="auto"
             data-full-width-responsive="true"
-          ></ins>
+          ></ins> */}
 
           {/* 
         {post.content.raw.children.map((typeObj, index) => {
