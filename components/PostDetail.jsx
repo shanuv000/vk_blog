@@ -256,7 +256,7 @@ const PostDetail = ({ post }) => {
             </a>
           </nav>
           <h1
-            className="mb-8 font-serif	 md:font-mono			 text-2xl lg:text-4xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug				
+            className="mb-8 font-serif capitalize	 md:font-mono			 text-2xl lg:text-4xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug				
           "
           >
             {post.title}
