@@ -2,10 +2,13 @@ import React, { useEffect } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 import moment from "moment";
 import HeadPostDetails from "./HeadPostDetails";
+import { RichText } from "@graphcms/rich-text-react-renderer";
+
 import { LazyLoadImage } from "react-lazy-load-image-component";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 // import Head from "next/head";
 import Seo from "./Seo";
+import App from "next/app";
 
 const PostDetail = ({ post }) => {
   // Google Ads Config
@@ -43,7 +46,7 @@ const PostDetail = ({ post }) => {
       if (obj.type === "link" || (obj.type === "link" && obj.type === "bold")) {
         modifiedText = (
           <button
-            classname="text-red-500 hover:text-blue-500 hover:underline hover:underline-offset-2"
+            classname="text-red-500   hover:text-blue-500 hover:underline hover:underline-offset-3"
             react-youtubeName="as	"
           >
             <a
@@ -105,7 +108,7 @@ const PostDetail = ({ post }) => {
         return (
           <p
             key={index}
-            className=" mb-6 tracking-wide lg:tracking-wide leading-8	 font-sans text-lg font-normal	md:font-light	text-shanu-black "
+            className="select-none mb-6 tracking-wide lg:tracking-wide leading-8	 font-sans text-lg font-normal	md:font-light	text-shanu-black "
           >
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
@@ -127,7 +130,7 @@ const PostDetail = ({ post }) => {
         return (
           <LazyLoadImage
             alt={"images"}
-            className="rounded-lg my-4"
+            className="rounded-lg my-4  shadow-lg shadow-indigo-500/40 md:shadow-xl md:shadow-indigo-500/40 "
             height={obj.height}
             width={obj.width}
             src={obj.src} // use normal <img> attributes as props
@@ -162,7 +165,7 @@ const PostDetail = ({ post }) => {
             {modifiedText.map(
               (item, i) => (
                 // <Tweet tweetId={item} className=" w-full aspect-video" />
-                <div className="w-full  my-4 overflow-hidden	">
+                <div className="w-full   my-4 overflow-hidden	">
                   <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
                 </div>
               )
@@ -276,7 +279,7 @@ const PostDetail = ({ post }) => {
             </a>
           </nav>
           <h1
-            className="mb-8 font-serif capitalize	 md:font-mono			 text-2xl lg:text-4xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug 			
+            className="mb-8 font-serif capitalize	 md:font-mono			 text-2xl lg:text-4xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug  			
           "
           >
             {post.title}
@@ -296,7 +299,6 @@ const PostDetail = ({ post }) => {
           );
           return getContentFragment(index, children, typeObj, typeObj.type);
         })} */}
-          {/* {<RichText content={content} />} */}
           {post.content.raw.children.map((typeObj, index) => {
             const children = typeObj.children.map((item, itemindex) =>
               getContentFragment(itemindex, item.text, item)
