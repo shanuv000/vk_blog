@@ -83,7 +83,7 @@ const PostDetail = ({ post }) => {
         return (
           <h2
             key={index}
-            className="font-serif lg:font-sans text-3xl font-semibold mb-4"
+            className="font-serif lg:font-sans text-3xl font-medium	 mb-4"
           >
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
@@ -94,7 +94,7 @@ const PostDetail = ({ post }) => {
         return (
           <h3
             key={index}
-            className="font-serif lg:font-sans text-xl font-semibold mb-4"
+            className="font-serif lg:font-sans text-xl font-medium mb-4"
           >
             {modifiedText.map((item, i) => (
               <React.Fragment key={i}>{item}</React.Fragment>
