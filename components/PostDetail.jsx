@@ -40,12 +40,11 @@ const PostDetail = ({ post }) => {
       if (obj.underline) {
         modifiedText = <u key={index}>{text}</u>;
       }
-      if (obj.type === "link") {
+      if (obj.type === "link" || (obj.type === "link" && obj.type === "bold")) {
         modifiedText = (
           <button
-            classnpm
-            i
-            react-youtubeName="text-red-500 hover:text-blue-500 hover:underline underline-offset-auto	"
+            classname="text-red-500 hover:text-blue-500 hover:underline hover:underline-offset-2"
+            react-youtubeName="as	"
           >
             <a
               href={obj.href}
@@ -69,7 +68,28 @@ const PostDetail = ({ post }) => {
             {text}
           </h1>
         );
-
+      case "heading-one":
+        return (
+          <h1
+            key={index}
+            className="font-serif lg:font-sans capitalize text-5xl font-semibold mb-4"
+          >
+            {modifiedText.map((item, i) => (
+              <React.Fragment key={i}>{item}</React.Fragment>
+            ))}
+          </h1>
+        );
+      case "heading-two":
+        return (
+          <h2
+            key={index}
+            className="font-serif lg:font-sans text-3xl font-semibold mb-4"
+          >
+            {modifiedText.map((item, i) => (
+              <React.Fragment key={i}>{item}</React.Fragment>
+            ))}
+          </h2>
+        );
       case "heading-three":
         return (
           <h3
@@ -256,7 +276,7 @@ const PostDetail = ({ post }) => {
             </a>
           </nav>
           <h1
-            className="mb-8 font-serif capitalize	 md:font-mono			 text-2xl lg:text-4xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug				
+            className="mb-8 font-serif capitalize	 md:font-mono			 text-2xl lg:text-4xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug 			
           "
           >
             {post.title}
