@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 import moment from "moment";
 import HeadPostDetails from "./HeadPostDetails";
-import { RichText } from "@graphcms/rich-text-react-renderer";
 
 import { LazyLoadImage } from "react-lazy-load-image-component";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
@@ -226,7 +225,7 @@ const PostDetail = ({ post }) => {
               <span>{moment(post.createdAt).format("DD MMM, YYYY")}</span>
             </div>
           </div>
-          <nav class="flex justify-center space-x-4 lg:mb-2 mb-1">
+          <nav class="flex justify-center space-x-4 lg:mb-2 my-4">
             <a
               target={"_blank"}
               href={`https://twitter.com/intent/tweet?text=${post.title}&url=https://www.keytosuccess.me/post/${post.slug}&via=shanuv0000`}
@@ -266,14 +265,14 @@ const PostDetail = ({ post }) => {
             <a
               target={"_blank"}
               href={`https://www.tumblr.com/widgets/share/tool?canonicalUrl=https://www.keytosuccess.me/post/${post.slug}&title=${post.title}&caption=${post.excerpt}&tags={#key2success}`}
-              class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+              class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 "
             >
               <img src="/tumblr.svg" width={45} alt="" />
             </a>
             <a
               target={"_blank"}
               href={`http://pinterest.com/pin/create/button/?url=https://www.keytosuccess.me/post/${post.slug}`}
-              class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+              class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 "
             >
               <img src="/pin.svg" width={45} alt="" />
             </a>

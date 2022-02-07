@@ -33,6 +33,12 @@ class MyDocument extends Document {
             name="google-site-verification"
             content="OtU3I9K9VQouEQU7IVbz1zVxsnFktZDt2dn2FSwWqZA"
           />
+          <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "7170f247a2af4a0e82ca4cb11d29dbb9"}'
+          ></script>
+          {/* <!-- End Cloudflare Web Analytics --> */}
           {/* Other google verification */}
           {/* facebook follow button */}
           {/* <script
