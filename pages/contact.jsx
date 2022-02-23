@@ -1,6 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import InstagramEmbed from "react-instagram-embed";
+import ReactPlayer from "react-player";
 
 const contact = () => {
   // <Head>
@@ -8,6 +9,8 @@ const contact = () => {
   // </Head>;
   return (
     <>
+      <ReactPlayer url="https://www.twitch.tv/djarii" />
+
       <div className="container mx-auto px-10 mb-8 bg-white-800 h-100">
         <form class="w-full max-w-lg">
           <div class="flex flex-wrap -mx-3 mb-6">

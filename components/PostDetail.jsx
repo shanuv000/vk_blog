@@ -4,6 +4,8 @@ import moment from "moment";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Navbar_post_details";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import ReactPlayer from "react-player/youtube";
+
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 // import Head from "next/head";
 import Seo from "./Seo";
@@ -145,15 +147,23 @@ const PostDetail = ({ post }) => {
         );
       case "iframe":
         return (
-          <iframe
+          // <iframe
+          //   className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
+          //   src={obj.url}
+          //   height={obj.height}
+          //   width={obj.width}
+          //   frameborder="0"
+          //   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          //   allowfullscreen
+          // ></iframe>
+          <ReactPlayer
             className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
-            src={obj.url}
-            height={obj.height}
-            width={obj.width}
-            frameborder="0"
+            url={obj.url}
+            height={"auto"}
+            width={"auto"}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
-          ></iframe>
+          />
         );
       case "block-quote":
         // if (window.innerWidth < 410) {
