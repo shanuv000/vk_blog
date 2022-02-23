@@ -4,7 +4,7 @@ import moment from "moment";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Navbar_post_details";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import ReactPlayer from "react-player/youtube";
+import ReactPlayer from "react-player/lazy";
 
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 // import Head from "next/head";
