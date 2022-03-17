@@ -1,7 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import InstagramEmbed from "react-instagram-embed";
-
+import Insatgarm from "../components/Insatgarm";
 const contact = () => {
   // <Head>
   //   <title>Conatct</title>
@@ -9,6 +9,7 @@ const contact = () => {
   return (
     <>
       <div className="container mx-auto px-10 mb-8 bg-white-800 h-100">
+        <Insatgarm className="mb-3" />
         <form class="w-full max-w-lg">
           <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">

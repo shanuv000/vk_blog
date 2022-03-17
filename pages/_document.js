@@ -50,5 +50,10 @@ class MyDocument extends Document {
     );
   }
 }
-
+MyDocument.defaultProps = {
+  title: "News",
+  keywords: "news",
+  description:
+    "Get latest news about celebrity, marvel characters and what is happenong arond the world",
+};
 export default MyDocument;
