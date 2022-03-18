@@ -5,7 +5,7 @@ const Insatgarm = () => {
   return (
     <>
       <h1>Shanu</h1>
-      <InstagramEmbed
+      {/* <InstagramEmbed
         url="https://instagr.am/p/Zw9o4/"
         clientAccessToken="IGQVJWUXUxajd2alNoZA29SdUNQOXFRSzcxQ29Jc3c3dHVvTWlvNHpNeDNiWWVVVTRRZAzc0dDFuS2FWcEdKa1NBa1BlOU5TYXVTbFR2aGh1NkpNWWNWdU1FZAFowSGZApYS1wSVE0eXhJMHVON1pZAM2EzcgZDZD"
         maxWidth={320}
@@ -18,7 +18,7 @@ const Insatgarm = () => {
         onSuccess={() => {}}
         onFailure={() => {}}
         onLoading={() => {}}
-      />
+      /> */}
     </>
   );
 };
