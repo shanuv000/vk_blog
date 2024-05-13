@@ -6,7 +6,6 @@ const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 const host = process.env.VERCEL_URL || "localhost:3000";
 const fullGraphqlAPI = `${protocol}://${host}${graphqlAPI}`;
 export const getPosts = async () => {
-  console.log("shanu");
   const query = gql`
     query MyQuery {
       postsConnection(first: 7) {
@@ -214,7 +213,7 @@ export const getFeaturedPosts = async () => {
   `;
   try {
     const result = await request(graphqlAPI, query);
-    console.log("getFeaturedPosts", result);
+
     return result.posts.map((post) => ({
       ...post,
       featuredImage: {
