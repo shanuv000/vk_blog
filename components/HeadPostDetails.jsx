@@ -3,7 +3,7 @@ import Head from "next/head";
 import Seo from "./Seo";
 const HeadPostDetails = ({ post }) => {
   const root_url = "https://onlyblog.vercel.app";
-  console.log("post", post);
+
   return (
     <Head>
       <Seo post={post} />

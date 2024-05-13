@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 import moment from "moment";
 import HeadPostDetails from "./HeadPostDetails";
@@ -8,15 +8,20 @@ import ReactPlayer from "react-player/lazy";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { fetchData } from "./ExtractIPs/ipfunc";
 const PostDetail = ({ post }) => {
-  useEffect(() => {
-    window.scrollTo(0, 0, "smooth");
-    async function fetchDataAsync() {
-      await fetchData();
-    }
-    // call fetchDataSync
-    fetchDataAsync();
-  }, []);
+  const hasFetchedData = useRef(false); // Using useRef to track data fetching
 
+  useEffect(() => {
+    if (!hasFetchedData.current) {
+      // Check if data has already been fetched
+      hasFetchedData.current = true; // Mark data as fetched
+
+      fetchDataAsync();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" }); // Smoother scrolling (optional)
+  }, []);
+  async function fetchDataAsync() {
+    await fetchData();
+  }
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
 

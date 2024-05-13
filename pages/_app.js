@@ -11,18 +11,13 @@ import { fetchData } from "../components/ExtractIPs/ipfunc";
 import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
-  // const router = useRouter();
-  // const router = useRouter();
-
-  // ... rest of your code
-
-  useEffect(() => {
-    async function fetchDataAsync() {
-      await fetchData();
-    }
-    // call fetchDataSync
-    fetchDataAsync();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchDataAsync() {
+  //     await fetchData();
+  //   }
+  //   // call fetchDataSync
+  //   // fetchDataAsync();
+  // }, []);
   const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
   return (
