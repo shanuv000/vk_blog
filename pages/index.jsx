@@ -4,8 +4,10 @@ import { getPosts } from "../services";
 import Footer from "../components/footer/Footer";
 
 export default function Home({ posts }) {
-  // console.log(getPosts());
-
+  console.log(getPosts());
+  {
+    console.log("shanu");
+  }
   return (
     <div className="container mx-auto px-4 md:px-10 mb-8">
       <FeaturedPosts />

@@ -1,8 +1,13 @@
 import { request, gql } from "graphql-request";
+import React, { useState, useEffect } from "react";
 
+// Construct absolute GraphQL API URL
 const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
-
+const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+const host = process.env.VERCEL_URL || "localhost:3000";
+const fullGraphqlAPI = `${protocol}://${host}${graphqlAPI}`;
 export const getPosts = async () => {
+  console.log("shanu");
   const query = gql`
     query MyQuery {
       postsConnection(first: 7) {
@@ -199,6 +204,8 @@ export const getFeaturedPosts = async () => {
         }
         featuredImage {
           url
+          width
+          height
         }
         title
         slug
@@ -206,10 +213,21 @@ export const getFeaturedPosts = async () => {
       }
     }   
   `;
-
-  const result = await request(graphqlAPI, query);
-
-  return result.posts;
+  try {
+    const result = await request(graphqlAPI, query);
+    console.log("getFeaturedPosts", result);
+    return result.posts.map((post) => ({
+      ...post,
+      featuredImage: {
+        ...post.featuredImage,
+        width: parseInt(post.featuredImage.width, 10) || 30, // Parse to integer, default to 30
+        height: parseInt(post.featuredImage.height, 10) || 30,
+      },
+    }));
+  } catch (error) {
+    console.error("Error fetching featured posts:", error);
+    return [];
+  }
 };
 
 export const submitComment = async (obj) => {

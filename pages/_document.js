@@ -14,7 +14,7 @@ class MyDocument extends Document {
           <title>{"key2success"}</title>
           <link rel="icon" href="/logo10.svg" />
           {/* google adsense */}
-          <script
+          {/* <script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
           />
@@ -27,12 +27,12 @@ class MyDocument extends Document {
             });
             `,
             }}
-          />
+          /> */}
           {/* Other google verification */}
-          <meta
+          {/* <meta
             name="google-site-verification"
             content="OtU3I9K9VQouEQU7IVbz1zVxsnFktZDt2dn2FSwWqZA"
-          />
+          /> */}
           {/* Other google verification */}
           {/* facebook follow button */}
           {/* <script
