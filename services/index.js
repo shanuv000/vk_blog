@@ -1,5 +1,4 @@
 import { request, gql } from "graphql-request";
-import React, { useState, useEffect } from "react";
 
 // Construct absolute GraphQL API URL
 const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;

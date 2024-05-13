@@ -7,6 +7,8 @@ import { Layout } from "../components";
 import { useRouter } from "next/router";
 // import * as gtag from "../lib/gtag";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
+import { GoogleAnalytics } from "@next/third-parties/google";
+
 import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
@@ -43,7 +45,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="twitter:title" content="key2success" />
       </Head>
       <Layout>
-        <Component {...pageProps} />
+        <Component {...pageProps} /> <GoogleAnalytics gaId="G-LW10VJQH6L" />
       </Layout>
     </>
   );
