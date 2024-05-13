@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 
 import "../styles/globals.scss";
 import { Layout } from "../components";
-// import { useEffect } from "react";
-// import Script from "next/script";
+
 // import { useRouter } from "next/router";
 // import * as gtag from "../lib/gtag";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
@@ -13,13 +12,19 @@ import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   // const router = useRouter();
+  // const router = useRouter();
+
+  // ... rest of your code
+
   useEffect(() => {
     async function fetchDataAsync() {
       await fetchData();
     }
+    // call fetchDataSync
     fetchDataAsync();
   }, []);
   const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+
   return (
     <>
       <Head>
