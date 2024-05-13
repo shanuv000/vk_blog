@@ -3,9 +3,6 @@ import Head from "next/head";
 
 import Insatgarm from "../components/Insatgarm";
 const contact = () => {
-  // <Head>
-  //   <title>Conatct</title>
-  // </Head>;
   return (
     <>
       <div className="container mx-auto px-10 mb-8 bg-white-800 h-100">

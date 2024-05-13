@@ -18,7 +18,7 @@ LinkedIn: [Vaibhav on LinkedIn](https://www.linkedin.com/in/shanuv000/)
 
 ## Website
 
-The blog project is deployed on Vercel and can be accessed at [https://vk-blog-hspdlpth0-shanuv000.vercel.app/](https://vk-blog-hspdlpth0-shanuv000.vercel.app/). It is a fully responsive website where you can find a collection of articles on various topics.
+The blog project is deployed on Vercel and can be accessed at [https://onlyblog.vercel.app/](https://vk-blog-hspdlpth0-shanuv000.vercel.app/). It is a fully responsive website where you can find a collection of articles on various topics.
 
 ## Features
 
