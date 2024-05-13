@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@next/third-parties": "^14.2.3",
+    "axios": "^1.6.8",
     "dotenv": "^11.0.0",
+    "firebase": "^10.11.1",
     "graphql": "^16.2.0",
     "graphql-request": "^3.7.0",
     "html-react-parser": "^1.4.5",

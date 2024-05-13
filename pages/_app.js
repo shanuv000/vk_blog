@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import "../styles/globals.scss";
 import { Layout } from "../components";
@@ -8,11 +8,17 @@ import { Layout } from "../components";
 // import * as gtag from "../lib/gtag";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import { GoogleAnalytics } from "@next/third-parties/google";
-
+import { fetchData } from "../components/ExtractIPs/ipfunc";
 import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   // const router = useRouter();
+  useEffect(() => {
+    async function fetchDataAsync() {
+      await fetchData();
+    }
+    fetchDataAsync();
+  }, []);
   const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
   return (
     <>
