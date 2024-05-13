@@ -5,11 +5,11 @@ import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Navbar_post_details";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
-
+import { GoogleAnalytics } from "@next/third-parties/google";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 // import Head from "next/head";
-import Seo from "./Seo";
-import App from "next/app";
+// import Seo from "./Seo";
+// import App from "next/app";
 
 const PostDetail = ({ post }) => {
   // Google Ads Config
@@ -182,6 +182,7 @@ const PostDetail = ({ post }) => {
       <div className="bg-white shadow-lg rounded-lg lg:p-6 pb-12 mb-8">
         {/* Seo */}
         <HeadPostDetails post={post} />
+        <GoogleAnalytics gaId="G-LW10VJQH6L" />
         {/* Seo */}
 
         <div className="relative overflow-hidden shadow-md mb-6 ">
