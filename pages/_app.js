@@ -4,7 +4,7 @@ import "../styles/globals.scss";
 import { Layout } from "../components";
 // import { useEffect } from "react";
 // import Script from "next/script";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 // import * as gtag from "../lib/gtag";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -12,7 +12,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <>
