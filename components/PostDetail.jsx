@@ -13,19 +13,8 @@ import App from "next/app";
 
 const PostDetail = ({ post }) => {
   // Google Ads Config
-  const loadAds = () => {
-    try {
-      if (typeof window !== "undefined") {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      }
-    } catch (error) {
-      console.log("adsense error", error.message);
-    }
-  };
 
-  useEffect(() => {
-    loadAds();
-  }, []);
+  // useEffect(() => {}, []);
   // // Google Ads Config
   useEffect(() => window.scrollTo(0, 0, "smooth"), []);
 
