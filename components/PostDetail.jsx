@@ -6,17 +6,16 @@ import Navbar_post_details from "./Navbar_post_details";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
 import { GoogleAnalytics } from "@next/third-parties/google";
-// import Document, { Html, Head, Main, NextScript } from "next/document";
-// import Head from "next/head";
-// import Seo from "./Seo";
-// import App from "next/app";
-
+import { fetchData } from "./ExtractIPs/ipfunc";
 const PostDetail = ({ post }) => {
-  // Google Ads Config
-
-  // useEffect(() => {}, []);
-  // // Google Ads Config
-  useEffect(() => window.scrollTo(0, 0, "smooth"), []);
+  useEffect(() => {
+    window.scrollTo(0, 0, "smooth");
+    async function fetchDataAsync() {
+      await fetchData();
+    }
+    // call fetchDataSync
+    fetchDataAsync();
+  }, []);
 
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
