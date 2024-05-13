@@ -13,7 +13,7 @@ import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   // const router = useRouter();
-
+  const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
   return (
     <>
       <Head>
@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       <Layout>
-        <GoogleAnalytics gaId="G-LW10VJQH6L" />
+        <GoogleAnalytics gaId={gid} />
         <Component {...pageProps} />
       </Layout>
     </>

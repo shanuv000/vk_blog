@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -10,38 +11,25 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          {" "}
-          <title>{"key2success"}</title>
-          <link rel="icon" href="/logo10.svg" />
-          {/* google adsense */}
-          {/* <script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          <title>Only Blog</title>
+          <link
+            rel="icon"
+            href="https://firebasestorage.googleapis.com/v0/b/shanu-chess.appspot.com/o/logo%2Fblog-logo%2Fmain-logo-transparent.png?alt=media&token=94294bb8-3404-44ce-81ab-b2f36ae1988e"
           />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-5634941748977646",
-            enable_page_level_ads: true
-            });
-            `,
-            }}
-          /> */}
-          {/* Other google verification */}
-          {/* <meta
-            name="google-site-verification"
-            content="OtU3I9K9VQouEQU7IVbz1zVxsnFktZDt2dn2FSwWqZA"
-          /> */}
-          {/* Other google verification */}
-          {/* facebook follow button */}
-          {/* <script
-            type="text/javascript"
-            src="https://platform-api.sharethis.com/js/sharethis.js#property=61f871a15f957c0019a78a1f&product=inline-follow-buttons"
-            async="async"
-          ></script> */}
-          {/* facebook follow button */}
-        </Head>{" "}
+
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
+          `}
+          </Script>
+        </Head>
         <body>
           <Main />
           <NextScript />
