@@ -1,10 +1,13 @@
 import React from "react";
 import { Header } from "./";
+import { DataProvider } from "../store/HandleApiContext";
 const Layout = ({ children }) => {
   return (
     <>
-      <Header />
-      {children}
+      <DataProvider>
+        <Header />
+        {children}
+      </DataProvider>
     </>
   );
 };

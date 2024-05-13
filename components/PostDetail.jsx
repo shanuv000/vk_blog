@@ -1,27 +1,27 @@
 import React, { useEffect, useRef } from "react";
-import { TwitterTweetEmbed } from "react-twitter-embed";
 import moment from "moment";
+import { TwitterTweetEmbed } from "react-twitter-embed";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Navbar_post_details";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { fetchData } from "./ExtractIPs/ipfunc";
+// import { fetchData } from "./ExtractIPs/ipfunc";
+import { useData } from "../store/HandleApiContext";
 const PostDetail = ({ post }) => {
-  const hasFetchedData = useRef(false); // Using useRef to track data fetching
+  const { data, fetchData } = useData();
+  const hasFetchedData = useRef(false);
+  // Get data from Context
 
   useEffect(() => {
-    if (!hasFetchedData.current) {
-      // Check if data has already been fetched
-      hasFetchedData.current = true; // Mark data as fetched
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (hasFetchedData.current == false && data != null) {
+      fetchData();
 
-      fetchDataAsync();
+      hasFetchedData.current = true; // <-- Mark as fetched
     }
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Smoother scrolling (optional)
   }, []);
-  async function fetchDataAsync() {
-    await fetchData();
-  }
+
   const getContentFragment = (index, text, obj, type) => {
     let modifiedText = text;
 

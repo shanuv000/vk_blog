@@ -7,17 +7,10 @@ import { Layout } from "../components";
 // import * as gtag from "../lib/gtag";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { fetchData } from "../components/ExtractIPs/ipfunc";
+// import { fetchData } from "../components/ExtractIPs/ipfunc";
 import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
-  // useEffect(() => {
-  //   async function fetchDataAsync() {
-  //     await fetchData();
-  //   }
-  //   // call fetchDataSync
-  //   // fetchDataAsync();
-  // }, []);
   const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
   return (
@@ -35,6 +28,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <Layout>
         <GoogleAnalytics gaId={gid} />
+
         <Component {...pageProps} />
       </Layout>
     </>
