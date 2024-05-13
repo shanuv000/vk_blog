@@ -28,6 +28,7 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       <Layout>
+        <GoogleAnalytics gaId="G-LW10VJQH6L" />
         <Component {...pageProps} />
       </Layout>
     </>
