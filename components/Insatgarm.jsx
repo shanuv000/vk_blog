@@ -1,5 +1,4 @@
 import React from "react";
-import InstagramEmbed from "react-instagram-embed";
 
 const Insatgarm = () => {
   const clientAccessToken = "1038213280237143|32417a123db39472d95eee30f37d9001";
@@ -7,7 +6,7 @@ const Insatgarm = () => {
   return (
     <>
       <div className="instagram-media" data-instgrm-permalink={url}></div>
-      <h1>Shanu</h1>
+
       {/* <InstagramEmbed
         url="https://instagr.am/p/Zw9o4/"
         clientAccessToken={clientAccessToken}
