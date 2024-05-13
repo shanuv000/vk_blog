@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import InstagramEmbed from "react-instagram-embed";
+
 import Insatgarm from "../components/Insatgarm";
 const contact = () => {
   // <Head>
