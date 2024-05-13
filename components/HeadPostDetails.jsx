@@ -1,11 +1,12 @@
 import React from "react";
 import Head from "next/head";
+import Seo from "./Seo";
 const HeadPostDetails = ({ post }) => {
   const root_url = "https://onlyblog.vercel.app";
-
+  console.log("post", post);
   return (
     <Head>
-      {/* <Seo post={post} /> */}
+      <Seo post={post} />
 
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta charSet="utf-8" />
