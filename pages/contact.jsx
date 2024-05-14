@@ -1,93 +1,116 @@
-import React from "react";
-import Head from "next/head";
+import React, { useState } from "react";
 
-import Insatgarm from "../components/Insatgarm";
-const contact = () => {
+const Contact = () => {
+  // State variables to store form field values
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Function to handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Perform form validation here
+    console.log("Form submitted:", { firstName, lastName, email, message });
+    // Reset form fields
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setMessage("");
+  };
+
   return (
-    <>
-      <div className="container mx-auto px-10 mb-8 bg-white-800 h-100">
-        <Insatgarm className="mb-3" />
-        <form class="w-full max-w-lg">
-          <div class="flex flex-wrap -mx-3 mb-6">
-            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label
-                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                for="grid-first-name"
-              >
-                First Name
-              </label>
-              <input
-                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                id="grid-first-name"
-                type="text"
-                placeholder="Name"
-              />
-              <p class="text-red-500 text-xs italic">
-                Please fill out this field.
-              </p>
-            </div>
-            <div class="w-full md:w-1/2 px-3">
-              <label
-                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                for="grid-last-name"
-              >
-                Last Name
-              </label>
-              <input
-                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-last-name"
-                type="text"
-                placeholder="Last Name"
-              />
-            </div>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-transparent h-full">
+      <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-8">
+        Get in Touch
+      </h2>
+      <form
+        className="max-w-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        onSubmit={handleSubmit}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label
+              htmlFor="first-name"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              First Name
+            </label>
+            <input
+              id="first-name"
+              type="text"
+              placeholder="Enter your first name"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
           </div>
-          <div class="flex flex-wrap -mx-3 mb-6">
-            <div class="w-full px-3">
-              <label
-                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                for="grid-password"
-              >
-                E-mail
-              </label>
-              <input
-                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="email"
-                type="email"
-              />
-              <p class="text-gray-600 text-xs italic">
-                Some tips - as long as needed
-              </p>
-            </div>
+          <div>
+            <label
+              htmlFor="last-name"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Last Name
+            </label>
+            <input
+              id="last-name"
+              type="text"
+              placeholder="Enter your last name"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
           </div>
-          <div class="flex flex-wrap -mx-3 mb-6">
-            <div class="w-full px-3">
-              <label
-                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                for="grid-password"
-              >
-                Message
-              </label>
-              <textarea
-                class=" no-resize appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 h-48 resize-none"
-                id="message"
-              ></textarea>
-            </div>
-          </div>
-          <div class="md:flex md:items-center">
-            <div class="md:w-1/3">
-              <button
-                class="shadow bg-teal-400 hover:bg-teal-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-                type="button"
-              >
-                Send
-              </button>
-            </div>
-            <div class="md:w-2/3"></div>
-          </div>
-        </form>
-      </div>
-    </>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="email"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            E-mail
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Enter your email address"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label
+            htmlFor="message"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Message
+          </label>
+          <textarea
+            id="message"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-48 resize-none"
+            placeholder="Enter your message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            required
+          ></textarea>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Send
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default contact;
+export default Contact;
