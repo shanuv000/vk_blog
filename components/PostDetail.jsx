@@ -11,7 +11,7 @@ import { useData } from "../store/HandleApiContext";
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
 
-  const hasFetchedData = useRef(true);
+  const hasFetchedData = useRef(false);
 
   // Get data from Context
   console.log(post);
@@ -19,7 +19,6 @@ const PostDetail = ({ post }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data != null) {
       fetchData();
-
       hasFetchedData.current = true; // <-- Mark as fetched
     }
   }, []);

@@ -1,5 +1,6 @@
 "use client";
 import { TwitterTweetEmbed } from "react-twitter-embed";
+
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
 import React from "react";
@@ -120,7 +121,7 @@ export const getContentFragment = (index, text, obj, type) => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline"
                     >
-                      {item.title}
+                      {item.title ? item.title : "link"}
                     </a>
                   ) : (
                     <>
