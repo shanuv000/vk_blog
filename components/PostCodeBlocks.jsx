@@ -60,13 +60,12 @@ export const getContentFragment = (index, text, obj, type) => {
                 <span key={j}>
                   {childItem.bold ? (
                     <b className="font-bold">{childItem.text}</b>
-                  ) : (
-                    childItem.text
-                  )}
-                  {childItem.code && (
+                  ) : childItem.code ? (
                     <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
                       {childItem.text}
                     </code>
+                  ) : (
+                    childItem.text
                   )}
                 </span>
               ))}
@@ -182,14 +181,16 @@ export const getContentFragment = (index, text, obj, type) => {
     case "block-quote":
       return (
         <div key={index} className="">
-          {modifiedText.map(
-            (item, i) => (
-              // <Tweet tweetId={item} className=" w-full aspect-video" />
-              <div className="w-full   my-4 overflow-hidden	">
+          {modifiedText.map((item, i) =>
+            item.charAt(0) === "1" ? (
+              <div className="w-full my-4 overflow-hidden" key={i}>
                 <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
               </div>
+            ) : (
+              <blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-3">
+                <p>{item}</p>
+              </blockquote>
             )
-            // <React.Fragment key={i}>{item}</React.Fragment>
           )}
         </div>
       );
