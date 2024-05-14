@@ -1,18 +1,20 @@
 import React, { useEffect, useRef } from "react";
 import moment from "moment";
-import { TwitterTweetEmbed } from "react-twitter-embed";
+
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Navbar_post_details";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import ReactPlayer from "react-player/lazy";
+
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { getContentFragment } from "./PostCodeBlocks";
 // import { fetchData } from "./ExtractIPs/ipfunc";
 import { useData } from "../store/HandleApiContext";
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
+
   const hasFetchedData = useRef(false);
+
   // Get data from Context
-  console.log(post);
+  // console.log(post);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data != null) {
@@ -21,209 +23,6 @@ const PostDetail = ({ post }) => {
       hasFetchedData.current = true; // <-- Mark as fetched
     }
   }, []);
-
-  const getContentFragment = (index, text, obj, type) => {
-    let modifiedText = text;
-
-    if (obj) {
-      if (obj.bold) {
-        modifiedText = <b key={index}>{text}</b>;
-      }
-
-      if (obj.italic) {
-        modifiedText = <em key={index}>{text}</em>;
-      }
-
-      if (obj.underline) {
-        modifiedText = <u key={index}>{text}</u>;
-      }
-      if (obj.type === "code") {
-        modifiedText = (
-          <pre
-            key={index}
-            className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto"
-          >
-            <code>{text}</code>
-          </pre>
-        );
-      }
-      if (obj.type === "code-block") {
-        modifiedText = (
-          <pre
-            key={index}
-            className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto"
-          >
-            <code>{text}</code>
-          </pre>
-        );
-      }
-      if (obj.type === "link" || (obj.type === "link" && obj.type === "bold")) {
-        modifiedText = (
-          <button
-            classname="text-red-500   hover:text-blue-500 hover:underline hover:underline-offset-3"
-            react-youtubeName="as	"
-          >
-            <a
-              href={obj.href}
-              target="_blank"
-              className="text-red-500 hover:text-blue-500 hover:underline underline-offset-auto"
-            >
-              {obj.children[0].text}
-            </a>
-          </button>
-        );
-      }
-    }
-
-    switch (type) {
-      case "bulleted-list":
-        return (
-          <ul key={index} className="list-disc list-inside mb-4">
-            {obj.children.map((listItem, i) => (
-              <li key={i}>
-                {listItem.children[0].children.map((childItem, j) => (
-                  <span key={j}>
-                    {childItem.code ? (
-                      <code className="bg-slate-200 rounded  p-1">
-                        {childItem.text}
-                      </code>
-                    ) : (
-                      childItem.text
-                    )}
-                  </span>
-                ))}
-              </li>
-            ))}
-          </ul>
-        );
-
-      // case "code":
-      //   return (
-      //     <h1
-      //       className="text-xl font-semibold mb-4 font-serif lg:font-sans"
-      //       key={index}
-      //     >
-      //       <pre>
-      //         <code>{text}</code>
-      //       </pre>
-      //     </h1>
-      //   );
-
-      case "heading-one":
-        return (
-          <h1
-            key={index}
-            className="font-serif lg:font-sans capitalize text-5xl font-semibold mb-4"
-          >
-            {modifiedText.map((item, i) => (
-              <React.Fragment key={i}>{item}</React.Fragment>
-            ))}
-          </h1>
-        );
-      case "heading-two":
-        return (
-          <h2
-            key={index}
-            className="font-serif lg:font-sans text-3xl font-medium	 mb-4"
-          >
-            {modifiedText.map((item, i) => (
-              <React.Fragment key={i}>{item}</React.Fragment>
-            ))}
-          </h2>
-        );
-      case "heading-three":
-        return (
-          <h3
-            key={index}
-            className="font-serif lg:font-sans text-xl font-medium mb-4"
-          >
-            {modifiedText.map((item, i) => (
-              <React.Fragment key={i}>{item}</React.Fragment>
-            ))}
-          </h3>
-        );
-      case "paragraph":
-        return (
-          <p
-            key={index}
-            className=" mb-6 tracking-wide lg:tracking-wide leading-8	 font-sans text-lg font-normal	md:font-light	text-shanu-black "
-          >
-            {modifiedText.map((item, i) => (
-              <React.Fragment key={i}>{item}</React.Fragment>
-            ))}
-          </p>
-        );
-      case "heading-four":
-        return (
-          <h4
-            key={index}
-            className="font-serif lg:font-sans text-md font-semibold mb-4"
-          >
-            {modifiedText.map((item, i) => (
-              <React.Fragment key={i}>{item}</React.Fragment>
-            ))}
-          </h4>
-        );
-      case "image":
-        return (
-          <LazyLoadImage
-            alt={"images"}
-            className="rounded-lg my-4  shadow-lg shadow-indigo-500/40 md:shadow-xl md:shadow-indigo-500/40 "
-            height={obj.height}
-            width={obj.width}
-            src={obj.src} // use normal <img> attributes as props
-          />
-          // <img
-          //   className="rounded-lg"
-          //   key={index}
-          //   alt={obj.title}
-          //   height={obj.height}
-          //   width={obj.width}
-          //   src={obj.src}
-          // />
-        );
-      case "iframe":
-        return (
-          // <iframe
-          //   className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
-          //   src={obj.url}
-          //   height={obj.height}
-          //   width={obj.width}
-          //   frameborder="0"
-          //   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          //   allowfullscreen
-          // ></iframe>
-          <ReactPlayer
-            className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
-            url={obj.url}
-            height={"auto"}
-            width={"auto"}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          />
-        );
-      case "block-quote":
-        // if (window.innerWidth < 410) {
-        //   return;
-        // }
-        return (
-          <div key={index} className="">
-            {modifiedText.map(
-              (item, i) => (
-                // <Tweet tweetId={item} className=" w-full aspect-video" />
-                <div className="w-full   my-4 overflow-hidden	">
-                  <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
-                </div>
-              )
-              // <React.Fragment key={i}>{item}</React.Fragment>
-            )}
-          </div>
-        );
-
-      default:
-        return modifiedText;
-    }
-  };
 
   return (
     <>
