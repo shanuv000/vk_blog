@@ -4,7 +4,7 @@ import moment from "moment";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Navbar_post_details";
 
-import { GoogleAnalytics } from "@next/third-parties/google";
+// import { GoogleAnalytics } from "@next/third-parties/google";
 import { getContentFragment } from "./PostCodeBlocks";
 // import { fetchData } from "./ExtractIPs/ipfunc";
 import { useData } from "../store/HandleApiContext";
@@ -28,7 +28,7 @@ const PostDetail = ({ post }) => {
       <div className="bg-white shadow-lg rounded-lg lg:p-6 pb-12 mb-8">
         {/* Seo */}
         <HeadPostDetails post={post} />
-        <GoogleAnalytics gaId="G-LW10VJQH6L" />
+        {/* <GoogleAnalytics gaId="G-LW10VJQH6L" /> */}
         {/* Seo */}
 
         <div className="relative overflow-hidden shadow-md mb-6 ">

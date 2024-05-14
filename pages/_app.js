@@ -6,12 +6,12 @@ import { Layout } from "../components";
 // import { useRouter } from "next/router";
 // import * as gtag from "../lib/gtag";
 // import Document, { Html, Head, Main, NextScript } from "next/document";
-import { GoogleAnalytics } from "@next/third-parties/google";
+// import { GoogleAnalytics } from "@next/third-parties/google";
 // import { fetchData } from "../components/ExtractIPs/ipfunc";
 import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
-  const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+  // const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
   return (
     <>
@@ -27,9 +27,8 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       <Layout>
-        <GoogleAnalytics gaId={gid} />
-
         <Component {...pageProps} />
+        {/* <GoogleAnalytics gaId={gid} /> */}
       </Layout>
     </>
   );
