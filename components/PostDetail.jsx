@@ -12,7 +12,7 @@ const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
   const hasFetchedData = useRef(false);
   // Get data from Context
-
+  console.log(post);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data != null) {
@@ -37,6 +37,26 @@ const PostDetail = ({ post }) => {
       if (obj.underline) {
         modifiedText = <u key={index}>{text}</u>;
       }
+      if (obj.type === "code") {
+        modifiedText = (
+          <pre
+            key={index}
+            className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto"
+          >
+            <code>{text}</code>
+          </pre>
+        );
+      }
+      if (obj.type === "code-block") {
+        modifiedText = (
+          <pre
+            key={index}
+            className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto"
+          >
+            <code>{text}</code>
+          </pre>
+        );
+      }
       if (obj.type === "link" || (obj.type === "link" && obj.type === "bold")) {
         modifiedText = (
           <button
@@ -56,15 +76,39 @@ const PostDetail = ({ post }) => {
     }
 
     switch (type) {
-      case "code":
+      case "bulleted-list":
         return (
-          <h1
-            className="text-xl font-semibold mb-4 font-serif lg:font-sans"
-            key={index}
-          >
-            {text}
-          </h1>
+          <ul key={index} className="list-disc list-inside mb-4">
+            {obj.children.map((listItem, i) => (
+              <li key={i}>
+                {listItem.children[0].children.map((childItem, j) => (
+                  <span key={j}>
+                    {childItem.code ? (
+                      <code className="bg-slate-200 rounded  p-1">
+                        {childItem.text}
+                      </code>
+                    ) : (
+                      childItem.text
+                    )}
+                  </span>
+                ))}
+              </li>
+            ))}
+          </ul>
         );
+
+      // case "code":
+      //   return (
+      //     <h1
+      //       className="text-xl font-semibold mb-4 font-serif lg:font-sans"
+      //       key={index}
+      //     >
+      //       <pre>
+      //         <code>{text}</code>
+      //       </pre>
+      //     </h1>
+      //   );
+
       case "heading-one":
         return (
           <h1
