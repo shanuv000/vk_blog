@@ -170,14 +170,40 @@ export const getContentFragment = (index, text, obj, type) => {
       );
     case "iframe":
       return (
-        <ReactPlayer
-          className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
-          url={obj.url}
-          height={"auto"}
-          width={"auto"}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        />
+        <>
+          {isYoutubeUrl(obj.url) ? (
+            <ReactPlayer
+              className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
+              url={obj.url}
+              height={"100%"}
+              width={"100%"}
+              allow="accelerometer; autoplay clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            />
+          ) : (
+            <div className="relative pt-16/9">
+              {console.log(obj.url)}
+              <ReactPlayer
+                className=" w-full h-full rounded-lg"
+                url={obj.url}
+                width="100%"
+                height="100%"
+                loop={true}
+                playing={true}
+                muted={true} // Mute the video for autoplay
+                controls={false}
+                light={obj.thumbnail || false}
+                config={{
+                  file: {
+                    attributes: {
+                      poster: obj.thumbnail || "",
+                    },
+                  },
+                }}
+              />
+            </div>
+          )}
+        </>
       );
     case "block-quote":
       return (
@@ -200,3 +226,10 @@ export const getContentFragment = (index, text, obj, type) => {
       return modifiedText;
   }
 };
+//Youtube validator
+
+function isYoutubeUrl(url) {
+  const youtubeRegex =
+    /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+  return youtubeRegex.test(url);
+}
