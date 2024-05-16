@@ -118,9 +118,9 @@ export const getContentFragment = (index, text, obj, type) => {
                   {item.type === "link" ? (
                     <a
                       href={item.href}
-                      target={item.openInNewTab ? "_blank" : "_self"}
+                      target={"_blank"}
                       rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
+                      className="text-red-600 hover:text-red-700 hover:underline transition duration-100 font-medium "
                     >
                       {item.children[0].text ? item.children[0].text : "link"}
                     </a>
