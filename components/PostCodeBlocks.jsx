@@ -111,6 +111,7 @@ export const getContentFragment = (index, text, obj, type) => {
           key={index}
           className="mb-6 leading-relaxed text-gray-800 font-sans text-base md:text-lg lg:text-xl"
         >
+          {/* {console.log(obj.children)} */}
           {obj.children
             ? obj.children.map((item, i) => (
                 <React.Fragment key={i}>
@@ -121,7 +122,7 @@ export const getContentFragment = (index, text, obj, type) => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline"
                     >
-                      {item.title ? item.title : "link"}
+                      {item.children[0].text ? item.children[0].text : "link"}
                     </a>
                   ) : (
                     <>
