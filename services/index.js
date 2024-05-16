@@ -8,7 +8,7 @@ const fullGraphqlAPI = `${protocol}://${host}${graphqlAPI}`;
 export const getPosts = async () => {
   const query = gql`
     query MyQuery {
-      postsConnection(last: 7) {
+      postsConnection(first: 7, orderBy: createdAt_DESC) {
         edges {
           cursor
           node {
