@@ -1,11 +1,18 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { getHeaderCategories } from "../services";
 const Contact = () => {
   // State variables to store form field values
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const getHeader = async () => {
+    const getHeaderCategory = await getHeaderCategories();
+    console.log(getHeaderCategory);
+  };
+  useEffect(() => {
+    getHeader();
+  }, []);
 
   // Function to handle form submission
   const handleSubmit = (e) => {

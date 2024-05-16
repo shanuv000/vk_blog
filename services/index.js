@@ -45,7 +45,7 @@ export const getPosts = async () => {
 export const getCategories = async () => {
   const query = gql`
     query GetGategories {
-      categories {
+      categories(where: { show: true }) {
         name
         slug
       }

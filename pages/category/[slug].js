@@ -1,8 +1,8 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+import React from "react";
+import { useRouter } from "next/router";
 
-import { getCategories, getCategoryPost } from '../../services';
-import { PostCard, Categories, Loader } from '../../components';
+import { getCategories, getCategoryPost } from "../../services";
+import { PostCard, Categories, Loader } from "../../components";
 
 const CategoryPost = ({ posts }) => {
   const router = useRouter();
@@ -43,6 +43,7 @@ export async function getStaticProps({ params }) {
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
   const categories = await getCategories();
+
   return {
     paths: categories.map(({ slug }) => ({ params: { slug } })),
     fallback: true,
