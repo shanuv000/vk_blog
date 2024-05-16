@@ -11,7 +11,7 @@ import { useData } from "../store/HandleApiContext";
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
 
-  const hasFetchedData = useRef(false);
+  const hasFetchedData = useRef(true);
 
   // Get data from Context
   // console.log(post);
@@ -80,21 +80,7 @@ const PostDetail = ({ post }) => {
           >
             {post.title}
           </h1>
-          {/* <ins
-            className="adsbygoogle"
-            style={{ display: "block" }}
-            data-ad-client="ca-pub-5634941748977646"
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          ></ins> */}
 
-          {/* 
-        {post.content.raw.children.map((typeObj, index) => {
-          const children = typeObj.children.map((item, itemIndex) =>
-            getContentFragment(itemIndex, item.text, item)
-          );
-          return getContentFragment(index, children, typeObj, typeObj.type);
-        })} */}
           {post.content.raw.children.map((typeObj, index) => {
             const children = typeObj.children.map((item, itemindex) =>
               getContentFragment(itemindex, item.text, item)

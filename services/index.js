@@ -8,7 +8,7 @@ const fullGraphqlAPI = `${protocol}://${host}${graphqlAPI}`;
 export const getPosts = async () => {
   const query = gql`
     query MyQuery {
-      postsConnection(first: 7) {
+      postsConnection(last: 7) {
         edges {
           cursor
           node {
@@ -38,7 +38,7 @@ export const getPosts = async () => {
   `;
 
   const result = await request(graphqlAPI, query);
-
+  console.log("Fetched posts:", result.postsConnection.edges);
   return result.postsConnection.edges;
 };
 
