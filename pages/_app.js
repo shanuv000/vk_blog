@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import "../styles/globals.scss";
 import { Layout } from "../components";
@@ -12,9 +12,19 @@ import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   // const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+  // useEffect(() => {
+  //   const start = performance.now(); // Start timing
+  //   console.log("Rendering started");
 
+  //   return () => {
+  //     const end = performance.now(); // End timing
+  //     console.log("Rendering finished");
+  //     console.log("Time taken:", end - start, "milliseconds");
+  //   };
+  // }, []);
   return (
     <>
+      {}
       <Head>
         <title>Only Blog</title> {"blog"}
         <link
@@ -26,6 +36,7 @@ function MyApp({ Component, pageProps }) {
           content="tech, entertainment, sports, articles, news, updates, reviews, analysis, blog, blogging, diverse content, information, insights"
         />
       </Head>
+
       <Layout>
         <Component {...pageProps} />
         {/* <GoogleAnalytics gaId={gid} /> */}

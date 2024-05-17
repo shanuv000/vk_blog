@@ -209,17 +209,19 @@ export const getContentFragment = (index, text, obj, type) => {
     case "block-quote":
       return (
         <div key={index} className="">
-          {modifiedText.map((item, i) =>
-            item.charAt(0) === "1" ? (
-              <div className="w-full my-4 overflow-hidden" key={i}>
-                <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
-              </div>
-            ) : (
-              <blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-3">
-                <p>{item}</p>
-              </blockquote>
-            )
-          )}
+          {modifiedText
+            .filter((item) => item !== undefined) // Filter out undefined items
+            .map((item, i) =>
+              item.charAt(0) === "1" ? (
+                <div className="w-full my-4 overflow-hidden" key={i}>
+                  <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
+                </div>
+              ) : (
+                <blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-3">
+                  <p>{item}</p>
+                </blockquote>
+              )
+            )}
         </div>
       );
 
