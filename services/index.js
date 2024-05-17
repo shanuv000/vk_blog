@@ -227,33 +227,55 @@ export const getFeaturedPosts = async () => {
     return [];
   }
 };
-
+// ... (imports) ...
 export const submitComment = async (obj) => {
-  const result = await fetch("/api/comments", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(obj),
-  });
+  try {
+    const result = await fetch("/api/comments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    });
 
-  return result.json();
+    if (!result.ok) {
+      const errorResponse = await result.json();
+      throw new Error(errorResponse.error || "Failed to submit comment");
+    }
+
+    return result.json();
+  } catch (error) {
+    console.error("Error submitting comment:", error);
+    throw error; // Re-throw the error to be handled in handleCommentSubmission
+  }
 };
 
 export const getComments = async (slug) => {
-  const query = gql`
-    query GetComments($slug: String!) {
-      comments(where: { post: { slug: $slug } }) {
-        name
-        createdAt
-        comment
+  try {
+    const query = gql`
+      query GetComments($slug: String!) {
+        comments(where: { post: { slug: $slug } }) {
+          name
+          createdAt
+          comment
+        }
       }
+    `;
+
+    const result = await request(graphqlAPI, query, { slug });
+
+    if (result.errors) {
+      // Assuming Hygraph's error format (adjust as needed)
+      throw new Error(result.errors[0].message || "Failed to fetch comments");
     }
-  `;
 
-  const result = await request(graphqlAPI, query, { slug });
+    return result.comments;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
 
-  return result.comments;
+    // Handle the error similar to how it's done in submitComment()
+    throw error;
+  }
 };
 
 export const getRecentPosts = async () => {

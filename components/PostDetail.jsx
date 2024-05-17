@@ -19,7 +19,8 @@ const PostDetail = ({ post }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data != null) {
       fetchData();
-      hasFetchedData.current = true; // <-- Mark as fetched
+
+      // hasFetchedData.current = true; // <-- Mark as fetched
     }
   }, []);
 

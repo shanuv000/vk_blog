@@ -29,7 +29,7 @@ const CommentsForm = ({ slug }) => {
     };
     setFormData(initalFormData);
   }, []);
-  const handleCommentSubmission = () => {
+  const handleCommentSubmission = async () => {
     setError(false);
     const { value: comment } = commentEl.current;
     const { value: name } = nameEl.current;
@@ -52,16 +52,22 @@ const CommentsForm = ({ slug }) => {
       window.localStorage.setItem("name", name);
       window.localStorage.setItem("email", email);
     } else {
-      window.localStorage.removeItem("name", name);
-      window.localStorage.removeItem("email", email);
+      window.localStorage.removeItem("name");
+      window.localStorage.removeItem("email");
     }
-    submitComment(commentObj).then((res) => {
+
+    try {
+      await submitComment(commentObj);
       setShowSuccessMessage(true);
       setTimeout(() => {
         setShowSuccessMessage(false);
       }, 3000);
-    });
+    } catch (error) {
+      setError(true);
+      ShowErrorMessage(error.message);
+    }
   };
+
   return (
     <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
       <h3 className="text-xl mb-8 font-semibold border-b pb-4">

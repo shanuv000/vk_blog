@@ -33,7 +33,7 @@ export const getContentFragment = (index, text, obj, type) => {
     if (obj.type === "link" || (obj.type === "link" && obj.type === "bold")) {
       modifiedText = (
         <button
-          classname="text-red-500   hover:text-blue-500 hover:underline hover:underline-offset-3"
+          className="text-red-500   hover:text-blue-500 hover:underline hover:underline-offset-3"
           react-youtubeName="as	"
         >
           <a
@@ -207,7 +207,7 @@ export const getContentFragment = (index, text, obj, type) => {
                   <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
                 </div>
               ) : (
-                <blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-3">
+                <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-3">
                   <p>{item}</p>
                 </blockquote>
               )
@@ -233,6 +233,42 @@ const renderList = (type, index, obj) => {
   const ListTag = type === "bulleted-list" ? "ul" : "ol";
   const listClass = type === "bulleted-list" ? "list-disc" : "list-decimal";
 
+  const renderText = (node) => {
+    if (node.bold) {
+      return <b className="font-bold">{node.text}</b>;
+    }
+    if (node.code) {
+      return (
+        <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
+          {node.text}
+        </code>
+      );
+    }
+    if (node.type === "link") {
+      return (
+        <a
+          href={node.href}
+          target={node.openInNewTab ? "_blank" : "_self"}
+          rel={node.rel}
+          className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-500 hover:underline  transition duration-200 "
+        >
+          {node.children.map(renderText)}
+        </a>
+      );
+    }
+    return node.text;
+  };
+
+  const extractAndRenderChildren = (children) => {
+    return children.map((childItem, j) => (
+      <span key={j}>
+        {childItem.children
+          ? childItem.children.map(renderText)
+          : renderText(childItem)}
+      </span>
+    ));
+  };
+
   return (
     <ListTag key={index} className={`${listClass} list-inside mb-6 pl-6`}>
       {obj.children.map((listItem, i) => (
@@ -240,19 +276,7 @@ const renderList = (type, index, obj) => {
           key={i}
           className="mb-2 leading-relaxed text-gray-800 font-sans text-base md:text-lg lg:text-xl"
         >
-          {listItem.children[0].children.map((childItem, j) => (
-            <span key={j}>
-              {childItem.bold ? (
-                <b className="font-bold">{childItem.text}</b>
-              ) : childItem.code ? (
-                <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
-                  {childItem.text}
-                </code>
-              ) : (
-                childItem.text
-              )}
-            </span>
-          ))}
+          {extractAndRenderChildren(listItem.children[0].children)}
         </li>
       ))}
     </ListTag>
