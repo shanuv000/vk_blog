@@ -101,7 +101,7 @@ export const getContentFragment = (index, text, obj, type) => {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-500 hover:underline  transition duration-200 "
+                    className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-600 hover:underline  transition duration-200 "
                   >
                     {item.children && item.children[0]?.text
                       ? item.children[0].text
@@ -248,9 +248,9 @@ const renderList = (type, index, obj) => {
       return (
         <a
           href={node.href}
-          target={node.openInNewTab ? "_blank" : "_self"}
-          rel={node.rel}
-          className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-500 hover:underline  transition duration-200 "
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-600 hover:underline  transition duration-200 "
         >
           {node.children.map(renderText)}
         </a>
