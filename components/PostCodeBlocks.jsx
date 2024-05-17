@@ -101,7 +101,7 @@ export const getContentFragment = (index, text, obj, type) => {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-red-600 hover:text-red-700 hover:underline transition duration-300 font-medium"
+                    className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-500 hover:underline  transition duration-200 "
                   >
                     {item.children && item.children[0]?.text
                       ? item.children[0].text
