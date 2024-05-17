@@ -50,30 +50,10 @@ export const getContentFragment = (index, text, obj, type) => {
 
   switch (type) {
     case "bulleted-list":
-      return (
-        <ul key={index} className="list-disc list-inside mb-6 pl-6">
-          {obj.children.map((listItem, i) => (
-            <li
-              key={i}
-              className="mb-2 leading-relaxed text-gray-800 font-sans text-base md:text-lg lg:text-xl"
-            >
-              {listItem.children[0].children.map((childItem, j) => (
-                <span key={j}>
-                  {childItem.bold ? (
-                    <b className="font-bold">{childItem.text}</b>
-                  ) : childItem.code ? (
-                    <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
-                      {childItem.text}
-                    </code>
-                  ) : (
-                    childItem.text
-                  )}
-                </span>
-              ))}
-            </li>
-          ))}
-        </ul>
-      );
+      return renderList("bulleted-list", index, obj);
+
+    case "numbered-list":
+      return renderList("numbered-list", index, obj);
 
     case "heading-one":
       return (
@@ -236,3 +216,34 @@ function isYoutubeUrl(url) {
     /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
   return youtubeRegex.test(url);
 }
+
+// show Lists
+const renderList = (type, index, obj) => {
+  const ListTag = type === "bulleted-list" ? "ul" : "ol";
+  const listClass = type === "bulleted-list" ? "list-disc" : "list-decimal";
+
+  return (
+    <ListTag key={index} className={`${listClass} list-inside mb-6 pl-6`}>
+      {obj.children.map((listItem, i) => (
+        <li
+          key={i}
+          className="mb-2 leading-relaxed text-gray-800 font-sans text-base md:text-lg lg:text-xl"
+        >
+          {listItem.children[0].children.map((childItem, j) => (
+            <span key={j}>
+              {childItem.bold ? (
+                <b className="font-bold">{childItem.text}</b>
+              ) : childItem.code ? (
+                <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
+                  {childItem.text}
+                </code>
+              ) : (
+                childItem.text
+              )}
+            </span>
+          ))}
+        </li>
+      ))}
+    </ListTag>
+  );
+};

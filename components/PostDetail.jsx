@@ -14,7 +14,7 @@ const PostDetail = ({ post }) => {
   const hasFetchedData = useRef(false);
 
   // Get data from Context
-  // console.log(post);
+  console.log(post);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data != null) {
