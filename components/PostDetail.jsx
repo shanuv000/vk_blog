@@ -14,7 +14,7 @@ const PostDetail = ({ post }) => {
   const hasFetchedData = useRef(false);
 
   // Get data from Context
-  console.log(post);
+  // console.log(post);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data != null) {
@@ -25,17 +25,17 @@ const PostDetail = ({ post }) => {
 
   return (
     <>
-      <div className="bg-white shadow-lg rounded-lg lg:p-6 pb-12 mb-8">
+      <div className="bg-white  shadow-lg rounded-lg lg:p-6 pb-12 mb-8">
         {/* Seo */}
         <HeadPostDetails post={post} />
         {/* <GoogleAnalytics gaId="G-LW10VJQH6L" /> */}
         {/* Seo */}
 
-        <div className="relative overflow-hidden shadow-md mb-6 ">
+        <div className="relative overflow-hidden  shadow-md mb-6 ">
           <img
             src={post.featuredImage.url}
             alt={post.title}
-            className="object-top h-full w-full rounded-t-lg"
+            className=" object-top h-full w-full rounded-t-lg"
           />
         </div>
         <div className="px-4 lg:px-0 ">

@@ -91,40 +91,50 @@ export const getContentFragment = (index, text, obj, type) => {
           key={index}
           className="mb-6 leading-relaxed text-gray-800 font-sans text-base md:text-lg lg:text-xl"
         >
-          {/* {console.log(obj.children)} */}
-          {obj.children
-            ? obj.children.map((item, i) => (
-                <React.Fragment key={i}>
-                  {item.type === "link" ? (
-                    <a
-                      href={item.href}
-                      target={"_blank"}
-                      rel="noopener noreferrer"
-                      className="text-red-600 hover:text-red-700 hover:underline transition duration-100 font-medium "
-                    >
-                      {item.children[0].text ? item.children[0].text : "link"}
-                    </a>
-                  ) : (
-                    <>
-                      {item.bold && (
-                        <b className="font-semibold">{item.text}</b>
-                      )}
-                      {item.code ? (
-                        <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
-                          {item.text}
-                        </code>
-                      ) : (
-                        !item.bold && item.text
-                      )}
-                    </>
-                  )}
-                </React.Fragment>
-              ))
-            : modifiedText.map((item, i) => (
-                <React.Fragment key={i}>
-                  {item.code ? <code>{item.text}</code> : item.text}
-                </React.Fragment>
-              ))}
+          {/* Error Handling for obj.children */}
+          {obj.children && Array.isArray(obj.children) ? (
+            obj.children.map((item, i) => (
+              <React.Fragment key={i}>
+                {/* Error Handling for link */}
+                {item.type === "link" && item.href ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-red-600 hover:text-red-700 hover:underline transition duration-300 font-medium"
+                  >
+                    {item.children && item.children[0]?.text
+                      ? item.children[0].text
+                      : "link"}
+                  </a>
+                ) : (
+                  <>
+                    {item.bold && <b className="font-semibold">{item.text}</b>}
+                    {item.underline && (
+                      <span className="underline underline-offset-6 decoration-3 decoration-orange-500">
+                        {item.text}
+                      </span>
+                    )}
+                    {item.code ? (
+                      <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
+                        {item.text}
+                      </code>
+                    ) : (
+                      !item.bold && !item.underline && item.text // Add check for underline
+                    )}
+                  </>
+                )}
+              </React.Fragment>
+            ))
+          ) : modifiedText && Array.isArray(modifiedText) ? (
+            modifiedText.map((item, i) => (
+              <React.Fragment key={i}>
+                {item.code ? <code>{item.text}</code> : item.text}
+              </React.Fragment>
+            ))
+          ) : (
+            <div className="text-green-500">Invalid paragraph </div>
+          )}
         </p>
       );
 
@@ -143,7 +153,7 @@ export const getContentFragment = (index, text, obj, type) => {
       return (
         <LazyLoadImage
           alt={"images"}
-          className="rounded-lg my-4  shadow-lg shadow-indigo-500/40 md:shadow-xl md:shadow-indigo-500/40 "
+          className="rounded-lg my-4  shadow-lg  "
           height={obj.height}
           width={obj.width}
           src={obj.src} // use normal <img> attributes as props
@@ -209,6 +219,7 @@ export const getContentFragment = (index, text, obj, type) => {
       return modifiedText;
   }
 };
+
 //Youtube validator
 
 function isYoutubeUrl(url) {
