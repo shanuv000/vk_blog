@@ -4,6 +4,7 @@ import { TwitterTweetEmbed } from "react-twitter-embed";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
 import React from "react";
+import SimpleTable from "./Nested_Table";
 export const getContentFragment = (index, text, obj, type) => {
   let modifiedText = text;
 
@@ -214,6 +215,8 @@ export const getContentFragment = (index, text, obj, type) => {
             )}
         </div>
       );
+    case "table":
+      return <SimpleTable key={index} data={obj} />;
 
     default:
       return modifiedText;
