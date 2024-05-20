@@ -1,6 +1,6 @@
 import React from "react";
 
-const SimpleTable = ({ data }) => {
+const NestedTable = ({ data }) => {
   // Check if the table has a table_body
   const tableBody = data.children.find((child) => child.type === "table_body");
 
@@ -8,13 +8,13 @@ const SimpleTable = ({ data }) => {
   const rows = tableBody ? tableBody.children : data.children;
 
   return (
-    <table className="border-collapse border-none w-full mb-4">
+    <table className="table-auto border-collapse   w-full mb-4">
       <tbody>
         {rows.map((rowData, rowIndex) =>
           rowIndex === 0 ? (
             <tr
               key={rowIndex}
-              className="border border-black font-medium text-center"
+              className="border-[border-red-800] border-black font-medium text-center"
             >
               {rowData.children.map((cellData, cellIndex) => (
                 <td key={cellIndex} className="border border-black p-2">
@@ -49,4 +49,4 @@ const SimpleTable = ({ data }) => {
   );
 };
 
-export default SimpleTable;
+export default NestedTable;
