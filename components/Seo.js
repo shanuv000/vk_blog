@@ -39,7 +39,7 @@ export default function Seo({ post }) {
       }}
       twitter={{
         handle: "@shanuv000",
-        site: "@shanuv000",
+        site: "@Onlyblogs_",
         cardType: "summary_large_image",
       }}
     />
