@@ -46,9 +46,7 @@ function Paragraph({ obj, modifiedText }) {
       return item.text.split(" ").map((word, i) => (
         <React.Fragment key={i}>
           {word.startsWith("#") ? (
-            <a href={`/search?q=${word.slice(1)}`} className="text-pink-500">
-              {word}{" "}
-            </a>
+            <span className="text-pink-500">{word} </span>
           ) : (
             word + " " // Add space after each word
           )}
