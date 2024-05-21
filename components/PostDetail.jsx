@@ -2,10 +2,10 @@ import React, { useEffect, useRef } from "react";
 import moment from "moment";
 
 import HeadPostDetails from "./HeadPostDetails";
-import Navbar_post_details from "./Navbar_post_details";
+import Navbar_post_details from "./Social_post_details";
 
 // import { GoogleAnalytics } from "@next/third-parties/google";
-import { getContentFragment } from "./PostCodeBlocks";
+import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
 // import { fetchData } from "./ExtractIPs/ipfunc";
 import { useData } from "../store/HandleApiContext";
 const PostDetail = ({ post }) => {

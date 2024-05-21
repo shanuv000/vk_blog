@@ -5,6 +5,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
 import React from "react";
 import NestedTable from "./Nested_Table";
+import Paragraph from "./Paragraph";
 export const getContentFragment = (index, text, obj, type) => {
   let modifiedText = text;
 
@@ -87,57 +88,7 @@ export const getContentFragment = (index, text, obj, type) => {
         </h3>
       );
     case "paragraph":
-      return (
-        <p
-          key={index}
-          className="mb-6 leading-relaxed text-gray-800 font-sans text-base md:text-lg lg:text-xl"
-        >
-          {/* Error Handling for obj.children */}
-          {obj.children && Array.isArray(obj.children) ? (
-            obj.children.map((item, i) => (
-              <React.Fragment key={i}>
-                {/* Error Handling for link */}
-                {item.type === "link" && item.href ? (
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-600 hover:underline  transition duration-200 "
-                  >
-                    {item.children && item.children[0]?.text
-                      ? item.children[0].text
-                      : "link"}
-                  </a>
-                ) : (
-                  <>
-                    {item.bold && <b className="font-semibold">{item.text}</b>}
-                    {item.underline && (
-                      <span className="underline underline-offset-6 decoration-3 decoration-orange-500">
-                        {item.text}
-                      </span>
-                    )}
-                    {item.code ? (
-                      <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
-                        {item.text}
-                      </code>
-                    ) : (
-                      !item.bold && !item.underline && item.text // Add check for underline
-                    )}
-                  </>
-                )}
-              </React.Fragment>
-            ))
-          ) : modifiedText && Array.isArray(modifiedText) ? (
-            modifiedText.map((item, i) => (
-              <React.Fragment key={i}>
-                {item.code ? <code>{item.text}</code> : item.text}
-              </React.Fragment>
-            ))
-          ) : (
-            <div className="text-green-500">Invalid paragraph </div>
-          )}
-        </p>
-      );
+      return <Paragraph obj={obj} modifiedText={modifiedText} />;
 
     case "heading-four":
       return (
