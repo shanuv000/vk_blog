@@ -69,14 +69,14 @@ export const getContentFragment = (index, text, obj, type) => {
       );
     case "heading-two":
       return (
-        <h2
+        <h1
           key={index}
           className="font-serif text-3xl lg:text-4xl font-medium mb-6"
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </h2>
+        </h1>
       );
     case "heading-three":
       return (

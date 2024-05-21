@@ -8,13 +8,13 @@ const NestedTable = ({ data }) => {
   const rows = tableBody ? tableBody.children : data.children;
 
   return (
-    <table className="table-auto border-collapse   w-full mb-4">
+    <table className=" border-collapse  w-full mb-4">
       <tbody>
         {rows.map((rowData, rowIndex) =>
           rowIndex === 0 ? (
             <tr
               key={rowIndex}
-              className="border-[border-red-800] border-black font-medium text-center"
+              className="border border-black font-medium text-center"
             >
               {rowData.children.map((cellData, cellIndex) => (
                 <td key={cellIndex} className="border border-black p-2">
