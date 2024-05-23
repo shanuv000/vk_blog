@@ -56,7 +56,7 @@ function Paragraph({ obj, modifiedText }) {
   };
 
   return (
-    <p className="mb-6  text-gray-800 font-sans text-base md:text-lg lg:text-xl leading-loose lg:my-10">
+    <p className="mb-6  text-gray-800 font-sans text-base md:text-lg lg:text-xl lg:leading-8 lg:my-9">
       {(obj.children && obj.children.map(renderTextItem)) ||
         (modifiedText && modifiedText.map(renderTextItem)) || (
           <div className="text-green-500">Invalid paragraph</div>

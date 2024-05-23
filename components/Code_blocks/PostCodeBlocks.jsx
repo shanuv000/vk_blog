@@ -224,7 +224,10 @@ const renderList = (type, index, obj) => {
   };
 
   return (
-    <ListTag key={index} className={`${listClass} list-inside mb-6 pl-6 `}>
+    <ListTag
+      key={index}
+      className={`${listClass} list-inside mb-6 pl-6 lg:leading-8`}
+    >
       {obj.children.map((listItem, i) => (
         <li
           key={i}
