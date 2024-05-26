@@ -1,83 +1,96 @@
 import React, { useState } from "react";
 import Footer from "../components/footer/Footer";
 import Link from "next/link";
-const about = () => {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faClipboard } from "@fortawesome/free-solid-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons"; // Import the Twitter icon
+
+const About = () => {
   const [showEmail, setShowEmail] = useState(false);
+
   return (
-    <section className="bg-white dark:text-coolGray-100">
+    <section className="bg-white dark:bg-gray-900 dark:text-gray-100">
       <div className="container mx-auto flex flex-col items-center px-4 py-16 text-center md:py-32 md:px-10 lg:px-32 xl:max-w-3xl">
         <h1 className="text-4xl font-bold leading-none sm:text-5xl">
-          Welcome To <span className="dark:text-violet-400"> key2success</span>
+          Welcome To{" "}
+          <span className="text-indigo-500 dark:text-indigo-400">
+            OnlyBlogs
+          </span>
         </h1>
-        <p className="px-8 mt-8 mb-6 text-lg">
-          key2success is a Professional blog Platform. Here we will provide you
-          only interesting content, which you will like very much. We're
-          dedicated to providing you the best of blog, with a focus on
-          dependability and reading blogs. We're working to turn our passion for
-          blog into a booming online website. We hope you enjoy our blog as much
-          as we enjoy offering them to you.
+
+        <p className="px-8 mt-8 mb-6 text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+          OnlyBlogs is a professional blog platform. Here we provide you with
+          interesting content that you will like very much. We're dedicated to
+          offering you the best of blogs, with a focus on dependability and
+          quality. We're working to turn our passion for blogging into a booming
+          online website. We hope you enjoy our blog as much as we enjoy
+          offering it to you.
         </p>
-        <p className="px-8  mb-5 text-lg">
-          I will keep posting more important posts on my Website for all of you.
+
+        <p className="px-8 mb-8 text-lg text-gray-700 dark:text-gray-300">
+          We will keep posting important content on our website for all of you.
           Please give your support and love.
-        </p>{" "}
-        <p className="px-8 text-lg bold mb-4 text-[22px] font-bold">
-          Thanks For Visiting Our Site
         </p>
-        <div className="flex flex-wrap justify-center">
+
+        <p className="text-xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+          Thanks for visiting our site!
+        </p>
+
+        <div className="flex space-x-4">
           <button
             onClick={() => setShowEmail(!showEmail)}
-            className=" px-8 py-3 flex flex-wrap m-2 text-lg font-semibold rounded dark:bg-violet-400 dark:text-blue-900 hover:bg-black"
+            className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-indigo-500 text-white hover:bg-indigo-600 transition duration-150 ease-in-out"
           >
-            <img
-              //   className="mr-4"
-              width={"40"}
-              className="transition duration-150 ease-out hover:ease-in"
-              src="https://img.icons8.com/fluency/48/000000/email-open.png"
-            />
+            <FontAwesomeIcon icon={faEnvelope} className="h-6 w-6" />
           </button>
+
           {showEmail && (
-            <>
-              <p
+            <div className="flex space-x-4">
+              <button
                 onClick={() => window.open("mailto:shanuvatika@gmail.com")}
-                className="dark:bg-violet-400 text-gray-900 px-8 py-3 m-2 text-lg font-semibold cursor-pointer hover:bg-black hover:text-blue-400 rounded hover:rounded-lg"
+                className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-indigo-500 text-white hover:bg-indigo-600 transition duration-150 ease-in-out"
               >
                 Send Mail
-              </p>
-              <button
-                className=" px-8 py-3 flex flex-wrap m-2 text-lg font-semibold rounded dark:bg-violet-400 dark:text-blue-900 hover:bg-black"
-                onClick={() => {
-                  navigator.clipboard.writeText("shanuvatika@gmail.com");
-                }}
-              >
-                <img
-                  width={"25"}
-                  src="https://img.icons8.com/color/48/000000/copy--v2.png"
-                />
               </button>
-            </>
+              <button
+                className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-indigo-500 text-white hover:bg-indigo-600 transition duration-150 ease-in-out"
+                onClick={() =>
+                  navigator.clipboard.writeText("shanuvatika@gmail.com")
+                }
+              >
+                <FontAwesomeIcon icon={faClipboard} className="h-6 w-6" />
+              </button>
+            </div>
           )}
-          {/* <button className="px-8 py-3 m-2 text-lg border rounded dark:text-coolGray-50 dark:border-coolGray-700">
-            Learn more
-          </button> */}
+
+          <a
+            href="https://x.com/Onlyblogs_"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-indigo-500 text-white hover:bg-indigo-600 transition duration-150 ease-in-out"
+          >
+            <FontAwesomeIcon icon={faTwitter} className="h-6 w-6" />{" "}
+            {/* Use the Twitter icon */}
+          </a>
         </div>
       </div>
 
-      <section className="py-6 dark:bg-slate-600	 dark:text-white">
+      <section className="py-6 bg-gray-800 dark:bg-gray-700">
         <div className="container mx-auto flex flex-col items-center justify-center p-4 space-y-8 md:p-10 lg:space-y-0 lg:flex-row lg:justify-between">
-          <h1 className=" text-3xl font-semibold leading-tight text-center lg:text-left">
-            If you Got any Queries?
+          <h1 className="text-3xl font-semibold leading-tight text-center text-gray-200 lg:text-left">
+            Got any queries?
           </h1>
-          <Link href="contact" className="cursor-pointer">
-            <div className="px-8 py-3 text-lg font-semibold cursor-pointer rounded dark:bg-violet-400 dark:text-white">
+          <Link href="/contact">
+            <button className="px-8 py-3 text-lg font-semibold rounded bg-indigo-500 text-white transition duration-150 ease-in-out hover:bg-indigo-600">
               Contact
-            </div>
+            </button>
           </Link>
         </div>
       </section>
+
       <Footer />
     </section>
   );
 };
 
-export default about;
+export default About;

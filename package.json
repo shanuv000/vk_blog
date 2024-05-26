@@ -7,6 +7,12 @@
     "sitemap": "next-sitemap --config next-sitemap.config.js"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.2",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-brands-svg-icons": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@next/third-parties": "^14.2.3",
     "axios": "^1.6.8",
     "dotenv": "^11.0.0",
