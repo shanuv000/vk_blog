@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Footer from "../components/footer/Footer";
+// import Footer from "../components/footer/Footer";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faClipboard } from "@fortawesome/free-solid-svg-icons";
@@ -87,8 +87,6 @@ const About = () => {
           </Link>
         </div>
       </section>
-
-      <Footer />
     </section>
   );
 };

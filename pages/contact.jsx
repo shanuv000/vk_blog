@@ -18,8 +18,8 @@ const Contact = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-r from-yellow-500 via-red-500 to-green-500 min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-lg bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-transparent min-h-screen flex items-center justify-center">
+        <div className="w-full max-w-lg bg-white bg-transparent shadow-lg rounded-lg p-8">
           <h2 className="text-3xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-8">
             Get in Touch
           </h2>
@@ -36,7 +36,7 @@ const Contact = () => {
                   id="first-name"
                   type="text"
                   placeholder="Enter your first name"
-                  className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out"
+                  className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-black-500 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required
@@ -53,7 +53,7 @@ const Contact = () => {
                   id="last-name"
                   type="text"
                   placeholder="Enter your last name"
-                  className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out"
+                  className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-black-500 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required
@@ -72,7 +72,7 @@ const Contact = () => {
                 id="email"
                 type="email"
                 placeholder="Enter your email address"
-                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out"
+                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-black-500 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -88,7 +88,7 @@ const Contact = () => {
               </label>
               <textarea
                 id="message"
-                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out h-48 resize-none"
+                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-black-500 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out h-48 resize-none"
                 placeholder="Enter your message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -107,7 +107,7 @@ const Contact = () => {
           </form>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

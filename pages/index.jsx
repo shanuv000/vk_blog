@@ -1,7 +1,7 @@
 import { FeaturedPosts } from "../sections/index";
 import { PostCard, Categories, PostWidget } from "../components";
 import { getPosts } from "../services";
-import Footer from "../components/footer/Footer";
+// import Footer from "../components/footer/Footer";
 import { useEffect, useState } from "react";
 
 // Fisher-Yates shuffle algorithm
@@ -37,7 +37,7 @@ export default function Home({ posts }) {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
