@@ -1,11 +1,12 @@
 "use client";
 import { TwitterTweetEmbed } from "react-twitter-embed";
-
+import { motion } from "framer-motion";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
 import React from "react";
 import NestedTable from "./Nested_Table";
 import Paragraph from "./Paragraph";
+
 export const getContentFragment = (index, text, obj, type) => {
   let modifiedText = text;
 
@@ -25,7 +26,7 @@ export const getContentFragment = (index, text, obj, type) => {
       modifiedText = (
         <pre
           key={index}
-          className="bg-gray-300 text-gray-800 font-mono p-4 rounded-md overflow-x-auto "
+          className="bg-gray-300 text-gray-800 font-mono p-4 rounded-md overflow-x-auto"
         >
           <code>{text}</code>
         </pre>
@@ -35,8 +36,8 @@ export const getContentFragment = (index, text, obj, type) => {
     if (obj.type === "link" || (obj.type === "link" && obj.type === "bold")) {
       modifiedText = (
         <button
-          className="text-red-500   hover:text-blue-500 hover:underline hover:underline-offset-3"
-          react-youtubeName="as	"
+          className="text-red-500 hover:text-blue-500 hover:underline hover:underline-offset-3"
+          react-youtubeName="as"
         >
           <a
             href={obj.href}
@@ -59,57 +60,79 @@ export const getContentFragment = (index, text, obj, type) => {
 
     case "heading-one":
       return (
-        <h1
+        <motion.h1
           key={index}
           className="font-serif text-4xl lg:text-5xl font-bold mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </h1>
+        </motion.h1>
       );
     case "heading-two":
       return (
-        <h1
+        <motion.h1
           key={index}
           className="font-serif text-3xl lg:text-4xl font-medium mb-6"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </h1>
+        </motion.h1>
       );
     case "heading-three":
       return (
-        <h3 key={index} className="font-serif text-2xl lg:text-3xl mb-4">
+        <motion.h3
+          key={index}
+          className="font-serif text-2xl lg:text-3xl mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </h3>
+        </motion.h3>
       );
     case "paragraph":
       return <Paragraph obj={obj} modifiedText={modifiedText} />;
 
     case "heading-four":
       return (
-        <h4
+        <motion.h4
           key={index}
           className="font-serif lg:font-sans text-xl font-semibold mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </h4>
+        </motion.h4>
       );
     case "image":
       return (
-        <LazyLoadImage
-          alt={"images"}
-          className="rounded-lg my-4  shadow-lg  "
-          height={obj.height}
-          width={obj.width}
-          src={obj.src} // use normal <img> attributes as props
-        />
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <LazyLoadImage
+            alt={"images"}
+            className="rounded-lg my-4 shadow-lg"
+            height={obj.height}
+            width={obj.width}
+            src={obj.src} // use normal <img> attributes as props
+          />
+        </motion.div>
       );
     case "iframe":
       return (
@@ -127,7 +150,7 @@ export const getContentFragment = (index, text, obj, type) => {
             <div className="relative pt-16/9">
               {console.log(obj.url)}
               <ReactPlayer
-                className=" w-full h-full rounded-lg"
+                className="w-full h-full rounded-lg"
                 url={obj.url}
                 width="100%"
                 height="100%"
@@ -156,7 +179,7 @@ export const getContentFragment = (index, text, obj, type) => {
             .map((item, i) =>
               item.charAt(0) === "1" ? (
                 <div className="w-full my-4 overflow-hidden" key={i}>
-                  <TwitterTweetEmbed tweetId={`${item}`} className="w-full " />
+                  <TwitterTweetEmbed tweetId={`${item}`} className="w-full" />
                 </div>
               ) : (
                 <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-3">
@@ -175,7 +198,6 @@ export const getContentFragment = (index, text, obj, type) => {
 };
 
 //Youtube validator
-
 function isYoutubeUrl(url) {
   const youtubeRegex =
     /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
@@ -205,7 +227,7 @@ const renderList = (type, index, obj) => {
           href={node.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="underline decoration-sky-400 decoration-2 underline-offset-8		   hover:text-sky-600 hover:underline  transition duration-200 "
+          className="underline decoration-sky-400 decoration-2 underline-offset-8 hover:text-sky-600 hover:underline transition duration-200"
         >
           {node.children.map(renderText)}
         </a>

@@ -1,16 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import moment from "moment";
-
+import { motion, useScroll, useSpring } from "framer-motion";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Social_post_details";
-
-// import { GoogleAnalytics } from "@next/third-parties/google";
 import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
-// import { fetchData } from "./ExtractIPs/ipfunc";
 import { useData } from "../store/HandleApiContext";
+
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
-
   const hasFetchedData = useRef(false);
 
   // Get data from Context
@@ -19,29 +16,45 @@ const PostDetail = ({ post }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data != null) {
       fetchData();
-
-      // hasFetchedData.current = true; // <-- Mark as fetched
     }
   }, []);
 
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
   return (
     <>
-      <div className="bg-white  shadow-lg rounded-lg lg:p-6 pb-12 mb-8">
+      <motion.div
+        className="bg-white shadow-lg rounded-lg lg:p-6 pb-12 mb-8"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-2 bg-orange-500 origin-left"
+          style={{ scaleX }}
+        />
         {/* Seo */}
         <HeadPostDetails post={post} />
-        {/* <GoogleAnalytics gaId="G-LW10VJQH6L" /> */}
         {/* Seo */}
 
-        <div className="relative overflow-hidden  shadow-md mb-6 ">
-          <img
+        <div className="relative overflow-hidden shadow-md mb-6">
+          <motion.img
             src={post.featuredImage.url}
             alt={post.title}
-            className=" object-top h-full w-full rounded-t-lg"
+            className="object-top h-full w-full rounded-t-lg"
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
           />
         </div>
-        <div className="px-4 lg:px-0 ">
-          <div className="flex items-center mb-8 w-full ">
-            <div className="flex items-center  mb-4 lg:mb-0 w-full lg:w-auto mr-8 ">
+        <div className="px-4 lg:px-0">
+          <div className="flex items-center mb-8 w-full">
+            <div className="flex items-center mb-4 lg:mb-0 w-full lg:w-auto mr-8">
               <img
                 src={post.author.photo.url}
                 alt={post.author.name}
@@ -49,12 +62,12 @@ const PostDetail = ({ post }) => {
                 width={30}
                 className="align-middle rounded-full"
               />
-              <p className="inline align-middle text-gray-700 ml-2  text-lg	">
+              <p className="inline align-middle text-gray-700 ml-2 text-lg">
                 {post.author.name}
               </p>
             </div>
 
-            <div className="font-medium text-gray-700 lg:basis-1/4 ">
+            <div className="font-medium text-gray-700 lg:basis-1/4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 inline mr-2 text-pink-500"
@@ -75,10 +88,7 @@ const PostDetail = ({ post }) => {
           {/*  */}
           <Navbar_post_details post={post} />
 
-          <h1
-            className="mb-8 font-serif capitalize	 md:font-mono			 text-2xl lg:text-4xl font-semibold	 md:font-extrabold head-colour	leading-tight lg:leading-snug  			
-          "
-          >
+          <h1 className="mb-8 font-serif capitalize md:font-mono text-2xl lg:text-4xl font-semibold md:font-extrabold head-colour leading-tight lg:leading-snug">
             {post.title}
           </h1>
 
@@ -90,7 +100,7 @@ const PostDetail = ({ post }) => {
             return getContentFragment(index, children, typeObj, typeObj.type);
           })}
         </div>
-      </div>
+      </motion.div>
     </>
   );
 };
