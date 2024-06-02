@@ -1,11 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
+ "dev": "next dev",
     "build": "next build",
-  "postbuild": "next-sitemap",
-  "start": "next start",
-    // "sitemap": "next-sitemap --config next-sitemap.config.js"
+    "postbuild": "next-sitemap",
+    "start": "next start"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.2",
