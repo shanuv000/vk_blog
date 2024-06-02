@@ -1,55 +1,63 @@
 "use client";
 import { TwitterTweetEmbed } from "react-twitter-embed";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import NestedTable from "./Nested_Table";
 import Paragraph from "./Paragraph";
+
+// Intersection Observer Hook
+const useInView = (options) => {
+  const ref = useRef(null);
+  const [inView, setInView] = React.useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      options
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [options]);
+
+  return [ref, inView];
+};
 
 export const getContentFragment = (index, text, obj, type) => {
   let modifiedText = text;
 
-  if (obj) {
-    if (obj.bold) {
-      modifiedText = <b key={index}>{text}</b>;
-    }
+  const Heading = ({ children, className, index }) => {
+    const [ref, inView] = useInView({ threshold: 0.1 });
+    const controls = useAnimation();
 
-    if (obj.italic) {
-      modifiedText = <em key={index}>{text}</em>;
-    }
+    useEffect(() => {
+      if (inView) {
+        controls.start({ opacity: 1, y: 0 });
+      }
+    }, [controls, inView]);
 
-    if (obj.underline) {
-      modifiedText = <u key={index}>{text}</u>;
-    }
-    if (obj.type === "code-block") {
-      modifiedText = (
-        <pre
-          key={index}
-          className="bg-gray-300 text-gray-800 font-mono p-4 rounded-md overflow-x-auto"
-        >
-          <code>{text}</code>
-        </pre>
-      );
-    }
-
-    if (obj.type === "link" || (obj.type === "link" && obj.type === "bold")) {
-      modifiedText = (
-        <button
-          className="text-red-500 hover:text-blue-500 hover:underline hover:underline-offset-3"
-          react-youtubeName="as"
-        >
-          <a
-            href={obj.href}
-            target="_blank"
-            className="text-red-500 hover:text-blue-500 hover:underline underline-offset-auto"
-          >
-            {obj.children[0].text}
-          </a>
-        </button>
-      );
-    }
-  }
+    return (
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0, y: -20 }}
+        animate={controls}
+        transition={{ duration: 0.5 }}
+        className={className}
+        key={index}
+      >
+        {children}
+      </motion.div>
+    );
+  };
 
   switch (type) {
     case "bulleted-list":
@@ -60,62 +68,47 @@ export const getContentFragment = (index, text, obj, type) => {
 
     case "heading-one":
       return (
-        <motion.h1
-          key={index}
+        <Heading
+          index={index}
           className="font-serif text-4xl lg:text-5xl font-bold mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </motion.h1>
+        </Heading>
       );
     case "heading-two":
       return (
-        <motion.h1
-          key={index}
+        <Heading
+          index={index}
           className="font-serif text-3xl lg:text-4xl font-medium mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </motion.h1>
+        </Heading>
       );
     case "heading-three":
       return (
-        <motion.h3
-          key={index}
-          className="font-serif text-2xl lg:text-3xl mb-4"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <Heading index={index} className="font-serif text-2xl lg:text-3xl mb-4">
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </motion.h3>
+        </Heading>
       );
     case "paragraph":
       return <Paragraph obj={obj} modifiedText={modifiedText} />;
 
     case "heading-four":
       return (
-        <motion.h4
-          key={index}
+        <Heading
+          index={index}
           className="font-serif lg:font-sans text-xl font-semibold mb-4"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
-        </motion.h4>
+        </Heading>
       );
     case "image":
       return (

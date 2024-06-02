@@ -1,13 +1,54 @@
-import React from "react";
+"use client";
+import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { motion, useAnimation } from "framer-motion";
+
+// Intersection Observer Hook
+const useInView = (options) => {
+  const ref = useRef(null);
+  const [inView, setInView] = React.useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      options
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [options]);
+
+  return [ref, inView];
+};
 
 const NavbarPostDetails = ({ post: { title, slug } }) => {
   const rootUrl = "https://onlyblog.vercel.app";
   const postUrl = `${rootUrl}/post/${slug}`;
+  const [ref, inView] = useInView({ threshold: 0.1 });
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (inView) {
+      controls.start({ opacity: 1, y: 0 });
+    }
+  }, [controls, inView]);
 
   return (
-    <nav className="flex justify-center space-x-4 lg:mb-2 my-4">
+    <motion.nav
+      ref={ref}
+      initial={{ opacity: 0, y: -20 }}
+      animate={controls}
+      transition={{ duration: 0.5 }}
+      className="flex justify-center space-x-4 lg:mb-2 my-4"
+    >
       <a
         target="_blank"
         rel="noopener noreferrer"
@@ -65,7 +106,7 @@ const NavbarPostDetails = ({ post: { title, slug } }) => {
       >
         <LazyLoadImage src="/telegram.svg" width={45} alt="Share on Telegram" />
       </a>
-    </nav>
+    </motion.nav>
   );
 };
 
