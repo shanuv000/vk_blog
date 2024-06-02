@@ -1,6 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-function Paragraph({ obj, modifiedText }) {
+import "react-lazy-load-image-component/src/effects/blur.css";
+import errorImg from "../../public/error_image/11104.jpg";
+const FallbackImage = errorImg; // Set your fallback image path
+
+const ImageRenderer = ({ item, index }) => {
+  const [src, setSrc] = useState(item.href);
+
+  const handleError = (event) => {
+    console.error("Image failed to load:", event.target.src);
+    setSrc(FallbackImage);
+  };
+
+  return (
+    <LazyLoadImage
+      key={index}
+      src={src}
+      className="rounded-lg my-4 shadow-lg"
+      alt={item.children[0]?.text || "image"}
+      onError={handleError}
+    />
+  );
+};
+
+const Paragraph = ({ obj, modifiedText }) => {
   const renderTextItem = (item, index) => {
     if (item.type === "link") {
       // Regular expression to match common image extensions
@@ -8,15 +31,8 @@ function Paragraph({ obj, modifiedText }) {
 
       // Check if the link ends with an image extension
       if (imageExtensions.test(item.href)) {
-        // Render images
-        return (
-          <LazyLoadImage
-            key={index}
-            src={item.href}
-            className="rounded-lg my-4 shadow-lg"
-            alt={item.children[0]?.text || "image"}
-          />
-        );
+        // Render images using ImageRenderer with error handling
+        return <ImageRenderer key={index} item={item} />;
       } else {
         // Render regular links
         return (
@@ -73,13 +89,13 @@ function Paragraph({ obj, modifiedText }) {
   };
 
   return (
-    <p className="mb-6  text-gray-800 font-sans text-base md:text-lg lg:text-xl leading-relaxed lg:leading-8 lg:my-9  ">
+    <p className="mb-6 text-gray-800 font-sans text-base md:text-lg lg:text-xl leading-relaxed lg:leading-8 lg:my-9">
       {(obj.children && obj.children.map(renderTextItem)) ||
         (modifiedText && modifiedText.map(renderTextItem)) || (
           <div className="text-green-500">Invalid paragraph</div>
         )}
     </p>
   );
-}
+};
 
 export default Paragraph;
