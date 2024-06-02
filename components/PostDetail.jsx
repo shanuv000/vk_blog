@@ -8,7 +8,7 @@ import { useData } from "../store/HandleApiContext";
 
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
-  const hasFetchedData = useRef(true);
+  const hasFetchedData = useRef(false);
 
   // Get data from Context
   hasFetchedData.current == true && console.log(post);
