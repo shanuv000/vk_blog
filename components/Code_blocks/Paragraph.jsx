@@ -1,19 +1,36 @@
 import React from "react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 function Paragraph({ obj, modifiedText }) {
   const renderTextItem = (item, index) => {
     if (item.type === "link") {
-      // Render links
-      return (
-        <a
-          key={index}
-          href={item.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline decoration-sky-400 decoration-2 underline-offset-8 hover:text-sky-600 hover:underline transition duration-200"
-        >
-          {item.children[0]?.text || "link"}
-        </a>
-      );
+      // Regular expression to match common image extensions
+      const imageExtensions = /\.(webp|jpg|jpeg|png)$/i;
+
+      // Check if the link ends with an image extension
+      if (imageExtensions.test(item.href)) {
+        // Render images
+        return (
+          <LazyLoadImage
+            key={index}
+            src={item.href}
+            className="rounded-lg my-4 shadow-lg"
+            alt={item.children[0]?.text || "image"}
+          />
+        );
+      } else {
+        // Render regular links
+        return (
+          <a
+            key={index}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-sky-400 decoration-2 underline-offset-8 hover:text-sky-600 hover:underline transition duration-200"
+          >
+            {item.children[0]?.text || "link"}
+          </a>
+        );
+      }
     } else if (item.bold) {
       // Render bold text
       return (
