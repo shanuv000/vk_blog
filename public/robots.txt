@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://onlyblog.vercel.app
+
+# Sitemaps
+Sitemap: https://onlyblog.vercel.app/sitemap.xml

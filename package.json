@@ -3,8 +3,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "sitemap": "next-sitemap --config next-sitemap.config.js"
+  "postbuild": "next-sitemap",
+  "start": "next start",
+    // "sitemap": "next-sitemap --config next-sitemap.config.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.2",
@@ -18,13 +19,14 @@
     "dotenv": "^11.0.0",
     "firebase": "^10.11.1",
     "framer-motion": "^11.2.10",
+    "google-news-sitemap": "^1.0.10",
     "graphql": "^16.2.0",
     "graphql-request": "^3.7.0",
     "html-react-parser": "^1.4.5",
     "moment": "^2.29.1",
     "next": "latest",
     "next-seo": "^4.29.0",
-    "next-sitemap": "^2.5.7",
+    "next-sitemap": "^2.5.28",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-lazy-load-image-component": "^1.5.1",
