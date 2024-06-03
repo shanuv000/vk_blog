@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import errorImg from "../../public/error_image/11104.jpg";
+
 const FallbackImage = errorImg; // Set your fallback image path
 
 const ImageRenderer = ({ item, index }) => {

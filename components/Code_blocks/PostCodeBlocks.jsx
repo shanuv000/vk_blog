@@ -1,6 +1,5 @@
 "use client";
 import { TwitterTweetEmbed } from "react-twitter-embed";
-import { motion, useAnimation } from "framer-motion";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/lazy";
 import React, { useEffect, useRef } from "react";
@@ -37,25 +36,11 @@ export const getContentFragment = (index, text, obj, type) => {
 
   const Heading = ({ children, className, index }) => {
     const [ref, inView] = useInView({ threshold: 0.1 });
-    const controls = useAnimation();
-
-    useEffect(() => {
-      if (inView) {
-        controls.start({ opacity: 1, y: 0 });
-      }
-    }, [controls, inView]);
 
     return (
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: -20 }}
-        animate={controls}
-        transition={{ duration: 0.5 }}
-        className={className}
-        key={index}
-      >
+      <div ref={ref} className={className} key={index}>
         {children}
-      </motion.div>
+      </div>
     );
   };
 
@@ -112,12 +97,7 @@ export const getContentFragment = (index, text, obj, type) => {
       );
     case "image":
       return (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div key={index}>
           <LazyLoadImage
             alt={"images"}
             className="rounded-lg my-4 shadow-lg"
@@ -125,7 +105,7 @@ export const getContentFragment = (index, text, obj, type) => {
             width={obj.width}
             src={obj.src} // use normal <img> attributes as props
           />
-        </motion.div>
+        </div>
       );
     case "iframe":
       return (
