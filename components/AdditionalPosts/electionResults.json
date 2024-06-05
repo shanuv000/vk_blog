@@ -1,0 +1,43 @@
+{
+  "election_results_2024": {
+    "summary": {
+      "total_seats": 543,
+      "majority_needed": 272
+    },
+    "parties": {
+      "NDA": {
+        "leader": "Bharatiya Janata Party (BJP)",
+        "seats_won": 296,
+        "details": {
+          "BJP": 282,
+          "Shiv Sena": 10,
+          "JD(U)": 4
+        }
+      },
+      "INDIA": {
+        "leader": "Indian National Congress",
+        "seats_won": 230,
+        "details": {
+          "Congress": 204,
+          "DMK": 15,
+          "NCP": 6,
+          "RJD": 5
+        }
+      },
+      "regional_parties": {
+        "TMC": {
+          "seats_won": 30,
+          "leader": "Mamata Banerjee"
+        },
+        "AAP": {
+          "seats_won": 7,
+          "leader": "Arvind Kejriwal"
+        },
+        "TRS": {
+          "seats_won": 9,
+          "leader": "K. Chandrashekar Rao"
+        }
+      }
+    }
+  }
+}

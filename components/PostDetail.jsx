@@ -5,7 +5,7 @@ import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Social_post_details";
 import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
 import { useData } from "../store/HandleApiContext";
-
+import { Testing } from "./AdditionalPosts/PostsAdditions";
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
   const hasFetchedData = useRef(false);
@@ -91,7 +91,7 @@ const PostDetail = ({ post }) => {
           <h1 className="mb-8 font-serif capitalize md:font-mono text-2xl lg:text-4xl font-semibold md:font-extrabold head-colour leading-tight lg:leading-snug">
             {post.title}
           </h1>
-
+          <Testing slug={post.slug} />
           {post.content.raw.children.map((typeObj, index) => {
             const children = typeObj.children.map((item, itemindex) =>
               getContentFragment(itemindex, item.text, item)

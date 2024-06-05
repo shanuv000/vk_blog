@@ -1,4 +1,5 @@
 // Intersection Observer Hook
+"use client";
 const useInView = (options) => {
   const ref = useRef(null);
   const [inView, setInView] = React.useState(false);
