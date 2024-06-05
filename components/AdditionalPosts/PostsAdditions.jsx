@@ -3,23 +3,21 @@
 import Charts from "./ElectionResultsChart";
 import MatchTable from "./MatchTable";
 import electionResults from "./electionResults.json";
+export const transformData = (jsonData) => {
+  const { NDA, INDIA, regional_parties } =
+    jsonData.election_results_2024.parties;
 
+  const results = [
+    { candidate: "NDA", votes: NDA.seats_won },
+    { candidate: "INDIA", votes: INDIA.seats_won },
+    { candidate: "TMC", votes: regional_parties.TMC.seats_won },
+    { candidate: "AAP", votes: regional_parties.AAP.seats_won },
+    { candidate: "TRS", votes: regional_parties.TRS.seats_won },
+  ];
+
+  return results;
+};
 export const Testing = ({ slug }) => {
-  const transformData = (jsonData) => {
-    const { NDA, INDIA, regional_parties } =
-      jsonData.election_results_2024.parties;
-
-    const results = [
-      { candidate: "NDA", votes: NDA.seats_won },
-      { candidate: "INDIA", votes: INDIA.seats_won },
-      { candidate: "TMC", votes: regional_parties.TMC.seats_won },
-      { candidate: "AAP", votes: regional_parties.AAP.seats_won },
-      { candidate: "TRS", votes: regional_parties.TRS.seats_won },
-    ];
-
-    return results;
-  };
-
   const data = transformData(electionResults);
 
   let content;
