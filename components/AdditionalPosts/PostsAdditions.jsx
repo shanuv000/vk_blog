@@ -1,6 +1,7 @@
 // Testing.js
 "use client";
 import Charts from "./ElectionResultsChart";
+import MatchTable from "./MatchTable";
 import electionResults from "./electionResults.json";
 
 export const Testing = ({ slug }) => {
@@ -24,12 +25,20 @@ export const Testing = ({ slug }) => {
   let content;
   switch (slug) {
     case "indian-election-2024-key-highlights-political-shifts":
+    case "narendra-modi-nomination-varanasi-symbolism-strategy":
       content = (
         <div>
-          <h1 className="text-center mb-3">Election Results 2024</h1>
+          <h1 className="text-2xl font-bold text-center mb-3">
+            Election Results 2024
+          </h1>
           <Charts data={data} />
         </div>
       );
+      break;
+    case "india-t20-world-cup-pakistan-new-york":
+    case "kavya-maran-emotional-speech-ipl-2024":
+    case "ind-vs-sl-shami-sitting-at-home-baffles-me-ravi-shastri-after-indias-asia-cup-loss-vs-sri-lanka-3322380":
+      content = <MatchTable />;
       break;
     default:
       content = null;

@@ -71,7 +71,7 @@ const Charts = ({ data }) => {
     },
   };
 
-  return <Doughnut data={chartData} options={options} />;
+  return <Doughnut data={chartData} options={options} className="mb-4" />;
 };
 
 export default Charts;
