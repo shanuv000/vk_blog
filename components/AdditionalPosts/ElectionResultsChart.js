@@ -1,12 +1,39 @@
-// ElectionResultsChart.js
 "use client";
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Charts = ({ data }) => {
+  const chartRef = useRef(null);
+  const [isChartVisible, setIsChartVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setIsChartVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+
+    if (chartRef.current) {
+      observer.observe(chartRef.current);
+    }
+
+    return () => {
+      if (chartRef.current) {
+        observer.unobserve(chartRef.current);
+      }
+    };
+  }, []);
+
   const chartData = {
     labels: data.map((result) => result.candidate),
     datasets: [
@@ -71,7 +98,11 @@ const Charts = ({ data }) => {
     },
   };
 
-  return <Doughnut data={chartData} options={options} className="mb-4" />;
+  return (
+    <div ref={chartRef} className="mb-4">
+      {isChartVisible && <Doughnut data={chartData} options={options} />}
+    </div>
+  );
 };
 
 export default Charts;
