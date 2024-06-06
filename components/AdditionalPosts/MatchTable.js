@@ -34,6 +34,16 @@ const MatchTable = () => {
   };
 
   const rowsToShow = showFullTable ? schedule : schedule.slice(0, 4);
+  const getSeriesFormClass = (form) => {
+    switch (form) {
+      case "W":
+        return "text-green-600";
+      case "L":
+        return "text-red-500";
+      default:
+        return "text-gray-600"; // Default class
+    }
+  };
 
   if (error) {
     return <div className="text-red-500 text-center mt-4">{error}</div>;
@@ -82,7 +92,13 @@ const MatchTable = () => {
               <td className="py-2 px-2 sm:px-4 border-b">{team.noResult}</td>
               <td className="py-2 px-2 sm:px-4 border-b">{team.points}</td>
               <td className="py-2 px-2 sm:px-4 border-b">{team.netRunRate}</td>
-              <td className="py-2 px-2 sm:px-4 border-b">{team.seriesForm}</td>
+              <td
+                className={`py-2 px-2 sm:px-4 border-b ${getSeriesFormClass(
+                  team.seriesForm
+                )}`}
+              >
+                {team.seriesForm}
+              </td>
               <td className="py-2 px-2 sm:px-4 border-b">
                 {team.nextMatch?.nextMatches || "N/A"}
               </td>
