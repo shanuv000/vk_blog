@@ -75,7 +75,7 @@ const LiveMatch = () => {
         <p className="text-red-200">{liveScoresError}</p>
       ) : filteredScores.length === 0 ? (
         <p className="text-lg font-semibold text-yellow-200">
-          No matches available for the selected tournament.
+          No matches available
         </p>
       ) : (
         filteredScores.map((match, index) => (
@@ -87,8 +87,14 @@ const LiveMatch = () => {
               {match.title}
             </h4>
             <h2 className="text-base font-bold text-red-500 mb-2">
-              {match.playingTeam} {match.liveScore}
+              {match.playingTeamBat} {match.liveScorebat}
             </h2>
+            {match.liveScoreball != "N/A" ? (
+              <h2 className="text-sm font-semibold text-gray-500 mb-2">
+                {match.playingTeamBall} {match.liveScoreball}
+              </h2>
+            ) : null}
+
             <p className="text-sm sm:text-md font-medium text-gray-700 mb-1">
               {match.matchDetails}
             </p>
