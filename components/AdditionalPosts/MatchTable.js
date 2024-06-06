@@ -3,24 +3,39 @@ import React, { useEffect, useState } from "react";
 
 const MatchTable = () => {
   const [schedule, setSchedule] = useState([]);
+  const [showFullTable, setShowFullTable] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/schedule")
-      .then((response) => response.json()) // Directly parse the JSON response
+    fetch("https://api-sync.vercel.app/api/schedule")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
         if (data.success) {
-          // Check if the request was successful
           const sortedData = data.data.sort(
             (a, b) => b.netRunRate - a.netRunRate
-          ); // Access data within the 'data' property
-          console.log("cricket data", sortedData);
+          );
           setSchedule(sortedData);
         } else {
-          console.error("API request failed:", data.error); // Handle errors from the API
+          setError("API request failed: " + data.error);
         }
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((error) => setError("Error fetching data: " + error.message));
   }, []);
+
+  const handleShowMore = () => {
+    setShowFullTable(true);
+  };
+
+  const rowsToShow = showFullTable ? schedule : schedule.slice(0, 4);
+
+  if (error) {
+    return <div className="text-red-500 text-center mt-4">{error}</div>;
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -40,7 +55,7 @@ const MatchTable = () => {
           </tr>
         </thead>
         <tbody>
-          {schedule.map((team, index) => (
+          {rowsToShow.map((team, index) => (
             <tr key={index}>
               <td className="py-2 px-4 border-b">{team.team}</td>
               <td className="py-2 px-4 border-b">{team.matches}</td>
@@ -50,14 +65,22 @@ const MatchTable = () => {
               <td className="py-2 px-4 border-b">{team.noResult}</td>
               <td className="py-2 px-4 border-b">{team.points}</td>
               <td className="py-2 px-4 border-b">{team.netRunRate}</td>
-              <td className="py-2 px-4 border-b">{team.seriesForm}</td>{" "}
+              <td className="py-2 px-4 border-b">{team.seriesForm}</td>
               <td className="py-2 px-4 border-b">
-                {team.nextMatch.nextMatches}
+                {team.nextMatch?.nextMatches || "N/A"}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {!showFullTable && schedule.length > 4 && (
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
+          onClick={handleShowMore}
+        >
+          Show All
+        </button>
+      )}
     </div>
   );
 };
