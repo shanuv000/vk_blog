@@ -1,10 +1,13 @@
+// src/Header.js
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getCategories } from "../services";
+import Modal from "./Modal";
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     getCategories().then((newCategories) => {
@@ -39,9 +42,9 @@ const Header = () => {
   };
 
   return (
-    <div className="container mx-auto px-10 mb-8">
+    <div className="container mx-auto px-4 sm:px-10 mb-8">
       <motion.div
-        className="border-b w-full inline-block border-blue-400 py-8"
+        className="border-b w-full inline-block border-blue-400 py-4 sm:py-8"
         initial="hidden"
         animate="visible"
         variants={headerVariants}
@@ -49,7 +52,7 @@ const Header = () => {
         <motion.div className="md:float-left block">
           <Link href="/">
             <motion.span
-              className="cursor-pointer font-bold text-4xl text-white"
+              className="cursor-pointer font-bold text-3xl sm:text-4xl text-white"
               initial="hidden"
               animate="visible"
               variants={logoVariants}
@@ -59,7 +62,7 @@ const Header = () => {
           </Link>
         </motion.div>
         <motion.div
-          className="hidden md:float-left md:contents"
+          className="md:float-left md:contents hidden sm:block"
           initial="hidden"
           animate="visible"
           variants={categoryContainerVariants}
@@ -74,6 +77,14 @@ const Header = () => {
               </motion.span>
             </Link>
           ))}
+          <motion.button
+            className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer"
+            variants={categoryVariants}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Match table
+          </motion.button>
+          <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </motion.div>
       </motion.div>
     </div>
