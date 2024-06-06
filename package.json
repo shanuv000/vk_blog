@@ -33,6 +33,7 @@
     "react-lazy-load-image-component": "^1.5.1",
     "react-multi-carousel": "^2.6.5",
     "react-player": "^2.9.0",
+    "react-spinners": "^0.13.8",
     "react-twitter-embed": "^4.0.4",
     "reading-time": "^1.5.0",
     "sass": "^1.47.0",

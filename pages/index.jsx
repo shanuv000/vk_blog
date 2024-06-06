@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { transformData } from "../components/AdditionalPosts/PostsAdditions";
 import electionResults from "../components/AdditionalPosts/electionResults.json";
 import Charts from "../components/AdditionalPosts/ElectionResultsChart";
+import { ClipLoader } from "react-spinners";
+
 // Fisher-Yates shuffle algorithm
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -23,7 +25,13 @@ export default function Home({ posts }) {
     const shuffled = shuffle(posts);
     setShuffledPosts(shuffled);
   }, [posts]);
-
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+        <ClipLoader color="#007bff" loading={true} size={150} />
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto px-4 md:px-10 mb-8">
       <FeaturedPosts />

@@ -1,11 +1,12 @@
 // src/AdditionalPosts/MatchTable.js
 import React, { useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const MatchTable = () => {
   const [schedule, setSchedule] = useState([]);
   const [showFullTable, setShowFullTable] = useState(false);
   const [error, setError] = useState(null);
-
+  const [loads, setLoads] = useState(true);
   useEffect(() => {
     fetch("https://api-sync.vercel.app/api/schedule")
       .then((response) => {
@@ -23,6 +24,7 @@ const MatchTable = () => {
         } else {
           setError("API request failed: " + data.error);
         }
+        setLoads(false);
       })
       .catch((error) => setError("Error fetching data: " + error.message));
   }, []);
@@ -36,7 +38,13 @@ const MatchTable = () => {
   if (error) {
     return <div className="text-red-500 text-center mt-4">{error}</div>;
   }
-
+  if (loads) {
+    return (
+      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+        <ClipLoader color="#007bff" loading={loads} size={150} />
+      </div>
+    );
+  }
   return (
     <div className="py-4 	overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200 shadow-lg rounded-lg">

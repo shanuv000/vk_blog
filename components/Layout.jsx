@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { Header, Loader } from "./";
+
+import { Header } from "./";
 import { DataProvider } from "../store/HandleApiContext";
 import Footer from "./footer/Footer";
 
 const Layout = ({ children }) => {
   const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    return () => {
-      setLoading(false);
-    };
-  }, []);
-  if (loading) {
-    <Loader />;
-  }
+
   return (
     <>
       <DataProvider>
