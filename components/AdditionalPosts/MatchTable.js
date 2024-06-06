@@ -4,9 +4,13 @@ import { ClipLoader } from "react-spinners";
 
 const MatchTable = () => {
   const [schedule, setSchedule] = useState([]);
+  const [liveScores, setLiveScores] = useState([]);
   const [showFullTable, setShowFullTable] = useState(false);
   const [error, setError] = useState(null);
+  const [scheduleError, setScheduleError] = useState(null);
+  const [liveScoresError, setLiveScoresError] = useState(null);
   const [loads, setLoads] = useState(true);
+
   useEffect(() => {
     fetch("https://api-sync.vercel.app/api/schedule")
       .then((response) => {
@@ -22,11 +26,30 @@ const MatchTable = () => {
           );
           setSchedule(sortedData);
         } else {
-          setError("API request failed: " + data.error);
+          setScheduleError("API request failed: " + data.error);
         }
         setLoads(false);
       })
-      .catch((error) => setError("Error fetching data: " + error.message));
+      .catch((error) => {
+        setScheduleError("Error fetching schedule: " + error.message);
+        setLoads(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("https://api-sync.vercel.app/api/live-scores")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setLiveScores(data);
+      })
+      .catch((error) => {
+        setLiveScoresError("Error fetching live scores: " + error.message);
+      });
   }, []);
 
   const handleShowMore = () => {
@@ -45,8 +68,12 @@ const MatchTable = () => {
     }
   };
 
-  if (error) {
-    return <div className="text-red-500 text-center mt-4">{error}</div>;
+  if (error || scheduleError || liveScoresError) {
+    return (
+      <div className="text-red-500 text-center mt-4">
+        {error || scheduleError || liveScoresError}
+      </div>
+    );
   }
   if (loads) {
     return (
@@ -55,8 +82,19 @@ const MatchTable = () => {
       </div>
     );
   }
+
   return (
-    <div className="py-4 	overflow-x-auto">
+    <div className="py-4 overflow-x-auto">
+      <div className="mb-4">
+        {liveScores.map((match, index) => (
+          <div key={index} className="bg-white p-4 shadow-md rounded-md mb-2">
+            <h3 className="text-lg font-semibold text-indigo-700">
+              {match.title}
+            </h3>
+            <p className="text-gray-700">{match.liveScore}</p>
+          </div>
+        ))}
+      </div>
       <table className="min-w-full bg-white border border-gray-200 shadow-lg rounded-lg">
         <thead className="bg-gradient-to-b from-indigo-500 to-blue-600 text-white">
           <tr>
