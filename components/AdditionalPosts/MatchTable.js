@@ -52,6 +52,8 @@ const MatchTable = () => {
             <th className="py-2 px-2 sm:px-4 border-b">Net Run Rate</th>
             <th className="py-2 px-2 sm:px-4 border-b">Series Form</th>
             <th className="py-2 px-2 sm:px-4 border-b">Next Match</th>
+            <th className="py-2 px-2 sm:px-4 border-b">for</th>
+            <th className="py-2 px-2 sm:px-4 border-b">Against</th>
           </tr>
         </thead>
         <tbody>
@@ -75,6 +77,12 @@ const MatchTable = () => {
               <td className="py-2 px-2 sm:px-4 border-b">{team.seriesForm}</td>
               <td className="py-2 px-2 sm:px-4 border-b">
                 {team.nextMatch?.nextMatches || "N/A"}
+              </td>
+              <td className="py-2 px-2 sm:px-4 border-b">
+                {team.nextMatch?.for || "N/A"}
+              </td>
+              <td className="py-2 px-2 sm:px-4 border-b">
+                {team.nextMatch?.against || "N/A"}
               </td>
             </tr>
           ))}
