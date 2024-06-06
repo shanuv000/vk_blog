@@ -7,7 +7,7 @@ const MatchTable = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("https://cricbuzz-backend.vercel.app/api/t20-world-cup-2024")
+    fetch("https://api-sync.vercel.app/api/t20-world-cup-2024")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
