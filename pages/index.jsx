@@ -7,6 +7,7 @@ import { transformData } from "../components/AdditionalPosts/PostsAdditions";
 import electionResults from "../components/AdditionalPosts/electionResults.json";
 import Charts from "../components/AdditionalPosts/ElectionResultsChart";
 import { ClipLoader } from "react-spinners";
+import LiveMatch from "../components/LiveMatch";
 
 // Fisher-Yates shuffle algorithm
 function shuffle(array) {
@@ -50,6 +51,7 @@ export default function Home({ posts }) {
         </div>
         <div className="lg:col-span-4 col-span-1">
           <div className="lg:sticky relative top-8">
+            <LiveMatch />
             <PostWidget />
             <Categories />
           </div>
