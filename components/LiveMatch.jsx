@@ -80,12 +80,11 @@ const LiveMatch = () => {
                   {match.title}
                 </h4>
               )}
-              {match.playingTeamBat != "N/A" ||
-                (match.liveScorebat != "N/A" && (
-                  <h2 className="text-base font-bold text-red-500 mb-2">
-                    {match.playingTeamBat} {match.liveScorebat}
-                  </h2>
-                ))}
+
+              <h2 className="text-base font-bold text-red-500 mb-2">
+                {match.playingTeamBat} {match.liveScorebat}
+              </h2>
+
               {match.liveScoreball !== "N/A" ? (
                 <h2 className="text-sm font-semibold text-gray-500 mb-2">
                   {match.playingTeamBall} {match.liveScoreball}
@@ -94,7 +93,6 @@ const LiveMatch = () => {
               <p className="text-sm sm:text-md font-medium text-gray-700 mb-1">
                 {match.matchDetails}
               </p>
-
               {match.time != "N/A" && (
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
                   <span className="font-semibold">Time:</span> {match.time}
