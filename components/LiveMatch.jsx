@@ -10,14 +10,6 @@ const LiveMatch = () => {
   const [headings, setHeadings] = useState([]);
   const [selectedHeading, setSelectedHeading] = useState("");
 
-  // const setupLiveScore = () => {
-  //   if (liveScores && liveScores.length >= 1) {
-  //     liveScores.map((match) => {
-  //       match.liveCommentary;
-  //     });
-  //   }
-  // };
-
   useEffect(() => {
     const updateHeadings = () => {
       if (liveScores && liveScores.length > 0) {
@@ -43,9 +35,18 @@ const LiveMatch = () => {
   const filteredScores =
     liveScores?.filter((match) => match.heading === selectedHeading) || [];
 
+  // Get random gradient
+  const gradientArray = ["b", "br", "r", "tr"];
+
+  // Get a random element
+  const randomGradient =
+    gradientArray[Math.floor(Math.random() * gradientArray.length)];
+
   return (
     liveScores.length >= 1 && (
-      <div className="bg-gradient-to-r from-green-400 to-blue-500 shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-white">
+      <div
+        className={`bg-gradient-to-${randomGradient}  from-yellow-400 to-green-500  shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
+      >
         <h3 className="text-xl sm:text-2xl mb-4 sm:mb-8 font-bold border-b-2 border-white pb-2 sm:pb-4">
           Live Matches
         </h3>
@@ -93,11 +94,15 @@ const LiveMatch = () => {
                 {match.playingTeamBat} {match.liveScorebat}
               </h2>
 
-              {match.liveScoreball !== "N/A" ? (
+              {
                 <h2 className="text-sm font-semibold text-gray-500 mb-2">
-                  {match.playingTeamBall} {match.liveScoreball}
+                  {match.playingTeamBall == "N/A"
+                    ? null
+                    : match.liveScoreball == "N/A"
+                    ? match.playingTeamBall
+                    : `${match.playingTeamBall} ${match.liveScoreball}`}
                 </h2>
-              ) : null}
+              }
               <p className="text-sm sm:text-md font-medium text-gray-700 mb-1">
                 {match.matchDetails}
               </p>
