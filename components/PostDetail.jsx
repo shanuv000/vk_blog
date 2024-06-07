@@ -7,15 +7,17 @@ import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
 import { useData } from "../store/HandleApiContext";
 import { Testing } from "./AdditionalPosts/PostsAdditions";
 const PostDetail = ({ post }) => {
-  const { data, fetchData } = useData();
-  const hasFetchedData = useRef(false);
+  const { data, fetchData, fetchDataAsync } = useData();
+  const hasFetchedData = useRef(true);
 
   // Get data from Context
   hasFetchedData.current == true && console.log(post);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (hasFetchedData.current == false && data != null) {
+    if (hasFetchedData.current == false && data == null) {
+      console.log("fire triggered");
       fetchData();
+      hasFetchedData.current = true;
     }
   }, []);
 

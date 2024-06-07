@@ -9,7 +9,7 @@ const MatchTable = () => {
   const [loads, setLoads] = useState(true);
 
   useEffect(() => {
-    fetch("https://api-sync.vercel.app/api/schedule")
+    fetch("https://api-sync.vercel.app/api/cricket/schedule")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
