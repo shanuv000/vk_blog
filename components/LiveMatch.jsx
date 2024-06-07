@@ -10,6 +10,14 @@ const LiveMatch = () => {
   const [headings, setHeadings] = useState([]);
   const [selectedHeading, setSelectedHeading] = useState("");
 
+  // const setupLiveScore = () => {
+  //   if (liveScores && liveScores.length >= 1) {
+  //     liveScores.map((match) => {
+  //       match.liveCommentary;
+  //     });
+  //   }
+  // };
+
   useEffect(() => {
     const updateHeadings = () => {
       if (liveScores && liveScores.length > 0) {
@@ -93,11 +101,13 @@ const LiveMatch = () => {
               <p className="text-sm sm:text-md font-medium text-gray-700 mb-1">
                 {match.matchDetails}
               </p>
-              {match.time != "N/A" && (
+              {
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                  <span className="font-semibold">Time:</span> {match.time}
+                  <span className="font-semibold text-green-500">
+                    {match.time == "N/A" ? "Today" : match.time}
+                  </span>
                 </p>
-              )}
+              }
               <p className="text-xs sm:text-sm text-gray-600 mb-1">
                 <span className="font-semibold">Location:</span>{" "}
                 {match.location}

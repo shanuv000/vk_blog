@@ -1,14 +1,15 @@
-// src/Header.js
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getCategories } from "../services";
 import Modal from "./Modal";
+import { useData } from "../store/HandleApiContext";
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch categories and live scores when the component mounts
   useEffect(() => {
     getCategories().then((newCategories) => {
       setCategories(newCategories);
