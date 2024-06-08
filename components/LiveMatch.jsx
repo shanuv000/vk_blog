@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useData } from "../store/HandleApiContext";
+import { FaSyncAlt } from "react-icons/fa"; // Import the refresh icon
 
 const LiveMatch = () => {
-  const { liveScores, fetchLiveScores, liveScoresError, loadingLiveScores } =
+  const { liveScores, liveScoresError, loadingLiveScores, fetchLiveScores } =
     useData();
 
   const [headings, setHeadings] = useState([]);
   const [selectedHeading, setSelectedHeading] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Update headings when liveScores changes
   useEffect(() => {
@@ -24,6 +26,13 @@ const LiveMatch = () => {
     updateHeadings();
   }, [liveScores]);
 
+  // Function to handle refresh button click
+  const handleRefreshClick = () => {
+    setIsRefreshing(true);
+    fetchLiveScores();
+    setTimeout(() => setIsRefreshing(false), 1000); // Simulate refreshing animation duration
+  };
+
   // Filter live scores based on selected heading
   const filteredScores =
     liveScores?.filter((match) => match.heading === selectedHeading) || [];
@@ -33,9 +42,23 @@ const LiveMatch = () => {
       <div
         className={`bg-gradient-to-br from-white to-gray-200 shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
       >
-        <h3 className="text-xl sm:text-2xl mb-4 sm:mb-8 font-bold border-b-2 border-white pb-2 sm:pb-4">
-          Live Matches
-        </h3>
+        <div className="flex justify-between mb-4">
+          <h3 className="text-xl sm:text-2xl font-bold border-b-2 border-white pb-2 sm:pb-4">
+            Live Matches
+          </h3>
+          <button
+            onClick={handleRefreshClick}
+            className={` text-blue-800 font-bold py-2 px-4 rounded ${
+              isRefreshing ? "animate-spin" : ""
+            }`}
+          >
+            {isRefreshing ? (
+              <FaSyncAlt className="mr-2" />
+            ) : (
+              <FaSyncAlt className="mr-2" />
+            )}
+          </button>
+        </div>
 
         <div className="mb-4">
           <label
