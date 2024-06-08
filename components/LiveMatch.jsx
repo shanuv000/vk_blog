@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ClipLoader } from "react-spinners";
 import { useData } from "../store/HandleApiContext";
 
 const LiveMatch = () => {
@@ -10,6 +9,7 @@ const LiveMatch = () => {
   const [headings, setHeadings] = useState([]);
   const [selectedHeading, setSelectedHeading] = useState("");
 
+  // Update headings when liveScores changes
   useEffect(() => {
     const updateHeadings = () => {
       if (liveScores && liveScores.length > 0) {
@@ -24,21 +24,14 @@ const LiveMatch = () => {
     updateHeadings();
   }, [liveScores]);
 
-  if (loadingLiveScores) {
-    return (
-      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-        <ClipLoader color="#007bff" loading={loadingLiveScores} size={150} />
-      </div>
-    );
-  }
-
+  // Filter live scores based on selected heading
   const filteredScores =
     liveScores?.filter((match) => match.heading === selectedHeading) || [];
 
   return (
     liveScores.length >= 1 && (
       <div
-        className={`bg-gradient-to-br  from-white to-gray-200  shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
+        className={`bg-gradient-to-br from-white to-gray-200 shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
       >
         <h3 className="text-xl sm:text-2xl mb-4 sm:mb-8 font-bold border-b-2 border-white pb-2 sm:pb-4">
           Live Matches
@@ -67,6 +60,10 @@ const LiveMatch = () => {
 
         {liveScoresError ? (
           <p className="text-red-200">{liveScoresError}</p>
+        ) : liveScores.length === 0 && loadingLiveScores ? (
+          <p className="text-lg font-semibold text-yellow-200">
+            Loading matches...
+          </p>
         ) : filteredScores.length === 0 ? (
           <p className="text-lg font-semibold text-yellow-200">
             No matches available
@@ -77,7 +74,7 @@ const LiveMatch = () => {
               key={index}
               className="mb-6 p-4 sm:p-6 bg-white rounded-lg text-gray-900 shadow-md"
             >
-              {match.title != "N/A" && (
+              {match.title !== "N/A" && (
                 <h4 className="text-lg sm:text-xl font-extrabold mb-2">
                   {match.title}
                 </h4>
@@ -87,25 +84,24 @@ const LiveMatch = () => {
                 {match.playingTeamBat} {match.liveScorebat}
               </h2>
 
-              {
+              {match.playingTeamBall !== "N/A" && (
                 <h2 className="text-sm font-semibold text-gray-500 mb-2">
-                  {match.playingTeamBall == "N/A"
-                    ? null
-                    : match.liveScoreball == "N/A"
-                    ? match.playingTeamBall
-                    : `${match.playingTeamBall} ${match.liveScoreball}`}
+                  {match.liveScoreball !== "N/A"
+                    ? `${match.playingTeamBall} ${match.liveScoreball}`
+                    : match.playingTeamBall}
                 </h2>
-              }
+              )}
+
               <p className="text-sm sm:text-md font-medium text-gray-700 mb-1">
                 {match.matchDetails}
               </p>
-              {
-                <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                  <span className="font-semibold text-green-500">
-                    {match.time == "N/A" ? "Today" : match.time}
-                  </span>
-                </p>
-              }
+
+              <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                <span className="font-semibold text-green-500">
+                  {match.time === "N/A" ? "Today" : match.time}
+                </span>
+              </p>
+
               <p className="text-xs sm:text-sm text-gray-600 mb-1">
                 <span className="font-semibold">Location:</span>{" "}
                 {match.location}
