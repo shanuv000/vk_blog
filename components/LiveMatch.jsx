@@ -35,17 +35,10 @@ const LiveMatch = () => {
   const filteredScores =
     liveScores?.filter((match) => match.heading === selectedHeading) || [];
 
-  // Get random gradient
-  const gradientArray = ["b", "br", "r", "tr"];
-
-  // Get a random element
-  const randomGradient =
-    gradientArray[Math.floor(Math.random() * gradientArray.length)];
-
   return (
     liveScores.length >= 1 && (
       <div
-        className={`bg-gradient-to-${randomGradient}  from-yellow-400 to-green-500  shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
+        className={`bg-gradient-to-br  from-white to-gray-200  shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
       >
         <h3 className="text-xl sm:text-2xl mb-4 sm:mb-8 font-bold border-b-2 border-white pb-2 sm:pb-4">
           Live Matches

@@ -1,6 +1,7 @@
 // src/Modal.js
 import React from "react";
 import MatchTable from "./AdditionalPosts/MatchTable";
+import LiveMatch from "./LiveMatch";
 
 const Modal = ({ show, onClose }) => {
   if (!show) return null;
@@ -23,6 +24,7 @@ const Modal = ({ show, onClose }) => {
         >
           &times;
         </button>
+        <LiveMatch />
         <MatchTable />
       </div>
     </div>

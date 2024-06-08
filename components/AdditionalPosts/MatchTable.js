@@ -62,6 +62,12 @@ const MatchTable = () => {
 
   return (
     <div className="py-4 overflow-x-auto">
+      <div class="bg-gradient-to-br from-white to-gray-50">
+        <h1 class="text-2xl md:text-3xl lg:text-3xl font-bold text-center my-8">
+          <span className="text-red-400">T20</span> WorldCup Ranking table
+        </h1>
+      </div>
+
       <table className="min-w-full bg-white border border-gray-200 shadow-lg rounded-lg">
         <thead className="bg-gradient-to-b from-indigo-500 to-blue-600 text-white">
           <tr>
