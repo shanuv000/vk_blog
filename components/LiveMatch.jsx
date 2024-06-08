@@ -107,8 +107,10 @@ const LiveMatch = () => {
                 {match.location}
               </p>
               <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                <span className="font-semibold">Commentary:</span>{" "}
-                {match.liveCommentary}
+                <span className="font-semibold ">Commentary:</span>{" "}
+                <span className="text-pink-500 md:font-semibold">
+                  {match.liveCommentary}
+                </span>
               </p>
               <div className="mt-4 flex flex-wrap">
                 {Object.entries(match.links).map(
