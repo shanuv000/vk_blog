@@ -1,8 +1,8 @@
-// Testing.js
 "use client";
 import Charts from "./ElectionResultsChart";
 import MatchTable from "./MatchTable";
 import electionResults from "./electionResults.json";
+
 export const transformData = (jsonData) => {
   const { NDA, INDIA, regional_parties } =
     jsonData.election_results_2024.parties;
@@ -13,10 +13,13 @@ export const transformData = (jsonData) => {
     { candidate: "TMC", votes: regional_parties.TMC.seats_won },
     { candidate: "AAP", votes: regional_parties.AAP.seats_won },
     { candidate: "TRS", votes: regional_parties.TRS.seats_won },
+    { candidate: "YSRCP", votes: regional_parties.YSRCP.seats_won },
+    { candidate: "BJD", votes: regional_parties.BJD.seats_won },
   ];
 
   return results;
 };
+
 export const Testing = ({ slug }) => {
   const data = transformData(electionResults);
 

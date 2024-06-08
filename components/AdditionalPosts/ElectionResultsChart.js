@@ -1,9 +1,16 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
-import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(BarElement, Tooltip, Legend, CategoryScale, LinearScale);
 
 const Charts = ({ data }) => {
   const chartRef = useRef(null);
@@ -92,6 +99,20 @@ const Charts = ({ data }) => {
         },
       },
     },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Parties",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Seats Won",
+        },
+      },
+    },
     animation: {
       animateRotate: true,
       animateScale: true,
@@ -100,7 +121,7 @@ const Charts = ({ data }) => {
 
   return (
     <div ref={chartRef} className="mb-4">
-      {isChartVisible && <Doughnut data={chartData} options={options} />}
+      {isChartVisible && <Bar data={chartData} options={options} />}
     </div>
   );
 };

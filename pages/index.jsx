@@ -3,9 +3,9 @@ import { PostCard, Categories, PostWidget } from "../components";
 import { getPosts } from "../services";
 // import Footer from "../components/footer/Footer";
 import { useEffect, useState } from "react";
-import { transformData } from "../components/AdditionalPosts/PostsAdditions";
-import electionResults from "../components/AdditionalPosts/electionResults.json";
-import Charts from "../components/AdditionalPosts/ElectionResultsChart";
+
+// import electionResults from "../components/AdditionalPosts/electionResults.json";
+
 import { ClipLoader } from "react-spinners";
 import LiveMatch from "../components/LiveMatch";
 
@@ -20,7 +20,6 @@ function shuffle(array) {
 
 export default function Home({ posts }) {
   const [shuffledPosts, setShuffledPosts] = useState([]);
-  const data = transformData(electionResults);
 
   useEffect(() => {
     const shuffled = shuffle(posts);
@@ -36,12 +35,6 @@ export default function Home({ posts }) {
   return (
     <div className="container mx-auto px-4 md:px-10 mb-8">
       <FeaturedPosts />
-      <h1 className="text-2xl text-slate-100 font-bold text-center ">
-        Election Results 2024
-      </h1>
-      <div className="w-full md:w-96 h-96 md:h-96 mx-auto lg:mb-4 lg:pb-4">
-        <Charts data={data} />
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-8 col-span-1">

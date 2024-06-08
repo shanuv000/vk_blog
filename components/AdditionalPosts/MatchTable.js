@@ -1,34 +1,10 @@
 // src/AdditionalPosts/MatchTable.js
 import React, { useEffect, useState } from "react";
-
+// import { useData } from "../context/DataContext";
+import { useData } from "../../store/HandleApiContext";
 const MatchTable = () => {
-  const [schedule, setSchedule] = useState([]);
+  const { schedule, fetchSchedule, scheduleError, loadingSchedule } = useData();
   const [showFullTable, setShowFullTable] = useState(false);
-  const [scheduleError, setScheduleError] = useState(null);
-
-  // Fetch schedule data
-  useEffect(() => {
-    fetch("https://api-sync.vercel.app/api/cricket/schedule")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.success) {
-          const sortedData = data.data.sort(
-            (a, b) => b.netRunRate - a.netRunRate
-          );
-          setSchedule(sortedData);
-        } else {
-          setScheduleError("API request failed: " + data.error);
-        }
-      })
-      .catch((error) => {
-        setScheduleError("Error fetching schedule: " + error.message);
-      });
-  }, []);
 
   // Handle show more button click
   const handleShowMore = () => {

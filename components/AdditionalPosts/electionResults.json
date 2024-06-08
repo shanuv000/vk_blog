@@ -2,41 +2,128 @@
   "election_results_2024": {
     "summary": {
       "total_seats": 543,
-      "majority_needed": 272
+      "majority_needed": 272,
+      "voter_turnout_percentage": 67.3,
+      "total_votes_cast": 610000000
     },
     "parties": {
       "NDA": {
         "leader": "Bharatiya Janata Party (BJP)",
         "seats_won": 296,
+        "vote_share_percentage": 41.2,
         "details": {
-          "BJP": 282,
-          "Shiv Sena": 10,
-          "JD(U)": 4
+          "BJP": {
+            "seats_won": 282,
+            "vote_share_percentage": 37.5,
+            "leader": "Narendra Modi"
+          },
+          "Shiv Sena": {
+            "seats_won": 10,
+            "vote_share_percentage": 1.8,
+            "leader": "Uddhav Thackeray"
+          },
+          "JD(U)": {
+            "seats_won": 4,
+            "vote_share_percentage": 1.9,
+            "leader": "Nitish Kumar"
+          }
         }
       },
       "INDIA": {
         "leader": "Indian National Congress",
         "seats_won": 230,
+        "vote_share_percentage": 39.5,
         "details": {
-          "Congress": 204,
-          "DMK": 15,
-          "NCP": 6,
-          "RJD": 5
+          "Congress": {
+            "seats_won": 204,
+            "vote_share_percentage": 32.1,
+            "leader": "Rahul Gandhi"
+          },
+          "DMK": {
+            "seats_won": 15,
+            "vote_share_percentage": 3.1,
+            "leader": "M.K. Stalin"
+          },
+          "NCP": {
+            "seats_won": 6,
+            "vote_share_percentage": 2.3,
+            "leader": "Sharad Pawar"
+          },
+          "RJD": {
+            "seats_won": 5,
+            "vote_share_percentage": 2.0,
+            "leader": "Tejashwi Yadav"
+          }
         }
       },
       "regional_parties": {
         "TMC": {
           "seats_won": 30,
+          "vote_share_percentage": 6.7,
           "leader": "Mamata Banerjee"
         },
         "AAP": {
           "seats_won": 7,
+          "vote_share_percentage": 2.4,
           "leader": "Arvind Kejriwal"
         },
         "TRS": {
           "seats_won": 9,
+          "vote_share_percentage": 3.0,
           "leader": "K. Chandrashekar Rao"
+        },
+        "YSRCP": {
+          "seats_won": 15,
+          "vote_share_percentage": 4.1,
+          "leader": "Jagan Mohan Reddy"
+        },
+        "BJD": {
+          "seats_won": 12,
+          "vote_share_percentage": 3.8,
+          "leader": "Naveen Patnaik"
         }
+      }
+    },
+    "states_summary": {
+      "Uttar Pradesh": {
+        "total_seats": 80,
+        "BJP": 60,
+        "SP": 10,
+        "BSP": 5,
+        "Congress": 5
+      },
+      "Maharashtra": {
+        "total_seats": 48,
+        "BJP": 20,
+        "Shiv Sena": 10,
+        "NCP": 6,
+        "Congress": 12
+      },
+      "West Bengal": {
+        "total_seats": 42,
+        "TMC": 30,
+        "BJP": 10,
+        "Congress": 2
+      },
+      "Delhi": {
+        "total_seats": 7,
+        "AAP": 7
+      },
+      "Telangana": {
+        "total_seats": 17,
+        "TRS": 9,
+        "BJP": 6,
+        "Congress": 2
+      },
+      "Andhra Pradesh": {
+        "total_seats": 25,
+        "YSRCP": 15,
+        "TDP": 10
+      },
+      "Odisha": {
+        "total_seats": 21,
+        "BJD": 12,
+        "BJP": 9
       }
     }
   }
