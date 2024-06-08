@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useData } from "../store/HandleApiContext";
 import { FaSyncAlt } from "react-icons/fa"; // Import the refresh icon
+import ball from "../public/cricket/ball.png";
+import Image from "next/image";
 
 const LiveMatch = () => {
   const { liveScores, liveScoresError, loadingLiveScores, fetchLiveScores } =
@@ -42,21 +44,17 @@ const LiveMatch = () => {
       <div
         className={`bg-gradient-to-br from-white to-gray-200 shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
       >
-        <div className="flex justify-between mb-4">
+        <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl sm:text-2xl font-bold border-b-2 border-white pb-2 sm:pb-4">
             Live Matches
           </h3>
           <button
             onClick={handleRefreshClick}
-            className={` text-blue-800 font-bold py-2 px-4 rounded ${
-              isRefreshing ? "animate-spin" : ""
+            className={`flex items-center text-blue-800 font-bold rounded ${
+              isRefreshing ? "animate-spin" : "animate-bounce"
             }`}
           >
-            {isRefreshing ? (
-              <FaSyncAlt className="mr-2" />
-            ) : (
-              <FaSyncAlt className="mr-2" />
-            )}
+            <Image src={ball} alt="Refresh" className="w-6 h-6" />
           </button>
         </div>
 
