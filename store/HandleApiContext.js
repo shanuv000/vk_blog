@@ -8,6 +8,44 @@ import React, {
 import axios from "axios";
 import { fetchData } from "../components/ExtractIPs/ipfunc";
 
+// Custom hook for fetching data
+const useFetchData = (url, extractData = (data) => data, initialState = []) => {
+  const [data, setData] = useState(initialState);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const hasFetched = useRef(false);
+
+  const fetchDataAsync = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(url);
+      const fetchedData = extractData(response.data);
+
+      // Ensure data is in the correct format (array for certain states)
+      if (Array.isArray(initialState) && !Array.isArray(fetchedData)) {
+        throw new Error("Expected data to be an array");
+      }
+
+      setData(fetchedData);
+      setError(null);
+    } catch (error) {
+      setError("Error fetching data: " + error.message);
+      setData(initialState);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchDataAsync();
+    }
+  }, [url]);
+
+  return { data, error, loading, refetch: fetchDataAsync };
+};
+
 const DataContext = createContext({
   data: null,
   fetchData: () => {},
@@ -23,167 +61,79 @@ const DataContext = createContext({
   fetchSchedule: () => {},
   scheduleError: null,
   loadingSchedule: false,
-  upcomingMatches: null, // New state for upcoming matches
-  fetchUpcomingMatches: () => {}, // New function to fetch upcoming matches
-  upcomingMatchesError: null, // New state for any errors while fetching upcoming matches
-  loadingUpcomingMatches: false, // New state to indicate if upcoming matches are being loaded
+  upcomingMatches: null,
+  fetchUpcomingMatches: () => {},
+  upcomingMatchesError: null,
+  loadingUpcomingMatches: false,
 });
 
 export const DataProvider = ({ children }) => {
-  const [data, setData] = useState(null);
-  const [liveScores, setLiveScores] = useState([]);
-  const [liveScoresError, setLiveScoresError] = useState(null);
-  const [loadingLiveScores, setLoadingLiveScores] = useState(false);
-  const [recentScores, setRecentScores] = useState([]);
-  const [recentScoresError, setRecentScoresError] = useState(null);
-  const [loadingRecentScores, setLoadingRecentScores] = useState(false);
-  const [schedule, setSchedule] = useState([]);
-  const [scheduleError, setScheduleError] = useState(null);
-  const [loadingSchedule, setLoadingSchedule] = useState(false);
-  const [upcomingMatches, setUpcomingMatches] = useState([]); // New state for upcoming matches
-  const [upcomingMatchesError, setUpcomingMatchesError] = useState(null); // New state for any errors while fetching upcoming matches
-  const [loadingUpcomingMatches, setLoadingUpcomingMatches] = useState(false); // New state to indicate if upcoming matches are being loaded
+  const { data, refetch: fetchData } = useFetchData("/api/data", null);
+  const {
+    data: liveScores,
+    error: liveScoresError,
+    loading: loadingLiveScores,
+    refetch: fetchLiveScores,
+  } = useFetchData(
+    "https://api-sync.vercel.app/api/cricket/live-scores",
+    (data) => data,
+    []
+  );
 
-  const hasFetchedData = useRef(false);
-  const hasFetchedLiveScores = useRef(false);
-  const hasFetchedRecentScores = useRef(false);
-  const hasFetchedSchedule = useRef(false);
-  const hasFetchedUpcomingMatches = useRef(false); // New ref for upcoming matches
+  const {
+    data: recentScores,
+    error: recentScoresError,
+    loading: loadingRecentScores,
+    refetch: fetchRecentScores,
+  } = useFetchData(
+    "https://api-sync.vercel.app/api/cricket/recent-scores",
+    (data) => data,
+    []
+  );
 
-  useEffect(() => {
-    if (!hasFetchedData.current) {
-      hasFetchedData.current = true;
-      fetchDataAsync();
-    }
-  }, []);
+  const {
+    data: schedule,
+    error: scheduleError,
+    loading: loadingSchedule,
+    refetch: fetchSchedule,
+  } = useFetchData(
+    "https://api-sync.vercel.app/api/cricket/schedule",
+    (data) => data.data,
+    []
+  );
 
-  useEffect(() => {
-    if (!hasFetchedLiveScores.current) {
-      hasFetchedLiveScores.current = true;
-      fetchLiveScoresAsync();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hasFetchedRecentScores.current) {
-      hasFetchedRecentScores.current = true;
-      fetchRecentScoresAsync();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hasFetchedSchedule.current) {
-      hasFetchedSchedule.current = true;
-      fetchScheduleAsync();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hasFetchedUpcomingMatches.current) {
-      hasFetchedUpcomingMatches.current = true;
-      fetchUpcomingMatchesAsync();
-    }
-  }, []); // New useEffect to fetch upcoming matches
-
-  const fetchDataAsync = async () => {
-    const fetchedData = await fetchData();
-    setData(fetchedData);
-  };
-
-  const fetchLiveScoresAsync = async () => {
-    try {
-      setLoadingLiveScores(true);
-      const response = await axios.get(
-        "https://api-sync.vercel.app/api/cricket/live-scores"
-      );
-      setLiveScores(response.data);
-      setLiveScoresError(null);
-    } catch (error) {
-      setLiveScoresError("Error fetching live scores: " + error.message);
-      setLiveScores([]);
-    } finally {
-      setLoadingLiveScores(false);
-    }
-  };
-
-  const fetchRecentScoresAsync = async () => {
-    try {
-      setLoadingRecentScores(true);
-      const response = await axios.get(
-        "https://api-sync.vercel.app/api/cricket/recent-scores"
-      );
-      setRecentScores(response.data);
-      setRecentScoresError(null);
-    } catch (error) {
-      setRecentScoresError("Error fetching recent scores: " + error.message);
-      setRecentScores([]);
-    } finally {
-      setLoadingRecentScores(false);
-    }
-  };
-
-  const fetchScheduleAsync = async () => {
-    try {
-      setLoadingSchedule(true);
-      const response = await axios.get(
-        "https://api-sync.vercel.app/api/cricket/schedule"
-      );
-      if (response.data.success) {
-        const sortedData = response.data.data.sort(
-          (a, b) => b.netRunRate - a.netRunRate
-        );
-        setSchedule(sortedData);
-        setScheduleError(null);
-      } else {
-        setScheduleError("API request failed: " + response.data.error);
-      }
-    } catch (error) {
-      setScheduleError("Error fetching schedule: " + error.message);
-      setSchedule([]);
-    } finally {
-      setLoadingSchedule(false);
-    }
-  };
-
-  const fetchUpcomingMatchesAsync = async () => {
-    try {
-      setLoadingUpcomingMatches(true);
-      const response = await axios.get(
-        "https://api-sync.vercel.app/api/cricket/upcoming-matches"
-      );
-      setUpcomingMatches(response.data);
-      setUpcomingMatchesError(null);
-    } catch (error) {
-      setUpcomingMatchesError(
-        "Error fetching upcoming matches: " + error.message
-      );
-      setUpcomingMatches([]);
-    } finally {
-      setLoadingUpcomingMatches(false);
-    }
-  }; // New function to fetch upcoming matches
+  const {
+    data: upcomingMatches,
+    error: upcomingMatchesError,
+    loading: loadingUpcomingMatches,
+    refetch: fetchUpcomingMatches,
+  } = useFetchData(
+    "https://api-sync.vercel.app/api/cricket/upcoming-matches",
+    (data) => data,
+    []
+  );
 
   return (
     <DataContext.Provider
       value={{
         data,
-        fetchData: fetchDataAsync,
+        fetchData,
         liveScores,
-        fetchLiveScores: fetchLiveScoresAsync,
+        fetchLiveScores,
         liveScoresError,
         loadingLiveScores,
         recentScores,
-        fetchRecentScores: fetchRecentScoresAsync,
+        fetchRecentScores,
         recentScoresError,
         loadingRecentScores,
         schedule,
-        fetchSchedule: fetchScheduleAsync,
+        fetchSchedule,
         scheduleError,
         loadingSchedule,
-        upcomingMatches, // Providing upcoming matches state
-        fetchUpcomingMatches: fetchUpcomingMatchesAsync, // Providing fetch function
-        upcomingMatchesError, // Providing error state
-        loadingUpcomingMatches, // Providing loading state
+        upcomingMatches,
+        fetchUpcomingMatches,
+        upcomingMatchesError,
+        loadingUpcomingMatches,
       }}
     >
       {children}
