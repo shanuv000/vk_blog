@@ -34,11 +34,11 @@ const ShowCricket = () => {
         variant="scrollable"
         scrollButtons="auto"
         aria-label="match tabs"
-        className="bg-white border-b border-gray-300 w-full  py-1 "
+        className="bg-white border-b border-gray-300 w-full py-2 sm:py-1 px-2 sm:px-4 rounded"
       >
         <Tab
           className={`px-4 py-2 m-1 ${
-            selectedTab === "live" ? " text-white" : "text-gray-600"
+            selectedTab === "live" ? "text-white" : "text-gray-600"
           } rounded-lg transition duration-200`}
           label="Live Match"
           value="live"
@@ -59,7 +59,7 @@ const ShowCricket = () => {
         />
         <Tab
           className={`px-4 py-2 m-1 ${
-            selectedTab === "table" ? " text-white" : "text-gray-600"
+            selectedTab === "table" ? "bg-blue-500 text-white" : "text-gray-600"
           } rounded-lg transition duration-200`}
           label="T20 World Cup Rankings"
           value="table"
