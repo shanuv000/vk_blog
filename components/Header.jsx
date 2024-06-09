@@ -8,6 +8,7 @@ import { useData } from "../store/HandleApiContext";
 const Header = () => {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Fetch categories and live scores when the component mounts
   useEffect(() => {
@@ -62,39 +63,44 @@ const Header = () => {
             </motion.span>
           </Link>
         </motion.div>
+        <div className="md:hidden flex items-center justify-end">
+          <button
+            className="text-white"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            ☰
+          </button>
+        </div>
         <motion.div
-          className="md:float-left md:contents hidden sm:block"
+          className={`md:float-left md:contents ${
+            isMenuOpen ? "block" : "hidden"
+          } md:block`}
           initial="hidden"
           animate="visible"
           variants={categoryContainerVariants}
         >
-          <Link key={"category"} href={`/livecricket`}>
-            <motion.span
-              className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer"
-              variants={categoryVariants}
-            >
-              Live Matches
-            </motion.span>
-          </Link>
-          {categories.map((category) => (
-            <Link key={category.slug} href={`/category/${category.slug}`}>
-              <motion.span
-                className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer"
-                variants={categoryVariants}
-              >
-                {category.name.toUpperCase()}
-              </motion.span>
-            </Link>
-          ))}
-
-          {/* <motion.button
-            className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer"
-            variants={categoryVariants}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Match table
-          </motion.button>
-          <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
+          {isMenuOpen && (
+            <div className="bg-gray-800 p-4 rounded-md">
+              <Link key={"category"} href={`/livecricket`}>
+                <motion.span
+                  className="block mt-2 align-middle text-white font-semibold cursor-pointer"
+                  variants={categoryVariants}
+                >
+                  Live Matches
+                </motion.span>
+              </Link>
+              {categories.map((category) => (
+                <Link key={category.slug} href={`/category/${category.slug}`}>
+                  <motion.span
+                    className="block mt-2 align-middle text-white font-semibold cursor-pointer"
+                    variants={categoryVariants}
+                  >
+                    {category.name.toUpperCase()}
+                  </motion.span>
+                </Link>
+              ))}
+            </div>
+          )}
         </motion.div>
       </motion.div>
     </div>
