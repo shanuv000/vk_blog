@@ -7,7 +7,7 @@ import { getCategories } from "../services";
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Fetch categories and live scores when the component mounts
