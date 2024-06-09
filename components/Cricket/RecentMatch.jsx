@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useData } from "../store/HandleApiContext";
-import { FaSyncAlt } from "react-icons/fa"; // Import the refresh icon
-import ball from "../public/cricket/ball.png";
+import { useData } from "../../store/HandleApiContext";
+import ball from "../../public/cricket/ball.png";
 import Image from "next/image";
 
-const LiveMatch = () => {
-  const { liveScores, liveScoresError, loadingLiveScores, fetchLiveScores } =
-    useData();
+const RecentMatch = () => {
+  const {
+    recentScores,
+    recentScoresError,
+    loadingRecentScores,
+    fetchRecentScores,
+  } = useData();
 
   const [headings, setHeadings] = useState([]);
   const [selectedHeading, setSelectedHeading] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Update headings when liveScores changes
+  // Update headings when recentScores changes
   useEffect(() => {
     const updateHeadings = () => {
-      if (liveScores && liveScores.length > 0) {
+      if (recentScores && recentScores.length > 0) {
         const uniqueHeadings = Array.from(
-          new Set(liveScores.map((match) => match.heading))
+          new Set(recentScores.map((match) => match.heading))
         );
         setHeadings(uniqueHeadings);
         setSelectedHeading(uniqueHeadings[0] || "");
@@ -26,27 +29,27 @@ const LiveMatch = () => {
     };
 
     updateHeadings();
-  }, [liveScores]);
+  }, [recentScores]);
 
   // Function to handle refresh button click
   const handleRefreshClick = () => {
     setIsRefreshing(true);
-    fetchLiveScores();
-    setTimeout(() => setIsRefreshing(false), 1000); // Simulate refreshing animation duration
+    fetchRecentScores();
+    setTimeout(() => setIsRefreshing(false), 3000); // Simulate refreshing animation duration
   };
 
-  // Filter live scores based on selected heading
+  // Filter recent scores based on selected heading
   const filteredScores =
-    liveScores?.filter((match) => match.heading === selectedHeading) || [];
+    recentScores?.filter((match) => match.heading === selectedHeading) || [];
 
   return (
-    liveScores.length >= 1 && (
+    recentScores.length >= 1 && (
       <div
         className={`bg-gradient-to-br from-white to-gray-200 shadow-lg rounded-lg p-4 sm:p-8 mb-8 text-black`}
       >
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl sm:text-2xl font-bold border-b-2 border-white pb-2 sm:pb-4">
-            Live Matches
+            Recent Matches
           </h3>
           <button
             onClick={handleRefreshClick}
@@ -79,9 +82,9 @@ const LiveMatch = () => {
           </select>
         </div>
 
-        {liveScoresError ? (
-          <p className="text-red-200">{liveScoresError}</p>
-        ) : liveScores.length === 0 && loadingLiveScores ? (
+        {recentScoresError ? (
+          <p className="text-red-200">{recentScoresError}</p>
+        ) : recentScores.length === 0 && loadingRecentScores ? (
           <p className="text-lg font-semibold text-yellow-200">
             Loading matches...
           </p>
@@ -156,4 +159,4 @@ const LiveMatch = () => {
   );
 };
 
-export default LiveMatch;
+export default RecentMatch;

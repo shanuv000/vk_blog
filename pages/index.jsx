@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 // import electionResults from "../components/AdditionalPosts/electionResults.json";
 
 import { ClipLoader } from "react-spinners";
-import LiveMatch from "../components/LiveMatch";
 
+import LiveMatch from "../components/Cricket/LiveMatch";
 // Fisher-Yates shuffle algorithm
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
