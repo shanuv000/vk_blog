@@ -68,6 +68,14 @@ const Header = () => {
           animate="visible"
           variants={categoryContainerVariants}
         >
+          <Link key={"category"} href={`/livecricket`}>
+            <motion.span
+              className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer"
+              variants={categoryVariants}
+            >
+              Live Matches
+            </motion.span>
+          </Link>
           {categories.map((category) => (
             <Link key={category.slug} href={`/category/${category.slug}`}>
               <motion.span
@@ -78,14 +86,15 @@ const Header = () => {
               </motion.span>
             </Link>
           ))}
-          <motion.button
+
+          {/* <motion.button
             className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer"
             variants={categoryVariants}
             onClick={() => setIsModalOpen(true)}
           >
             Match table
           </motion.button>
-          <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)} />
+          <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
         </motion.div>
       </motion.div>
     </div>
