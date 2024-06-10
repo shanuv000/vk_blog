@@ -13,6 +13,30 @@ const ScheduleTable = () => {
     );
   }
 
+  // Mapping of team names to their flag emojis
+  const flagEmojis = {
+    India: "🇮🇳",
+    "United States of America": "🇺🇸",
+    Canada: "🇨🇦",
+    Pakistan: "🇵🇰",
+    Ireland: "🇮🇪",
+    Scotland: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    Australia: "🇦🇺",
+    Namibia: "🇳🇦",
+    England: "🇬🇧",
+    Oman: "🇴🇲",
+    Afghanistan: "🇦🇫",
+    "West Indies": "🇦🇮",
+    Uganda: "🇺🇬",
+    "Papua New Guinea": "🇵🇬",
+    "New Zealand": "🇳🇿",
+    "South Africa": "🇿🇦",
+    Bangladesh: "🇧🇩",
+    Netherlands: "🇳🇱",
+    Nepal: "🇳🇵",
+    "Sri Lanka": "🇱🇰",
+  };
+
   return (
     <div className="p-2 md:p-4">
       {schedule.map((group) => (
@@ -68,7 +92,9 @@ const ScheduleTable = () => {
                         : "bg-white"
                     }
                   >
-                    <td className="py-2 px-2 md:px-4 border-b">{team.team}</td>
+                    <td className="py-2 px-2 md:px-4 border-b">
+                      {flagEmojis[team.team]} {team.team}
+                    </td>
                     <td className="py-2 px-2 md:px-4 border-b text-right">
                       {team.matches}
                     </td>
