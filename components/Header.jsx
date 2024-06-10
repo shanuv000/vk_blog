@@ -88,7 +88,7 @@ const Header = () => {
             <div className="md:hidden bg-gray-800 p-4 rounded-md">
               <Link key={"category"} href={`/livecricket`}>
                 <motion.span
-                  className="block mt-2 align-middle text-white font-semibold cursor-pointer"
+                  className="block text-yellow-400 mt-2 align-middle  font-semibold cursor-pointer"
                   variants={categoryVariants}
                   onClick={handleLinkClick}
                 >
@@ -109,14 +109,6 @@ const Header = () => {
             </div>
           )}
           <div className="hidden md:block">
-            <Link key={"category"} href={`/livecricket`}>
-              <motion.span
-                className="md:inline-block mt-2 align-middle text-white font-semibold cursor-pointer ml-4"
-                variants={categoryVariants}
-              >
-                Live Matches
-              </motion.span>
-            </Link>
             {categories.map((category) => (
               <Link key={category.slug} href={`/category/${category.slug}`}>
                 <motion.span
@@ -127,6 +119,14 @@ const Header = () => {
                 </motion.span>
               </Link>
             ))}
+            <Link key={"category"} href={`/livecricket`}>
+              <motion.span
+                className="md:inline-block mt-2 align-middle text-yellow-300 font-semibold cursor-pointer ml-4 animate-bounce"
+                variants={categoryVariants}
+              >
+                Live Matches
+              </motion.span>
+            </Link>
           </div>
         </motion.div>
       </motion.div>
