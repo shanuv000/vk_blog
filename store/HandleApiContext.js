@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import axios from "axios";
-import { fetchData } from "../components/ExtractIPs/ipfunc";
+// import { fetchData } from "../components/ExtractIPs/ipfunc";
 
 // Custom hook for fetching data
 const useFetchData = (url, extractData = (data) => data, initialState = []) => {
@@ -68,7 +68,10 @@ const DataContext = createContext({
 });
 
 export const DataProvider = ({ children }) => {
-  const { data, refetch: fetchData } = useFetchData("/api/data", null);
+  const { data, refetch: fetchData } = useFetchData(
+    "https://api-sync.vercel.app/api/cricket/schedule",
+    null
+  );
   const {
     data: liveScores,
     error: liveScoresError,
@@ -98,7 +101,8 @@ export const DataProvider = ({ children }) => {
     refetch: fetchSchedule,
   } = useFetchData(
     "https://api-sync.vercel.app/api/cricket/schedule",
-    (data) => data.data,
+    (response) => response.data.groups, // Corrected data extraction
+    (data) => data,
     []
   );
 

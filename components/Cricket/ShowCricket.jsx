@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MatchTable from "../AdditionalPosts/MatchTable";
+import MatchTable from "./MatchTable";
 import LiveMatch from "./LiveMatch";
 import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";

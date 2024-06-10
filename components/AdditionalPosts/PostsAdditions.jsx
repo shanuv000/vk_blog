@@ -1,6 +1,7 @@
 "use client";
 import Charts from "./ElectionResultsChart";
-import MatchTable from "./MatchTable";
+
+import MatchTable from "../Cricket/MatchTable";
 import electionResults from "./electionResults.json";
 
 export const transformData = (jsonData) => {
@@ -39,7 +40,7 @@ export const Testing = ({ slug }) => {
     case "india-t20-world-cup-pakistan-new-york":
     case "kavya-maran-emotional-speech-ipl-2024":
     case "ind-vs-sl-shami-sitting-at-home-baffles-me-ravi-shastri-after-indias-asia-cup-loss-vs-sri-lanka-3322380":
-      content = <MatchTable />;
+      content = null; //<MatchTable />;
       break;
     default:
       content = null;
