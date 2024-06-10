@@ -69,9 +69,11 @@ const ShowCricket = () => {
         />
       </Tabs>
       <Box className="w-full mt-4 p-4">
-        <TabPanel value={selectedTab} index="live">
-          <LiveMatch />
-        </TabPanel>
+        {liveScores.length >= 0 && (
+          <TabPanel value={selectedTab} index="live">
+            <LiveMatch />
+          </TabPanel>
+        )}
         <TabPanel value={selectedTab} index="recent">
           <RecentMatch />
         </TabPanel>

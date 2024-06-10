@@ -1,11 +1,16 @@
 import React from "react";
 import { useData } from "../../store/HandleApiContext";
+import { BarLoader } from "react-spinners";
 
 const ScheduleTable = () => {
   const { schedule, loadingSchedule } = useData();
 
   if (loadingSchedule) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <BarLoader color="#FFFFFF" />
+      </div>
+    );
   }
 
   return (
