@@ -121,10 +121,11 @@ const Header = () => {
             ))}
             <Link key={"category"} href={`/livecricket`}>
               <motion.span
-                className="md:inline-block mt-2 align-middle text-yellow-300 font-semibold cursor-pointer ml-4 animate-bounce"
+                className="md:inline-block mt-2 align-middle text-green-300 font-semibold cursor-pointer  ml-4 animate-bounce"
                 variants={categoryVariants}
               >
-                Live Cricket
+                <span className="text-red-500">Live</span>{" "}
+                <span className=""></span>Cricket
               </motion.span>
             </Link>
           </div>
