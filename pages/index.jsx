@@ -10,6 +10,8 @@ import { ClipLoader } from "react-spinners";
 
 import LiveMatch from "../components/Cricket/LiveMatch";
 // Fisher-Yates shuffle algorithm
+import { useMediaQuery } from "react-responsive"; // Import for media query
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -20,6 +22,7 @@ function shuffle(array) {
 
 export default function Home({ posts }) {
   const [shuffledPosts, setShuffledPosts] = useState([]);
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" }); // Detect mobile
 
   useEffect(() => {
     const shuffled = shuffle(posts);
@@ -44,7 +47,7 @@ export default function Home({ posts }) {
         </div>
         <div className="lg:col-span-4 col-span-1">
           <div className="lg:sticky relative top-8">
-            <LiveMatch />
+            {!isMobile && <LiveMatch />} {/* Conditionally render LiveMatch */}
             <PostWidget />
             <Categories />
           </div>
