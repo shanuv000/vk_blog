@@ -17,6 +17,7 @@ const ScheduleTable = () => {
   const flagEmojis = {
     India: "🇮🇳",
     "United States of America": "🇺🇸",
+    USA: "🇺🇸",
     Canada: "🇨🇦",
     Pakistan: "🇵🇰",
     Ireland: "🇮🇪",
@@ -26,7 +27,7 @@ const ScheduleTable = () => {
     England: "🇬🇧",
     Oman: "🇴🇲",
     Afghanistan: "🇦🇫",
-    "West Indies": "🇦🇮",
+    "West Indies": "🌴",
     Uganda: "🇺🇬",
     "Papua New Guinea": "🇵🇬",
     "New Zealand": "🇳🇿",
