@@ -92,7 +92,7 @@ const Header = () => {
                   variants={categoryVariants}
                   onClick={handleLinkClick}
                 >
-                  Live Matches
+                  Live Cricket
                 </motion.span>
               </Link>
               {categories.map((category) => (
@@ -124,7 +124,7 @@ const Header = () => {
                 className="md:inline-block mt-2 align-middle text-yellow-300 font-semibold cursor-pointer ml-4 animate-bounce"
                 variants={categoryVariants}
               >
-                Live Matches
+                Live Cricket
               </motion.span>
             </Link>
           </div>
