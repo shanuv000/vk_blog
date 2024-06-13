@@ -3,17 +3,13 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { getCategories } from "../services";
 import { useData } from "../store/HandleApiContext";
-// import Modal from "./Modal";
-// import { useData } from "../store/HandleApiContext";
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
 
   const { isLiveScore: isLive } = useData();
-  // console.log(isLive);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // console.log(isLive);
-  // Fetch categories and live scores when the component mounts
+
   useEffect(() => {
     getCategories().then((newCategories) => {
       setCategories(newCategories);
@@ -54,6 +50,19 @@ const Header = () => {
     visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
   };
 
+  const liveTextVariants = {
+    pulse: {
+      scale: [1, 1.1, 1],
+      rotate: [0, 10, -10, 0],
+      color: ["#ffffff", "#ff0000", "#ffffff"],
+      transition: {
+        duration: 1.5,
+        repeat: Infinity,
+        repeatType: "mirror",
+      },
+    },
+  };
+
   return (
     <div className="container mx-auto px-4 sm:px-10 mb-8">
       <motion.div
@@ -91,11 +100,20 @@ const Header = () => {
             <div className="md:hidden bg-gray-800 p-4 rounded-md">
               <Link key={"category"} href={`/livecricket`}>
                 <motion.span
-                  className="block text-yellow-400 mt-2 align-middle  font-semibold cursor-pointer"
+                  className="block text-yellow-400 mt-2 align-middle font-semibold cursor-pointer"
                   variants={categoryVariants}
                   onClick={handleLinkClick}
                 >
-                  Live Cricket
+                  {isLive ? (
+                    <motion.span
+                      className="text-red-500"
+                      variants={liveTextVariants}
+                      animate="pulse"
+                    >
+                      Live
+                    </motion.span>
+                  ) : null}
+                  <span> Cricket</span>
                 </motion.span>
               </Link>
               {categories.map((category) => (
@@ -125,16 +143,20 @@ const Header = () => {
             <Link key={"category"} href={`/livecricket`}>
               <motion.span
                 className={`md:inline-block mt-2 align-middle ${
-                  isLive ? "text-green-300 animate-bounce" : "text-white"
-                } font-semibold cursor-pointer  ml-4 `}
+                  isLive ? "text-green-300" : "text-white"
+                } font-semibold cursor-pointer ml-4`}
                 variants={categoryVariants}
               >
                 {isLive ? (
-                  <span className="text-red-500">Live</span>
-                ) : (
-                  <span className="text-green-500">{null}</span>
-                )}{" "}
-                <span className="">Cricket</span>
+                  <motion.span
+                    className="text-red-500"
+                    variants={liveTextVariants}
+                    animate="pulse"
+                  >
+                    Live
+                  </motion.span>
+                ) : null}
+                <span> Cricket</span>
               </motion.span>
             </Link>
           </div>

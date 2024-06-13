@@ -5,6 +5,7 @@ import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";
 import { Tabs, Tab, Box, Slide } from "@mui/material";
 import { useData } from "../../store/HandleApiContext";
+
 const TabPanel = ({ children, value, index }) => {
   return (
     <Slide
@@ -21,8 +22,9 @@ const TabPanel = ({ children, value, index }) => {
 
 const ShowCricket = () => {
   const { isLiveScore } = useData();
-  const settingsDefaultTab = !isLiveScore ? "recent" : "live";
-  const [selectedTab, setSelectedTab] = useState(settingsDefaultTab);
+
+  const settingDefaultTab = () => (isLiveScore ? "live" : "recent");
+  const [selectedTab, setSelectedTab] = useState(settingDefaultTab);
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
