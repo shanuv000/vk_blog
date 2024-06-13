@@ -11,6 +11,7 @@ import axios from "axios";
 // Custom hook for fetching data
 const useFetchData = (url, extractData = (data) => data, initialState = []) => {
   const [data, setData] = useState(initialState);
+  const [dataExist, setDataExist] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const hasFetched = useRef(false);
@@ -27,6 +28,7 @@ const useFetchData = (url, extractData = (data) => data, initialState = []) => {
       }
 
       setData(fetchedData);
+      setDataExist(fetchedData.length > 0);
       setError(null);
     } catch (error) {
       setError("Error fetching data: " + error.message);
@@ -43,13 +45,14 @@ const useFetchData = (url, extractData = (data) => data, initialState = []) => {
     }
   }, [url]);
 
-  return { data, error, loading, refetch: fetchDataAsync };
+  return { data, error, loading, dataExist, refetch: fetchDataAsync };
 };
 
 const DataContext = createContext({
   data: null,
   fetchData: () => {},
   liveScores: null,
+  isLiveScore: false,
   fetchLiveScores: () => {},
   liveScoresError: null,
   loadingLiveScores: false,
@@ -77,6 +80,8 @@ export const DataProvider = ({ children }) => {
     error: liveScoresError,
     loading: loadingLiveScores,
     refetch: fetchLiveScores,
+    dataExist: isLiveScore,
+    // isLiveScore,
   } = useFetchData(
     "https://api-sync.vercel.app/api/cricket/live-scores",
     (data) => data,
@@ -123,6 +128,7 @@ export const DataProvider = ({ children }) => {
         data,
         fetchData,
         liveScores,
+        isLiveScore,
         fetchLiveScores,
         liveScoresError,
         loadingLiveScores,

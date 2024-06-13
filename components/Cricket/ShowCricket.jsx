@@ -20,8 +20,9 @@ const TabPanel = ({ children, value, index }) => {
 };
 
 const ShowCricket = () => {
-  const { liveScores } = useData();
-  const [selectedTab, setSelectedTab] = useState("live");
+  const { isLiveScore } = useData();
+  const settingsDefaultTab = !isLiveScore ? "recent" : "live";
+  const [selectedTab, setSelectedTab] = useState(settingsDefaultTab);
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -37,7 +38,7 @@ const ShowCricket = () => {
         aria-label="match tabs"
         className="bg-white border-b border-gray-300 w-full py-2 sm:py-1 px-2 sm:px-4 rounded"
       >
-        {liveScores.length >= 0 && (
+        {isLiveScore && (
           <Tab
             className={`px-4 py-2 m-1 ${
               selectedTab === "live" ? "text-white" : "text-gray-600"
@@ -69,7 +70,7 @@ const ShowCricket = () => {
         />
       </Tabs>
       <Box className="w-full mt-4 p-4">
-        {liveScores.length >= 0 && (
+        {isLiveScore && (
           <TabPanel value={selectedTab} index="live">
             <LiveMatch />
           </TabPanel>

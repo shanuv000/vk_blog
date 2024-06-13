@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getCategories } from "../services";
+import { useData } from "../store/HandleApiContext";
 // import Modal from "./Modal";
 // import { useData } from "../store/HandleApiContext";
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const { isLiveScore: isLive } = useData();
+  // console.log(isLive);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // console.log(isLive);
   // Fetch categories and live scores when the component mounts
   useEffect(() => {
     getCategories().then((newCategories) => {
@@ -121,11 +124,17 @@ const Header = () => {
             ))}
             <Link key={"category"} href={`/livecricket`}>
               <motion.span
-                className="md:inline-block mt-2 align-middle text-green-300 font-semibold cursor-pointer  ml-4 animate-bounce"
+                className={`md:inline-block mt-2 align-middle ${
+                  isLive ? "text-green-300 animate-bounce" : "text-white"
+                } font-semibold cursor-pointer  ml-4 `}
                 variants={categoryVariants}
               >
-                <span className="text-red-500">Live</span>{" "}
-                <span className=""></span>Cricket
+                {isLive ? (
+                  <span className="text-red-500">Live</span>
+                ) : (
+                  <span className="text-green-500">{null}</span>
+                )}{" "}
+                <span className="">Cricket</span>
               </motion.span>
             </Link>
           </div>
