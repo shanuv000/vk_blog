@@ -39,6 +39,7 @@ const ShowCricket = () => {
         scrollButtons="auto"
         aria-label="match tabs"
         className="bg-white border-b border-gray-300 w-full py-2 sm:py-1 px-2 sm:px-4 rounded"
+        style={{ overflowX: "auto" }} // Ensure overflow is handled
       >
         {isLiveScore && (
           <Tab
