@@ -46,9 +46,7 @@ const ShowCricket = () => {
           {isLiveScore && (
             <Tab
               className={`px-4 py-2 m-1 ${
-                selectedTab === "live"
-                  ? "text-white bg-blue-500"
-                  : "text-gray-600"
+                selectedTab === "live" ? "text-white " : "text-gray-600"
               } rounded-lg transition duration-200`}
               label="Live Match"
               value="live"
@@ -56,27 +54,21 @@ const ShowCricket = () => {
           )}
           <Tab
             className={`px-4 py-2 m-1 ${
-              selectedTab === "recent"
-                ? "text-white bg-blue-500"
-                : "text-gray-600"
+              selectedTab === "recent" ? "text-white " : "text-gray-600"
             } rounded-lg transition duration-200`}
             label="Recent Match"
             value="recent"
           />
           <Tab
             className={`px-4 py-2 m-1 ${
-              selectedTab === "upcoming"
-                ? "text-white bg-blue-500"
-                : "text-gray-600"
+              selectedTab === "upcoming" ? "text-white " : "text-gray-600"
             } rounded-lg transition duration-200`}
             label="Upcoming Match"
             value="upcoming"
           />
           <Tab
             className={`px-4 py-2 m-1 ${
-              selectedTab === "table"
-                ? "text-white bg-blue-500"
-                : "text-gray-600"
+              selectedTab === "table" ? "text-white " : "text-gray-600"
             } rounded-lg transition duration-200`}
             label="T20 World Cup Rankings"
             value="table"

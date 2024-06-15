@@ -77,9 +77,11 @@ const MatchList = ({
                 </h4>
               )}
 
-              <h2 className="text-base font-bold text-red-500 mb-2">
-                {match.playingTeamBat} {match.liveScorebat}
-              </h2>
+              {match.playingTeamBall !== "N/A" && (
+                <h2 className="text-base font-bold text-red-500 mb-2">
+                  {match.playingTeamBat} {match.liveScorebat}
+                </h2>
+              )}
 
               {match.playingTeamBall !== "N/A" && (
                 <h2 className="text-sm font-semibold text-gray-500 mb-2">
