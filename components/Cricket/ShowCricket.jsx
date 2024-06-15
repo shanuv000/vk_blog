@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import SwipeableViews from "react-swipeable-views";
 import MatchTable from "./MatchTable";
 import LiveMatch from "./LiveMatch";
 import RecentMatch from "./RecentMatch";
@@ -23,14 +22,13 @@ const TabPanel = ({ children, value, index }) => {
 
 const ShowCricket = () => {
   const { isLiveScore } = useData();
-  const [selectedTab, setSelectedTab] = useState(isLiveScore ? 0 : 1);
+
+  const [selectedTab, setSelectedTab] = useState(
+    isLiveScore ? "live" : "recent"
+  );
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
-  };
-
-  const handleSwipeChange = (index) => {
-    setSelectedTab(index);
   };
 
   return (
@@ -48,51 +46,59 @@ const ShowCricket = () => {
           {isLiveScore && (
             <Tab
               className={`px-4 py-2 m-1 ${
-                selectedTab === 0 ? "text-white " : "text-gray-600"
+                selectedTab === "live"
+                  ? "text-white bg-blue-500"
+                  : "text-gray-600"
               } rounded-lg transition duration-200`}
               label="Live Match"
-              value={0}
+              value="live"
             />
           )}
           <Tab
             className={`px-4 py-2 m-1 ${
-              selectedTab === 1 ? "text-white " : "text-gray-600"
+              selectedTab === "recent"
+                ? "text-white bg-blue-500"
+                : "text-gray-600"
             } rounded-lg transition duration-200`}
             label="Recent Match"
-            value={1}
+            value="recent"
           />
           <Tab
             className={`px-4 py-2 m-1 ${
-              selectedTab === 2 ? "text-white " : "text-gray-600"
+              selectedTab === "upcoming"
+                ? "text-white bg-blue-500"
+                : "text-gray-600"
             } rounded-lg transition duration-200`}
             label="Upcoming Match"
-            value={2}
+            value="upcoming"
           />
           <Tab
             className={`px-4 py-2 m-1 ${
-              selectedTab === 3 ? "text-white " : "text-gray-600"
+              selectedTab === "table"
+                ? "text-white bg-blue-500"
+                : "text-gray-600"
             } rounded-lg transition duration-200`}
             label="T20 World Cup Rankings"
-            value={3}
+            value="table"
           />
         </Tabs>
       </Box>
-      <SwipeableViews index={selectedTab} onChangeIndex={handleSwipeChange}>
+      <Box className="w-full mt-4 p-4">
         {isLiveScore && (
-          <TabPanel value={selectedTab} index={0}>
+          <TabPanel value={selectedTab} index="live">
             <LiveMatch />
           </TabPanel>
         )}
-        <TabPanel value={selectedTab} index={1}>
+        <TabPanel value={selectedTab} index="recent">
           <RecentMatch />
         </TabPanel>
-        <TabPanel value={selectedTab} index={2}>
+        <TabPanel value={selectedTab} index="upcoming">
           <UpcomingMatch />
         </TabPanel>
-        <TabPanel value={selectedTab} index={3}>
+        <TabPanel value={selectedTab} index="table">
           <MatchTable />
         </TabPanel>
-      </SwipeableViews>
+      </Box>
     </>
   );
 };
