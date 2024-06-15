@@ -15,7 +15,7 @@ const TabPanel = ({ children, value, index }) => {
       unmountOnExit
       timeout={500}
     >
-      <div>{value === index && children}</div>
+      <div>{children}</div>
     </Slide>
   );
 };
@@ -51,14 +51,14 @@ const ShowCricket = () => {
         )}
         <Tab
           className={`px-4 py-2 m-1 ${
-            selectedTab === "recent" ? " text-white" : "text-gray-600"
+            selectedTab === "recent" ? "text-white" : "text-gray-600"
           } rounded-lg transition duration-200`}
           label="Recent Match"
           value="recent"
         />
         <Tab
           className={`px-4 py-2 m-1 ${
-            selectedTab === "upcoming" ? " text-white" : "text-gray-600"
+            selectedTab === "upcoming" ? "text-white" : "text-gray-600"
           } rounded-lg transition duration-200`}
           label="Upcoming Match"
           value="upcoming"
