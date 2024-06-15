@@ -95,11 +95,13 @@ const MatchList = ({
                 {match.matchDetails}
               </p>
 
-              <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                <span className="font-semibold text-green-500">
-                  {match.time === "N/A" ? "Today" : match.time}
-                </span>
-              </p>
+              {title === "Live Matches" && (
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                  <span className="font-semibold text-green-500">
+                    {match.time === "N/A" ? "Today" : match.time}
+                  </span>
+                </p>
+              )}
 
               <p className="text-xs sm:text-sm text-gray-600 mb-1">
                 <span className="font-semibold">Location:</span>{" "}
