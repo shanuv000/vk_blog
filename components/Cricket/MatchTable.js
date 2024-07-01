@@ -4,7 +4,6 @@ import { BarLoader } from "react-spinners";
 
 const ScheduleTable = () => {
   const { schedule, loadingSchedule } = useData();
-
   if (loadingSchedule) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -59,6 +58,38 @@ const ScheduleTable = () => {
     return forms;
   };
 
+  // Check which columns have null or empty values and should be hidden
+  const columnsToCheck = [
+    "matches",
+    "wins",
+    "losses",
+    "ties",
+    "noResult",
+    "points",
+    "netRunRate",
+    "seriesForm",
+    "nextMatch",
+  ];
+
+  const columnsWithNullValues = columnsToCheck.reduce((acc, column) => {
+    const hasNull = schedule.some((group) =>
+      group.teams.some((team) => {
+        if (column === "nextMatch") {
+          return !team[column] || !team[column].for || !team[column].against;
+        }
+        return (
+          team[column] === null ||
+          team[column] === undefined ||
+          team[column] === ""
+        );
+      })
+    );
+    if (hasNull) {
+      acc[column] = true;
+    }
+    return acc;
+  }, {});
+
   return (
     <div className="p-2 md:p-4">
       {schedule.map((group) => (
@@ -73,33 +104,52 @@ const ScheduleTable = () => {
                   <th className="py-1 px-2 md:px-4 bg-gray-200 text-left">
                     Team
                   </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Matches
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Wins
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Losses
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Ties
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    No Result
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Points
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Net Run Rate
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Series Form
-                  </th>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                    Next Match
-                  </th>
+                  {!columnsWithNullValues.matches && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Matches
+                    </th>
+                  )}
+                  {!columnsWithNullValues.wins && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Wins
+                    </th>
+                  )}
+                  {!columnsWithNullValues.losses && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Losses
+                    </th>
+                  )}
+                  {!columnsWithNullValues.ties && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Ties
+                    </th>
+                  )}
+                  {!columnsWithNullValues.noResult && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      No Result
+                    </th>
+                  )}
+                  {!columnsWithNullValues.points && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Points
+                    </th>
+                  )}
+                  {!columnsWithNullValues.netRunRate && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Net Run Rate
+                    </th>
+                  )}
+                  {!columnsWithNullValues.seriesForm && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Series Form
+                    </th>
+                  )}
+
+                  {/* {!columnsWithNullValues.nextMatch && (
+                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
+                      Next Match
+                    </th>
+                  )} */}
                 </tr>
               </thead>
               <tbody>
@@ -117,44 +167,59 @@ const ScheduleTable = () => {
                     <td className="py-1 px-2 md:px-4 border-b">
                       {flagEmojis[team.team]} {team.team}
                     </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.matches}
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.wins}
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.losses}
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.ties}
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.noResult}
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.points}
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.netRunRate}
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      <div className="inline-flex flex-wrap gap-0.5 md:gap-1">
-                        {parseSeriesForm(team.seriesForm).map((form, index) => (
-                          <span
-                            key={index}
-                            className={`inline-block px-1 md:px-2 py-0.5 md:py-1 rounded ${getSeriesFormClass(
-                              form
-                            )}`}
-                          >
-                            {form}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-1 px-2 md:px-4 border-b text-right">
-                      {team.nextMatch.nextMatches}
-                    </td>
+                    {!columnsWithNullValues.matches && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        {team.matches}
+                      </td>
+                    )}
+                    {!columnsWithNullValues.wins && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        {team.wins}
+                      </td>
+                    )}
+                    {!columnsWithNullValues.losses && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        {team.losses}
+                      </td>
+                    )}
+                    {!columnsWithNullValues.ties && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        {team.ties}
+                      </td>
+                    )}
+                    {!columnsWithNullValues.noResult && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        {team.noResult}
+                      </td>
+                    )}
+                    {!columnsWithNullValues.points && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        {team.points}
+                      </td>
+                    )}
+                    {!columnsWithNullValues.netRunRate && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        {team.netRunRate}
+                      </td>
+                    )}
+                    {!columnsWithNullValues.seriesForm && (
+                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                        <div className="inline-flex flex-wrap gap-0.5 md:gap-1">
+                          {parseSeriesForm(team.seriesForm).map(
+                            (form, index) => (
+                              <span
+                                key={index}
+                                className={`inline-block px-1 md:px-2 py-0.5 md:py-1 rounded ${getSeriesFormClass(
+                                  form
+                                )}`}
+                              >
+                                {form}
+                              </span>
+                            )
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

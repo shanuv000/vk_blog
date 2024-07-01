@@ -13,4 +13,17 @@ module.exports = {
       },
     ];
   },
+  webpack(config, options) {
+    config.module.rules.push({
+      test: /\.(mp3|wav)$/,
+      use: {
+        loader: "file-loader",
+        options: {
+          name: "[path][name].[ext]",
+        },
+      },
+    });
+
+    return config;
+  },
 };

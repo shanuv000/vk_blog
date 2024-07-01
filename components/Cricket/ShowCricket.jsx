@@ -5,6 +5,8 @@ import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";
 import { Tabs, Tab, Box, Slide } from "@mui/material";
 import { useData } from "../../store/HandleApiContext";
+import useSound from "use-sound";
+import tabChangeSound from "../../public/cricket/sport.mp3"; // Ensure this path is correct
 
 const TabPanel = ({ children, value, index }) => {
   return (
@@ -22,13 +24,15 @@ const TabPanel = ({ children, value, index }) => {
 
 const ShowCricket = () => {
   const { isLiveScore } = useData();
-
   const [selectedTab, setSelectedTab] = useState(
     isLiveScore ? "live" : "recent"
   );
 
+  const [play] = useSound(tabChangeSound);
+
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
+    play(); // Play sound on tab change
   };
 
   return (
