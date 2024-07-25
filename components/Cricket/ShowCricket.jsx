@@ -5,8 +5,6 @@ import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";
 import { Tabs, Tab, Box, Slide } from "@mui/material";
 import { useData } from "../../store/HandleApiContext";
-import useSound from "use-sound";
-import tabChangeSound from "../../public/cricket/sport.mp3"; // Ensure this path is correct
 
 const TabPanel = ({ children, value, index }) => (
   <Slide
@@ -25,17 +23,17 @@ const ShowCricket = () => {
   const [selectedTab, setSelectedTab] = useState(
     isLiveScore ? "live" : "recent"
   );
-  const [play] = useSound(tabChangeSound);
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
-    play(); // Play sound on tab change
   };
 
   const renderTab = (label, value) => (
     <Tab
       className={`px-4 py-2 m-1 ${
-        selectedTab === value ? "text-white" : "text-gray-600"
+        selectedTab === value
+          ? "text-white "
+          : "text-gray-600 hover:bg-gray-100"
       } rounded-lg transition duration-200`}
       label={label}
       value={value}
@@ -44,15 +42,18 @@ const ShowCricket = () => {
 
   return (
     <>
-      <Box display="flex" justifyContent="center">
+      <Box
+        display="flex"
+        justifyContent="center"
+        className="bg-gray-50 shadow-md rounded-lg overflow-hidden"
+      >
         <Tabs
           value={selectedTab}
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="auto"
           aria-label="match tabs"
-          className="bg-white border-b border-gray-300 w-full py-2 sm:py-1 px-2 sm:px-4 rounded"
-          style={{ overflowX: "auto" }}
+          className="w-full py-2 px-4"
         >
           {isLiveScore && renderTab("Live Match", "live")}
           {renderTab("Recent Match", "recent")}
@@ -60,7 +61,7 @@ const ShowCricket = () => {
           {renderTab("T20 World Cup Rankings", "table")}
         </Tabs>
       </Box>
-      <Box className="w-full mt-4 p-4">
+      <Box className="w-full mt-4 p-4 bg-white shadow-md rounded-lg">
         {isLiveScore && (
           <TabPanel value={selectedTab} index="live">
             <LiveMatch />
