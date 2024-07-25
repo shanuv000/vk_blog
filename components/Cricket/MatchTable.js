@@ -11,7 +11,7 @@ const ScheduleTable = () => {
       </div>
     );
   }
-
+  console.log(loadingSchedule);
   // Mapping of team names to their flag emojis
   const flagEmojis = {
     India: "🇮🇳",
