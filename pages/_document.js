@@ -16,7 +16,7 @@ class MyDocument extends Document {
             href="https://firebasestorage.googleapis.com/v0/b/shanu-chess.appspot.com/o/logo%2Fblog-logo%2Fmain-logo-transparent.png?alt=media&token=94294bb8-3404-44ce-81ab-b2f36ae1988e"
           />
 
-          {/* Ensure scripts are added correctly */}
+          {/* Google Analytics script */}
           <Script
             async
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
@@ -32,6 +32,20 @@ class MyDocument extends Document {
               `,
             }}
           />
+
+          {/* Microsoft Clarity script */}
+          <Script
+            id="clarity-script"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(c,l,a,r,i,t,y){
+                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "o2yidwokf0");
+              `,
+            }}
+          />
         </Head>
         <body>
           <Main />
@@ -42,10 +56,7 @@ class MyDocument extends Document {
   }
 }
 
-// Move default title to layout.js or page.js
-// This allows dynamic title updates
 MyDocument.defaultProps = {
-  // title: "News", // Remove this from defaultProps
   keywords: "news",
   description:
     "Get latest news about celebrity, marvel characters and what is happening arond the world",
