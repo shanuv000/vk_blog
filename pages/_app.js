@@ -1,30 +1,12 @@
-import React from "react";
-
+import React, { useEffect } from "react";
 import "../styles/globals.scss";
 import { Layout } from "../components";
-
-// import { useRouter } from "next/router";
-// import * as gtag from "../lib/gtag";
-// import Document, { Html, Head, Main, NextScript } from "next/document";
-// import { GoogleAnalytics } from "@next/third-parties/google";
-// import { fetchData } from "../components/ExtractIPs/ipfunc";
 import Head from "next/head";
+import Script from "next/script";
 
 function MyApp({ Component, pageProps }) {
-  // const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
-  // useEffect(() => {
-  //   const start = performance.now(); // Start timing
-  //   console.log("Rendering started");
-
-  //   return () => {
-  //     const end = performance.now(); // End timing
-  //     console.log("Rendering finished");
-  //     console.log("Time taken:", end - start, "milliseconds");
-  //   };
-  // }, []);
   return (
     <>
-      {}
       <Head>
         <title>Only Blog</title> {"blog"}
         <link
@@ -37,9 +19,23 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
 
+      {/* Microsoft Clarity Script */}
+      <Script
+        id="clarity-script"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "o2yidwokf0");
+          `,
+        }}
+      />
+
       <Layout>
         <Component {...pageProps} />
-        {/* <GoogleAnalytics gaId={gid} /> */}
       </Layout>
     </>
   );
