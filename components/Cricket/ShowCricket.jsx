@@ -58,7 +58,7 @@ const ShowCricket = () => {
           {isLiveScore && renderTab("Live Match", "live")}
           {renderTab("Recent Match", "recent")}
           {renderTab("Upcoming Match", "upcoming")}
-          {renderTab("T20 World Cup Rankings", "table")}
+          {renderTab("ICC Champions Trophy", "table")}
         </Tabs>
       </Box>
       <Box className="w-full mt-4 p-4 bg-white shadow-md rounded-lg">
