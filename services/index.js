@@ -1,14 +1,11 @@
 import { request, gql } from "graphql-request";
 
-// Construct absolute GraphQL API URL
 const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
-const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-const host = process.env.VERCEL_URL || "localhost:3000";
-const fullGraphqlAPI = `${protocol}://${host}${graphqlAPI}`;
+
 export const getPosts = async () => {
   const query = gql`
     query MyQuery {
-      postsConnection(first: 7, orderBy: createdAt_DESC) {
+      postsConnection(first: 7, orderBy: publishedAt_DESC) {
         edges {
           cursor
           node {
@@ -20,7 +17,7 @@ export const getPosts = async () => {
                 url
               }
             }
-            createdAt
+            publishedAt
             slug
             title
             excerpt
@@ -38,7 +35,6 @@ export const getPosts = async () => {
   `;
 
   const result = await request(graphqlAPI, query);
-
   return result.postsConnection.edges;
 };
 

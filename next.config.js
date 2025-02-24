@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
+  images: {
+    domains: ["media.graphassets.com"], // Add Hygraph's new image domain
+  },
   async rewrites() {
     return [
       {
