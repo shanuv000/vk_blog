@@ -2,13 +2,13 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  
+
   // Image configuration
   images: {
     domains: ["media.graphassets.com"], // Hygraph's image domain
     formats: ['image/avif', 'image/webp'],
   },
-  
+
   // Rewrites configuration
   async rewrites() {
     return [
@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  
+
   // Webpack configuration for audio files
   webpack(config) {
     config.module.rules.push({
@@ -37,18 +37,13 @@ const nextConfig: NextConfig = {
 
     return config;
   },
-  
-  // Next.js 15 optimizations
-  swcMinify: true,
-  
+
   // Caching configuration
   experimental: {
     // Set staleTime for dynamic routes to match Next.js 15 defaults
     staleTimes: {
       dynamic: 0,
     },
-    // Optimize bundling of external packages
-    bundlePagesRouterDependencies: true,
   },
 };
 
