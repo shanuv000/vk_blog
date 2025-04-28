@@ -1,6 +1,4 @@
-import { request, gql } from "graphql-request";
-
-const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
+import { fetchFromCDN, gql } from "./hygraph";
 
 export const getPosts = async () => {
   const query = gql`
@@ -34,7 +32,7 @@ export const getPosts = async () => {
     }
   `;
 
-  const result = await request(graphqlAPI, query);
+  const result = await fetchFromCDN(query);
   return result.postsConnection.edges;
 };
 
@@ -48,8 +46,7 @@ export const getCategories = async () => {
     }
   `;
 
-  const result = await request(graphqlAPI, query);
-
+  const result = await fetchFromCDN(query);
   return result.categories;
 };
 
@@ -82,8 +79,7 @@ export const getPostDetails = async (slug) => {
     }
   `;
 
-  const result = await request(graphqlAPI, query, { slug });
-
+  const result = await fetchFromCDN(query, { slug });
   return result.post;
 };
 
@@ -106,8 +102,7 @@ export const getSimilarPosts = async (categories, slug) => {
       }
     }
   `;
-  const result = await request(graphqlAPI, query, { slug, categories });
-
+  const result = await fetchFromCDN(query, { slug, categories });
   return result.posts;
 };
 
@@ -141,8 +136,7 @@ export const getAdjacentPosts = async (createdAt, slug) => {
     }
   `;
 
-  const result = await request(graphqlAPI, query, { slug, createdAt });
-
+  const result = await fetchFromCDN(query, { slug, createdAt });
   return { next: result.next[0], previous: result.previous[0] };
 };
 
@@ -181,15 +175,14 @@ export const getCategoryPost = async (slug) => {
     }
   `;
 
-  const result = await request(graphqlAPI, query, { slug });
-
+  const result = await fetchFromCDN(query, { slug });
   return result.postsConnection.edges;
 };
 
 export const getFeaturedPosts = async () => {
   const query = gql`
-    query GetCategoryPost() {
-      posts(where: {featuredpost: true},first: 12, orderBy: createdAt_DESC) {
+    query GetCategoryPost {
+      posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
         author {
           name
           photo {
@@ -205,10 +198,10 @@ export const getFeaturedPosts = async () => {
         slug
         createdAt
       }
-    }   
+    }
   `;
   try {
-    const result = await request(graphqlAPI, query);
+    const result = await fetchFromCDN(query);
 
     return result.posts.map((post) => ({
       ...post,
@@ -258,7 +251,7 @@ export const getComments = async (slug) => {
       }
     `;
 
-    const result = await request(graphqlAPI, query, { slug });
+    const result = await fetchFromCDN(query, { slug });
 
     if (result.errors) {
       // Assuming Hygraph's error format (adjust as needed)
@@ -276,11 +269,8 @@ export const getComments = async (slug) => {
 
 export const getRecentPosts = async () => {
   const query = gql`
-    query GetPostDetails() {
-      posts(
-        orderBy: createdAt_ASC
-        last: 3
-      ) {
+    query GetPostDetails {
+      posts(orderBy: createdAt_ASC, last: 3) {
         title
         featuredImage {
           url
@@ -290,7 +280,6 @@ export const getRecentPosts = async () => {
       }
     }
   `;
-  const result = await request(graphqlAPI, query);
-
+  const result = await fetchFromCDN(query);
   return result.posts;
 };

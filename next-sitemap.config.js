@@ -1,32 +1,6 @@
 // next-sitemap.config.js
-
-const { request, gql } = require("graphql-request");
-
-const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
-
-async function getNewsArticles() {
-  const query = gql`
-    query GetNewsArticles {
-      postsConnection(first: 100, orderBy: createdAt_DESC) {
-        edges {
-          node {
-            slug
-            title
-            createdAt
-          }
-        }
-      }
-    }
-  `;
-
-  const result = await request(graphqlAPI, query);
-
-  return result.postsConnection.edges.map(({ node }) => ({
-    loc: `https://onlyblog.vercel.app/${node.slug}`,
-    publication_date: node.createdAt,
-    title: node.title,
-  }));
-}
+require("dotenv").config();
+const { getNewsArticles } = require("./services/sitemap-utils");
 
 module.exports = {
   siteUrl: "https://onlyblog.vercel.app",
@@ -38,14 +12,14 @@ module.exports = {
       lastmod: new Date().toISOString(),
     },
   ],
-  extraPaths: async (config) => {
+  extraPaths: async () => {
     const newsArticles = await getNewsArticles();
     return newsArticles.map((article) => ({
       loc: article.loc,
       lastmod: article.publication_date,
     }));
   },
-  transform: async (config, path) => {
+  transform: async (_, path) => {
     const articles = await getNewsArticles();
     const article = articles.find((article) => article.loc === path);
     return {

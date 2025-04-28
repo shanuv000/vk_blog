@@ -6,32 +6,41 @@ import Link from "next/link";
 import { grpahCMSImageLoader } from "../util";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
+// Default avatar for authors without photos
+const DEFAULT_AVATAR =
+  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+
 const PostCard = ({ post }) => (
   <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
     <div className="relative overflow-hidden shadow-md pb-80 mb-6">
-      <LazyLoadImage
-        src={post.featuredImage.url} // use normal <img> attributes as props
-        // width={image.width}
-        className="object-top absolute h-80 w-full object-cover  shadow-lg rounded-t-lg lg:rounded-lg"
-      />
+      {post.featuredImage?.url ? (
+        <LazyLoadImage
+          src={post.featuredImage.url}
+          className="object-top absolute h-80 w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
+        />
+      ) : (
+        <div className="absolute h-80 w-full bg-gray-200 shadow-lg rounded-t-lg lg:rounded-lg flex items-center justify-center">
+          <p className="text-gray-500">No image available</p>
+        </div>
+      )}
     </div>
 
     <h1 className="transition duration-700 text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl font-semibold">
       <Link href={`/post/${post.slug}`}>{post.title}</Link>
     </h1>
     <div className="block lg:flex text-center items-center justify-center mb-8 w-full">
-      <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8 items-center">
+      <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8">
         <Image
           unoptimized
           loader={grpahCMSImageLoader}
-          alt={post.author.name}
+          alt={post.author?.name || "Author"}
           height={30}
           width={30}
           className="align-middle rounded-full"
-          src={post.author.photo.url}
+          src={post.author?.photo?.url || DEFAULT_AVATAR}
         />
         <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg">
-          {post.author.name}
+          {post.author?.name || "Anonymous"}
         </p>
       </div>
       <div className="font-medium text-gray-700">
@@ -50,12 +59,14 @@ const PostCard = ({ post }) => (
           />
         </svg>
         <span className="align-middle">
-          {moment(post.createdAt).format("MMM DD, YYYY")}
+          {post.createdAt
+            ? moment(post.createdAt).format("MMM DD, YYYY")
+            : "No date"}
         </span>
       </div>
     </div>
     <p className="text-center text-lg text-gray-700 font-normal px-4 lg:px-20 mb-8 truncate md:text-clip">
-      {post.excerpt}
+      {post.excerpt || "Read this article to learn more..."}
     </p>
     <div className="text-center">
       <Link href={`/post/${post.slug}`}>

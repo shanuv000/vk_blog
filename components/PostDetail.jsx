@@ -7,6 +7,7 @@ import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
 import { useData } from "../store/HandleApiContext";
 import { Testing } from "./AdditionalPosts/PostsAdditions";
 import ErrorBoundary from "./ErrorBoundary";
+import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 
 const PostDetail = ({ post }) => {
   const { data, fetchData, fetchDataAsync } = useData();
@@ -49,8 +50,8 @@ const PostDetail = ({ post }) => {
 
           <div className="relative overflow-hidden shadow-md mb-6">
             <motion.img
-              src={post.featuredImage.url}
-              alt={post.title}
+              src={post.featuredImage?.url || DEFAULT_FEATURED_IMAGE}
+              alt={post.title || "Post image"}
               className="object-top h-full w-full rounded-t-lg"
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
@@ -61,14 +62,14 @@ const PostDetail = ({ post }) => {
             <div className="flex items-center mb-8 w-full">
               <div className="flex items-center mb-4 lg:mb-0 w-full lg:w-auto mr-8">
                 <img
-                  src={post.author.photo.url}
-                  alt={post.author.name}
+                  src={post.author?.photo?.url || DEFAULT_AVATAR}
+                  alt={post.author?.name || "Author"}
                   height={30}
                   width={30}
                   className="align-middle rounded-full"
                 />
                 <p className="inline align-middle text-gray-700 ml-2 text-lg">
-                  {post.author.name}
+                  {post.author?.name || "Anonymous"}
                 </p>
               </div>
 
@@ -87,7 +88,11 @@ const PostDetail = ({ post }) => {
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                <span>{moment(post.createdAt).format("DD MMM, YYYY")}</span>
+                <span>
+                  {post.createdAt
+                    ? moment(post.createdAt).format("DD MMM, YYYY")
+                    : "No date"}
+                </span>
               </div>
             </div>
             {/*  */}
@@ -97,13 +102,24 @@ const PostDetail = ({ post }) => {
               {post.title}
             </h1>
             <Testing slug={post.slug} />
-            {post.content.raw.children.map((typeObj, index) => {
-              const children = typeObj.children.map((item, itemindex) =>
-                getContentFragment(itemindex, item.text, item)
-              );
+            {post.content?.raw?.children ? (
+              post.content.raw.children.map((typeObj, index) => {
+                const children = typeObj.children.map((item, itemindex) =>
+                  getContentFragment(itemindex, item.text, item)
+                );
 
-              return getContentFragment(index, children, typeObj, typeObj.type);
-            })}
+                return getContentFragment(
+                  index,
+                  children,
+                  typeObj,
+                  typeObj.type
+                );
+              })
+            ) : (
+              <p className="text-center text-lg text-gray-700 font-normal">
+                No content available for this post.
+              </p>
+            )}
           </div>
         </motion.div>
       </>

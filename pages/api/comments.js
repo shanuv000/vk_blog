@@ -1,17 +1,13 @@
-import { GraphQLClient, gql } from "graphql-request";
+import { contentClient, gql } from "../../services/hygraph";
 
-const graphQlApi = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
-const graphQlToken = process.env.GRAPHCMS_TOKEN;
-console.log("GraphQL API:", graphQlApi);
-console.log("GraphQL Token:", graphQlToken ? "Present" : "Missing");
+// Log for debugging purposes
+console.log("Hygraph API initialized for comments");
 export default async function comments(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const graphQLClient = new GraphQLClient(graphQlApi, {
-    headers: { authorization: `Bearer ${graphQlToken}` },
-  });
+  // We're using the pre-configured contentClient from our hygraph.js file
 
   const query = gql`
     mutation createComment(
@@ -41,7 +37,7 @@ export default async function comments(req, res) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    const result = await graphQLClient.request(query, {
+    const result = await contentClient.request(query, {
       name,
       email,
       comment,

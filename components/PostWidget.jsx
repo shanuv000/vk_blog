@@ -3,6 +3,7 @@ import moment from "moment";
 import Link from "next/link";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { getRecentPosts, getSimilarPosts } from "../services";
+import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 const PostWidget = ({ categories, slug }) => {
   const [relatedPosts, setRelatedPosts] = useState([]);
   useEffect(() => {
@@ -26,10 +27,10 @@ const PostWidget = ({ categories, slug }) => {
         <div className="flex items-center w-full mb-4" key={post.title}>
           <div className="w-16 flex-none">
             <LazyLoadImage
-              alt={post.title}
+              alt={post.title || "Post image"}
               height={60}
               className="align-middle rounded-full"
-              src={post.featuredImage.url} // use normal <img> attributes as props
+              src={post.featuredImage?.url || DEFAULT_FEATURED_IMAGE}
               width={60}
             />
 
@@ -43,14 +44,16 @@ const PostWidget = ({ categories, slug }) => {
           </div>
           <div className="flex-grow ml-4">
             <p className="text-gray-500 font-xs">
-              {moment(post.createdAt).format("MMM DD, YYYY")}
+              {post.createdAt
+                ? moment(post.createdAt).format("MMM DD, YYYY")
+                : "No date"}
             </p>
             <Link
               href={`/post/${post.slug}`}
-              key={post.title}
+              key={post.title || "untitled"}
               className="text-md"
             >
-              {post.title}
+              {post.title || "Untitled Post"}
             </Link>
           </div>
         </div>
