@@ -41,13 +41,6 @@ const PostDetails = ({ post }) => {
     );
   }
 
-  // Log post data to help with debugging
-  console.log(`Rendering post: ${post.slug}`, {
-    title: post.title,
-    createdAt: post.createdAt,
-    publishedAt: post.publishedAt,
-  });
-
   return (
     <>
       <div className="sm:container mx-auto px-4 lg:px-10 mb-8">
@@ -118,26 +111,10 @@ export async function getStaticProps({ params }) {
 // Specify dynamic routes to pre-render pages based on data.
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
-  try {
-    // Get the most recent posts to pre-render
-    const posts = await getPosts();
-
-    console.log(`Pre-rendering ${posts.length} posts at build time`);
-
-    return {
-      // Only pre-render the most recent posts
-      paths: posts.map(({ node: { slug } }) => ({ params: { slug } })),
-      // Use 'blocking' to wait for the page to be generated on-demand
-      fallback: "blocking",
-    };
-  } catch (error) {
-    console.error("Error in getStaticPaths:", error);
-
-    // Return empty paths array but still use blocking fallback
-    // This ensures new posts can still be generated on-demand
-    return {
-      paths: [],
-      fallback: "blocking",
-    };
-  }
+  const posts = await getPosts();
+  return {
+    paths: posts.map(({ node: { slug } }) => ({ params: { slug } })),
+    // Use 'blocking' to wait for the page to be generated on-demand
+    fallback: "blocking",
+  };
 }

@@ -6,11 +6,16 @@ export const HYGRAPH_CDN_API = process.env.NEXT_PUBLIC_HYGRAPH_CDN_API;
 export const HYGRAPH_AUTH_TOKEN = process.env.HYGRAPH_AUTH_TOKEN;
 
 // Create clients for different purposes
-export const contentClient = new GraphQLClient(HYGRAPH_CONTENT_API, {
-  headers: {
-    authorization: `Bearer ${HYGRAPH_AUTH_TOKEN}`,
-  },
-});
+export const contentClient = new GraphQLClient(HYGRAPH_CONTENT_API);
+
+// Create an authenticated client if token is available
+export const authClient = HYGRAPH_AUTH_TOKEN
+  ? new GraphQLClient(HYGRAPH_CONTENT_API, {
+      headers: {
+        authorization: `Bearer ${HYGRAPH_AUTH_TOKEN}`,
+      },
+    })
+  : contentClient; // Fallback to non-authenticated client
 
 export const cdnClient = new GraphQLClient(HYGRAPH_CDN_API);
 
@@ -21,14 +26,14 @@ export const fetchFromCDN = async (query, variables = {}) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-    // Add a timestamp to bypass caching
-    const headers = {
-      "Cache-Control": "no-cache",
-      Pragma: "no-cache",
-      "X-Request-Time": new Date().toISOString(),
+    // Add a timestamp parameter to the variables to bypass caching
+    // This is safer than using headers which can cause CORS issues
+    const timestampedVariables = {
+      ...variables,
+      _timestamp: new Date().getTime(), // Add timestamp as a variable
     };
 
-    const result = await cdnClient.request(query, variables, headers);
+    const result = await cdnClient.request(query, timestampedVariables);
     clearTimeout(timeoutId);
 
     return result;
@@ -39,14 +44,13 @@ export const fetchFromCDN = async (query, variables = {}) => {
     try {
       console.log("Falling back to Content API due to CDN failure");
 
-      // Add headers to bypass caching for content API too
-      const headers = {
-        "Cache-Control": "no-cache",
-        Pragma: "no-cache",
-        "X-Request-Time": new Date().toISOString(),
+      // Add timestamp to variables for content API too
+      const timestampedVariables = {
+        ...variables,
+        _timestamp: new Date().getTime(), // Add timestamp as a variable
       };
 
-      return await contentClient.request(query, variables, headers);
+      return await contentClient.request(query, timestampedVariables);
     } catch (fallbackError) {
       console.error("Fallback to Content API also failed:", fallbackError);
       throw error; // Throw the original error
@@ -57,14 +61,13 @@ export const fetchFromCDN = async (query, variables = {}) => {
 // Helper function for operations that might include mutations (uses Content API)
 export const fetchFromContentAPI = async (query, variables = {}) => {
   try {
-    // Add headers to bypass caching
-    const headers = {
-      "Cache-Control": "no-cache",
-      Pragma: "no-cache",
-      "X-Request-Time": new Date().toISOString(),
+    // Add a timestamp parameter to the variables to bypass caching
+    const timestampedVariables = {
+      ...variables,
+      _timestamp: new Date().getTime(), // Add timestamp as a variable
     };
 
-    return await contentClient.request(query, variables, headers);
+    return await contentClient.request(query, timestampedVariables);
   } catch (error) {
     console.error("Error fetching from Hygraph Content API:", error);
     throw error;

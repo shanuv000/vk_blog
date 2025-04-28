@@ -1,7 +1,7 @@
 import { fetchFromCDN, fetchFromContentAPI, gql } from "./hygraph";
+import { fetchViaProxy, gql as proxyGql } from "./proxy";
 
 export const getPosts = async () => {
-  // Standard query using postsConnection with publishedAt ordering
   const query = gql`
     query MyQuery {
       postsConnection(first: 20, orderBy: publishedAt_DESC) {
@@ -34,112 +34,28 @@ export const getPosts = async () => {
     }
   `;
 
-  // Alternative query using createdAt ordering
-  const alternativeQuery = gql`
-    query MyAlternativeQuery {
-      postsConnection(first: 20, orderBy: createdAt_DESC) {
-        edges {
-          cursor
-          node {
-            author {
-              bio
-              name
-              id
-              photo {
-                url
-              }
-            }
-            publishedAt
-            createdAt
-            slug
-            title
-            excerpt
-            featuredImage {
-              url
-            }
-            categories {
-              name
-              slug
-            }
-          }
-        }
-      }
-    }
-  `;
-
   try {
-    console.log("Fetching posts using standard query");
+    console.log("Fetching posts");
+
+    // First try using the proxy API to avoid CORS issues
+    try {
+      console.log("Trying proxy API for posts");
+      const proxyResult = await fetchViaProxy(query);
+
+      if (proxyResult.postsConnection && proxyResult.postsConnection.edges) {
+        console.log(
+          `Found ${proxyResult.postsConnection.edges.length} posts using proxy API`
+        );
+        return proxyResult.postsConnection.edges;
+      }
+    } catch (proxyError) {
+      console.error("Proxy API failed for posts:", proxyError);
+    }
+
+    // If proxy fails, fall back to direct CDN
+    console.log("Falling back to direct CDN for posts");
     const result = await fetchFromCDN(query);
-
-    if (
-      result.postsConnection &&
-      result.postsConnection.edges &&
-      result.postsConnection.edges.length > 0
-    ) {
-      console.log(
-        `Found ${result.postsConnection.edges.length} posts using standard query`
-      );
-      return result.postsConnection.edges;
-    }
-
-    console.log(
-      "No posts found using standard query, trying alternative query"
-    );
-
-    // If standard query returns no results, try the alternative query
-    const alternativeResult = await fetchFromCDN(alternativeQuery);
-
-    if (
-      alternativeResult.postsConnection &&
-      alternativeResult.postsConnection.edges &&
-      alternativeResult.postsConnection.edges.length > 0
-    ) {
-      console.log(
-        `Found ${alternativeResult.postsConnection.edges.length} posts using alternative query`
-      );
-      return alternativeResult.postsConnection.edges;
-    }
-
-    console.log("No posts found using alternative query, trying content API");
-
-    // Try content API with standard query
-    try {
-      const contentResult = await fetchFromContentAPI(query);
-      if (
-        contentResult.postsConnection &&
-        contentResult.postsConnection.edges &&
-        contentResult.postsConnection.edges.length > 0
-      ) {
-        console.log(
-          `Found ${contentResult.postsConnection.edges.length} posts using content API`
-        );
-        return contentResult.postsConnection.edges;
-      }
-    } catch (contentError) {
-      console.error("Content API query failed:", contentError);
-    }
-
-    // Try content API with alternative query
-    try {
-      const contentAlternativeResult = await fetchFromContentAPI(
-        alternativeQuery
-      );
-      if (
-        contentAlternativeResult.postsConnection &&
-        contentAlternativeResult.postsConnection.edges &&
-        contentAlternativeResult.postsConnection.edges.length > 0
-      ) {
-        console.log(
-          `Found ${contentAlternativeResult.postsConnection.edges.length} posts using content API alternative query`
-        );
-        return contentAlternativeResult.postsConnection.edges;
-      }
-    } catch (contentAltError) {
-      console.error("Content API alternative query failed:", contentAltError);
-    }
-
-    console.log("All attempts to fetch posts failed");
-    return [];
+    return result.postsConnection.edges;
   } catch (error) {
     console.error("Error fetching posts:", error);
     return [];
@@ -156,12 +72,36 @@ export const getCategories = async () => {
     }
   `;
 
-  const result = await fetchFromCDN(query);
-  return result.categories;
+  try {
+    console.log("Fetching categories");
+
+    // First try using the proxy API to avoid CORS issues
+    try {
+      console.log("Trying proxy API for categories");
+      const proxyResult = await fetchViaProxy(query);
+
+      if (proxyResult.categories) {
+        console.log(
+          `Found ${proxyResult.categories.length} categories using proxy API`
+        );
+        return proxyResult.categories;
+      }
+    } catch (proxyError) {
+      console.error("Proxy API failed for categories:", proxyError);
+    }
+
+    // If proxy fails, fall back to direct CDN
+    console.log("Falling back to direct CDN for categories");
+    const result = await fetchFromCDN(query);
+    return result.categories;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
 };
 
 export const getPostDetails = async (slug) => {
-  // First, try the direct query approach
+  // Define the query to fetch post details
   const query = gql`
     query GetPostDetails($slug: String!) {
       post(where: { slug: $slug }) {
@@ -191,8 +131,7 @@ export const getPostDetails = async (slug) => {
     }
   `;
 
-  // Alternative query that uses posts collection instead of direct post lookup
-  // This can sometimes work when the direct query fails due to filtering
+  // Alternative query that uses posts collection
   const alternativeQuery = gql`
     query GetPostDetailsAlternative($slug: String!) {
       posts(where: { slug: $slug }, first: 1) {
@@ -225,66 +164,53 @@ export const getPostDetails = async (slug) => {
   try {
     console.log(`Fetching post details for slug: ${slug}`);
 
-    // Try the direct query first
+    // First try using the proxy API to avoid CORS issues
+    try {
+      console.log(`Trying proxy API for slug: ${slug}`);
+      const proxyResult = await fetchViaProxy(query, { slug });
+
+      if (proxyResult.post) {
+        console.log(
+          `Successfully fetched post for slug: ${slug} using proxy API`
+        );
+        return proxyResult.post;
+      }
+
+      // If direct query via proxy fails, try the alternative query via proxy
+      console.log(
+        `No post found with direct query via proxy for slug: ${slug}, trying alternative query`
+      );
+      const proxyAlternativeResult = await fetchViaProxy(alternativeQuery, {
+        slug,
+      });
+
+      if (
+        proxyAlternativeResult.posts &&
+        proxyAlternativeResult.posts.length > 0
+      ) {
+        console.log(
+          `Found post using alternative query via proxy for slug: ${slug}`
+        );
+        return proxyAlternativeResult.posts[0];
+      }
+    } catch (proxyError) {
+      console.error(`Proxy API failed for slug: ${slug}:`, proxyError);
+    }
+
+    // If proxy fails, fall back to direct CDN
+    console.log(
+      `Proxy API failed, falling back to direct CDN for slug: ${slug}`
+    );
     const result = await fetchFromCDN(query, { slug });
 
     if (result.post) {
-      console.log(
-        `Successfully fetched post for slug: ${slug} using direct query`
-      );
       return result.post;
     }
 
-    console.log(
-      `No post found with direct query for slug: ${slug}, trying alternative query`
-    );
-
-    // If direct query fails, try the alternative query
+    // Try alternative query as a last resort
     const alternativeResult = await fetchFromCDN(alternativeQuery, { slug });
-
     if (alternativeResult.posts && alternativeResult.posts.length > 0) {
-      console.log(`Found post using alternative query for slug: ${slug}`);
       return alternativeResult.posts[0];
-    }
-
-    console.log(
-      `No post found with alternative query for slug: ${slug}, trying content API`
-    );
-
-    // Try content API with direct query
-    try {
-      const contentResult = await fetchFromContentAPI(query, { slug });
-      if (contentResult.post) {
-        console.log(`Found post in content API for slug: ${slug}`);
-        return contentResult.post;
-      }
-    } catch (contentError) {
-      console.error(
-        `Content API direct query failed for slug: ${slug}`,
-        contentError
-      );
-    }
-
-    // Try content API with alternative query
-    try {
-      const contentAlternativeResult = await fetchFromContentAPI(
-        alternativeQuery,
-        { slug }
-      );
-      if (
-        contentAlternativeResult.posts &&
-        contentAlternativeResult.posts.length > 0
-      ) {
-        console.log(
-          `Found post in content API using alternative query for slug: ${slug}`
-        );
-        return contentAlternativeResult.posts[0];
-      }
-    } catch (contentAltError) {
-      console.error(
-        `Content API alternative query failed for slug: ${slug}`,
-        contentAltError
-      );
     }
 
     console.log(`All attempts to fetch post for slug: ${slug} failed`);
@@ -423,83 +349,39 @@ export const getCategoryPost = async (slug) => {
   try {
     console.log(`Fetching category posts for slug: ${slug}`);
 
-    // Try the standard query first
-    const result = await fetchFromCDN(query, { slug });
-
-    if (
-      result.postsConnection &&
-      result.postsConnection.edges &&
-      result.postsConnection.edges.length > 0
-    ) {
-      console.log(
-        `Found ${result.postsConnection.edges.length} posts for category ${slug} using standard query`
-      );
-      return result.postsConnection.edges;
-    }
-
-    console.log(
-      `No posts found for category ${slug} using standard query, trying alternative query`
-    );
-
-    // If standard query returns no results, try the alternative query
-    const alternativeResult = await fetchFromCDN(alternativeQuery, { slug });
-
-    if (
-      alternativeResult.categories &&
-      alternativeResult.categories.length > 0 &&
-      alternativeResult.categories[0].posts &&
-      alternativeResult.categories[0].posts.length > 0
-    ) {
-      const posts = alternativeResult.categories[0].posts;
-      console.log(
-        `Found ${posts.length} posts for category ${slug} using alternative query`
-      );
-
-      // Convert to the same format as the standard query
-      return posts.map((post) => ({
-        node: post,
-      }));
-    }
-
-    console.log(
-      `No posts found for category ${slug} using alternative query, trying content API`
-    );
-
-    // Try content API with standard query
+    // First try using the proxy API to avoid CORS issues
     try {
-      const contentResult = await fetchFromContentAPI(query, { slug });
+      console.log(`Trying proxy API for category: ${slug}`);
+      const proxyResult = await fetchViaProxy(query, { slug });
+
       if (
-        contentResult.postsConnection &&
-        contentResult.postsConnection.edges &&
-        contentResult.postsConnection.edges.length > 0
+        proxyResult.postsConnection &&
+        proxyResult.postsConnection.edges &&
+        proxyResult.postsConnection.edges.length > 0
       ) {
         console.log(
-          `Found ${contentResult.postsConnection.edges.length} posts for category ${slug} using content API`
+          `Successfully fetched category posts for ${slug} using proxy API`
         );
-        return contentResult.postsConnection.edges;
+        return proxyResult.postsConnection.edges;
       }
-    } catch (contentError) {
-      console.error(
-        `Content API query failed for category ${slug}:`,
-        contentError
-      );
-    }
 
-    // Try content API with alternative query
-    try {
-      const contentAlternativeResult = await fetchFromContentAPI(
-        alternativeQuery,
-        { slug }
+      // If standard query via proxy fails, try the alternative query via proxy
+      console.log(
+        `No posts found with standard query via proxy for category: ${slug}, trying alternative query`
       );
+      const proxyAlternativeResult = await fetchViaProxy(alternativeQuery, {
+        slug,
+      });
+
       if (
-        contentAlternativeResult.categories &&
-        contentAlternativeResult.categories.length > 0 &&
-        contentAlternativeResult.categories[0].posts &&
-        contentAlternativeResult.categories[0].posts.length > 0
+        proxyAlternativeResult.categories &&
+        proxyAlternativeResult.categories.length > 0 &&
+        proxyAlternativeResult.categories[0].posts &&
+        proxyAlternativeResult.categories[0].posts.length > 0
       ) {
-        const posts = contentAlternativeResult.categories[0].posts;
+        const posts = proxyAlternativeResult.categories[0].posts;
         console.log(
-          `Found ${posts.length} posts for category ${slug} using content API alternative query`
+          `Found ${posts.length} posts for category ${slug} using alternative query via proxy`
         );
 
         // Convert to the same format as the standard query
@@ -507,11 +389,34 @@ export const getCategoryPost = async (slug) => {
           node: post,
         }));
       }
-    } catch (contentAltError) {
-      console.error(
-        `Content API alternative query failed for category ${slug}:`,
-        contentAltError
-      );
+    } catch (proxyError) {
+      console.error(`Proxy API failed for category ${slug}:`, proxyError);
+    }
+
+    // If proxy fails, fall back to direct CDN
+    console.log(
+      `Proxy API failed, falling back to direct CDN for category: ${slug}`
+    );
+    const result = await fetchFromCDN(query, { slug });
+
+    if (result.postsConnection && result.postsConnection.edges) {
+      return result.postsConnection.edges;
+    }
+
+    // Try alternative query as a last resort
+    const alternativeResult = await fetchFromCDN(alternativeQuery, { slug });
+    if (
+      alternativeResult.categories &&
+      alternativeResult.categories.length > 0 &&
+      alternativeResult.categories[0].posts &&
+      alternativeResult.categories[0].posts.length > 0
+    ) {
+      const posts = alternativeResult.categories[0].posts;
+
+      // Convert to the same format as the standard query
+      return posts.map((post) => ({
+        node: post,
+      }));
     }
 
     console.log(`All attempts to fetch posts for category ${slug} failed`);

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { getCategories, getCategoryPost } from "../../services";
 import { PostCard, Categories, Loader } from "../../components";
 
-const CategoryPost = ({ posts, categorySlug }) => {
+const CategoryPost = ({ posts }) => {
   const router = useRouter();
 
   // With fallback: 'blocking', we don't need to handle isFallback
@@ -12,11 +12,6 @@ const CategoryPost = ({ posts, categorySlug }) => {
   if (router.isFallback) {
     return <Loader />;
   }
-
-  // Log for debugging
-  console.log(`Rendering category page for: ${categorySlug}`, {
-    postsCount: posts ? posts.length : 0,
-  });
 
   // Handle case where posts might be null or empty
   if (!posts || posts.length === 0) {
@@ -58,16 +53,10 @@ export default CategoryPost;
 // Fetch data at build time
 export async function getStaticProps({ params }) {
   try {
-    console.log(`getStaticProps for category: ${params.slug}`);
     const posts = await getCategoryPost(params.slug);
 
-    console.log(`Found ${posts.length} posts for category: ${params.slug}`);
-
     return {
-      props: {
-        posts,
-        categorySlug: params.slug,
-      },
+      props: { posts },
       // Add revalidation to refresh the page every 1 minute
       revalidate: 60,
     };
@@ -76,10 +65,7 @@ export async function getStaticProps({ params }) {
 
     // Return empty posts array instead of failing
     return {
-      props: {
-        posts: [],
-        categorySlug: params.slug,
-      },
+      props: { posts: [] },
       // Shorter revalidation time for error cases
       revalidate: 60,
     };
@@ -89,26 +75,11 @@ export async function getStaticProps({ params }) {
 // Specify dynamic routes to pre-render pages based on data.
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
-  try {
-    const categories = await getCategories();
+  const categories = await getCategories();
 
-    console.log(
-      `Pre-rendering ${categories.length} category pages at build time`
-    );
-
-    return {
-      paths: categories.map(({ slug }) => ({ params: { slug } })),
-      // Use 'blocking' to wait for the page to be generated on-demand
-      fallback: "blocking",
-    };
-  } catch (error) {
-    console.error("Error in getStaticPaths for categories:", error);
-
-    // Return empty paths array but still use blocking fallback
-    // This ensures new category pages can still be generated on-demand
-    return {
-      paths: [],
-      fallback: "blocking",
-    };
-  }
+  return {
+    paths: categories.map(({ slug }) => ({ params: { slug } })),
+    // Use 'blocking' to wait for the page to be generated on-demand
+    fallback: "blocking",
+  };
 }

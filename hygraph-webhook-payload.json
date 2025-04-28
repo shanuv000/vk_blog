@@ -3,8 +3,6 @@
   "data": {
     "id": "{{id}}",
     "slug": "{{slug}}",
-    "title": "{{title}}",
-    "model": "{{__typename}}",
-    "__typename": "{{__typename}}"
+    "model": "{{__typename}}"
   }
 }
