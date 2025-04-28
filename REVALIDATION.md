@@ -48,7 +48,9 @@ Copy and paste this JSON into the "Payload Template" field in Hygraph:
   "data": {
     "id": "{{id}}",
     "slug": "{{slug}}",
-    "model": "{{__typename}}"
+    "title": "{{title}}",
+    "model": "{{__typename}}",
+    "__typename": "{{__typename}}"
   }
 }
 ```
@@ -58,6 +60,20 @@ Copy and paste this JSON into the "Payload Template" field in Hygraph:
 1. Publish a new post in Hygraph
 2. Check your Vercel logs to see if the revalidation was triggered
 3. Visit your site to see if the new content appears
+
+### 5. Manual Testing
+
+If you need to manually test revalidation for a specific post:
+
+1. Use the included test script:
+
+   ```bash
+   # Replace your-post-slug with the actual slug of your post
+   node test-post-revalidation.js your-post-slug
+   ```
+
+2. Check the output to see if the post was successfully revalidated
+3. Visit your site to verify the changes are visible
 
 ## Manual Revalidation
 

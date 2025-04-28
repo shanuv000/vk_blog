@@ -21,7 +21,14 @@ export const fetchFromCDN = async (query, variables = {}) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-    const result = await cdnClient.request(query, variables);
+    // Add a timestamp to bypass caching
+    const headers = {
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      "X-Request-Time": new Date().toISOString(),
+    };
+
+    const result = await cdnClient.request(query, variables, headers);
     clearTimeout(timeoutId);
 
     return result;
@@ -31,7 +38,15 @@ export const fetchFromCDN = async (query, variables = {}) => {
     // If CDN fails, try the content API as fallback
     try {
       console.log("Falling back to Content API due to CDN failure");
-      return await contentClient.request(query, variables);
+
+      // Add headers to bypass caching for content API too
+      const headers = {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        "X-Request-Time": new Date().toISOString(),
+      };
+
+      return await contentClient.request(query, variables, headers);
     } catch (fallbackError) {
       console.error("Fallback to Content API also failed:", fallbackError);
       throw error; // Throw the original error
@@ -42,7 +57,14 @@ export const fetchFromCDN = async (query, variables = {}) => {
 // Helper function for operations that might include mutations (uses Content API)
 export const fetchFromContentAPI = async (query, variables = {}) => {
   try {
-    return await contentClient.request(query, variables);
+    // Add headers to bypass caching
+    const headers = {
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      "X-Request-Time": new Date().toISOString(),
+    };
+
+    return await contentClient.request(query, variables, headers);
   } catch (error) {
     console.error("Error fetching from Hygraph Content API:", error);
     throw error;

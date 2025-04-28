@@ -1,6 +1,11 @@
 // Next.js API route to revalidate pages
 // This can be called by a webhook from Hygraph when content changes
 
+import { config } from "./revalidate-config";
+
+// Export the config to configure the API route
+export { config };
+
 export default async function handler(req, res) {
   // Check for secret to confirm this is a valid request
   if (req.query.secret !== process.env.REVALIDATION_TOKEN) {
@@ -37,15 +42,20 @@ export default async function handler(req, res) {
     }
 
     // Handle webhook payload from Hygraph
-    if (req.method === "POST" && req.body) {
+    if (req.method === "POST") {
       try {
+        console.log(
+          "Received POST request with body:",
+          JSON.stringify(req.body, null, 2)
+        );
+
         const payload = req.body;
 
-        // Check if this is a Hygraph webhook payload
+        // Check for various payload formats that Hygraph might send
+
+        // Format 1: Our custom payload format
         if (payload.data && payload.operation) {
-          console.log(
-            `Received webhook for ${payload.data.model} with operation ${payload.operation}`
-          );
+          console.log(`Received webhook with custom payload format`);
 
           // Handle different content types
           if (payload.data.model === "Post" && payload.data.slug) {
@@ -63,6 +73,54 @@ export default async function handler(req, res) {
               `Revalidated category from webhook: /category/${payload.data.slug}`
             );
           }
+        }
+        // Format 2: Default Hygraph format with stage and data
+        else if (payload.stage && payload.data) {
+          console.log(`Received webhook with default Hygraph format`);
+
+          // Try to determine the content type and slug
+          const entry = payload.data;
+
+          if (entry) {
+            console.log(`Entry data:`, JSON.stringify(entry, null, 2));
+
+            // Check if it's a post
+            if (entry.slug && (entry.__typename === "Post" || entry.title)) {
+              await res.revalidate(`/post/${entry.slug}`);
+              revalidatedPaths.push(`/post/${entry.slug}`);
+              console.log(`Revalidated post: /post/${entry.slug}`);
+            }
+
+            // Check if it's a category
+            if (entry.slug && entry.__typename === "Category") {
+              await res.revalidate(`/category/${entry.slug}`);
+              revalidatedPaths.push(`/category/${entry.slug}`);
+              console.log(`Revalidated category: /category/${entry.slug}`);
+            }
+          }
+        }
+        // Format 3: Raw post data at the root level
+        else if (payload.slug) {
+          console.log(`Received webhook with raw data format`);
+
+          // Assume it's a post if it has a slug and title
+          if (payload.title) {
+            await res.revalidate(`/post/${payload.slug}`);
+            revalidatedPaths.push(`/post/${payload.slug}`);
+            console.log(`Revalidated post: /post/${payload.slug}`);
+          }
+          // Assume it's a category if it has a slug but no title
+          else {
+            await res.revalidate(`/category/${payload.slug}`);
+            revalidatedPaths.push(`/category/${payload.slug}`);
+            console.log(`Revalidated category: /category/${payload.slug}`);
+          }
+        }
+        // If we can't determine the format, revalidate the home page as a fallback
+        else {
+          console.log(
+            `Received webhook with unknown format, revalidating home page only`
+          );
         }
       } catch (webhookError) {
         console.error("Error processing webhook payload:", webhookError);
