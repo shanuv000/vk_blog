@@ -43,7 +43,7 @@ export default function Home({ posts }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-8 col-span-1">
           {shuffledPosts.map((post, index) => (
-            <PostCard key={index} post={post.node} />
+            <PostCard key={post.node.slug || index} post={post.node} />
           ))}
         </div>
         <div className="lg:col-span-4 col-span-1">
@@ -62,9 +62,22 @@ export default function Home({ posts }) {
 
 // Fetch data at build time
 export async function getStaticProps() {
-  const posts = (await getPosts()) || [];
+  try {
+    const posts = (await getPosts()) || [];
 
-  return {
-    props: { posts },
-  };
+    return {
+      props: { posts },
+      // Add revalidation to refresh the page every 10 minutes
+      revalidate: 600,
+    };
+  } catch (error) {
+    console.error("Error fetching posts for home page:", error);
+
+    // Return empty posts array instead of failing
+    return {
+      props: { posts: [] },
+      // Shorter revalidation time for error cases
+      revalidate: 60,
+    };
+  }
 }

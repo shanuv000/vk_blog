@@ -1,12 +1,11 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
 
   // Image configuration
   images: {
-    domains: ["media.graphassets.com"], // Hygraph's image domain
-    formats: ['image/avif', 'image/webp'],
+    domains: ["media.graphassets.com", "ap-south-1.graphassets.com"], // Hygraph's image domains
+    formats: ["image/avif", "image/webp"],
   },
 
   // Rewrites configuration
@@ -38,13 +37,8 @@ const nextConfig: NextConfig = {
     return config;
   },
 
-  // Caching configuration
-  experimental: {
-    // Set staleTime for dynamic routes to match Next.js 15 defaults
-    staleTimes: {
-      dynamic: 0,
-    },
-  },
+  // Enable SWC minification
+  swcMinify: true,
 };
 
-export default nextConfig;
+module.exports = nextConfig;

@@ -77,12 +77,33 @@ export default PostDetails;
 
 // Fetch data at build time
 export async function getStaticProps({ params }) {
-  const data = await getPostDetails(params.slug);
-  return {
-    props: {
-      post: data,
-    },
-  };
+  try {
+    const data = await getPostDetails(params.slug);
+
+    // If no post is found, return null (will be handled by the component)
+    if (!data) {
+      return {
+        props: { post: null },
+        // Shorter revalidation time for missing posts
+        revalidate: 60,
+      };
+    }
+
+    return {
+      props: { post: data },
+      // Add revalidation to refresh the page every 10 minutes
+      revalidate: 600,
+    };
+  } catch (error) {
+    console.error(`Error fetching post details for ${params.slug}:`, error);
+
+    // Return null post instead of failing
+    return {
+      props: { post: null },
+      // Shorter revalidation time for error cases
+      revalidate: 60,
+    };
+  }
 }
 
 // Specify dynamic routes to pre-render pages based on data.
