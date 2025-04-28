@@ -67,8 +67,8 @@ export async function getStaticProps() {
 
     return {
       props: { posts },
-      // Add revalidation to refresh the page every 10 minutes
-      revalidate: 600,
+      // Add revalidation to refresh the page every 1 minute
+      revalidate: 60,
     };
   } catch (error) {
     console.error("Error fetching posts for home page:", error);

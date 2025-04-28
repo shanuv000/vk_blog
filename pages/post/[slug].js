@@ -17,6 +17,8 @@ import { AdjacentPosts } from "../../sections";
 const PostDetails = ({ post }) => {
   const router = useRouter();
 
+  // With fallback: 'blocking', we don't need to handle isFallback
+  // But keeping this for backward compatibility
   if (router.isFallback) {
     return <Loader />;
   }
@@ -91,8 +93,8 @@ export async function getStaticProps({ params }) {
 
     return {
       props: { post: data },
-      // Add revalidation to refresh the page every 10 minutes
-      revalidate: 600,
+      // Add revalidation to refresh the page every 1 minute
+      revalidate: 60,
     };
   } catch (error) {
     console.error(`Error fetching post details for ${params.slug}:`, error);
@@ -112,6 +114,7 @@ export async function getStaticPaths() {
   const posts = await getPosts();
   return {
     paths: posts.map(({ node: { slug } }) => ({ params: { slug } })),
-    fallback: true,
+    // Use 'blocking' to wait for the page to be generated on-demand
+    fallback: "blocking",
   };
 }

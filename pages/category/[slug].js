@@ -7,6 +7,8 @@ import { PostCard, Categories, Loader } from "../../components";
 const CategoryPost = ({ posts }) => {
   const router = useRouter();
 
+  // With fallback: 'blocking', we don't need to handle isFallback
+  // But keeping this for backward compatibility
   if (router.isFallback) {
     return <Loader />;
   }
@@ -55,8 +57,8 @@ export async function getStaticProps({ params }) {
 
     return {
       props: { posts },
-      // Add revalidation to refresh the page every 10 minutes
-      revalidate: 600,
+      // Add revalidation to refresh the page every 1 minute
+      revalidate: 60,
     };
   } catch (error) {
     console.error(`Error fetching category posts for ${params.slug}:`, error);
@@ -77,6 +79,7 @@ export async function getStaticPaths() {
 
   return {
     paths: categories.map(({ slug }) => ({ params: { slug } })),
-    fallback: true,
+    // Use 'blocking' to wait for the page to be generated on-demand
+    fallback: "blocking",
   };
 }
