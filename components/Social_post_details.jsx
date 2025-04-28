@@ -55,7 +55,13 @@ const NavbarPostDetails = ({ post: { title, slug } }) => {
         href={`https://twitter.com/intent/tweet?text=${title}&url=${postUrl}&via=Onlyblogs_`}
         className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
       >
-        <LazyLoadImage src="/twitter.svg" width={45} alt="Share on Twitter" />
+        <LazyLoadImage
+          src="/twitter.svg"
+          width={45}
+          height={45}
+          alt="Share on Twitter"
+          style={{ width: "45px", height: "45px" }}
+        />
       </a>
       <a
         target="_blank"
@@ -71,7 +77,13 @@ const NavbarPostDetails = ({ post: { title, slug } }) => {
         href={`http://www.reddit.com/submit?url=${postUrl}&title=${title}&via=u/smattyvaibhav`}
         className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 hidden lg:inline-block"
       >
-        <LazyLoadImage src="/reddit.png" width={45} alt="Share on Reddit" />
+        <LazyLoadImage
+          src="/reddit.png"
+          width={45}
+          height={45}
+          alt="Share on Reddit"
+          style={{ width: "45px", height: "45px" }}
+        />
       </a>
       <a
         href={`https://wa.me/?text=${postUrl}`}
@@ -81,7 +93,9 @@ const NavbarPostDetails = ({ post: { title, slug } }) => {
         <LazyLoadImage
           src="/whatsapp2.svg"
           width={45}
+          height={45}
           alt="Share on WhatsApp"
+          style={{ width: "45px", height: "45px" }}
         />
       </a>
       <a
@@ -90,7 +104,13 @@ const NavbarPostDetails = ({ post: { title, slug } }) => {
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${postUrl}`}
         className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 hidden lg:inline-block"
       >
-        <LazyLoadImage src="/linkedin.svg" width={45} alt="Share on LinkedIn" />
+        <LazyLoadImage
+          src="/linkedin.svg"
+          width={45}
+          height={45}
+          alt="Share on LinkedIn"
+          style={{ width: "45px", height: "45px" }}
+        />
       </a>
       <a
         target="_blank"
@@ -98,13 +118,25 @@ const NavbarPostDetails = ({ post: { title, slug } }) => {
         href={`http://pinterest.com/pin/create/button/?url=${postUrl}`}
         className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 hidden lg:inline-block"
       >
-        <LazyLoadImage src="/pin.svg" width={45} alt="Share on Pinterest" />
+        <LazyLoadImage
+          src="/pin.svg"
+          width={45}
+          height={45}
+          alt="Share on Pinterest"
+          style={{ width: "45px", height: "45px" }}
+        />
       </a>
       <a
         href={`https://t.me/share/url?url=${postUrl}&text=${title}`}
         className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 lg:hidden"
       >
-        <LazyLoadImage src="/telegram.svg" width={45} alt="Share on Telegram" />
+        <LazyLoadImage
+          src="/telegram.svg"
+          width={45}
+          height={45}
+          alt="Share on Telegram"
+          style={{ width: "45px", height: "45px" }}
+        />
       </a>
     </motion.nav>
   );

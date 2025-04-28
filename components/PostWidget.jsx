@@ -29,9 +29,10 @@ const PostWidget = ({ categories, slug }) => {
             <LazyLoadImage
               alt={post.title || "Post image"}
               height={60}
-              className="align-middle rounded-full"
-              src={post.featuredImage?.url || DEFAULT_FEATURED_IMAGE}
               width={60}
+              className="align-middle rounded-full object-cover"
+              src={post.featuredImage?.url || DEFAULT_FEATURED_IMAGE}
+              style={{ width: "60px", height: "60px" }} // Ensure both dimensions are set
             />
 
             {/* <img

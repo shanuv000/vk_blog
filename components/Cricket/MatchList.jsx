@@ -101,12 +101,65 @@ const MatchList = ({
         <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-4">
           <p className="font-medium">Error loading matches:</p>
           <p>{error}</p>
-          <button
-            onClick={onRefresh}
-            className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-          >
-            Try Again
-          </button>
+          <div className="mt-4 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={onRefresh}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Try Again
+            </button>
+            <a
+              href="https://www.espncricinfo.com/live-cricket-score"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-center"
+            >
+              View on ESPNCricinfo
+            </a>
+          </div>
+
+          {/* Fallback content when API is down */}
+          <div className="mt-6 p-4 bg-white rounded-lg">
+            <h4 className="font-semibold text-gray-800 mb-2">
+              Cricket Updates
+            </h4>
+            <p className="text-gray-600 mb-4">
+              Our cricket data service is currently unavailable. You can check
+              the latest scores on:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-blue-600">
+              <li>
+                <a
+                  href="https://www.espncricinfo.com/live-cricket-score"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  ESPNCricinfo
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.cricbuzz.com/cricket-match/live-scores"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Cricbuzz
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.icc-cricket.com/live-cricket/mens-fixtures"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  ICC Cricket
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       ) : loading ? (
         <div className="flex flex-col items-center justify-center p-8">

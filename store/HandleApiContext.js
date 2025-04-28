@@ -8,18 +8,42 @@ import React, {
 import axios from "axios";
 // import { fetchData } from "../components/ExtractIPs/ipfunc";
 
-// Custom hook for fetching data
+// Custom hook for fetching data with improved error handling and fallbacks
 const useFetchData = (url, extractData = (data) => data, initialState = []) => {
   const [data, setData] = useState(initialState);
   const [dataExist, setDataExist] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const hasFetched = useRef(false);
+  const retryCount = useRef(0);
+  const MAX_RETRIES = 2;
 
-  const fetchDataAsync = async () => {
+  const fetchDataAsync = async (forceRetry = false) => {
+    // Reset retry count if this is a manual refresh
+    if (forceRetry) {
+      retryCount.current = 0;
+    }
+
     try {
       setLoading(true);
-      const response = await axios.get(url);
+
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await axios.get(url, {
+        signal: controller.signal,
+        // Add cache-busting parameter to avoid stale data
+        params: { _t: new Date().getTime() },
+      });
+
+      clearTimeout(timeoutId);
+
+      // Check if response is valid
+      if (!response.data) {
+        throw new Error("Empty response from server");
+      }
+
       const fetchedData = extractData(response.data);
 
       // Ensure data is in the correct format (array for certain states)
@@ -27,12 +51,48 @@ const useFetchData = (url, extractData = (data) => data, initialState = []) => {
         throw new Error("Expected data to be an array");
       }
 
-      setData(fetchedData);
-      setDataExist(fetchedData.length > 0);
+      setData(fetchedData || initialState);
+      setDataExist(fetchedData && fetchedData.length > 0);
       setError(null);
+      retryCount.current = 0; // Reset retry count on success
     } catch (error) {
-      setError("Error fetching data: " + error.message);
-      setData(initialState);
+      console.error(`Error fetching data from ${url}:`, error);
+
+      // Provide more user-friendly error messages
+      let errorMessage = "Unable to load data. ";
+
+      if (
+        error.code === "ERR_NETWORK" ||
+        error.code === "ERR_CONNECTION_REFUSED"
+      ) {
+        errorMessage += "Network connection issue.";
+      } else if (error.code === "ERR_CANCELED") {
+        errorMessage += "Request timed out.";
+      } else if (error.response) {
+        // Server responded with an error status
+        errorMessage += `Server error (${error.response.status}).`;
+      } else {
+        errorMessage += error.message;
+      }
+
+      setError(errorMessage);
+
+      // Keep existing data if available, otherwise use initial state
+      if (!data || (Array.isArray(data) && data.length === 0)) {
+        setData(initialState);
+      }
+
+      // Auto-retry for network errors, but limit retries
+      if (
+        (error.code === "ERR_NETWORK" ||
+          error.code === "ERR_CONNECTION_REFUSED") &&
+        retryCount.current < MAX_RETRIES
+      ) {
+        retryCount.current++;
+        // Exponential backoff for retries
+        const delay = 2000 * Math.pow(2, retryCount.current - 1);
+        setTimeout(() => fetchDataAsync(), delay);
+      }
     } finally {
       setLoading(false);
     }
@@ -43,9 +103,24 @@ const useFetchData = (url, extractData = (data) => data, initialState = []) => {
       hasFetched.current = true;
       fetchDataAsync();
     }
+
+    // Set up periodic refresh for live data
+    if (url.includes("live-scores")) {
+      const refreshInterval = setInterval(() => {
+        fetchDataAsync();
+      }, 60000); // Refresh live scores every minute
+
+      return () => clearInterval(refreshInterval);
+    }
   }, [url]);
 
-  return { data, error, loading, dataExist, refetch: fetchDataAsync };
+  return {
+    data,
+    error,
+    loading,
+    dataExist,
+    refetch: () => fetchDataAsync(true),
+  };
 };
 
 const DataContext = createContext({

@@ -16,7 +16,11 @@ const PostCard = ({ post }) => (
       {post.featuredImage?.url ? (
         <LazyLoadImage
           src={post.featuredImage.url}
+          alt={post.title || "Featured image"}
+          width={800}
+          height={600}
           className="object-top absolute h-80 w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
+          style={{ width: "100%", height: "320px" }} // Ensure both dimensions are set
         />
       ) : (
         <div className="absolute h-80 w-full bg-gray-200 shadow-lg rounded-t-lg lg:rounded-lg flex items-center justify-center">
