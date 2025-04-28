@@ -8,7 +8,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 // Default avatar for authors without photos
 const DEFAULT_AVATAR =
-  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+  "https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png";
 
 const PostCard = ({ post }) => (
   <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
@@ -65,6 +65,8 @@ const PostCard = ({ post }) => (
         <span className="align-middle">
           {post.createdAt
             ? moment(post.createdAt).format("MMM DD, YYYY")
+            : post.publishedAt
+            ? moment(post.publishedAt).format("MMM DD, YYYY")
             : "No date"}
         </span>
       </div>

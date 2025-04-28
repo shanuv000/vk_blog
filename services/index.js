@@ -16,6 +16,7 @@ export const getPosts = async () => {
               }
             }
             publishedAt
+            createdAt
             slug
             title
             excerpt
@@ -32,8 +33,13 @@ export const getPosts = async () => {
     }
   `;
 
-  const result = await fetchFromCDN(query);
-  return result.postsConnection.edges;
+  try {
+    const result = await fetchFromCDN(query);
+    return result.postsConnection.edges;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return [];
+  }
 };
 
 export const getCategories = async () => {
@@ -159,6 +165,7 @@ export const getCategoryPost = async (slug) => {
               }
             }
             createdAt
+            publishedAt
             slug
             title
             excerpt
@@ -175,8 +182,13 @@ export const getCategoryPost = async (slug) => {
     }
   `;
 
-  const result = await fetchFromCDN(query, { slug });
-  return result.postsConnection.edges;
+  try {
+    const result = await fetchFromCDN(query, { slug });
+    return result.postsConnection.edges;
+  } catch (error) {
+    console.error(`Error fetching category posts for ${slug}:`, error);
+    return [];
+  }
 };
 
 export const getFeaturedPosts = async () => {
