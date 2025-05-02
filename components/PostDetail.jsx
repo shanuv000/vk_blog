@@ -95,7 +95,9 @@ const PostDetail = ({ post }) => {
                 </span>
               </div>
             </div>
-            {/*  */}
+            {/* Log the post object to debug featured image */}
+            {console.log("Post object passed to social sharing:", post)}
+            {console.log("Featured image in PostDetail:", post.featuredImage)}
             <Navbar_post_details post={post} />
 
             <h1 className="mb-8 font-serif capitalize md:font-mono text-2xl lg:text-4xl font-semibold md:font-extrabold head-colour leading-tight lg:leading-snug">
