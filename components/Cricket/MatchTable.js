@@ -1,6 +1,8 @@
 import React from "react";
 import { useData } from "../../store/HandleApiContext";
-import { BarLoader } from "react-spinners";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import ball from "../../public/cricket/ball.png";
 
 /**
  * MatchTable component displays cricket tournament standings
@@ -8,12 +10,38 @@ import { BarLoader } from "react-spinners";
 const ScheduleTable = () => {
   const { schedule, loadingSchedule, scheduleError, fetchSchedule } = useData();
 
+  // Animation variants
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
   // Handle loading state
   if (loadingSchedule) {
     return (
-      <div className="flex flex-col justify-center items-center h-64 bg-white rounded-lg p-4">
-        <BarLoader color="#1E40AF" width={150} />
-        <p className="mt-4 text-gray-600">Loading tournament data...</p>
+      <div className="flex flex-col justify-center items-center h-64 bg-white rounded-xl p-6">
+        <div className="relative w-16 h-16 mb-4">
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-t-urtechy-red border-r-urtechy-orange border-b-urtechy-red border-l-urtechy-orange rounded-full animate-spin"></div>
+          <Image
+            src={ball}
+            alt="Cricket Ball"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8"
+          />
+        </div>
+        <p className="text-lg font-medium text-gray-600">
+          Loading tournament standings...
+        </p>
       </div>
     );
   }
@@ -21,32 +49,63 @@ const ScheduleTable = () => {
   // Handle error state
   if (scheduleError) {
     return (
-      <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-        <p className="font-medium">Error loading tournament data:</p>
-        <p>{scheduleError}</p>
-        <button
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-6 bg-white border-l-4 border-red-500 rounded-xl shadow-md"
+      >
+        <div className="flex items-center mb-4">
+          <svg
+            className="w-6 h-6 text-red-500 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <h4 className="text-lg font-semibold text-gray-800">
+            Unable to load tournament data
+          </h4>
+        </div>
+
+        <p className="text-gray-600 mb-4">
+          We're having trouble connecting to our cricket data service. You can
+          try refreshing or check back later.
+        </p>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={fetchSchedule}
-          className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          className="px-4 py-2 bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white rounded-md font-medium shadow-sm"
         >
           Try Again
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     );
   }
 
   // Handle empty data
   if (!schedule || schedule.length === 0) {
     return (
-      <div className="p-6 text-center bg-white rounded-lg">
-        <p className="text-lg font-semibold text-gray-600 mb-4">
-          No tournament data available
+      <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl">
+        <Image src={ball} alt="Cricket" className="w-16 h-16 opacity-40 mb-4" />
+        <p className="text-lg font-medium text-gray-500 text-center mb-4">
+          No tournament standings available
         </p>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={fetchSchedule}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="px-6 py-2 bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white rounded-full font-medium shadow-md"
         >
           Refresh
-        </button>
+        </motion.button>
       </div>
     );
   }
@@ -192,125 +251,140 @@ const ScheduleTable = () => {
   const columnsWithNullValues = getColumnsWithNullValues();
 
   return (
-    <div className="p-2 md:p-4">
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="p-4 md:p-6"
+    >
       {schedule.map((group) => (
-        <div key={group.groupName} className="mb-4 md:mb-8">
-          <h2 className="text-base md:text-xl font-semibold mb-2 md:mb-4 text-primary text-orange-300 text-center">
-            {group.groupName}
-          </h2>
-          <div className="overflow-x-auto rounded">
-            <table className="min-w-full bg-white text-xs md:text-sm">
+        <motion.div
+          key={group.groupName}
+          variants={item}
+          className="mb-8 bg-white rounded-xl overflow-hidden shadow-md"
+        >
+          <div className="bg-gradient-to-r from-urtechy-red to-urtechy-orange px-4 py-3">
+            <h2 className="text-base md:text-lg font-bold text-white text-center">
+              {group.groupName}
+            </h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
               <thead>
-                <tr>
-                  <th className="py-1 px-2 md:px-4 bg-gray-200 text-left">
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="py-3 px-4 text-left font-semibold text-gray-700">
                     Team
                   </th>
                   {!columnsWithNullValues.matches && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Matches
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      M
                     </th>
                   )}
                   {!columnsWithNullValues.wins && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Wins
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      W
                     </th>
                   )}
                   {!columnsWithNullValues.losses && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Losses
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      L
                     </th>
                   )}
                   {!columnsWithNullValues.ties && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Ties
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      T
                     </th>
                   )}
                   {!columnsWithNullValues.noResult && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      No Result
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      NR
                     </th>
                   )}
                   {!columnsWithNullValues.points && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Points
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      Pts
                     </th>
                   )}
                   {!columnsWithNullValues.netRunRate && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Net Run Rate
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      NRR
                     </th>
                   )}
                   {!columnsWithNullValues.seriesForm && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Series Form
+                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
+                      Form
                     </th>
                   )}
-
-                  {/* {!columnsWithNullValues.nextMatch && (
-                    <th className="py-1 px-2 md:px-4 bg-gray-200 text-right">
-                      Next Match
-                    </th>
-                  )} */}
                 </tr>
               </thead>
               <tbody>
                 {group.teams.map((team, index) => (
                   <tr
                     key={team.team}
-                    className={
-                      team.team === "India"
-                        ? "bg-blue-100 text-blue-800"
-                        : index % 2 === 0
-                        ? "bg-gray-50"
-                        : "bg-white"
-                    }
+                    className={`hover:bg-gray-50 transition-colors ${
+                      team.team === "India" ? "bg-blue-50" : "bg-white"
+                    }`}
                   >
-                    <td className="py-1 px-2 md:px-4 border-b">
-                      {flagEmojis[team.team]} {team.team}
+                    <td className="py-3 px-4 border-b border-gray-100">
+                      <div className="flex items-center">
+                        <span className="text-xl mr-2">
+                          {flagEmojis[team.team] || "🏏"}
+                        </span>
+                        <span className="font-medium">{team.team}</span>
+                      </div>
                     </td>
                     {!columnsWithNullValues.matches && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                      <td className="py-3 px-4 border-b border-gray-100 text-center">
                         {team.matches}
                       </td>
                     )}
                     {!columnsWithNullValues.wins && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                      <td className="py-3 px-4 border-b border-gray-100 text-center font-medium text-green-600">
                         {team.wins}
                       </td>
                     )}
                     {!columnsWithNullValues.losses && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                      <td className="py-3 px-4 border-b border-gray-100 text-center font-medium text-red-600">
                         {team.losses}
                       </td>
                     )}
                     {!columnsWithNullValues.ties && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                      <td className="py-3 px-4 border-b border-gray-100 text-center">
                         {team.ties}
                       </td>
                     )}
                     {!columnsWithNullValues.noResult && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                      <td className="py-3 px-4 border-b border-gray-100 text-center">
                         {team.noResult}
                       </td>
                     )}
                     {!columnsWithNullValues.points && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
+                      <td className="py-3 px-4 border-b border-gray-100 text-center font-bold">
                         {team.points}
                       </td>
                     )}
                     {!columnsWithNullValues.netRunRate && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
-                        {team.netRunRate}
+                      <td className="py-3 px-4 border-b border-gray-100 text-center">
+                        <span
+                          className={
+                            parseFloat(team.netRunRate) >= 0
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }
+                        >
+                          {team.netRunRate}
+                        </span>
                       </td>
                     )}
                     {!columnsWithNullValues.seriesForm && (
-                      <td className="py-1 px-2 md:px-4 border-b text-right">
-                        <div className="inline-flex flex-wrap gap-0.5 md:gap-1">
+                      <td className="py-3 px-4 border-b border-gray-100 text-center">
+                        <div className="inline-flex flex-wrap justify-center gap-1">
                           {parseSeriesForm(team.seriesForm).map(
                             (form, index) => (
                               <span
                                 key={index}
-                                className={`inline-block px-1 md:px-2 py-0.5 md:py-1 rounded ${getSeriesFormClass(
+                                className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${getSeriesFormClass(
                                   form
                                 )}`}
                               >
@@ -326,9 +400,9 @@ const ScheduleTable = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };
 

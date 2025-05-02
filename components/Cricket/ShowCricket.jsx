@@ -3,8 +3,11 @@ import MatchTable from "./MatchTable";
 import LiveMatch from "./LiveMatch";
 import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";
-import { Tabs, Tab, Box, Slide } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 import { useData } from "../../store/HandleApiContext";
+import { FiActivity } from "react-icons/fi";
+import { MdHistory, MdUpcoming } from "react-icons/md";
+import { IoStatsChart } from "react-icons/io5";
 
 /**
  * TabPanel component for displaying tab content with animation
@@ -18,22 +21,23 @@ import { useData } from "../../store/HandleApiContext";
  * @returns {React.ReactElement} - Rendered component
  */
 const TabPanel = ({ children, value, index, id, ariaLabelledby }) => (
-  <Slide
-    direction="left"
-    in={value === index}
-    mountOnEnter
-    unmountOnExit
-    timeout={500}
-  >
-    <div
-      role="tabpanel"
-      id={id}
-      aria-labelledby={ariaLabelledby}
-      className="focus:outline-none"
-    >
-      {children}
-    </div>
-  </Slide>
+  <AnimatePresence mode="wait">
+    {value === index && (
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        role="tabpanel"
+        id={id}
+        aria-labelledby={ariaLabelledby}
+        className="focus:outline-none"
+      >
+        {children}
+      </motion.div>
+    )}
+  </AnimatePresence>
 );
 
 /**
@@ -49,97 +53,88 @@ const ShowCricket = () => {
     isLiveScore ? "live" : "recent"
   );
 
-  /**
-   * Handle tab change
-   * @param {Object} _ - Event object (unused)
-   * @param {string} newValue - New tab value
-   */
-  const handleChange = (_, newValue) => {
-    setSelectedTab(newValue);
-  };
-
-  /**
-   * Render a tab with consistent styling
-   *
-   * @param {string} label - Tab label
-   * @param {string} value - Tab value
-   * @param {string} id - Tab ID for accessibility
-   * @returns {React.ReactElement} - Tab component
-   */
-  const renderTab = (label, value, id) => (
-    <Tab
-      className={`px-4 py-2 m-1 ${
-        selectedTab === value
-          ? "text-white font-medium"
-          : "text-gray-600 hover:bg-gray-100"
-      } rounded-lg transition duration-200`}
-      label={label}
-      value={value}
-      id={id}
-      aria-controls={`tabpanel-${value}`}
-    />
-  );
+  // Tab configuration with icons and labels
+  const tabs = [
+    ...(isLiveScore
+      ? [
+          {
+            id: "live",
+            label: "Live Matches",
+            icon: <FiActivity className="w-5 h-5" />,
+            ariaId: "tab-live",
+            component: <LiveMatch />,
+          },
+        ]
+      : []),
+    {
+      id: "recent",
+      label: "Recent Matches",
+      icon: <MdHistory className="w-5 h-5" />,
+      ariaId: "tab-recent",
+      component: <RecentMatch />,
+    },
+    {
+      id: "upcoming",
+      label: "Upcoming Matches",
+      icon: <MdUpcoming className="w-5 h-5" />,
+      ariaId: "tab-upcoming",
+      component: <UpcomingMatch />,
+    },
+    {
+      id: "table",
+      label: "Tournament Table",
+      icon: <IoStatsChart className="w-5 h-5" />,
+      ariaId: "tab-table",
+      component: <MatchTable />,
+    },
+  ];
 
   return (
-    <div className="cricket-widget">
-      {/* Tab navigation */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        className="bg-gray-50 shadow-md rounded-lg overflow-hidden"
-      >
-        <Tabs
-          value={selectedTab}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="Cricket match tabs"
-          className="w-full py-2 px-4"
-        >
-          {isLiveScore && renderTab("Live Matches", "live", "tab-live")}
-          {renderTab("Recent Matches", "recent", "tab-recent")}
-          {renderTab("Upcoming Matches", "upcoming", "tab-upcoming")}
-          {renderTab("Tournament Table", "table", "tab-table")}
-        </Tabs>
-      </Box>
+    <div className="cricket-widget max-w-5xl mx-auto">
+      {/* Modern tab navigation */}
+      <div className="bg-white shadow-lg rounded-xl overflow-hidden mb-6">
+        <div className="flex overflow-x-auto scrollbar-hide">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setSelectedTab(tab.id)}
+              className={`flex items-center space-x-2 px-4 py-3 whitespace-nowrap transition-all duration-300 ${
+                selectedTab === tab.id
+                  ? "bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white font-medium"
+                  : "text-gray-600 hover:bg-gray-50"
+              }`}
+              id={tab.ariaId}
+              aria-controls={`tabpanel-${tab.id}`}
+              aria-selected={selectedTab === tab.id}
+              role="tab"
+            >
+              <span
+                className={`transition-transform duration-300 ${
+                  selectedTab === tab.id ? "scale-110" : ""
+                }`}
+              >
+                {tab.icon}
+              </span>
+              <span className="font-medium">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-      {/* Tab content */}
-      <Box className="w-full mt-4 p-4 bg-white shadow-md rounded-lg">
-        {isLiveScore && (
+      {/* Tab content with modern styling */}
+      <div className="bg-white shadow-lg rounded-xl p-5 min-h-[400px]">
+        {tabs.map((tab) => (
           <TabPanel
+            key={tab.id}
             value={selectedTab}
-            index="live"
-            id="tabpanel-live"
-            ariaLabelledby="tab-live"
+            index={tab.id}
+            id={`tabpanel-${tab.id}`}
+            ariaLabelledby={tab.ariaId}
           >
-            <LiveMatch />
+            {tab.component}
           </TabPanel>
-        )}
-        <TabPanel
-          value={selectedTab}
-          index="recent"
-          id="tabpanel-recent"
-          ariaLabelledby="tab-recent"
-        >
-          <RecentMatch />
-        </TabPanel>
-        <TabPanel
-          value={selectedTab}
-          index="upcoming"
-          id="tabpanel-upcoming"
-          ariaLabelledby="tab-upcoming"
-        >
-          <UpcomingMatch />
-        </TabPanel>
-        <TabPanel
-          value={selectedTab}
-          index="table"
-          id="tabpanel-table"
-          ariaLabelledby="tab-table"
-        >
-          <MatchTable />
-        </TabPanel>
-      </Box>
+        ))}
+      </div>
     </div>
   );
 };

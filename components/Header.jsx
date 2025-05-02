@@ -129,7 +129,7 @@ const Header = () => {
     <header
       className={`${
         isVisible ? "top-0" : "-top-24"
-      } fixed w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 bg-transparent  transition-all duration-300`}
+      }  w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 bg-transparent  transition-all duration-300`}
     >
       {/* Logo */}
       <div className="flex items-center flex-shrink-0">
