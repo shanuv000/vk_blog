@@ -31,7 +31,10 @@ export default function Seo({ post }) {
             ]
           : [
               {
-                url: "https://firebasestorage.googleapis.com/v0/b/shanu-chess.appspot.com/o/Portfolio%20work%2Fs.png?alt=media&token=ea44c393-6f7d-470c-9750-a707100affb1",
+                url: `${rootUrl}/logo/logo4.png`,
+                width: 573,
+                height: 600,
+                alt: "urTechy Blogs Logo",
               },
             ], // Fallback image URL
         locale: "en_US", // Update with your locale

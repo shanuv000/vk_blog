@@ -10,10 +10,7 @@ function MyApp({ Component, pageProps }) {
     <ErrorBoundary>
       <Head>
         <title>urTechy Blogs</title>
-        <link
-          rel="icon"
-          href="https://firebasestorage.googleapis.com/v0/b/shanu-chess.appspot.com/o/logo%2Fblog-logo%2Fmain-logo-transparent.png?alt=media&token=94294bb8-3404-44ce-81ab-b2f36ae1988e"
-        />
+        <link rel="icon" href="/iconified/logo4.ico" type="image/x-icon" />
         <meta
           name="keywords"
           content="tech, entertainment, sports, articles, news, updates, reviews, analysis, blog, blogging, diverse content, information, insights"

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="150" viewBox="0 0 600 150">
+  <style>
+    .logo-text {
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      font-size: 48px;
+    }
+    .ur {
+      fill: #FF4500; /* Orange-red */
+    }
+    .techy {
+      fill: #FF8C00; /* Dark orange */
+    }
+    .blogs {
+      fill: #FF6347; /* Tomato red */
+    }
+    .tagline {
+      font-family: 'Arial', sans-serif;
+      font-size: 20px;
+      fill: #FF4500; /* Orange-red */
+      font-style: italic;
+    }
+    .logo-icon {
+      fill: url(#logo-gradient);
+    }
+  </style>
+  
+  <defs>
+    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4500" /> <!-- Orange-red -->
+      <stop offset="100%" stop-color="#FF8C00" /> <!-- Dark orange -->
+    </linearGradient>
+  </defs>
+  
+  <g>
+    <!-- Logo icon - stylized "u" shape -->
+    <path class="logo-icon" d="M30,30 C30,30 30,70 30,90 C30,110 50,120 70,120 C90,120 110,110 110,90 C110,70 110,30 110,30 L90,30 L90,85 C90,95 80,100 70,100 C60,100 50,95 50,85 L50,30 L30,30 Z" />
+    
+    <!-- Text elements -->
+    <text x="130" y="80" class="logo-text">
+      <tspan class="ur">ur</tspan><tspan class="techy">Techy</tspan> <tspan class="blogs">Blogs</tspan>
+    </text>
+    <text x="130" y="110" class="tagline">Tech insights for everyone</text>
+  </g>
+</svg>

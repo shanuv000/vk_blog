@@ -11,10 +11,18 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* Favicon */}
           <link
-            rel="icon"
-            href="https://firebasestorage.googleapis.com/v0/b/shanu-chess.appspot.com/o/logo%2Fblog-logo%2Fmain-logo-transparent.png?alt=media&token=94294bb8-3404-44ce-81ab-b2f36ae1988e"
+            rel="shortcut icon"
+            href="/iconified/logo4.ico"
+            type="image/x-icon"
           />
+          <link rel="apple-touch-icon" href="/iconified/logo4.ico" />
+          <link rel="icon" type="image/x-icon" href="/iconified/logo4.ico" />
+
+          {/* Web App Manifest */}
+          <link rel="manifest" href="/manifest.json" />
+          <meta name="theme-color" content="#FF4500" />
 
           {/* Google Analytics script */}
           <Script

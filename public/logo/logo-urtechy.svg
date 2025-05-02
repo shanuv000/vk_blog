@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="150" viewBox="0 0 600 150">
+  <style>
+    .logo-text {
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      font-size: 48px;
+      fill: #ffffff;
+    }
+    .tagline {
+      font-family: 'Arial', sans-serif;
+      font-size: 20px;
+      fill: #ffffff;
+      font-style: italic;
+    }
+  </style>
+  <defs>
+    <image id="logo-img" width="100" height="100" xlink:href="/logo/logo1.png"/>
+  </defs>
+  <g>
+    <use xlink:href="#logo-img" x="10" y="25"/>
+    <text x="130" y="80" class="logo-text">urTechy Blogs</text>
+    <text x="130" y="110" class="tagline">Tech insights for everyone</text>
+  </g>
+</svg>

@@ -14,9 +14,13 @@ const Layout = ({ children }) => {
         <main className="scroll-smooth">
           {/* Use <main> */}
           <Header />
-          {children}
-          <div className="sm:container mx-auto px-4 lg:px-10 mb-4 lg:mb-8">
-            <Footer />
+          <div className="pt-24 sm:pt-28">
+            {" "}
+            {/* Add padding to account for fixed header */}
+            {children}
+            <div className="sm:container mx-auto px-4 lg:px-10 mb-4 lg:mb-8">
+              <Footer />
+            </div>
           </div>
         </main>
         <GoogleAnalytics gaId={gid} /> {/* Move outside <main> */}

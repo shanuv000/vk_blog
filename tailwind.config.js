@@ -11,6 +11,9 @@ module.exports = {
         "indian-saffron": "#FF9933", // Saffron
         "indian-white": "#FFFFFF", // White
         "indian-green": "#138808", // Green
+        "urtechy-red": "#FF4500", // Orange-red
+        "urtechy-orange": "#FF8C00", // Dark orange
+        "urtechy-tomato": "#FF6347", // Tomato red
       },
       fontFamily: {
         Helvetica: ["Helvetica, sans-serif"],
