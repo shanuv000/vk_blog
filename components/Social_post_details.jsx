@@ -30,7 +30,7 @@ const useInView = (options) => {
 };
 
 const NavbarPostDetails = ({ post: { title, slug } }) => {
-  const rootUrl = "https://onlyblog.vercel.app";
+  const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${slug}`;
   const [ref, inView] = useInView({ threshold: 0.1 });
   const controls = useAnimation();

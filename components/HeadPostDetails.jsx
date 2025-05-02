@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Seo from "./Seo";
 const HeadPostDetails = ({ post }) => {
-  const root_url = "https://onlyblog.vercel.app";
+  const root_url = "https://blog.urtechy.com";
 
   return (
     <Head>

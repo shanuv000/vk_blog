@@ -20,13 +20,10 @@ const Terms = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        Welcome to OnlyBlogs! These terms and conditions outline the rules and
-        regulations for the use of OnlyBlogs's Website, located at{" "}
-        <a
-          href="https://onlyblog.vercel.app/"
-          className="text-blue-600 underline"
-        >
-          https://onlyblog.vercel.app/
+        Welcome to urTechy Blogs! These terms and conditions outline the rules
+        and regulations for the use of urTechy Blogs's Website, located at{" "}
+        <a href="https://blog.urtechy.com/" className="text-blue-600 underline">
+          https://blog.urtechy.com/
         </a>
         .
       </motion.p>
@@ -38,8 +35,8 @@ const Terms = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         By accessing this website we assume you accept these terms and
-        conditions. Do not continue to use OnlyBlogs if you do not agree to take
-        all of the terms and conditions stated on this page.
+        conditions. Do not continue to use urTechy Blogs if you do not agree to
+        take all of the terms and conditions stated on this page.
       </motion.p>
 
       <motion.h2
@@ -57,8 +54,8 @@ const Terms = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        We employ the use of cookies. By accessing OnlyBlogs, you agreed to use
-        cookies in agreement with the OnlyBlogs's Privacy Policy.
+        We employ the use of cookies. By accessing urTechy Blogs, you agreed to
+        use cookies in agreement with the urTechy Blogs's Privacy Policy.
       </motion.p>
 
       <motion.h2
@@ -76,10 +73,10 @@ const Terms = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        Unless otherwise stated, OnlyBlogs and/or its licensors own the
-        intellectual property rights for all material on OnlyBlogs. All
+        Unless otherwise stated, urTechy Blogs and/or its licensors own the
+        intellectual property rights for all material on urTechy Blogs. All
         intellectual property rights are reserved. You may access this from
-        OnlyBlogs for your own personal use subjected to restrictions set in
+        urTechy Blogs for your own personal use subjected to restrictions set in
         these terms and conditions.
       </motion.p>
 
@@ -89,10 +86,10 @@ const Terms = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.7 }}
       >
-        <li>Republish material from OnlyBlogs</li>
-        <li>Sell, rent or sub-license material from OnlyBlogs</li>
-        <li>Reproduce, duplicate or copy material from OnlyBlogs</li>
-        <li>Redistribute content from OnlyBlogs</li>
+        <li>Republish material from urTechy Blogs</li>
+        <li>Sell, rent or sub-license material from urTechy Blogs</li>
+        <li>Reproduce, duplicate or copy material from urTechy Blogs</li>
+        <li>Redistribute content from urTechy Blogs</li>
       </motion.ul>
 
       <motion.h2
@@ -112,11 +109,11 @@ const Terms = () => {
       >
         This Agreement shall begin on the date hereof. Parts of this website
         offer an opportunity for users to post and exchange opinions and
-        information in certain areas of the website. OnlyBlogs does not filter,
-        edit, publish or review Comments prior to their presence on the website.
-        Comments do not reflect the views and opinions of OnlyBlogs, its agents
-        and/or affiliates. Comments reflect the views and opinions of the person
-        who post their views and opinions.
+        information in certain areas of the website. urTechy Blogs does not
+        filter, edit, publish or review Comments prior to their presence on the
+        website. Comments do not reflect the views and opinions of urTechy
+        Blogs, its agents and/or affiliates. Comments reflect the views and
+        opinions of the person who post their views and opinions.
       </motion.p>
 
       <motion.h2

@@ -3,7 +3,10 @@ const { gql } = require("graphql-request");
 const { GraphQLClient } = require("graphql-request");
 
 // Create a client for the CDN API (read-only operations)
-const cdnClient = new GraphQLClient(process.env.NEXT_PUBLIC_HYGRAPH_CDN_API || process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT);
+const cdnClient = new GraphQLClient(
+  process.env.NEXT_PUBLIC_HYGRAPH_CDN_API ||
+    process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT
+);
 
 async function getNewsArticles() {
   const query = gql`
@@ -23,7 +26,7 @@ async function getNewsArticles() {
   try {
     const result = await cdnClient.request(query);
     return result.postsConnection.edges.map(({ node }) => ({
-      loc: `https://onlyblog.vercel.app/${node.slug}`,
+      loc: `https://blog.urtechy.com/${node.slug}`,
       publication_date: node.createdAt,
       title: node.title,
     }));

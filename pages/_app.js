@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ErrorBoundary>
       <Head>
-        <title>Only Blog</title>
+        <title>urTechy Blogs</title>
         <link
           rel="icon"
           href="https://firebasestorage.googleapis.com/v0/b/shanu-chess.appspot.com/o/logo%2Fblog-logo%2Fmain-logo-transparent.png?alt=media&token=94294bb8-3404-44ce-81ab-b2f36ae1988e"

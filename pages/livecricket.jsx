@@ -12,7 +12,7 @@ const LiveCricket = () => {
   return (
     <>
       <Head>
-        <title>Live Cricket Scores & Updates | OnlyBlog</title>
+        <title>Live Cricket Scores & Updates | urTechy Blogs</title>
         <meta
           name="description"
           content="Get the latest cricket scores, match updates, and tournament standings in real-time."

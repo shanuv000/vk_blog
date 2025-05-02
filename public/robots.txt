@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://onlyblog.vercel.app
+Host: https://blog.urtechy.com
 
 # Sitemaps
-Sitemap: https://onlyblog.vercel.app/sitemap.xml
+Sitemap: https://blog.urtechy.com/sitemap.xml

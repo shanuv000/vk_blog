@@ -3,7 +3,7 @@ require("dotenv").config();
 const { getNewsArticles } = require("./services/sitemap-utils");
 
 module.exports = {
-  siteUrl: "https://onlyblog.vercel.app",
+  siteUrl: "https://blog.urtechy.com",
   generateRobotsTxt: true,
   exclude: ["/admin/**", "/user/**"],
   additionalSitemaps: [
@@ -27,7 +27,7 @@ module.exports = {
       news: article
         ? {
             publication: {
-              name: "OnlyBlog News",
+              name: "urTechy Blogs",
               language: "en",
             },
             publication_date: article.publication_date,

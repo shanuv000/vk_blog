@@ -18,7 +18,7 @@ const useMatchData = (fetchMatches, matches) => {
         new Set(matches.map((match) => match.heading))
       );
       setHeadings(uniqueHeadings);
-      
+
       // Set the first heading as selected if not already set
       if (!selectedHeading || !uniqueHeadings.includes(selectedHeading)) {
         setSelectedHeading(uniqueHeadings[0] || "");
@@ -35,14 +35,16 @@ const useMatchData = (fetchMatches, matches) => {
    */
   const handleRefreshClick = () => {
     setIsRefreshing(true);
-    
+
     // Fetch new data
-    fetchMatches().catch(error => {
-      console.error("Error refreshing match data:", error);
-    }).finally(() => {
-      // End refreshing state after 1 second for better UX
-      setTimeout(() => setIsRefreshing(false), 1000);
-    });
+    fetchMatches()
+      .catch((error) => {
+        console.error("Error refreshing match data:", error);
+      })
+      .finally(() => {
+        // End refreshing state after 1 second for better UX
+        setTimeout(() => setIsRefreshing(false), 1000);
+      });
   };
 
   return {

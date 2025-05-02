@@ -2,7 +2,7 @@ import { NextSeo } from "next-seo";
 
 export default function Seo({ post }) {
   const { title, excerpt, slug, featuredImage } = post;
-  const rootUrl = "https://onlyblog.vercel.app";
+  const rootUrl = "https://blog.urtechy.com";
   const coverImageUrl = featuredImage?.url;
 
   return (
@@ -35,7 +35,7 @@ export default function Seo({ post }) {
               },
             ], // Fallback image URL
         locale: "en_US", // Update with your locale
-        site_name: "Only Blog", // Update with your actual blog name
+        site_name: "urTechy Blogs", // Update with your actual blog name
       }}
       twitter={{
         handle: "@shanuv000",

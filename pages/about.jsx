@@ -14,14 +14,14 @@ const About = () => {
         <h1 className="text-4xl font-bold leading-none sm:text-5xl">
           Welcome To{" "}
           <span className="text-indigo-500 dark:text-indigo-400">
-            OnlyBlogs
+            urTechy Blogs
           </span>
         </h1>
 
         <p className="px-8 mt-8 mb-6 text-lg leading-relaxed text-gray-700 dark:text-gray-300">
-          OnlyBlogs is a professional blog platform. Here we provide you with
-          interesting content that you will like very much. We're dedicated to
-          offering you the best of blogs, with a focus on dependability and
+          urTechy Blogs is a professional blog platform. Here we provide you
+          with interesting content that you will like very much. We're dedicated
+          to offering you the best of blogs, with a focus on dependability and
           quality. We're working to turn our passion for blogging into a booming
           online website. We hope you enjoy our blog as much as we enjoy
           offering it to you.
