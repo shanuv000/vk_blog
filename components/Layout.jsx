@@ -14,6 +14,17 @@ const PWAUpdatePrompt = dynamic(() => import("./PWAUpdatePrompt"), {
   ssr: false,
 });
 
+const ServiceWorkerCleanup = dynamic(() => import("./ServiceWorkerCleanup"), {
+  ssr: false,
+});
+
+const MobileTroubleshootButton = dynamic(
+  () => import("./MobileTroubleshootButton"),
+  {
+    ssr: false,
+  }
+);
+
 // Memoize the Layout component to prevent unnecessary re-renders
 const Layout = memo(({ children }) => {
   const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
@@ -43,6 +54,8 @@ const Layout = memo(({ children }) => {
           </div>
           {showPWAPrompt && <PWAInstallPrompt />}
           <PWAUpdatePrompt />
+          <ServiceWorkerCleanup />
+          <MobileTroubleshootButton />
         </main>
         <GoogleAnalytics gaId={gid} />
       </DataProvider>
