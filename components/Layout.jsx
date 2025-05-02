@@ -1,12 +1,34 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "./";
 import { DataProvider } from "../store/HandleApiContext";
 import Footer from "./footer/Footer";
+import dynamic from "next/dynamic";
+
+// Dynamically import the PWA components with no SSR
+const PWAInstallPrompt = dynamic(() => import("./PWAInstallPrompt"), {
+  ssr: false,
+});
+
+const PWAUpdatePrompt = dynamic(() => import("./PWAUpdatePrompt"), {
+  ssr: false,
+});
 
 // Memoize the Layout component to prevent unnecessary re-renders
 const Layout = memo(({ children }) => {
   const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+  const [showPWAPrompt, setShowPWAPrompt] = useState(false);
+
+  useEffect(() => {
+    // Only show PWA prompt after a delay and in production
+    if (process.env.NODE_ENV === "production") {
+      const timer = setTimeout(() => {
+        setShowPWAPrompt(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <>
@@ -19,6 +41,8 @@ const Layout = memo(({ children }) => {
               <Footer />
             </div>
           </div>
+          {showPWAPrompt && <PWAInstallPrompt />}
+          <PWAUpdatePrompt />
         </main>
         <GoogleAnalytics gaId={gid} />
       </DataProvider>

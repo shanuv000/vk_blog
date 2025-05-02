@@ -8,21 +8,27 @@ import { DEFAULT_AVATAR } from "./DefaultAvatar";
 import { FaUser } from "react-icons/fa";
 
 const PostCard = ({ post }) => (
-  <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
-    <div className="relative overflow-hidden shadow-md pb-80 mb-6">
+  <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8 overflow-hidden">
+    <div className="relative shadow-md mb-6 overflow-hidden rounded-t-lg lg:rounded-lg">
       {post.featuredImage?.url ? (
-        <LazyLoadImage
-          src={post.featuredImage.url}
-          alt={post.title || "Featured image"}
-          effect="blur"
-          width={800}
-          height={600}
-          className="object-top absolute h-80 w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
-          style={{ width: "100%", height: "320px" }} // Ensure both dimensions are set
-          placeholderSrc="/placeholder-image.jpg"
-        />
+        <div
+          className="w-full"
+          style={{ maxHeight: "500px", overflow: "hidden" }}
+        >
+          <LazyLoadImage
+            src={post.featuredImage.url}
+            alt={post.title || "Featured image"}
+            effect="blur"
+            width={800}
+            height={600}
+            className="w-full"
+            wrapperClassName="w-full"
+            style={{ width: "100%", objectFit: "cover" }}
+            placeholderSrc="/placeholder-image.jpg"
+          />
+        </div>
       ) : (
-        <div className="absolute h-80 w-full bg-gray-200 shadow-lg rounded-t-lg lg:rounded-lg flex items-center justify-center">
+        <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
           <p className="text-gray-500">No image available</p>
         </div>
       )}
