@@ -1,13 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faInstagram,
-  faPinterest,
-  faTwitter,
-  faFacebook,
-  faGoogle,
-} from "@fortawesome/free-brands-svg-icons";
+  FaInstagram,
+  FaPinterest,
+  FaFacebook,
+  FaXTwitter,
+} from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -29,38 +27,42 @@ const Footer = () => {
             <a
               href="https://www.instagram.com/lifepoem8/"
               title="Instagram"
-              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
+              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition-colors duration-300"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Instagram"
             >
-              <FontAwesomeIcon icon={faInstagram} className="w-4 h-4" />
+              <FaInstagram className="w-4 h-4 text-white" />
             </a>
             <a
               href="https://in.pinterest.com/smattyvaibhav/key-to-success/"
               title="Pinterest"
-              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
+              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-red-600 hover:bg-red-700 transition-colors duration-300"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Pinterest"
             >
-              <FontAwesomeIcon icon={faPinterest} className="w-4 h-4" />
+              <FaPinterest className="w-4 h-4 text-white" />
             </a>
             <a
               href="https://x.com/Onlyblogs_"
               title="Twitter"
-              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
+              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-black hover:bg-gray-800 transition-colors duration-300"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Twitter"
             >
-              <FontAwesomeIcon icon={faTwitter} className="w-4 h-4" />
+              <FaXTwitter className="w-4 h-4 text-white" />
             </a>
             <a
               href="https://www.facebook.com/shanuv00000"
               title="Facebook"
-              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 dark:bg-violet-400 dark:text-coolGray-900"
+              className="flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Facebook"
             >
-              <FontAwesomeIcon icon={faFacebook} className="w-4 h-4" />
+              <FaFacebook className="w-4 h-4 text-white" />
             </a>
           </div>
         </div>

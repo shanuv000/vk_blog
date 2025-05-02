@@ -1,8 +1,17 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { motion, useAnimation } from "framer-motion";
+import {
+  FaTwitter,
+  FaFacebook,
+  FaReddit,
+  FaWhatsapp,
+  FaLinkedin,
+  FaPinterest,
+  FaTelegram,
+  FaXTwitter,
+} from "react-icons/fa6";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -53,90 +62,74 @@ const NavbarPostDetails = ({ post: { title, slug } }) => {
         target="_blank"
         rel="noopener noreferrer"
         href={`https://twitter.com/intent/tweet?text=${title}&url=${postUrl}&via=Onlyblogs_`}
-        className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-gray-800 transition-colors duration-300"
+        title="Share on Twitter"
+        aria-label="Share on Twitter"
       >
-        <LazyLoadImage
-          src="/twitter.svg"
-          width={45}
-          height={45}
-          alt="Share on Twitter"
-          style={{ width: "45px", height: "45px" }}
-        />
+        <FaXTwitter size={20} className="text-white" />
       </a>
       <a
         target="_blank"
         rel="noopener noreferrer"
         href={`https://www.facebook.com/sharer/sharer.php?u=${postUrl}`}
-        className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
+        title="Share on Facebook"
+        aria-label="Share on Facebook"
       >
-        <LazyLoadImage src="/facebook.svg" width={45} alt="Share on Facebook" />
+        <FaFacebook size={20} className="text-white" />
       </a>
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href={`http://www.reddit.com/submit?url=${postUrl}&title=${title}&via=u/smattyvaibhav`}
-        className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 hidden lg:inline-block"
+        href={`http://www.reddit.com/submit?url=${postUrl}&title=${title}`}
+        className="items-center justify-center w-10 h-10 rounded-full bg-orange-600 hover:bg-orange-700 transition-colors duration-300 hidden lg:flex"
+        title="Share on Reddit"
+        aria-label="Share on Reddit"
       >
-        <LazyLoadImage
-          src="/reddit.png"
-          width={45}
-          height={45}
-          alt="Share on Reddit"
-          style={{ width: "45px", height: "45px" }}
-        />
+        <FaReddit size={20} className="text-white" />
       </a>
       <a
-        href={`https://wa.me/?text=${postUrl}`}
+        href={`https://wa.me/?text=${encodeURIComponent(
+          `${title} - ${postUrl}`
+        )}`}
         data-action="share/whatsapp/share"
-        className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900"
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-colors duration-300"
+        title="Share on WhatsApp"
+        aria-label="Share on WhatsApp"
       >
-        <LazyLoadImage
-          src="/whatsapp2.svg"
-          width={45}
-          height={45}
-          alt="Share on WhatsApp"
-          style={{ width: "45px", height: "45px" }}
-        />
+        <FaWhatsapp size={20} className="text-white" />
       </a>
       <a
         target="_blank"
         rel="noopener noreferrer"
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${postUrl}`}
-        className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 hidden lg:inline-block"
+        className="items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors duration-300 hidden lg:flex"
+        title="Share on LinkedIn"
+        aria-label="Share on LinkedIn"
       >
-        <LazyLoadImage
-          src="/linkedin.svg"
-          width={45}
-          height={45}
-          alt="Share on LinkedIn"
-          style={{ width: "45px", height: "45px" }}
-        />
+        <FaLinkedin size={20} className="text-white" />
       </a>
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href={`http://pinterest.com/pin/create/button/?url=${postUrl}`}
-        className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 hidden lg:inline-block"
+        href={`http://pinterest.com/pin/create/button/?url=${postUrl}&description=${encodeURIComponent(
+          title
+        )}`}
+        className="items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-300 hidden lg:flex"
+        title="Share on Pinterest"
+        aria-label="Share on Pinterest"
       >
-        <LazyLoadImage
-          src="/pin.svg"
-          width={45}
-          height={45}
-          alt="Share on Pinterest"
-          style={{ width: "45px", height: "45px" }}
-        />
+        <FaPinterest size={20} className="text-white" />
       </a>
       <a
-        href={`https://t.me/share/url?url=${postUrl}&text=${title}`}
-        className="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+        href={`https://t.me/share/url?url=${postUrl}&text=${encodeURIComponent(
+          title
+        )}`}
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-300 lg:hidden"
+        title="Share on Telegram"
+        aria-label="Share on Telegram"
       >
-        <LazyLoadImage
-          src="/telegram.svg"
-          width={45}
-          height={45}
-          alt="Share on Telegram"
-          style={{ width: "45px", height: "45px" }}
-        />
+        <FaTelegram size={20} className="text-white" />
       </a>
     </motion.nav>
   );

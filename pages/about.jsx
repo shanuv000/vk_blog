@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faClipboard } from "@fortawesome/free-solid-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons"; // Import the Twitter icon
+import { FaXTwitter } from "react-icons/fa6"; // Import the Twitter icon from React Icons
 
 const About = () => {
   const [showEmail, setShowEmail] = useState(false);
@@ -67,10 +67,10 @@ const About = () => {
             href="https://x.com/Onlyblogs_"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-indigo-500 text-white hover:bg-indigo-600 transition duration-150 ease-in-out"
+            className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-black text-white hover:bg-gray-800 transition duration-150 ease-in-out"
+            aria-label="Twitter"
           >
-            <FontAwesomeIcon icon={faTwitter} className="h-6 w-6" />{" "}
-            {/* Use the Twitter icon */}
+            <FaXTwitter size={24} className="text-white" />
           </a>
         </div>
       </div>
