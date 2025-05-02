@@ -3,6 +3,7 @@ import { PostCard, Categories, PostWidget } from "../components";
 import { getPosts } from "../services";
 // import Footer from "../components/footer/Footer";
 import { useEffect, useState } from "react";
+import Head from "next/head";
 
 // import electionResults from "../components/AdditionalPosts/electionResults.json";
 
@@ -12,6 +13,7 @@ import LiveMatch from "../components/Cricket/LiveMatch";
 // Fisher-Yates shuffle algorithm
 import { useMediaQuery } from "react-responsive"; // Import for media query
 import { useData } from "../store/HandleApiContext";
+import SchemaManager from "../components/SchemaManager";
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -37,26 +39,35 @@ export default function Home({ posts }) {
     );
   }
   return (
-    <div className="container mx-auto px-4 md:px-10 mb-8">
-      <FeaturedPosts />
+    <>
+      <Head>
+        {/* Add structured data for homepage */}
+        <SchemaManager
+          isHomePage={true}
+          posts={shuffledPosts.map((post) => post.node)}
+        />
+      </Head>
+      <div className="container mx-auto px-4 md:px-10 mb-8">
+        <FeaturedPosts />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-8 col-span-1">
-          {shuffledPosts.map((post, index) => (
-            <PostCard key={post.node.slug || index} post={post.node} />
-          ))}
-        </div>
-        <div className="lg:col-span-4 col-span-1">
-          <div className="lg:sticky relative top-8">
-            {isLiveScore && !isMobile && <LiveMatch />}{" "}
-            {/* Conditionally render LiveMatch */}
-            <PostWidget />
-            <Categories />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-8 col-span-1">
+            {shuffledPosts.map((post, index) => (
+              <PostCard key={post.node.slug || index} post={post.node} />
+            ))}
+          </div>
+          <div className="lg:col-span-4 col-span-1">
+            <div className="lg:sticky relative top-8">
+              {isLiveScore && !isMobile && <LiveMatch />}{" "}
+              {/* Conditionally render LiveMatch */}
+              <PostWidget />
+              <Categories />
+            </div>
           </div>
         </div>
+        {/* <Footer /> */}
       </div>
-      {/* <Footer /> */}
-    </div>
+    </>
   );
 }
 

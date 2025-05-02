@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 import {
   PostDetail,
@@ -10,6 +11,7 @@ import {
   CommentsForm,
   Loader,
 } from "../../components";
+import SchemaManager from "../../components/SchemaManager";
 import { getPosts, getPostDetails } from "../../services";
 import { AdjacentPosts } from "../../sections";
 // import Footer from "../../components/footer/Footer";
@@ -43,6 +45,10 @@ const PostDetails = ({ post }) => {
 
   return (
     <>
+      <Head>
+        {/* Add structured data */}
+        <SchemaManager post={post} />
+      </Head>
       <div className="sm:container mx-auto px-4 lg:px-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 ">
           <div className="col-span-1 lg:col-span-8">
