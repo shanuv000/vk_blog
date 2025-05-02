@@ -49,7 +49,19 @@ const withPWA = require("next-pwa")({
         cacheName: "graphassets-images",
         expiration: {
           maxEntries: 100,
-          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+      },
+    },
+    // Hygraph CDN images
+    {
+      urlPattern: /^https:\/\/ap-south-1\.cdn\.hygraph\.com\/.*$/,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "hygraph-cdn-images",
+        expiration: {
+          maxEntries: 100,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
         },
       },
     },
@@ -112,11 +124,19 @@ const nextConfig = {
       "ap-south-1.graphassets.com",
       "png.pngtree.com",
       "e7.pngegg.com",
+      "ap-south-1.cdn.hygraph.com", // Add Hygraph CDN domain
     ], // Allowed image domains
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 3600, // Increase cache time to 1 hour
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Optimize image loading
+    loader: "default",
+    path: "/_next/image",
+    disableStaticImages: false,
   },
 
   // Rewrites configuration

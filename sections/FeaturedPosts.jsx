@@ -1,10 +1,11 @@
-import React, { useState, useEffect, memo, lazy, Suspense } from "react";
+import React, { useState, useEffect, memo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { ClipLoader } from "react-spinners";
+import Head from "next/head";
 
-// Dynamically import the carousel to reduce initial bundle size
+// Dynamically import the carousel with preload
 const Carousel = dynamic(() => import("react-multi-carousel"), {
-  ssr: false,
+  ssr: true, // Enable SSR for faster initial load
   loading: () => (
     <div className="flex justify-center items-center py-8">
       <ClipLoader color="#FF4500" size={30} />
@@ -80,13 +81,55 @@ const FeaturedPosts = () => {
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const carouselRef = useRef(null);
+
+  // Preload images for better LCP
+  const preloadImages = (posts) => {
+    if (!posts || posts.length === 0) return;
+
+    // Only preload the first 3 images to improve performance
+    const imagesToPreload = posts
+      .slice(0, 3)
+      .map((post) => post.featuredImage?.url)
+      .filter(Boolean);
+
+    return (
+      <Head>
+        {imagesToPreload.map((imageUrl, index) => (
+          <link
+            key={`preload-image-${index}`}
+            rel="preload"
+            as="image"
+            href={imageUrl}
+            // Modern format if supported
+            imagesrcset={`${imageUrl}?w=640 640w, ${imageUrl}?w=750 750w, ${imageUrl}?w=828 828w`}
+            imagesizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+          />
+        ))}
+      </Head>
+    );
+  };
 
   useEffect(() => {
     const loadPosts = async () => {
       try {
         setIsLoading(true);
         const result = await getFeaturedPosts();
-        setFeaturedPosts(result);
+
+        // Process images to ensure they have width and height
+        const processedPosts = result.map((post) => ({
+          ...post,
+          featuredImage: post.featuredImage
+            ? {
+                ...post.featuredImage,
+                // Ensure width and height are numbers
+                width: parseInt(post.featuredImage.width, 10) || 800,
+                height: parseInt(post.featuredImage.height, 10) || 600,
+              }
+            : null,
+        }));
+
+        setFeaturedPosts(processedPosts);
         setDataLoaded(true);
       } catch (error) {
         console.error("Error loading featured posts:", error);
@@ -98,10 +141,13 @@ const FeaturedPosts = () => {
     loadPosts();
   }, []);
 
+  // Render a placeholder with the same dimensions during loading
   if (isLoading) {
     return (
-      <div className="mb-8 flex justify-center items-center py-8">
-        <ClipLoader color="#FF4500" size={30} />
+      <div className="mb-8">
+        <div className="h-72 bg-gray-200 animate-pulse rounded-lg flex justify-center items-center">
+          <ClipLoader color="#FF4500" size={30} />
+        </div>
       </div>
     );
   }
@@ -112,7 +158,9 @@ const FeaturedPosts = () => {
 
   return (
     <div className="mb-8">
+      {preloadImages(featuredPosts)}
       <Carousel
+        ref={carouselRef}
         infinite
         customLeftArrow={<LeftArrow />}
         customRightArrow={<RightArrow />}
@@ -125,6 +173,12 @@ const FeaturedPosts = () => {
         minimumTouchDrag={80}
         autoPlay={false}
         shouldResetAutoplay={false}
+        // Reduce initial load time
+        renderDotsOutside={false}
+        showDots={false}
+        // Improve performance
+        rewind={false}
+        rewindWithAnimation={false}
       >
         {featuredPosts.map((post, index) => (
           <FeaturedPostCard key={post.slug || index} post={post} />
