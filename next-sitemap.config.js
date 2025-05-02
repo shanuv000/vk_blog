@@ -14,7 +14,7 @@ module.exports = {
   sitemapSize: 5000,
   additionalSitemaps: [
     {
-      loc: "/sitemap-news.xml",
+      loc: "https://blog.urtechy.com/sitemap-news.xml",
       lastmod: new Date().toISOString(),
     },
   ],
