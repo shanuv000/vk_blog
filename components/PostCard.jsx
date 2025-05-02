@@ -6,14 +6,27 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { DEFAULT_AVATAR } from "./DefaultAvatar";
 import { FaUser } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const PostCard = ({ post }) => (
-  <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8 overflow-hidden">
+  <motion.div
+    className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8 overflow-hidden"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+    whileHover={{
+      y: -5,
+      boxShadow:
+        "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+    }}
+  >
     <div className="relative shadow-md mb-6 overflow-hidden rounded-t-lg lg:rounded-lg">
       {post.featuredImage?.url ? (
-        <div
+        <motion.div
           className="w-full"
           style={{ maxHeight: "500px", overflow: "hidden" }}
+          whileHover={{ scale: 1.03 }}
+          transition={{ duration: 0.3 }}
         >
           <LazyLoadImage
             src={post.featuredImage.url}
@@ -26,7 +39,7 @@ const PostCard = ({ post }) => (
             style={{ width: "100%", objectFit: "cover" }}
             placeholderSrc="/placeholder-image.jpg"
           />
-        </div>
+        </motion.div>
       ) : (
         <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
           <p className="text-gray-500">No image available</p>
@@ -34,9 +47,13 @@ const PostCard = ({ post }) => (
       )}
     </div>
 
-    <h1 className="transition duration-700 text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl font-semibold">
+    <motion.h1
+      className="text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl font-semibold"
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+    >
       <Link href={`/post/${post.slug}`}>{post.title}</Link>
-    </h1>
+    </motion.h1>
     <div className="block lg:flex text-center items-center justify-center mb-8 w-full">
       <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8">
         {post.author?.photo?.url ? (
@@ -85,12 +102,21 @@ const PostCard = ({ post }) => (
     </p>
     <div className="text-center">
       <Link href={`/post/${post.slug}`}>
-        <span className="transition duration-500 ease transform hover:-translate-y-1 inline-block bg-pink-600 text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer">
+        <motion.span
+          className="inline-block bg-pink-600 text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
+          whileHover={{
+            scale: 1.05,
+            backgroundColor: "#ec4899",
+            boxShadow: "0 10px 15px -3px rgba(236, 72, 153, 0.3)",
+          }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.2 }}
+        >
           Continue Reading
-        </span>
+        </motion.span>
       </Link>
     </div>
-  </div>
+  </motion.div>
 );
 
 export default PostCard;

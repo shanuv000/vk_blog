@@ -4,10 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { FaUser } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const FeaturedPostCard = ({ post }) => (
-  <div className="relative h-72">
-    <div className="absolute rounded-lg shadow-md inline-block w-full h-72 overflow-hidden">
+  <motion.div
+    className="relative h-72"
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.5 }}
+    whileHover={{ scale: 1.03 }}
+  >
+    <motion.div
+      className="absolute rounded-lg shadow-md inline-block w-full h-72 overflow-hidden"
+      whileHover={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)" }}
+    >
       <Image
         src={post.featuredImage?.url || DEFAULT_FEATURED_IMAGE}
         alt={post.title || "Featured post"}
@@ -17,18 +27,36 @@ const FeaturedPostCard = ({ post }) => (
         priority={true}
         quality={75}
       />
-    </div>
+    </motion.div>
     <div className="absolute rounded-lg bg-center bg-gradient-to-b opacity-50 from-gray-400 via-gray-700 to-black w-full h-72" />
-    <div className="flex flex-col rounded-lg p-4 items-center justify-center absolute w-full h-full">
-      <p className="text-white mb-4 text-shadow font-semibold text-xs">
+    <motion.div
+      className="flex flex-col rounded-lg p-4 items-center justify-center absolute w-full h-full"
+      whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
+    >
+      <motion.p
+        className="text-white mb-4 text-shadow font-semibold text-xs"
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+      >
         {post.createdAt
           ? moment(post.createdAt).format("MMM DD, YYYY")
           : "No date"}
-      </p>
-      <p className="text-white mb-4 text-shadow font-semibold text-2xl text-center">
+      </motion.p>
+      <motion.p
+        className="text-white mb-4 text-shadow font-semibold text-2xl text-center"
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+      >
         {post.title || "Untitled Post"}
-      </p>
-      <div className="flex items-center absolute bottom-5 w-full justify-center">
+      </motion.p>
+      <motion.div
+        className="flex items-center absolute bottom-5 w-full justify-center"
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+      >
         {post.author?.photo?.url ? (
           <Image
             alt={post.author.name || "Author"}
@@ -45,12 +73,12 @@ const FeaturedPostCard = ({ post }) => (
         <p className="inline align-middle text-white text-shadow ml-2 font-medium">
           {post.author?.name || "Anonymous"}
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
     <Link href={`/post/${post.slug}`}>
       <span className="cursor-pointer absolute w-full h-full" />
     </Link>
-  </div>
+  </motion.div>
 );
 
 export default FeaturedPostCard;

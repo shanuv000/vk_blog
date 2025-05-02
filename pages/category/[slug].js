@@ -75,11 +75,34 @@ export async function getStaticProps({ params }) {
 // Specify dynamic routes to pre-render pages based on data.
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
-  const categories = await getCategories();
+  try {
+    const categories = await getCategories();
 
-  return {
-    paths: categories.map(({ slug }) => ({ params: { slug } })),
-    // Use 'blocking' to wait for the page to be generated on-demand
-    fallback: "blocking",
-  };
+    if (!categories || categories.length === 0) {
+      console.warn("No categories found for getStaticPaths");
+      return {
+        paths: [],
+        fallback: "blocking",
+      };
+    }
+
+    // Filter out categories without slugs
+    const validCategories = categories.filter(
+      (category) => category && category.slug
+    );
+
+    console.log(`Pre-rendering ${validCategories.length} category pages`);
+
+    return {
+      paths: validCategories.map(({ slug }) => ({ params: { slug } })),
+      // Use 'blocking' to wait for the page to be generated on-demand
+      fallback: "blocking",
+    };
+  } catch (error) {
+    console.error("Error in getStaticPaths for categories:", error);
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
 }

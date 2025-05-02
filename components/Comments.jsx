@@ -5,12 +5,49 @@ import parse from "html-react-parser";
 
 const Comments = ({ slug }) => {
   const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    getComments(slug).then((result) => setComments(result));
-  }, []);
+    if (!slug) return;
+
+    const fetchComments = async () => {
+      try {
+        setLoading(true);
+        const result = await getComments(slug);
+        setComments(result || []);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching comments:", err);
+        setError("Failed to load comments. Please try again later.");
+        setComments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComments();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
+        <p className="text-center">Loading comments...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
+        <p className="text-center text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {comments.length > 0 && (
+      {comments.length > 0 ? (
         <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
           <h3 className="text-xl mb-8 font-semibold border-b pb-4">
             {comments.length}
@@ -24,13 +61,19 @@ const Comments = ({ slug }) => {
             >
               <p className="mb-4">
                 <span className="font-semibold">{comment.name}</span> on{" "}
-                {moment(comments.createdAt).format("MMM DD, YYYY")}
+                {moment(comment.createdAt).format("MMM DD, YYYY")}
               </p>
               <p className="whitespace-pre-line text-gray-600 w-full">
-                {parse(comment.comment)}
+                {parse(comment.comment || "")}
               </p>
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
+          <p className="text-center">
+            No comments yet. Be the first to comment!
+          </p>
         </div>
       )}
     </div>
