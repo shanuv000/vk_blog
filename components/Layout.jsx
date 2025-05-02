@@ -1,5 +1,4 @@
 import React, { memo, useEffect, useState } from "react";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "./";
 import { DataProvider } from "../store/HandleApiContext";
 import Footer from "./footer/Footer";
@@ -27,7 +26,6 @@ const MobileTroubleshootButton = dynamic(
 
 // Memoize the Layout component to prevent unnecessary re-renders
 const Layout = memo(({ children }) => {
-  const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
   const [showPWAPrompt, setShowPWAPrompt] = useState(false);
 
   useEffect(() => {
@@ -57,7 +55,6 @@ const Layout = memo(({ children }) => {
           <ServiceWorkerCleanup />
           <MobileTroubleshootButton />
         </main>
-        <GoogleAnalytics gaId={gid} />
       </DataProvider>
     </>
   );

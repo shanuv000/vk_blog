@@ -7,6 +7,7 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import { DEFAULT_FEATURED_IMAGE } from "../components/DefaultAvatar";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../lib/apollo-client";
+import AnalyticsProvider from "../components/AnalyticsProvider";
 
 function MyApp({ Component, pageProps }) {
   // Initialize Apollo Client with the initial state
@@ -26,6 +27,9 @@ function MyApp({ Component, pageProps }) {
       document.head.removeChild(preloadLink);
     };
   }, []);
+
+  // Get Google Analytics ID from environment variables
+  const gaId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || "G-VQRT44X8WH";
 
   return (
     <ApolloProvider client={apolloClient}>
@@ -60,6 +64,10 @@ function MyApp({ Component, pageProps }) {
           {/* Resource hints for faster loading */}
           <link rel="dns-prefetch" href="https://ap-south-1.cdn.hygraph.com" />
           <link rel="dns-prefetch" href="https://media.graphassets.com" />
+
+          {/* Preconnect to Google Analytics */}
+          <link rel="preconnect" href="https://www.googletagmanager.com" />
+          <link rel="preconnect" href="https://www.google-analytics.com" />
         </Head>
 
         {/* Microsoft Clarity - load after page interaction */}
@@ -77,9 +85,11 @@ function MyApp({ Component, pageProps }) {
           }}
         />
 
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AnalyticsProvider measurementId={gaId}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AnalyticsProvider>
       </ErrorBoundary>
     </ApolloProvider>
   );
