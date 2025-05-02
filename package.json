@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "next-sitemap --config next-sitemap.config.js",
+    "generate-news-sitemap": "node scripts/generate-news-sitemap.js",
+    "postbuild": "npm run generate-news-sitemap && next-sitemap --config next-sitemap.config.js",
     "start": "next start"
   },
   "dependencies": {
