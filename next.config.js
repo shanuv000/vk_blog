@@ -2,10 +2,18 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // Image configuration
+  // Image configuration with optimizations
   images: {
-    domains: ["media.graphassets.com", "ap-south-1.graphassets.com"], // Hygraph's image domains
+    domains: [
+      "media.graphassets.com",
+      "ap-south-1.graphassets.com",
+      "png.pngtree.com",
+      "e7.pngegg.com",
+    ], // Allowed image domains
     formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
   },
 
   // Rewrites configuration
@@ -22,8 +30,9 @@ const nextConfig = {
     ];
   },
 
-  // Webpack configuration for audio files
+  // Webpack configuration for audio files and optimizations
   webpack(config) {
+    // Audio file handling
     config.module.rules.push({
       test: /\.(mp3|wav)$/,
       use: {
@@ -37,8 +46,21 @@ const nextConfig = {
     return config;
   },
 
-  // Enable SWC minification
+  // Performance optimizations
   swcMinify: true,
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? {
+            exclude: ["error", "warn"],
+          }
+        : false,
+  },
+
+  // Optimize production builds
+  productionBrowserSourceMaps: false,
+
+  // Removed experimental features that were causing issues
 };
 
 module.exports = nextConfig;

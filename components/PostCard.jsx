@@ -2,13 +2,10 @@ import React from "react";
 import Image from "next/image";
 import moment from "moment";
 import Link from "next/link";
-
-import { grpahCMSImageLoader } from "../util";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-
-// Default avatar for authors without photos
-const DEFAULT_AVATAR =
-  "https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { DEFAULT_AVATAR } from "./DefaultAvatar";
+import { FaUser } from "react-icons/fa";
 
 const PostCard = ({ post }) => (
   <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
@@ -17,10 +14,12 @@ const PostCard = ({ post }) => (
         <LazyLoadImage
           src={post.featuredImage.url}
           alt={post.title || "Featured image"}
+          effect="blur"
           width={800}
           height={600}
           className="object-top absolute h-80 w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
           style={{ width: "100%", height: "320px" }} // Ensure both dimensions are set
+          placeholderSrc="/placeholder-image.jpg"
         />
       ) : (
         <div className="absolute h-80 w-full bg-gray-200 shadow-lg rounded-t-lg lg:rounded-lg flex items-center justify-center">
@@ -34,15 +33,19 @@ const PostCard = ({ post }) => (
     </h1>
     <div className="block lg:flex text-center items-center justify-center mb-8 w-full">
       <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8">
-        <Image
-          unoptimized
-          loader={grpahCMSImageLoader}
-          alt={post.author?.name || "Author"}
-          height={30}
-          width={30}
-          className="align-middle rounded-full"
-          src={post.author?.photo?.url || DEFAULT_AVATAR}
-        />
+        {post.author?.photo?.url ? (
+          <Image
+            alt={post.author.name || "Author"}
+            height={30}
+            width={30}
+            className="align-middle rounded-full"
+            src={post.author.photo.url}
+          />
+        ) : (
+          <div className="flex items-center justify-center bg-gray-200 rounded-full h-[30px] w-[30px]">
+            <FaUser className="text-gray-500" size={16} />
+          </div>
+        )}
         <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg">
           {post.author?.name || "Anonymous"}
         </p>

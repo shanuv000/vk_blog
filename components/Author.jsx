@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { DEFAULT_AVATAR } from "./DefaultAvatar";
+import { FaUser } from "react-icons/fa";
 
 const Author = ({ author }) => {
   // If author is null or undefined, provide default values
@@ -14,14 +15,19 @@ const Author = ({ author }) => {
   return (
     <div className="text-center mt-20 mb-8 p-12 relative rounded-lg bg-black bg-opacity-20">
       <div className="absolute left-0 right-0 -top-14">
-        <Image
-          src={author.photo?.url || DEFAULT_AVATAR}
-          alt={author.name || "Author"}
-          unoptimized
-          height={100}
-          width={100}
-          className="align-middle rounded-full"
-        />
+        {author.photo?.url ? (
+          <Image
+            src={author.photo.url}
+            alt={author.name || "Author"}
+            height={100}
+            width={100}
+            className="align-middle rounded-full"
+          />
+        ) : (
+          <div className="flex items-center justify-center bg-gray-200 rounded-full h-[100px] w-[100px] mx-auto">
+            <FaUser className="text-gray-500" size={50} />
+          </div>
+        )}
       </div>
       <h3 className="text-white my-4 text-xl font-bold">
         {author.name || "Anonymous"}

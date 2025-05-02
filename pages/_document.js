@@ -1,5 +1,4 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import Script from "next/script";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -9,51 +8,26 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
-          {/* Favicon */}
+          {/* Favicon - consolidated for better performance */}
           <link
-            rel="shortcut icon"
-            href="/iconified/logo4.ico"
+            rel="icon"
             type="image/x-icon"
+            href="/iconified/logo4.ico"
+            sizes="any"
           />
           <link rel="apple-touch-icon" href="/iconified/logo4.ico" />
-          <link rel="icon" type="image/x-icon" href="/iconified/logo4.ico" />
 
           {/* Web App Manifest */}
           <link rel="manifest" href="/manifest.json" />
           <meta name="theme-color" content="#FF4500" />
 
-          {/* Google Analytics script */}
-          <Script
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
-          />
-          <Script
-            id="google-analytics"
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
-              `,
-            }}
-          />
-
-          {/* Microsoft Clarity script */}
-          <Script
-            id="clarity-script"
-            dangerouslySetInnerHTML={{
-              __html: `
-                (function(c,l,a,r,i,t,y){
-                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                })(window, document, "clarity", "script", "o2yidwokf0");
-              `,
-            }}
-          />
+          {/* Preconnect to external domains */}
+          <link rel="preconnect" href="https://www.googletagmanager.com" />
+          <link rel="preconnect" href="https://www.clarity.ms" />
+          <link rel="preconnect" href="https://ap-south-1.cdn.hygraph.com" />
+          <link rel="preconnect" href="https://media.graphassets.com" />
         </Head>
         <body>
           <Main />

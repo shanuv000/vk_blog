@@ -1,5 +1,18 @@
-import React, { useState, useEffect } from "react";
-import Carousel from "react-multi-carousel";
+import React, { useState, useEffect, memo, lazy, Suspense } from "react";
+import dynamic from "next/dynamic";
+import { ClipLoader } from "react-spinners";
+
+// Dynamically import the carousel to reduce initial bundle size
+const Carousel = dynamic(() => import("react-multi-carousel"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex justify-center items-center py-8">
+      <ClipLoader color="#FF4500" size={30} />
+    </div>
+  ),
+});
+
+// Import styles only when Carousel is loaded
 import "react-multi-carousel/lib/styles.css";
 
 import { FeaturedPostCard } from "../components";
@@ -24,68 +37,98 @@ const responsive = {
   },
 };
 
+// Custom arrow components memoized to prevent re-renders
+const LeftArrow = memo(() => (
+  <div className="absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 text-white w-full"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+      />
+    </svg>
+  </div>
+));
+
+const RightArrow = memo(() => (
+  <div className="absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 text-white w-full"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M14 5l7 7m0 0l-7 7m7-7H3"
+      />
+    </svg>
+  </div>
+));
+
 const FeaturedPosts = () => {
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getFeaturedPosts().then((result) => {
-      setFeaturedPosts(result);
-      setDataLoaded(true);
-    });
+    const loadPosts = async () => {
+      try {
+        setIsLoading(true);
+        const result = await getFeaturedPosts();
+        setFeaturedPosts(result);
+        setDataLoaded(true);
+      } catch (error) {
+        console.error("Error loading featured posts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPosts();
   }, []);
 
-  const customLeftArrow = (
-    <div className="absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-pink-600 rounded-full">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 text-white w-full"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M10 19l-7-7m0 0l7-7m-7 7h18"
-        />
-      </svg>
-    </div>
-  );
+  if (isLoading) {
+    return (
+      <div className="mb-8 flex justify-center items-center py-8">
+        <ClipLoader color="#FF4500" size={30} />
+      </div>
+    );
+  }
 
-  const customRightArrow = (
-    <div className="absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-pink-600 rounded-full">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 text-white w-full"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M14 5l7 7m0 0l-7 7m7-7H3"
-        />
-      </svg>
-    </div>
-  );
+  if (!dataLoaded || featuredPosts.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mb-8">
       <Carousel
         infinite
-        customLeftArrow={customLeftArrow}
-        customRightArrow={customRightArrow}
+        customLeftArrow={<LeftArrow />}
+        customRightArrow={<RightArrow />}
         responsive={responsive}
         itemClass="px-4"
+        ssr={true}
+        swipeable={true}
+        draggable={true}
+        partialVisible={false}
+        minimumTouchDrag={80}
+        autoPlay={false}
+        shouldResetAutoplay={false}
       >
-        {dataLoaded &&
-          featuredPosts.map((post, index) => (
-            <FeaturedPostCard key={post.slug || index} post={post} />
-          ))}
+        {featuredPosts.map((post, index) => (
+          <FeaturedPostCard key={post.slug || index} post={post} />
+        ))}
       </Carousel>
     </div>
   );

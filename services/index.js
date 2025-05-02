@@ -37,20 +37,8 @@ export const getPosts = async () => {
   try {
     console.log("Fetching posts");
 
-    // First try using the proxy API to avoid CORS issues
-    try {
-      console.log("Trying proxy API for posts");
-      const proxyResult = await fetchViaProxy(query);
-
-      if (proxyResult.postsConnection && proxyResult.postsConnection.edges) {
-        console.log(
-          `Found ${proxyResult.postsConnection.edges.length} posts using proxy API`
-        );
-        return proxyResult.postsConnection.edges;
-      }
-    } catch (proxyError) {
-      console.error("Proxy API failed for posts:", proxyError);
-    }
+    // Skip proxy API for server-side rendering
+    // This avoids the URL error during build/SSR
 
     // If proxy fails, fall back to direct CDN
     console.log("Falling back to direct CDN for posts");
@@ -75,20 +63,8 @@ export const getCategories = async () => {
   try {
     console.log("Fetching categories");
 
-    // First try using the proxy API to avoid CORS issues
-    try {
-      console.log("Trying proxy API for categories");
-      const proxyResult = await fetchViaProxy(query);
-
-      if (proxyResult.categories) {
-        console.log(
-          `Found ${proxyResult.categories.length} categories using proxy API`
-        );
-        return proxyResult.categories;
-      }
-    } catch (proxyError) {
-      console.error("Proxy API failed for categories:", proxyError);
-    }
+    // Skip proxy API for server-side rendering
+    // This avoids the URL error during build/SSR
 
     // If proxy fails, fall back to direct CDN
     console.log("Falling back to direct CDN for categories");
@@ -164,38 +140,8 @@ export const getPostDetails = async (slug) => {
   try {
     console.log(`Fetching post details for slug: ${slug}`);
 
-    // First try using the proxy API to avoid CORS issues
-    try {
-      console.log(`Trying proxy API for slug: ${slug}`);
-      const proxyResult = await fetchViaProxy(query, { slug });
-
-      if (proxyResult.post) {
-        console.log(
-          `Successfully fetched post for slug: ${slug} using proxy API`
-        );
-        return proxyResult.post;
-      }
-
-      // If direct query via proxy fails, try the alternative query via proxy
-      console.log(
-        `No post found with direct query via proxy for slug: ${slug}, trying alternative query`
-      );
-      const proxyAlternativeResult = await fetchViaProxy(alternativeQuery, {
-        slug,
-      });
-
-      if (
-        proxyAlternativeResult.posts &&
-        proxyAlternativeResult.posts.length > 0
-      ) {
-        console.log(
-          `Found post using alternative query via proxy for slug: ${slug}`
-        );
-        return proxyAlternativeResult.posts[0];
-      }
-    } catch (proxyError) {
-      console.error(`Proxy API failed for slug: ${slug}:`, proxyError);
-    }
+    // Skip proxy API for server-side rendering
+    // This avoids the URL error during build/SSR
 
     // If proxy fails, fall back to direct CDN
     console.log(
@@ -349,49 +295,8 @@ export const getCategoryPost = async (slug) => {
   try {
     console.log(`Fetching category posts for slug: ${slug}`);
 
-    // First try using the proxy API to avoid CORS issues
-    try {
-      console.log(`Trying proxy API for category: ${slug}`);
-      const proxyResult = await fetchViaProxy(query, { slug });
-
-      if (
-        proxyResult.postsConnection &&
-        proxyResult.postsConnection.edges &&
-        proxyResult.postsConnection.edges.length > 0
-      ) {
-        console.log(
-          `Successfully fetched category posts for ${slug} using proxy API`
-        );
-        return proxyResult.postsConnection.edges;
-      }
-
-      // If standard query via proxy fails, try the alternative query via proxy
-      console.log(
-        `No posts found with standard query via proxy for category: ${slug}, trying alternative query`
-      );
-      const proxyAlternativeResult = await fetchViaProxy(alternativeQuery, {
-        slug,
-      });
-
-      if (
-        proxyAlternativeResult.categories &&
-        proxyAlternativeResult.categories.length > 0 &&
-        proxyAlternativeResult.categories[0].posts &&
-        proxyAlternativeResult.categories[0].posts.length > 0
-      ) {
-        const posts = proxyAlternativeResult.categories[0].posts;
-        console.log(
-          `Found ${posts.length} posts for category ${slug} using alternative query via proxy`
-        );
-
-        // Convert to the same format as the standard query
-        return posts.map((post) => ({
-          node: post,
-        }));
-      }
-    } catch (proxyError) {
-      console.error(`Proxy API failed for category ${slug}:`, proxyError);
-    }
+    // Skip proxy API for server-side rendering
+    // This avoids the URL error during build/SSR
 
     // If proxy fails, fall back to direct CDN
     console.log(

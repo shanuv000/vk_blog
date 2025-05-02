@@ -101,11 +101,7 @@ const Header = () => {
     }));
   };
 
-  // Animation variants
-  const headerVariants = {
-    hidden: { opacity: 0, y: -50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
+  // Animation variants for logo only
 
   const logoVariants = {
     hidden: { opacity: 0, scale: 0.8 },
@@ -354,7 +350,7 @@ const Header = () => {
                           <Link
                             href={item.href}
                             onClick={toggleMobileMenu}
-                            className="block w-full text-gray-800 hover:text-red-600 font-medium py-3 text-base flex items-center"
+                            className="w-full text-gray-800 hover:text-red-600 font-medium py-3 text-base flex items-center"
                           >
                             {item.isLive && isLive ? (
                               <motion.span
