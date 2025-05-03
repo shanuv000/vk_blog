@@ -1,5 +1,10 @@
-// Default avatar for authors without photos - using local path
-export const DEFAULT_AVATAR = "/images/default-avatar.png";
+// Default avatar for authors without photos - using dynamic API route
+export const DEFAULT_AVATAR = "/api/default-image?type=avatar";
 
-// Default image for posts without featured images - using local path
-export const DEFAULT_FEATURED_IMAGE = "/images/default-featured-image.jpg";
+// Default image for posts without featured images - using dynamic API route
+export const DEFAULT_FEATURED_IMAGE = "/api/default-image?type=featured";
+
+// Fallback URLs in case the API route fails
+export const FALLBACK_AVATAR = "https://via.placeholder.com/100?text=Author";
+export const FALLBACK_FEATURED_IMAGE =
+  "https://via.placeholder.com/800x450?text=urTechy+Blogs";

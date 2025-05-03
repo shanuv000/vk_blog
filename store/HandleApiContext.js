@@ -146,33 +146,28 @@ const DataContext = createContext({
 });
 
 export const DataProvider = ({ children }) => {
+  // Use our local proxy API to avoid CORS issues
+  const API_BASE = "/api/cricket-proxy?endpoint=";
+
   const { data, refetch: fetchData } = useFetchData(
-    "https://api-sync.vercel.app/api/cricket/schedule",
+    `${API_BASE}schedule`,
     null
   );
+
   const {
     data: liveScores,
     error: liveScoresError,
     loading: loadingLiveScores,
     refetch: fetchLiveScores,
     dataExist: isLiveScore,
-    // isLiveScore,
-  } = useFetchData(
-    "https://api-sync.vercel.app/api/cricket/live-scores",
-    (data) => data,
-    []
-  );
+  } = useFetchData(`${API_BASE}live-scores`, (data) => data, []);
 
   const {
     data: recentScores,
     error: recentScoresError,
     loading: loadingRecentScores,
     refetch: fetchRecentScores,
-  } = useFetchData(
-    "https://api-sync.vercel.app/api/cricket/recent-scores",
-    (data) => data,
-    []
-  );
+  } = useFetchData(`${API_BASE}recent-scores`, (data) => data, []);
 
   const {
     data: schedule,
@@ -180,9 +175,8 @@ export const DataProvider = ({ children }) => {
     loading: loadingSchedule,
     refetch: fetchSchedule,
   } = useFetchData(
-    "https://api-sync.vercel.app/api/cricket/schedule",
-    (response) => response.data.groups, // Corrected data extraction
-    (data) => data,
+    `${API_BASE}schedule`,
+    (response) => response.data?.groups || [], // Safely extract groups with fallback
     []
   );
 
@@ -191,11 +185,7 @@ export const DataProvider = ({ children }) => {
     error: upcomingMatchesError,
     loading: loadingUpcomingMatches,
     refetch: fetchUpcomingMatches,
-  } = useFetchData(
-    "https://api-sync.vercel.app/api/cricket/upcoming-matches",
-    (data) => data,
-    []
-  );
+  } = useFetchData(`${API_BASE}upcoming-matches`, (data) => data, []);
 
   return (
     <DataContext.Provider

@@ -11,7 +11,10 @@ import {
   FaPinterest,
   FaInstagram,
 } from "react-icons/fa6";
-import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import {
+  DEFAULT_FEATURED_IMAGE,
+  FALLBACK_FEATURED_IMAGE,
+} from "./DefaultAvatar";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -50,9 +53,36 @@ const NavbarPostDetails = ({ post }) => {
   const hasFeaturedImage = post?.featuredImage && post.featuredImage.url;
 
   // Use the same default image as in PostDetail component if no featured image
+  // For social sharing, use the absolute URL with fallbacks
   const imageUrl = hasFeaturedImage
     ? post.featuredImage.url
     : `${rootUrl}${DEFAULT_FEATURED_IMAGE}`;
+
+  // Function to handle image URL errors in social sharing
+  const getSafeImageUrl = () => {
+    // If the original URL fails, use the fallback
+    if (!hasFeaturedImage) {
+      return `${rootUrl}${DEFAULT_FEATURED_IMAGE}`;
+    }
+
+    // Check if the URL is from Hygraph/GraphCMS
+    if (
+      post.featuredImage.url.includes("graphassets.com") ||
+      post.featuredImage.url.includes("hygraph.com")
+    ) {
+      try {
+        // Add a timestamp to bypass cache
+        const url = new URL(post.featuredImage.url);
+        url.searchParams.append("_t", Date.now());
+        return url.toString();
+      } catch (e) {
+        console.error("Error parsing image URL:", e);
+        return FALLBACK_FEATURED_IMAGE;
+      }
+    }
+
+    return post.featuredImage.url;
+  };
   const [ref, inView] = useInView({ threshold: 0.1 });
   const controls = useAnimation();
 
@@ -91,7 +121,7 @@ const NavbarPostDetails = ({ post }) => {
         rel="noopener noreferrer"
         href={`https://www.instagram.com/?url=${encodeURIComponent(
           postUrl
-        )}&media=${encodeURIComponent(imageUrl)}`}
+        )}&media=${encodeURIComponent(getSafeImageUrl())}`}
         className="flex items-center justify-center w-10 h-10 rounded-full bg-pink-500 hover:bg-pink-600 transition-colors duration-300"
         title="Share on Instagram"
         aria-label="Share on Instagram"
@@ -103,9 +133,9 @@ const NavbarPostDetails = ({ post }) => {
         rel="noopener noreferrer"
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
           postUrl
-        )}&picture=${encodeURIComponent(imageUrl)}&quote=${encodeURIComponent(
-          title
-        )}`}
+        )}&picture=${encodeURIComponent(
+          getSafeImageUrl()
+        )}&quote=${encodeURIComponent(title)}`}
         className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
         title="Share on Facebook"
         aria-label="Share on Facebook"
@@ -119,9 +149,9 @@ const NavbarPostDetails = ({ post }) => {
           title
         )}&url=${encodeURIComponent(
           postUrl
-        )}&via=Onlyblogs_&hashtags=urtechy,blog${
-          imageUrl ? `&image=${encodeURIComponent(imageUrl)}` : ""
-        }`}
+        )}&via=Onlyblogs_&hashtags=urtechy,blog${`&image=${encodeURIComponent(
+          getSafeImageUrl()
+        )}`}`}
         className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-gray-800 transition-colors duration-300"
         title="Share on Twitter"
         aria-label="Share on Twitter"
@@ -160,7 +190,7 @@ const NavbarPostDetails = ({ post }) => {
         href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
           postUrl
         )}&description=${encodeURIComponent(title)}&media=${encodeURIComponent(
-          imageUrl
+          getSafeImageUrl()
         )}`}
         className="items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-300 hidden lg:flex"
         title="Share on Pinterest"

@@ -15,16 +15,20 @@ function MyApp({ Component, pageProps }) {
 
   // Preload critical resources
   useEffect(() => {
-    // Preload the carousel script
-    const preloadLink = document.createElement("link");
-    preloadLink.rel = "preload";
-    preloadLink.as = "script";
-    preloadLink.href =
-      "/_next/static/chunks/node_modules_react-multi-carousel_lib_index.js";
-    document.head.appendChild(preloadLink);
+    // Dynamically import the carousel to ensure it's available
+    import("react-multi-carousel").catch((err) =>
+      console.error("Error preloading carousel:", err)
+    );
+
+    // Preload the carousel styles
+    const styleLink = document.createElement("link");
+    styleLink.rel = "preload";
+    styleLink.as = "style";
+    styleLink.href = "/react-multi-carousel/lib/styles.css";
+    document.head.appendChild(styleLink);
 
     return () => {
-      document.head.removeChild(preloadLink);
+      document.head.removeChild(styleLink);
     };
   }, []);
 

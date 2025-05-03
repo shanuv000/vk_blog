@@ -3,15 +3,29 @@ import dynamic from "next/dynamic";
 import { ClipLoader } from "react-spinners";
 import Head from "next/head";
 
-// Dynamically import the carousel with preload
-const Carousel = dynamic(() => import("react-multi-carousel"), {
-  ssr: true, // Enable SSR for faster initial load
-  loading: () => (
-    <div className="flex justify-center items-center py-8">
-      <ClipLoader color="#FF4500" size={30} />
-    </div>
-  ),
-});
+// Dynamically import the carousel with preload and error handling
+const Carousel = dynamic(
+  () =>
+    import("react-multi-carousel")
+      .then((mod) => mod.default)
+      .catch((err) => {
+        console.error("Failed to load carousel:", err);
+        // Return a fallback component if the carousel fails to load
+        return (props) => (
+          <div className="overflow-x-auto py-4">
+            <div className="flex space-x-4 px-4">{props.children}</div>
+          </div>
+        );
+      }),
+  {
+    ssr: true, // Enable SSR for faster initial load
+    loading: () => (
+      <div className="flex justify-center items-center py-8">
+        <ClipLoader color="#FF4500" size={30} />
+      </div>
+    ),
+  }
+);
 
 // Import styles only when Carousel is loaded
 import "react-multi-carousel/lib/styles.css";

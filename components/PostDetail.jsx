@@ -7,7 +7,12 @@ import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
 import { useData } from "../store/HandleApiContext";
 import { Testing } from "./AdditionalPosts/PostsAdditions";
 import ErrorBoundary from "./ErrorBoundary";
-import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import {
+  DEFAULT_AVATAR,
+  DEFAULT_FEATURED_IMAGE,
+  FALLBACK_AVATAR,
+  FALLBACK_FEATURED_IMAGE,
+} from "./DefaultAvatar";
 
 const PostDetail = ({ post }) => {
   const { data, fetchData, fetchDataAsync } = useData();
@@ -56,6 +61,10 @@ const PostDetail = ({ post }) => {
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5 }}
+              onError={(e) => {
+                console.log("Featured image failed to load, using fallback");
+                e.target.src = FALLBACK_FEATURED_IMAGE;
+              }}
             />
           </div>
           <div className="px-4 lg:px-0">
@@ -67,6 +76,10 @@ const PostDetail = ({ post }) => {
                   height={30}
                   width={30}
                   className="align-middle rounded-full"
+                  onError={(e) => {
+                    console.log("Author image failed to load, using fallback");
+                    e.target.src = FALLBACK_AVATAR;
+                  }}
                 />
                 <p className="inline align-middle text-gray-700 ml-2 text-lg">
                   {post.author?.name || "Anonymous"}
