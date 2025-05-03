@@ -76,6 +76,7 @@ const NavbarPostDetails = ({ post }) => {
         url.searchParams.append("_t", Date.now());
         return url.toString();
       } catch (e) {
+        // Keep console.error for production error tracking
         console.error("Error parsing image URL:", e);
         return FALLBACK_FEATURED_IMAGE;
       }
@@ -90,11 +91,6 @@ const NavbarPostDetails = ({ post }) => {
     if (inView) {
       controls.start({ opacity: 1, y: 0 });
     }
-
-    // Log the image URL for debugging
-    console.log("Social sharing image URL:", imageUrl);
-    console.log("Has featured image:", hasFeaturedImage);
-    console.log("Featured image from post:", post?.featuredImage);
   }, [controls, inView, imageUrl, hasFeaturedImage, post]);
 
   return (

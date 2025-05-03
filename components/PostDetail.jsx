@@ -15,15 +15,13 @@ import {
 } from "./DefaultAvatar";
 
 const PostDetail = ({ post }) => {
-  const { data, fetchData, fetchDataAsync } = useData();
+  const { data, fetchData } = useData();
   const hasFetchedData = useRef(true);
 
   // Get data from Context
-  hasFetchedData.current == true && console.log(post);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (hasFetchedData.current == false && data == null) {
-      console.log("fire triggered");
       fetchData();
       hasFetchedData.current = true;
     }
@@ -62,7 +60,6 @@ const PostDetail = ({ post }) => {
               animate={{ scale: 1 }}
               transition={{ duration: 0.5 }}
               onError={(e) => {
-                console.log("Featured image failed to load, using fallback");
                 e.target.src = FALLBACK_FEATURED_IMAGE;
               }}
             />
@@ -77,7 +74,6 @@ const PostDetail = ({ post }) => {
                   width={30}
                   className="align-middle rounded-full"
                   onError={(e) => {
-                    console.log("Author image failed to load, using fallback");
                     e.target.src = FALLBACK_AVATAR;
                   }}
                 />
@@ -108,9 +104,7 @@ const PostDetail = ({ post }) => {
                 </span>
               </div>
             </div>
-            {/* Log the post object to debug featured image */}
-            {console.log("Post object passed to social sharing:", post)}
-            {console.log("Featured image in PostDetail:", post.featuredImage)}
+
             <Navbar_post_details post={post} />
 
             <h1 className="mb-8 font-serif capitalize md:font-mono text-2xl lg:text-4xl font-semibold md:font-extrabold head-colour leading-tight lg:leading-snug">

@@ -23,9 +23,6 @@ const AnalyticsProvider = ({ measurementId, children }) => {
       process.env.NODE_ENV === "development" &&
       !process.env.NEXT_PUBLIC_ENABLE_ANALYTICS_IN_DEV
     ) {
-      console.log(
-        "Analytics disabled in development. Set NEXT_PUBLIC_ENABLE_ANALYTICS_IN_DEV to enable."
-      );
       return;
     }
 

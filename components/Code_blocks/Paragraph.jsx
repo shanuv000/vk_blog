@@ -10,6 +10,7 @@ const ImageRenderer = ({ item, index }) => {
   const [src, setSrc] = useState(item.href);
 
   const handleError = (event) => {
+    // Keep console.error for production error tracking
     console.error("Image failed to load:", event.target.src);
     setSrc(FallbackImage);
   };

@@ -39,7 +39,6 @@ export const getPosts = async () => {
   `;
 
   try {
-    console.log("Fetching posts with Apollo Client");
     const { data } = await apolloClient.query({
       query: POSTS_QUERY,
       fetchPolicy: "cache-first",
@@ -67,7 +66,6 @@ export const getCategories = async () => {
   `;
 
   try {
-    console.log("Fetching categories with Apollo Client");
     const { data } = await apolloClient.query({
       query: CATEGORIES_QUERY,
       fetchPolicy: "cache-first",
@@ -114,7 +112,6 @@ export const getPostDetails = async (slug) => {
   `;
 
   try {
-    console.log(`Fetching post details for slug: ${slug} with Apollo Client`);
     const { data } = await apolloClient.query({
       query: POST_DETAILS_QUERY,
       variables: { slug },
@@ -199,7 +196,6 @@ export const getSimilarPosts = async (categories, slug) => {
   `;
 
   try {
-    console.log(`Fetching similar posts for slug: ${slug} with Apollo Client`);
     const { data } = await apolloClient.query({
       query: SIMILAR_POSTS_QUERY,
       variables: { slug, categories },
@@ -251,7 +247,6 @@ export const getAdjacentPosts = async (createdAt, slug) => {
   `;
 
   try {
-    console.log(`Fetching adjacent posts for slug: ${slug} with Apollo Client`);
     const { data } = await apolloClient.query({
       query: ADJACENT_POSTS_QUERY,
       variables: { slug, createdAt },
@@ -293,7 +288,6 @@ export const getFeaturedPosts = async () => {
   `;
 
   try {
-    console.log("Fetching featured posts with Apollo Client");
     const { data } = await apolloClient.query({
       query: FEATURED_POSTS_QUERY,
       fetchPolicy: "cache-first",
@@ -343,7 +337,6 @@ export const getCategoryPost = async (slug) => {
   `;
 
   try {
-    console.log(`Fetching category posts for slug: ${slug} with Apollo Client`);
     const { data } = await apolloClient.query({
       query: CATEGORY_POST_QUERY,
       variables: { slug },
@@ -379,7 +372,6 @@ export const getRecentPosts = async () => {
   `;
 
   try {
-    console.log("Fetching recent posts with Apollo Client");
     const { data } = await apolloClient.query({
       query: RECENT_POSTS_QUERY,
       fetchPolicy: "cache-first",
