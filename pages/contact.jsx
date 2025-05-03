@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Head from "next/head";
-import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
-import {
-  MdEmail,
-  MdPhone,
-  MdLocationOn,
-  MdAccessTime,
-  MdSend,
-} from "react-icons/md";
+import { FaCheckCircle, FaExclamationTriangle, FaPhone } from "react-icons/fa";
+import { MdEmail, MdLocationOn, MdAccessTime, MdSend } from "react-icons/md";
+import { db } from "../lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 // Form field validation
 const validateField = (name, value) => {
@@ -157,9 +153,16 @@ const ContactForm = () => {
       setIsSubmitting(true);
 
       try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Form submitted:", formState);
+        // Submit to Firebase
+        const contactsRef = collection(db, "contacts");
+        await addDoc(contactsRef, {
+          ...formState,
+          fullName: `${formState.firstName} ${formState.lastName}`,
+          timestamp: serverTimestamp(),
+          source: "contact_form",
+        });
+
+        console.log("Form submitted to Firebase:", formState);
 
         // Show success message
         setSubmitStatus("success");
@@ -179,7 +182,7 @@ const ContactForm = () => {
           setIsSubmitting(false);
         }, 3000);
       } catch (error) {
-        console.error("Error submitting form:", error);
+        console.error("Error submitting form to Firebase:", error);
         setSubmitStatus("error");
         setIsSubmitting(false);
       }
@@ -205,13 +208,17 @@ const ContactForm = () => {
           {submitStatus === "success" ? (
             <>
               <FaCheckCircle className="mr-2 text-green-500" />
-              <span>Thank you! Your message has been sent successfully.</span>
+              <span>
+                Thank you! Your message has been sent successfully and stored in
+                our database.
+              </span>
             </>
           ) : (
             <>
               <FaExclamationTriangle className="mr-2 text-red-500" />
               <span>
-                There was an error sending your message. Please try again.
+                There was an error saving your message to our database. Please
+                try again or contact us directly at urtechy000@gmail.com.
               </span>
             </>
           )}
@@ -280,7 +287,8 @@ const ContactForm = () => {
           transition={{ duration: 0.5, delay: 0.6 }}
         >
           Fill out the form below, and one of our team members will get back to
-          you shortly
+          you shortly. Your message will be securely stored in our Firebase
+          database.
         </motion.p>
 
         <AnimatePresence>{submitStatus && <StatusMessage />}</AnimatePresence>
@@ -338,7 +346,7 @@ const ContactForm = () => {
             value={formState.phone}
             onChange={handleChange}
             onBlur={handleBlur}
-            icon={<MdPhone />}
+            icon={<FaPhone />}
           />
 
           <div className="relative">
@@ -444,13 +452,8 @@ const ContactInfo = () => {
   const contactDetails = [
     {
       icon: <MdEmail className="text-urtechy-red text-xl" />,
-      text: "shanuvatika@gmail.com",
-      link: "mailto:shanuvatika@gmail.com",
-    },
-    {
-      icon: <MdPhone className="text-urtechy-red text-xl" />,
-      text: "+1 (800) 555-1234",
-      link: "tel:+18005551234",
+      text: "urtechy000@gmail.com",
+      link: "mailto:urtechy000@gmail.com",
     },
     {
       icon: <MdLocationOn className="text-urtechy-red text-xl" />,
@@ -614,7 +617,7 @@ const ContactInfo = () => {
           </svg>
         </motion.a>
         <motion.a
-          href="mailto:shanuvatika@gmail.com"
+          href="mailto:urtechy000@gmail.com"
           className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors"
           whileHover={{ scale: 1.2, rotate: 5 }}
           whileTap={{ scale: 0.9 }}

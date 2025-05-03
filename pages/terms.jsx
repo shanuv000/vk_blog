@@ -298,10 +298,10 @@ const Terms = () => {
       >
         For any further information, you can contact us at:{" "}
         <a
-          href="mailto:shanuvatika@gmail.com"
+          href="mailto:urtechy000@gmail.com"
           className="text-blue-600 underline"
         >
-          shanuvatika@gmail.com
+          urtechy000@gmail.com
         </a>
         .
       </motion.p>

@@ -47,7 +47,7 @@ const About = () => {
           {showEmail && (
             <div className="flex space-x-4">
               <button
-                onClick={() => window.open("mailto:shanuvatika@gmail.com")}
+                onClick={() => window.open("mailto:urtechy000@gmail.com")}
                 className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-indigo-500 text-white hover:bg-indigo-600 transition duration-150 ease-in-out"
               >
                 Send Mail
@@ -55,7 +55,7 @@ const About = () => {
               <button
                 className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-indigo-500 text-white hover:bg-indigo-600 transition duration-150 ease-in-out"
                 onClick={() =>
-                  navigator.clipboard.writeText("shanuvatika@gmail.com")
+                  navigator.clipboard.writeText("urtechy000@gmail.com")
                 }
               >
                 <FontAwesomeIcon icon={faClipboard} className="h-6 w-6" />
