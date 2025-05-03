@@ -21,8 +21,9 @@ export const cdnClient = new GraphQLClient(HYGRAPH_CDN_API);
 
 // Simple in-memory cache implementation
 const cache = new Map();
-const CACHE_TTL = 15 * 60 * 1000; // 15 minutes in milliseconds
-const IMAGE_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours for images
+const CACHE_TTL = 60 * 60 * 1000; // 60 minutes in milliseconds (increased from 15 minutes)
+const IMAGE_CACHE_TTL = 48 * 60 * 60 * 1000; // 48 hours for images (increased from 24 hours)
+const CATEGORY_CACHE_TTL = 12 * 60 * 60 * 1000; // 12 hours for categories
 
 // Helper function to generate a cache key from query and variables
 const generateCacheKey = (query, variables) => {
@@ -34,6 +35,18 @@ const generateCacheKey = (query, variables) => {
 // Helper function to check if a query is for images
 const isImageQuery = (query) => {
   return query.includes("featuredImage") || query.includes("photo");
+};
+
+// Helper function to check if a query is for categories
+const isCategoryQuery = (query) => {
+  return query.includes("categories") && !query.includes("post");
+};
+
+// Helper function to determine appropriate cache TTL based on query content
+const getCacheTTL = (query) => {
+  if (isImageQuery(query)) return IMAGE_CACHE_TTL;
+  if (isCategoryQuery(query)) return CATEGORY_CACHE_TTL;
+  return CACHE_TTL;
 };
 
 // Helper function to optimize image URLs
@@ -76,38 +89,46 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
   // Generate cache key
   const cacheKey = generateCacheKey(query, variables);
 
-  // Determine if this is an image-related query for longer caching
+  // Determine appropriate cache TTL based on query content
   const isImageRelated = isImageQuery(query);
-  const cacheTTL = isImageRelated ? IMAGE_CACHE_TTL : CACHE_TTL;
+  const cacheTTL = getCacheTTL(query);
 
   // Check cache if enabled
   if (useCache && cache.has(cacheKey)) {
     const cachedData = cache.get(cacheKey);
     if (cachedData.expiry > Date.now()) {
+      // Log cache hit for debugging
+      console.log(`Cache hit for query: ${cacheKey.substring(0, 50)}...`);
       return cachedData.data;
     } else {
       // Remove expired cache entry
+      console.log(`Cache expired for query: ${cacheKey.substring(0, 50)}...`);
       cache.delete(cacheKey);
     }
+  } else if (useCache) {
+    console.log(`Cache miss for query: ${cacheKey.substring(0, 50)}...`);
   }
 
   try {
     // Add timeout to prevent hanging requests
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout (reduced from 8s)
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
 
-    // For image queries, we can use cached CDN responses
-    const timestampedVariables = isImageRelated
-      ? variables // Don't add timestamp for image queries to leverage CDN caching
-      : {
+    // Only add timestamp for dynamic content that needs to be fresh
+    // For static content like images and categories, don't add timestamp to leverage CDN caching
+    const shouldAddTimestamp = !isImageRelated && !isCategoryQuery(query);
+
+    const timestampedVariables = shouldAddTimestamp
+      ? {
           ...variables,
-          _timestamp: Date.now(), // Add timestamp for non-image queries
-        };
+          _timestamp: Date.now(), // Add timestamp only for dynamic content
+        }
+      : variables; // Use original variables for static content
 
     const result = await cdnClient.request(query, timestampedVariables);
     clearTimeout(timeoutId);
 
-    // Optimize image URLs in the response
+    // Optimize image URLs in the response if needed
     const optimizedResult = isImageRelated ? optimizeImageUrls(result) : result;
 
     // Store in cache if caching is enabled
@@ -115,28 +136,51 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
       cache.set(cacheKey, {
         data: optimizedResult,
         expiry: Date.now() + cacheTTL,
+        timestamp: Date.now(), // Store when this was cached
       });
+      console.log(
+        `Cached result for ${
+          cacheTTL / 1000 / 60
+        } minutes: ${cacheKey.substring(0, 50)}...`
+      );
     }
 
     return optimizedResult;
   } catch (error) {
     console.error("Error fetching from Hygraph CDN:", error);
 
-    // If CDN fails, try the content API as fallback
+    // Check if we have a cached version we can use as fallback, even if expired
+    if (useCache && cache.has(cacheKey)) {
+      const cachedData = cache.get(cacheKey);
+      // Use expired cache data as fallback if it's not too old (less than 2x the TTL)
+      if (cachedData.expiry > Date.now() - cacheTTL) {
+        console.log(
+          `Using slightly expired cache as fallback for: ${cacheKey.substring(
+            0,
+            50
+          )}...`
+        );
+        return cachedData.data;
+      }
+    }
+
+    // If CDN fails and no usable cache, try the content API as fallback
     try {
       console.log("Falling back to Content API due to CDN failure");
 
-      // Add timestamp to variables for content API too (except for image queries)
-      const timestampedVariables = isImageRelated
-        ? variables
-        : {
+      // Same timestamp logic as above
+      const shouldAddTimestamp = !isImageRelated && !isCategoryQuery(query);
+
+      const timestampedVariables = shouldAddTimestamp
+        ? {
             ...variables,
             _timestamp: Date.now(),
-          };
+          }
+        : variables;
 
       const result = await contentClient.request(query, timestampedVariables);
 
-      // Optimize image URLs in the response
+      // Optimize image URLs in the response if needed
       const optimizedResult = isImageRelated
         ? optimizeImageUrls(result)
         : result;
@@ -146,7 +190,14 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
         cache.set(cacheKey, {
           data: optimizedResult,
           expiry: Date.now() + cacheTTL,
+          timestamp: Date.now(),
+          source: "content-api", // Mark this as coming from content API
         });
+        console.log(
+          `Cached content API result for ${
+            cacheTTL / 1000 / 60
+          } minutes: ${cacheKey.substring(0, 50)}...`
+        );
       }
 
       return optimizedResult;
@@ -176,6 +227,88 @@ export const fetchFromContentAPI = async (query, variables = {}) => {
     console.error("Error fetching from Hygraph Content API:", error);
     throw error;
   }
+};
+
+// Cache debugging and management utilities
+export const getCacheStats = () => {
+  const now = Date.now();
+  const stats = {
+    totalEntries: cache.size,
+    validEntries: 0,
+    expiredEntries: 0,
+    imageEntries: 0,
+    categoryEntries: 0,
+    otherEntries: 0,
+    averageAge: 0,
+    oldestEntry: 0,
+    newestEntry: now,
+  };
+
+  let totalAge = 0;
+  let oldestTimestamp = now;
+  let newestTimestamp = 0;
+
+  cache.forEach((value, key) => {
+    const isValid = value.expiry > now;
+    if (isValid) {
+      stats.validEntries++;
+    } else {
+      stats.expiredEntries++;
+    }
+
+    // Categorize by entry type
+    if (key.includes("featuredImage") || key.includes("photo")) {
+      stats.imageEntries++;
+    } else if (key.includes("categories") && !key.includes("post")) {
+      stats.categoryEntries++;
+    } else {
+      stats.otherEntries++;
+    }
+
+    // Track age statistics
+    if (value.timestamp) {
+      const age = now - value.timestamp;
+      totalAge += age;
+
+      if (value.timestamp < oldestTimestamp) {
+        oldestTimestamp = value.timestamp;
+      }
+
+      if (value.timestamp > newestTimestamp) {
+        newestTimestamp = value.timestamp;
+      }
+    }
+  });
+
+  if (cache.size > 0) {
+    stats.averageAge = totalAge / cache.size;
+    stats.oldestEntry = now - oldestTimestamp;
+    stats.newestEntry = now - newestTimestamp;
+  }
+
+  return stats;
+};
+
+export const clearCache = () => {
+  const size = cache.size;
+  cache.clear();
+  console.log(`Cache cleared. ${size} entries removed.`);
+  return size;
+};
+
+export const pruneExpiredCache = () => {
+  const now = Date.now();
+  let pruned = 0;
+
+  cache.forEach((value, key) => {
+    if (value.expiry <= now) {
+      cache.delete(key);
+      pruned++;
+    }
+  });
+
+  console.log(`Cache pruned. ${pruned} expired entries removed.`);
+  return pruned;
 };
 
 // Export gql for convenience

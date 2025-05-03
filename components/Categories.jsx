@@ -1,30 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { getCategories } from "../services";
 import { motion } from "framer-motion";
+import { useCategories } from "../hooks/useApolloQueries";
 
 const Categories = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        const newCategories = await getCategories();
-        setCategories(newCategories || []);
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-        setError("Failed to load categories");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  // Use Apollo hook with caching
+  const { categories, loading, error } = useCategories();
 
   // Animation variants
   const containerVariants = {

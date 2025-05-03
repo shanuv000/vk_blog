@@ -4,11 +4,12 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
-import { getCategories } from "../services";
+import { useCategories } from "../hooks/useApolloQueries";
 import { useData } from "../store/HandleApiContext";
 
 const Header = () => {
-  const [categories, setCategories] = useState([]);
+  // Use Apollo hook with caching for categories
+  const { categories } = useCategories();
   const { isLiveScore: isLive } = useData();
 
   // Header visibility state
@@ -22,13 +23,6 @@ const Header = () => {
 
   // Refs for dropdown handling
   const dropdownRefs = useRef({});
-
-  // Fetch categories from API
-  useEffect(() => {
-    getCategories().then((newCategories) => {
-      setCategories(newCategories);
-    });
-  }, []);
 
   // Dropdown data structure
   const dropdownData = {
