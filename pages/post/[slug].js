@@ -7,8 +7,6 @@ import {
   Categories,
   PostWidget,
   Author,
-  Comments,
-  CommentsForm,
   Loader,
 } from "../../components";
 import SchemaManager from "../../components/SchemaManager";
@@ -59,10 +57,6 @@ const PostDetails = ({ post }) => {
             {post.slug && post.createdAt && (
               <AdjacentPosts slug={post.slug} createdAt={post.createdAt} />
             )}
-            {/* Only render CommentsForm if post.slug exists */}
-            {post.slug && <CommentsForm slug={post.slug} />}
-            {/* Only render Comments if post.slug exists */}
-            {post.slug && <Comments slug={post.slug} />}
           </div>
           <div className="col-span-1 lg:col-span-4">
             <div className="relative lg:sticky top-8">

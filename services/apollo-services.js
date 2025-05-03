@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import apolloClient from '../lib/apollo-client';
+import { gql } from "@apollo/client";
+import apolloClient from "../lib/apollo-client";
 
 /**
  * Get all posts with Apollo Client
@@ -42,9 +42,9 @@ export const getPosts = async () => {
     console.log("Fetching posts with Apollo Client");
     const { data } = await apolloClient.query({
       query: POSTS_QUERY,
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     return data.postsConnection.edges;
   } catch (error) {
     console.error("Error fetching posts with Apollo Client:", error);
@@ -70,9 +70,9 @@ export const getCategories = async () => {
     console.log("Fetching categories with Apollo Client");
     const { data } = await apolloClient.query({
       query: CATEGORIES_QUERY,
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     return data.categories;
   } catch (error) {
     console.error("Error fetching categories with Apollo Client:", error);
@@ -118,13 +118,13 @@ export const getPostDetails = async (slug) => {
     const { data } = await apolloClient.query({
       query: POST_DETAILS_QUERY,
       variables: { slug },
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     if (data.post) {
       return data.post;
     }
-    
+
     // If post not found, try an alternative query
     const ALTERNATIVE_QUERY = gql`
       query GetPostBySlug($slug: String!) {
@@ -153,20 +153,23 @@ export const getPostDetails = async (slug) => {
         }
       }
     `;
-    
+
     const { data: alternativeData } = await apolloClient.query({
       query: ALTERNATIVE_QUERY,
       variables: { slug },
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     if (alternativeData.posts && alternativeData.posts.length > 0) {
       return alternativeData.posts[0];
     }
-    
+
     return null;
   } catch (error) {
-    console.error(`Error fetching post details for slug: ${slug} with Apollo Client:`, error);
+    console.error(
+      `Error fetching post details for slug: ${slug} with Apollo Client:`,
+      error
+    );
     return null;
   }
 };
@@ -179,7 +182,10 @@ export const getSimilarPosts = async (categories, slug) => {
   const SIMILAR_POSTS_QUERY = gql`
     query GetSimilarPosts($slug: String!, $categories: [String!]) {
       posts(
-        where: { slug_not: $slug, AND: { categories_some: { slug_in: $categories } } }
+        where: {
+          slug_not: $slug
+          AND: { categories_some: { slug_in: $categories } }
+        }
         first: 3
       ) {
         title
@@ -197,12 +203,15 @@ export const getSimilarPosts = async (categories, slug) => {
     const { data } = await apolloClient.query({
       query: SIMILAR_POSTS_QUERY,
       variables: { slug, categories },
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     return data.posts;
   } catch (error) {
-    console.error(`Error fetching similar posts for slug: ${slug} with Apollo Client:`, error);
+    console.error(
+      `Error fetching similar posts for slug: ${slug} with Apollo Client:`,
+      error
+    );
     return [];
   }
 };
@@ -246,12 +255,15 @@ export const getAdjacentPosts = async (createdAt, slug) => {
     const { data } = await apolloClient.query({
       query: ADJACENT_POSTS_QUERY,
       variables: { slug, createdAt },
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     return { next: data.next[0], previous: data.previous[0] };
   } catch (error) {
-    console.error(`Error fetching adjacent posts for slug: ${slug} with Apollo Client:`, error);
+    console.error(
+      `Error fetching adjacent posts for slug: ${slug} with Apollo Client:`,
+      error
+    );
     return { next: null, previous: null };
   }
 };
@@ -284,9 +296,9 @@ export const getFeaturedPosts = async () => {
     console.log("Fetching featured posts with Apollo Client");
     const { data } = await apolloClient.query({
       query: FEATURED_POSTS_QUERY,
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     return data.posts;
   } catch (error) {
     console.error("Error fetching featured posts with Apollo Client:", error);
@@ -335,70 +347,15 @@ export const getCategoryPost = async (slug) => {
     const { data } = await apolloClient.query({
       query: CATEGORY_POST_QUERY,
       variables: { slug },
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     return data.postsConnection.edges;
   } catch (error) {
-    console.error(`Error fetching category posts for slug: ${slug} with Apollo Client:`, error);
-    return [];
-  }
-};
-
-/**
- * Submit comment with Apollo Client
- * Uses no-cache strategy as it's a mutation
- */
-export const submitComment = async (obj) => {
-  const SUBMIT_COMMENT_MUTATION = gql`
-    mutation CreateComment($name: String!, $email: String!, $comment: String!, $slug: String!) {
-      createComment(
-        data: { name: $name, email: $email, comment: $comment, post: { connect: { slug: $slug } } }
-      ) {
-        id
-      }
-    }
-  `;
-
-  try {
-    const { data } = await apolloClient.mutate({
-      mutation: SUBMIT_COMMENT_MUTATION,
-      variables: obj,
-    });
-    
-    return data.createComment;
-  } catch (error) {
-    console.error("Error submitting comment with Apollo Client:", error);
-    throw error;
-  }
-};
-
-/**
- * Get comments for a post with Apollo Client
- * Uses cache-and-network strategy to ensure fresh data
- */
-export const getComments = async (slug) => {
-  const COMMENTS_QUERY = gql`
-    query GetComments($slug: String!) {
-      comments(where: { post: { slug: $slug } }) {
-        name
-        createdAt
-        comment
-      }
-    }
-  `;
-
-  try {
-    console.log(`Fetching comments for slug: ${slug} with Apollo Client`);
-    const { data } = await apolloClient.query({
-      query: COMMENTS_QUERY,
-      variables: { slug },
-      fetchPolicy: 'cache-and-network',
-    });
-    
-    return data.comments;
-  } catch (error) {
-    console.error(`Error fetching comments for slug: ${slug} with Apollo Client:`, error);
+    console.error(
+      `Error fetching category posts for slug: ${slug} with Apollo Client:`,
+      error
+    );
     return [];
   }
 };
@@ -425,9 +382,9 @@ export const getRecentPosts = async () => {
     console.log("Fetching recent posts with Apollo Client");
     const { data } = await apolloClient.query({
       query: RECENT_POSTS_QUERY,
-      fetchPolicy: 'cache-first',
+      fetchPolicy: "cache-first",
     });
-    
+
     return data.posts;
   } catch (error) {
     console.error("Error fetching recent posts with Apollo Client:", error);

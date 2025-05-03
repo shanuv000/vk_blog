@@ -178,16 +178,6 @@ export const FEATURED_POSTS_QUERY = gql`
   }
 `;
 
-export const COMMENTS_QUERY = gql`
-  query GetComments($slug: String!) {
-    comments(where: { post: { slug: $slug } }) {
-      name
-      createdAt
-      comment
-    }
-  }
-`;
-
 export const RECENT_POSTS_QUERY = gql`
   query GetRecentPosts {
     posts(orderBy: createdAt_DESC, first: 3) {
@@ -197,26 +187,6 @@ export const RECENT_POSTS_QUERY = gql`
       }
       createdAt
       slug
-    }
-  }
-`;
-
-export const SUBMIT_COMMENT_MUTATION = gql`
-  mutation CreateComment(
-    $name: String!
-    $email: String!
-    $comment: String!
-    $slug: String!
-  ) {
-    createComment(
-      data: {
-        name: $name
-        email: $email
-        comment: $comment
-        post: { connect: { slug: $slug } }
-      }
-    ) {
-      id
     }
   }
 `;
@@ -332,21 +302,6 @@ export const useFeaturedPosts = () => {
   };
 };
 
-export const useComments = (slug) => {
-  const { data, loading, error, refetch } = useQuery(COMMENTS_QUERY, {
-    variables: { slug },
-    fetchPolicy: "cache-and-network",
-    skip: !slug,
-  });
-
-  return {
-    comments: data?.comments || [],
-    loading,
-    error,
-    refetch,
-  };
-};
-
 export const useRecentPosts = () => {
   const { data, loading, error } = useQuery(RECENT_POSTS_QUERY, {
     fetchPolicy: "cache-first",
@@ -354,31 +309,6 @@ export const useRecentPosts = () => {
 
   return {
     posts: data?.posts || [],
-    loading,
-    error,
-  };
-};
-
-// Mutation hook for submitting comments
-export const useSubmitComment = () => {
-  const [submitCommentMutation, { loading, error }] = useMutation(
-    SUBMIT_COMMENT_MUTATION
-  );
-
-  const submitComment = async (name, email, comment, slug) => {
-    try {
-      const result = await submitCommentMutation({
-        variables: { name, email, comment, slug },
-      });
-      return result.data.createComment;
-    } catch (err) {
-      console.error("Error submitting comment:", err);
-      throw err;
-    }
-  };
-
-  return {
-    submitComment,
     loading,
     error,
   };
