@@ -162,6 +162,8 @@ export const FEATURED_POSTS_QUERY = gql`
     posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
       author {
         name
+        # Include id if available, but it's optional
+        id
         photo {
           url
         }
@@ -280,18 +282,26 @@ export const useCategoryPosts = (slug) => {
 export const useFeaturedPosts = () => {
   const { data, loading, error, refetch } = useQuery(FEATURED_POSTS_QUERY, {
     fetchPolicy: "cache-first",
+    errorPolicy: "all", // Continue even if there are errors
   });
 
   const posts = data?.posts || [];
 
-  // Process image dimensions
+  // Process image dimensions with null safety
   const processedPosts = posts.map((post) => ({
     ...post,
-    featuredImage: {
-      ...post.featuredImage,
-      width: parseInt(post.featuredImage?.width, 10) || 30,
-      height: parseInt(post.featuredImage?.height, 10) || 30,
-    },
+    featuredImage: post.featuredImage
+      ? {
+          ...post.featuredImage,
+          url: post.featuredImage.url || "/default-image.jpg",
+          width: parseInt(post.featuredImage?.width, 10) || 800,
+          height: parseInt(post.featuredImage?.height, 10) || 600,
+        }
+      : {
+          url: "/default-image.jpg",
+          width: 800,
+          height: 600,
+        },
   }));
 
   return {

@@ -27,7 +27,7 @@ const Carousel = dynamic(
   }
 );
 
-// Import styles only when Carousel is loaded
+// Import styles directly to avoid preload warnings
 import "react-multi-carousel/lib/styles.css";
 
 import { FeaturedPostCard } from "../components";
@@ -99,27 +99,22 @@ const FeaturedPosts = () => {
 
   // Preload images for better LCP
   const preloadImages = (posts) => {
-    if (!posts || posts.length === 0) return;
+    if (!posts || posts.length === 0) return null;
 
-    // Only preload the first 3 images to improve performance
-    const imagesToPreload = posts
-      .slice(0, 3)
-      .map((post) => post.featuredImage?.url)
-      .filter(Boolean);
+    // Only preload the first image to improve performance
+    const imageUrl = posts[0]?.featuredImage?.url;
+    if (!imageUrl) return null;
 
     return (
       <Head>
-        {imagesToPreload.map((imageUrl, index) => (
-          <link
-            key={`preload-image-${index}`}
-            rel="preload"
-            as="image"
-            href={imageUrl}
-            // Modern format if supported
-            imagesrcset={`${imageUrl}?w=640 640w, ${imageUrl}?w=750 750w, ${imageUrl}?w=828 828w`}
-            imagesizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-          />
-        ))}
+        <link
+          key="preload-featured-image"
+          rel="preload"
+          as="image"
+          href={imageUrl}
+          // Don't use imagesrcset as it can cause warnings
+          // Just preload the main image
+        />
       </Head>
     );
   };

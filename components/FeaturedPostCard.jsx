@@ -26,6 +26,7 @@ const FeaturedPostCard = ({ post }) => (
         className="object-cover"
         priority={true}
         quality={75}
+        style={{ width: "100%", height: "100%" }} // Set both width and height to fix the warning
       />
     </motion.div>
     <div className="absolute rounded-lg bg-center bg-gradient-to-b opacity-50 from-gray-400 via-gray-700 to-black w-full h-72" />
@@ -64,6 +65,7 @@ const FeaturedPostCard = ({ post }) => (
             width={30}
             className="align-middle drop-shadow-lg rounded-full"
             src={post.author.photo.url}
+            style={{ width: "30px", height: "30px" }} // Set both width and height to fix the warning
           />
         ) : (
           <div className="flex items-center justify-center bg-gray-200 rounded-full h-[30px] w-[30px]">
