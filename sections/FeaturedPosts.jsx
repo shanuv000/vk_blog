@@ -2,6 +2,7 @@ import React, { useState, useEffect, memo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { ClipLoader } from "react-spinners";
 import Head from "next/head";
+import { motion } from "framer-motion";
 
 // Dynamically import the carousel with preload and error handling
 const Carousel = dynamic(
@@ -53,8 +54,18 @@ const responsive = {
 };
 
 // Custom arrow components memoized to prevent re-renders
-const LeftArrow = memo(() => (
-  <div className="absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full">
+// The onClick prop is passed by react-multi-carousel and needs to be used
+const LeftArrow = memo(({ onClick }) => (
+  <motion.div
+    className="absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full z-10"
+    onClick={onClick}
+    whileHover={{
+      scale: 1.1,
+      boxShadow: "0 10px 15px -3px rgba(255, 69, 0, 0.3)",
+    }}
+    whileTap={{ scale: 0.95 }}
+    transition={{ duration: 0.2 }}
+  >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="h-6 text-white w-full"
@@ -69,11 +80,20 @@ const LeftArrow = memo(() => (
         d="M10 19l-7-7m0 0l7-7m-7 7h18"
       />
     </svg>
-  </div>
+  </motion.div>
 ));
 
-const RightArrow = memo(() => (
-  <div className="absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full">
+const RightArrow = memo(({ onClick }) => (
+  <motion.div
+    className="absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full z-10"
+    onClick={onClick}
+    whileHover={{
+      scale: 1.1,
+      boxShadow: "0 10px 15px -3px rgba(255, 69, 0, 0.3)",
+    }}
+    whileTap={{ scale: 0.95 }}
+    transition={{ duration: 0.2 }}
+  >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="h-6 text-white w-full"
@@ -88,7 +108,7 @@ const RightArrow = memo(() => (
         d="M14 5l7 7m0 0l-7 7m7-7H3"
       />
     </svg>
-  </div>
+  </motion.div>
 ));
 
 const FeaturedPosts = () => {
