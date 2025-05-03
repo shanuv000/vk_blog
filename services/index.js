@@ -442,23 +442,28 @@ export const getCategoryPost = async (slug) => {
 export const getFeaturedPosts = async () => {
   // Use Apollo Client if enabled
   if (USE_APOLLO) {
-    const client = getApolloClient();
-    const { data } = await client.query({
-      query: apolloHooks.FEATURED_POSTS_QUERY,
-      fetchPolicy: "cache-first",
-    });
+    try {
+      const client = getApolloClient();
+      const { data } = await client.query({
+        query: apolloHooks.FEATURED_POSTS_QUERY,
+        fetchPolicy: "cache-first",
+      });
 
-    const posts = data?.posts || [];
+      const posts = data?.posts || [];
 
-    // Process image dimensions
-    return posts.map((post) => ({
-      ...post,
-      featuredImage: {
-        ...post.featuredImage,
-        width: parseInt(post.featuredImage?.width, 10) || 30,
-        height: parseInt(post.featuredImage?.height, 10) || 30,
-      },
-    }));
+      // Process image dimensions
+      return posts.map((post) => ({
+        ...post,
+        featuredImage: {
+          ...post.featuredImage,
+          width: parseInt(post.featuredImage?.width, 10) || 30,
+          height: parseInt(post.featuredImage?.height, 10) || 30,
+        },
+      }));
+    } catch (apolloError) {
+      console.error("Error fetching featured posts with Apollo:", apolloError);
+      // Fall back to proxy or direct methods
+    }
   }
 
   // Original implementation as fallback
@@ -482,19 +487,53 @@ export const getFeaturedPosts = async () => {
       }
     }
   `;
+
   try {
-    const result = await fetchFromCDN(query);
+    let result;
+
+    // Use proxy API for client-side requests to avoid CORS issues
+    if (typeof window !== "undefined") {
+      console.log("Fetching featured posts via proxy API");
+      result = await fetchViaProxy(query);
+    } else {
+      // Use direct CDN for server-side rendering
+      console.log("Fetching featured posts via direct CDN (server-side)");
+      result = await fetchFromCDN(query);
+    }
 
     return result.posts.map((post) => ({
       ...post,
       featuredImage: {
         ...post.featuredImage,
-        width: parseInt(post.featuredImage.width, 10) || 30, // Parse to integer, default to 30
-        height: parseInt(post.featuredImage.height, 10) || 30,
+        width: parseInt(post.featuredImage?.width, 10) || 30, // Parse to integer, default to 30
+        height: parseInt(post.featuredImage?.height, 10) || 30,
       },
     }));
   } catch (error) {
     console.error("Error fetching featured posts:", error);
+
+    // Last resort: try direct CDN if proxy failed
+    if (typeof window !== "undefined") {
+      try {
+        console.log("Proxy failed, trying direct CDN as last resort");
+        const result = await fetchFromCDN(query);
+
+        return result.posts.map((post) => ({
+          ...post,
+          featuredImage: {
+            ...post.featuredImage,
+            width: parseInt(post.featuredImage?.width, 10) || 30,
+            height: parseInt(post.featuredImage?.height, 10) || 30,
+          },
+        }));
+      } catch (fallbackError) {
+        console.error(
+          "All attempts to fetch featured posts failed:",
+          fallbackError
+        );
+      }
+    }
+
     return [];
   }
 };

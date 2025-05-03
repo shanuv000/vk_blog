@@ -11,10 +11,13 @@ const withPWA = require("next-pwa")({
       options: {
         cacheName: "hygraph-api",
         expiration: {
-          maxEntries: 50,
-          maxAgeSeconds: 60 * 5, // 5 minutes
+          maxEntries: 100, // Increased from 50
+          maxAgeSeconds: 60 * 15, // 15 minutes (increased from 5)
         },
         networkTimeoutSeconds: 10, // Fallback to cache if network takes more than 10 seconds
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
       },
     },
     {
@@ -23,10 +26,43 @@ const withPWA = require("next-pwa")({
       options: {
         cacheName: "hygraph-api-content",
         expiration: {
-          maxEntries: 50,
-          maxAgeSeconds: 60 * 5, // 5 minutes
+          maxEntries: 100, // Increased from 50
+          maxAgeSeconds: 60 * 15, // 15 minutes (increased from 5)
         },
         networkTimeoutSeconds: 10,
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+      },
+    },
+    // API proxy route - use StaleWhileRevalidate for better performance
+    {
+      urlPattern: /\/api\/hygraph-proxy/,
+      handler: "StaleWhileRevalidate",
+      options: {
+        cacheName: "hygraph-proxy-api",
+        expiration: {
+          maxEntries: 100,
+          maxAgeSeconds: 60 * 30, // 30 minutes
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+      },
+    },
+    // Default image API - use CacheFirst for better performance
+    {
+      urlPattern: /\/api\/default-image/,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "default-images",
+        expiration: {
+          maxEntries: 20,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
       },
     },
     {
@@ -41,27 +77,40 @@ const withPWA = require("next-pwa")({
         networkTimeoutSeconds: 5,
       },
     },
-    // Images - can use CacheFirst for better performance
+    // Images - use CacheFirst for better performance
     {
       urlPattern: /^https:\/\/media\.graphassets\.com\/.*$/,
       handler: "CacheFirst",
       options: {
         cacheName: "graphassets-images",
         expiration: {
-          maxEntries: 100,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          maxEntries: 200, // Increased from 100
+          maxAgeSeconds: 60 * 60 * 24 * 60, // 60 days (increased from 30)
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+        matchOptions: {
+          ignoreSearch: true, // Ignore query parameters for better cache hits
         },
       },
     },
     // Hygraph CDN images
     {
-      urlPattern: /^https:\/\/ap-south-1\.cdn\.hygraph\.com\/.*$/,
+      urlPattern:
+        /^https:\/\/ap-south-1\.cdn\.hygraph\.com\/.*\.(png|jpg|jpeg|webp|gif|svg)$/i,
       handler: "CacheFirst",
       options: {
         cacheName: "hygraph-cdn-images",
         expiration: {
-          maxEntries: 100,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          maxEntries: 200, // Increased from 100
+          maxAgeSeconds: 60 * 60 * 24 * 60, // 60 days (increased from 30)
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+        matchOptions: {
+          ignoreSearch: true, // Ignore query parameters for better cache hits
         },
       },
     },
@@ -71,6 +120,13 @@ const withPWA = require("next-pwa")({
       handler: "StaleWhileRevalidate",
       options: {
         cacheName: "static-resources",
+        expiration: {
+          maxEntries: 100,
+          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
       },
     },
     // Images
@@ -80,8 +136,14 @@ const withPWA = require("next-pwa")({
       options: {
         cacheName: "images",
         expiration: {
-          maxEntries: 100,
-          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+          maxEntries: 200, // Increased from 100
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days (increased from 7)
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+        matchOptions: {
+          ignoreSearch: true, // Ignore query parameters for better cache hits
         },
       },
     },
@@ -92,8 +154,27 @@ const withPWA = require("next-pwa")({
       options: {
         cacheName: "google-fonts",
         expiration: {
-          maxEntries: 20,
+          maxEntries: 30, // Increased from 20
           maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+      },
+    },
+    // Cache API routes
+    {
+      urlPattern: /\/api\/(?!revalidate|webhook).*/i, // Cache all API routes except revalidate and webhook
+      handler: "NetworkFirst",
+      options: {
+        cacheName: "api-cache",
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 60 * 5, // 5 minutes
+        },
+        networkTimeoutSeconds: 10,
+        cacheableResponse: {
+          statuses: [0, 200],
         },
       },
     },
@@ -104,10 +185,13 @@ const withPWA = require("next-pwa")({
       options: {
         cacheName: "others",
         expiration: {
-          maxEntries: 50,
-          maxAgeSeconds: 60 * 60, // 1 hour
+          maxEntries: 100, // Increased from 50
+          maxAgeSeconds: 60 * 60 * 4, // 4 hours (increased from 1)
         },
         networkTimeoutSeconds: 10,
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
       },
     },
   ],
@@ -129,7 +213,7 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 3600, // Increase cache time to 1 hour
+    minimumCacheTTL: 86400, // Increase cache time to 24 hours (from 1 hour)
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -137,6 +221,19 @@ const nextConfig = {
     loader: "default",
     path: "/_next/image",
     disableStaticImages: false,
+    // Enable remote patterns for more flexible image sources
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.hygraph.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.graphassets.com",
+        pathname: "**",
+      },
+    ],
   },
 
   // Rewrites configuration

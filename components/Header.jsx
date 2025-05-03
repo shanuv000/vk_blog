@@ -4,13 +4,46 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCategories } from "../hooks/useApolloQueries";
+import { getDirectCategories } from "../services/direct-api";
 import { useData } from "../store/HandleApiContext";
 
 const Header = () => {
-  // Use Apollo hook with caching for categories
-  const { categories } = useCategories();
+  // Use direct API for categories
+  const [categories, setCategories] = useState([]);
   const { isLiveScore: isLive } = useData();
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const result = await getDirectCategories();
+        if (result && result.length > 0) {
+          setCategories(result);
+        } else {
+          // Fallback to default categories if API returns empty
+          setCategories([
+            { name: "Web Development", slug: "web-dev" },
+            { name: "Technology", slug: "technology" },
+            { name: "Programming", slug: "programming" },
+            { name: "Mobile Apps", slug: "mobile-apps" },
+            { name: "UI/UX", slug: "ui-ux" },
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching categories for header:", error);
+        // Fallback to default categories on error
+        setCategories([
+          { name: "Web Development", slug: "web-dev" },
+          { name: "Technology", slug: "technology" },
+          { name: "Programming", slug: "programming" },
+          { name: "Mobile Apps", slug: "mobile-apps" },
+          { name: "UI/UX", slug: "ui-ux" },
+        ]);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Header visibility state
   const [isVisible, setIsVisible] = useState(true);
@@ -26,10 +59,19 @@ const Header = () => {
 
   // Dropdown data structure
   const dropdownData = {
-    Blog: categories.map((category) => ({
-      name: category.name.toUpperCase(),
-      href: `/category/${category.slug}`,
-    })),
+    Blog:
+      categories && categories.length > 0
+        ? categories.map((category) => ({
+            name: category.name.toUpperCase(),
+            href: `/category/${category.slug}`,
+          }))
+        : [
+            { name: "WEB DEVELOPMENT", href: "/category/web-dev" },
+            { name: "TECHNOLOGY", href: "/category/technology" },
+            { name: "PROGRAMMING", href: "/category/programming" },
+            { name: "MOBILE APPS", href: "/category/mobile-apps" },
+            { name: "UI/UX", href: "/category/ui-ux" },
+          ],
   };
 
   // Handle header visibility on scroll
@@ -89,10 +131,17 @@ const Header = () => {
   };
 
   const handleDropdownToggle = (name, type) => {
-    setActiveDropdowns((prev) => ({
-      ...prev,
-      [type]: prev[type] === name ? null : name,
-    }));
+    console.log(`Toggling dropdown: ${name} (${type})`);
+    console.log(`Current dropdown data:`, dropdownData[name]);
+
+    setActiveDropdowns((prev) => {
+      const newState = {
+        ...prev,
+        [type]: prev[type] === name ? null : name,
+      };
+      console.log(`New dropdown state:`, newState);
+      return newState;
+    });
   };
 
   // Animation variants for logo only
@@ -193,24 +242,31 @@ const Header = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 z-10 mt-1 w-56 origin-top-right rounded-lg bg-white p-2 shadow-lg ring-1 ring-gray-200 focus:outline-none max-h-96 overflow-y-auto"
+                    className="absolute right-0 z-50 mt-1 w-56 origin-top-right rounded-lg bg-white p-2 shadow-lg ring-1 ring-gray-200 focus:outline-none max-h-96 overflow-y-auto"
                   >
                     <div className="py-1 grid grid-cols-1">
-                      {dropdownData[item.name]?.map((dropdownItem, index) => (
-                        <Link
-                          key={index}
-                          href={dropdownItem.href}
-                          onClick={() =>
-                            setActiveDropdowns((prev) => ({
-                              ...prev,
-                              desktop: null,
-                            }))
-                          }
-                          className="block px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150"
-                        >
-                          {dropdownItem.name}
-                        </Link>
-                      ))}
+                      {dropdownData[item.name] &&
+                      dropdownData[item.name].length > 0 ? (
+                        dropdownData[item.name].map((dropdownItem, index) => (
+                          <Link
+                            key={index}
+                            href={dropdownItem.href}
+                            onClick={() =>
+                              setActiveDropdowns((prev) => ({
+                                ...prev,
+                                desktop: null,
+                              }))
+                            }
+                            className="block px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150"
+                          >
+                            {dropdownItem.name}
+                          </Link>
+                        ))
+                      ) : (
+                        <div className="px-3 py-2 text-sm text-gray-500">
+                          No categories found
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -323,17 +379,24 @@ const Header = () => {
                                   className="overflow-hidden"
                                 >
                                   <div className="mt-1 pl-4 border-l-2 border-gray-100 space-y-1">
-                                    {dropdownData[item.name]?.map(
-                                      (subItem, index) => (
-                                        <Link
-                                          key={index}
-                                          href={subItem.href}
-                                          onClick={toggleMobileMenu}
-                                          className="block py-2 pl-2 text-sm text-gray-600 hover:text-red-600"
-                                        >
-                                          {subItem.name}
-                                        </Link>
+                                    {dropdownData[item.name] &&
+                                    dropdownData[item.name].length > 0 ? (
+                                      dropdownData[item.name].map(
+                                        (subItem, index) => (
+                                          <Link
+                                            key={index}
+                                            href={subItem.href}
+                                            onClick={toggleMobileMenu}
+                                            className="block py-2 pl-2 text-sm text-gray-600 hover:text-red-600"
+                                          >
+                                            {subItem.name}
+                                          </Link>
+                                        )
                                       )
+                                    ) : (
+                                      <div className="py-2 pl-2 text-sm text-gray-500">
+                                        No categories found
+                                      </div>
                                     )}
                                   </div>
                                 </motion.div>

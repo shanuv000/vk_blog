@@ -44,11 +44,24 @@ const useFetchData = (url, extractData = (data) => data, initialState = []) => {
         throw new Error("Empty response from server");
       }
 
-      const fetchedData = extractData(response.data);
+      // Handle case where extractData is not provided or is null
+      let fetchedData;
+      if (typeof extractData === "function") {
+        fetchedData = extractData(response.data);
+      } else {
+        // If no extractData function is provided, use the response data directly
+        fetchedData = response.data;
+      }
 
       // Ensure data is in the correct format (array for certain states)
-      if (Array.isArray(initialState) && !Array.isArray(fetchedData)) {
-        throw new Error("Expected data to be an array");
+      if (
+        Array.isArray(initialState) &&
+        fetchedData !== null &&
+        !Array.isArray(fetchedData)
+      ) {
+        console.warn("Expected array data but received:", typeof fetchedData);
+        // Convert to array if possible or use empty array
+        fetchedData = Array.isArray(fetchedData) ? fetchedData : [];
       }
 
       setData(fetchedData || initialState);
@@ -149,9 +162,10 @@ export const DataProvider = ({ children }) => {
   // Use our local proxy API to avoid CORS issues
   const API_BASE = "/api/cricket-proxy?endpoint=";
 
+  // Use identity function instead of null for extractData
   const { data, refetch: fetchData } = useFetchData(
     `${API_BASE}schedule`,
-    null
+    (data) => data
   );
 
   const {
@@ -176,7 +190,21 @@ export const DataProvider = ({ children }) => {
     refetch: fetchSchedule,
   } = useFetchData(
     `${API_BASE}schedule`,
-    (response) => response.data?.groups || [], // Safely extract groups with fallback
+    (response) => {
+      // More robust data extraction with better error handling
+      if (response && response.data && response.data.groups) {
+        return response.data.groups;
+      } else if (response && response.fallback) {
+        // Use fallback data if available
+        return response.fallback.groups || [];
+      } else if (Array.isArray(response)) {
+        // If response is already an array, use it directly
+        return response;
+      } else {
+        // Default empty array
+        return [];
+      }
+    },
     []
   );
 

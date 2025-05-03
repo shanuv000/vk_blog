@@ -33,6 +33,7 @@ import "react-multi-carousel/lib/styles.css";
 
 import { FeaturedPostCard } from "../components";
 import { getFeaturedPosts } from "../services";
+import { getDirectFeaturedPosts } from "../services/direct-api";
 
 const responsive = {
   superLargeDesktop: {
@@ -143,25 +144,63 @@ const FeaturedPosts = () => {
     const loadPosts = async () => {
       try {
         setIsLoading(true);
-        const result = await getFeaturedPosts();
+
+        // Try the direct API first for more reliable data fetching
+        let result;
+        try {
+          console.log("Fetching featured posts with direct API");
+          result = await getDirectFeaturedPosts();
+        } catch (directError) {
+          console.error(
+            "Direct API failed, falling back to regular API:",
+            directError
+          );
+          result = await getFeaturedPosts();
+        }
+
+        // Handle case where result might be empty or undefined
+        if (!result || !Array.isArray(result)) {
+          console.warn("Featured posts result is not an array:", result);
+          setFeaturedPosts([]);
+          setDataLoaded(true);
+          return;
+        }
 
         // Process images to ensure they have width and height
         const processedPosts = result.map((post) => ({
           ...post,
+          // Ensure slug exists
+          slug:
+            post.slug || `post-${Math.random().toString(36).substring(2, 9)}`,
+          // Ensure featuredImage exists with proper dimensions
           featuredImage: post.featuredImage
             ? {
                 ...post.featuredImage,
+                url:
+                  post.featuredImage.url || "/api/default-image?type=featured",
                 // Ensure width and height are numbers
                 width: parseInt(post.featuredImage.width, 10) || 800,
                 height: parseInt(post.featuredImage.height, 10) || 600,
               }
-            : null,
+            : {
+                url: "/api/default-image?type=featured",
+                width: 800,
+                height: 600,
+              },
+          // Ensure author exists
+          author: post.author || {
+            name: "Anonymous",
+            photo: { url: "/api/default-image?type=avatar" },
+          },
         }));
 
         setFeaturedPosts(processedPosts);
         setDataLoaded(true);
       } catch (error) {
         console.error("Error loading featured posts:", error);
+        // Set empty array to avoid null errors
+        setFeaturedPosts([]);
+        setDataLoaded(true);
       } finally {
         setIsLoading(false);
       }

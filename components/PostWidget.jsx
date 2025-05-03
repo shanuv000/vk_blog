@@ -4,15 +4,76 @@ import Link from "next/link";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { FaImage } from "react-icons/fa";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
-import { useSimilarPosts, useRecentPosts } from "../hooks/useApolloQueries";
+import {
+  getDirectRecentPosts,
+  getDirectSimilarPosts,
+} from "../services/direct-api";
 
 const PostWidget = ({ categories, slug }) => {
-  // Use Apollo hooks with proper caching
-  const { posts: similarPosts, loading: similarLoading } = useSimilarPosts(
-    slug,
-    categories
-  );
-  const { posts: recentPosts, loading: recentLoading } = useRecentPosts();
+  // Debug log to see what's being passed
+  console.log("PostWidget rendered with:", { categories, slug });
+
+  // Use direct API for similar posts
+  const [similarPosts, setSimilarPosts] = useState([]);
+  const [similarLoading, setSimilarLoading] = useState(true);
+
+  // Use direct API for recent posts
+  const [recentPosts, setRecentPosts] = useState([]);
+  const [recentLoading, setRecentLoading] = useState(true);
+
+  // Fetch similar posts when slug and categories are available
+  useEffect(() => {
+    if (slug && categories && categories.length > 0) {
+      const fetchSimilarPosts = async () => {
+        try {
+          setSimilarLoading(true);
+          console.log("Fetching similar posts for:", slug, categories);
+          const result = await getDirectSimilarPosts(slug, categories);
+          console.log("Similar posts result:", result);
+
+          if (result && result.length > 0) {
+            setSimilarPosts(result);
+          } else {
+            console.log("No similar posts found, using fallback");
+            // Fallback to recent posts if no similar posts are found
+            const recentResult = await getDirectRecentPosts();
+            setSimilarPosts(recentResult || []);
+          }
+        } catch (error) {
+          console.error("Error fetching similar posts:", error);
+          setSimilarPosts([]);
+        } finally {
+          setSimilarLoading(false);
+        }
+      };
+
+      fetchSimilarPosts();
+    } else if (slug) {
+      // If we have a slug but no categories, set empty array and loading to false
+      setSimilarPosts([]);
+      setSimilarLoading(false);
+    }
+  }, [slug, categories]);
+
+  // Fetch recent posts on component mount
+  useEffect(() => {
+    if (!slug) {
+      const fetchRecentPosts = async () => {
+        try {
+          setRecentLoading(true);
+          const result = await getDirectRecentPosts();
+          setRecentPosts(result);
+        } catch (error) {
+          console.error("Error fetching recent posts:", error);
+          setRecentPosts([]);
+        } finally {
+          setRecentLoading(false);
+        }
+      };
+
+      fetchRecentPosts();
+    }
+  }, [slug]);
 
   // Determine which posts to show based on props
   const posts = useMemo(() => {

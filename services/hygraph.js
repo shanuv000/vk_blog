@@ -5,6 +5,9 @@ export const HYGRAPH_CONTENT_API = process.env.NEXT_PUBLIC_HYGRAPH_CONTENT_API;
 export const HYGRAPH_CDN_API = process.env.NEXT_PUBLIC_HYGRAPH_CDN_API;
 export const HYGRAPH_AUTH_TOKEN = process.env.HYGRAPH_AUTH_TOKEN;
 
+// Determine if we're running in the browser
+const isBrowser = typeof window !== "undefined";
+
 // Create clients for different purposes
 export const contentClient = new GraphQLClient(HYGRAPH_CONTENT_API);
 
@@ -17,7 +20,11 @@ export const authClient = HYGRAPH_AUTH_TOKEN
     })
   : contentClient; // Fallback to non-authenticated client
 
-export const cdnClient = new GraphQLClient(HYGRAPH_CDN_API);
+// For client-side requests, use our proxy API to avoid CORS issues
+// For server-side requests, use the CDN API directly
+export const cdnClient = isBrowser
+  ? new GraphQLClient("/api/hygraph-proxy") // Use relative URL for proxy
+  : new GraphQLClient(HYGRAPH_CDN_API); // Use direct CDN for server-side
 
 // Simple in-memory cache implementation
 const cache = new Map();

@@ -1,11 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useCategories } from "../hooks/useApolloQueries";
+import { getDirectCategories } from "../services/direct-api";
 
 const Categories = () => {
-  // Use Apollo hook with caching
-  const { categories, loading, error } = useCategories();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Use direct API for more reliable data fetching
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const result = await getDirectCategories();
+        
+        if (result && result.length > 0) {
+          setCategories(result);
+        } else {
+          // Fallback to default categories if API returns empty
+          console.log("API returned empty categories, using defaults");
+          setCategories([
+            { name: "Web Development", slug: "web-dev" },
+            { name: "Technology", slug: "technology" },
+            { name: "Programming", slug: "programming" },
+            { name: "Mobile Apps", slug: "mobile-apps" },
+            { name: "UI/UX", slug: "ui-ux" },
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Fallback to default categories on error
+        setCategories([
+          { name: "Web Development", slug: "web-dev" },
+          { name: "Technology", slug: "technology" },
+          { name: "Programming", slug: "programming" },
+          { name: "Mobile Apps", slug: "mobile-apps" },
+          { name: "UI/UX", slug: "ui-ux" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
 
   // Animation variants
   const containerVariants = {
@@ -29,6 +67,7 @@ const Categories = () => {
     },
   };
 
+  // Show loading state
   if (loading) {
     return (
       <motion.div
@@ -38,25 +77,22 @@ const Categories = () => {
         transition={{ duration: 0.5 }}
       >
         <h3 className="text-xl mb-8 font-semibold border-b pb-4">Categories</h3>
-        <p className="text-center py-4">Loading categories...</p>
+        <div className="flex justify-center items-center">
+          <div className="animate-pulse w-full">
+            {[1, 2, 3, 4, 5].map((item) => (
+              <div
+                key={item}
+                className="h-4 bg-gray-200 rounded mb-3"
+                style={{ width: `${Math.floor(Math.random() * 40) + 60}%` }}
+              />
+            ))}
+          </div>
+        </div>
       </motion.div>
     );
   }
 
-  if (error) {
-    return (
-      <motion.div
-        className="bg-white shadow-lg rounded-lg p-8 mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h3 className="text-xl mb-8 font-semibold border-b pb-4">Categories</h3>
-        <p className="text-center text-red-500 py-4">{error}</p>
-      </motion.div>
-    );
-  }
-
+  // If no categories available
   if (!categories || categories.length === 0) {
     return (
       <motion.div

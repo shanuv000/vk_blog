@@ -36,38 +36,85 @@ export default async function handler(req, res) {
     // Forward the request to the cricket API
     const apiUrl = `https://api-sync.vercel.app/api/cricket/${endpoint}`;
 
+    // Alternative API endpoints to try if the primary one fails
+    const backupApiUrls = [
+      `https://cricket-api.vercel.app/api/${endpoint}`,
+      `https://cricket-live-data.p.rapidapi.com/${endpoint}`,
+    ];
+
     // Add a timestamp to bypass caching
     const url = new URL(apiUrl);
     url.searchParams.append("_t", Date.now());
 
     console.log(`Fetching cricket data from: ${url.toString()}`);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    // Try the primary API first
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout (increased)
 
-    const response = await fetch(url.toString(), {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "urTechy-Blog/1.0",
-      },
-      signal: controller.signal,
-      // Add timeout to prevent hanging requests
-      timeout: 8000,
-    });
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "User-Agent": "urTechy-Blog/1.0",
+          Origin: "https://blog.urtechy.com",
+          Referer: "https://blog.urtechy.com/",
+        },
+        signal: controller.signal,
+      });
 
-    clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
 
-    // Check if the response is ok
-    if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
+      // If successful, return the response
+      if (response.ok) {
+        const data = await response.json();
+        return res.status(200).json(data);
+      }
+
+      // If not successful, throw an error to try backup APIs
+      throw new Error(`Primary API responded with status: ${response.status}`);
+    } catch (primaryError) {
+      console.warn(
+        `Primary cricket API failed: ${primaryError.message}, trying backups...`
+      );
+
+      // Try backup APIs in sequence
+      for (const backupUrl of backupApiUrls) {
+        try {
+          console.log(`Trying backup cricket API: ${backupUrl}`);
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+          const backupResponse = await fetch(backupUrl, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "User-Agent": "urTechy-Blog/1.0",
+              Origin: "https://blog.urtechy.com",
+              Referer: "https://blog.urtechy.com/",
+            },
+            signal: controller.signal,
+          });
+
+          clearTimeout(timeoutId);
+
+          if (backupResponse.ok) {
+            const data = await backupResponse.json();
+            return res.status(200).json(data);
+          }
+        } catch (backupError) {
+          console.warn(`Backup cricket API failed: ${backupError.message}`);
+          // Continue to the next backup
+        }
+      }
+
+      // If we get here, all APIs failed, throw an error to be caught by the outer catch
+      throw new Error("All cricket APIs failed");
     }
 
-    // Get the response data
-    const data = await response.json();
-
-    // Return the data
-    return res.status(200).json(data);
+    // This code is no longer needed as we handle responses in the try/catch blocks above
   } catch (error) {
     console.error(
       `Error proxying request to cricket API (${endpoint}):`,
@@ -75,15 +122,21 @@ export default async function handler(req, res) {
     );
 
     // Return a more user-friendly error with fallback data
-    return res.status(500).json({
+    return res.status(200).json({
       message: "Error fetching data from cricket API",
       error: error.message || "Unknown error",
+      // Return status 200 with fallback data so the UI doesn't break
       fallback: {
-        // Provide some fallback data so the UI doesn't break
         matches: [],
+        fixtures: [],
+        liveScores: [],
+        recentMatches: [],
+        upcomingMatches: [],
         status: "error",
         timestamp: new Date().toISOString(),
       },
+      // Include the endpoint for debugging
+      endpoint,
     });
   }
 }

@@ -2,11 +2,14 @@
 const { gql } = require("graphql-request");
 const { GraphQLClient } = require("graphql-request");
 
-// Create a client for the CDN API (read-only operations)
-const cdnClient = new GraphQLClient(
+// Get the Hygraph API endpoints from environment variables
+const HYGRAPH_CDN_API =
   process.env.NEXT_PUBLIC_HYGRAPH_CDN_API ||
-    process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT
-);
+  "https://ap-south-1.cdn.hygraph.com/content/cky5wgpym15ym01z44tk90zeb/master";
+
+// Create a client for the CDN API (read-only operations)
+// This is only used server-side for sitemap generation, so no need for proxy
+const cdnClient = new GraphQLClient(HYGRAPH_CDN_API);
 
 /**
  * Fetches all published posts from Hygraph for sitemap generation

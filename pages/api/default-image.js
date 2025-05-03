@@ -14,6 +14,12 @@ export default async function handler(req, res) {
   // Add Vary header to help with caching
   res.setHeader("Vary", "Accept");
 
+  // Add debug headers
+  res.setHeader("X-Cache-TTL", "31536000s"); // 1 year
+  res.setHeader("X-Cache-SWR", "86400s"); // 1 day
+  res.setHeader("X-Cache-Type", "STATIC");
+  res.setHeader("X-Image-Type", req.query.type || "featured");
+
   try {
     // Get image type from query parameter (avatar or featured)
     const { type = "featured" } = req.query;
