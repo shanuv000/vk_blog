@@ -9,7 +9,6 @@ import {
   FaWhatsapp,
   FaLinkedin,
   FaPinterest,
-  FaInstagram,
 } from "react-icons/fa6";
 import {
   DEFAULT_FEATURED_IMAGE,
@@ -116,18 +115,7 @@ const NavbarPostDetails = ({ post }) => {
         >
           <FaWhatsapp size={20} className="text-white" />
         </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`https://www.instagram.com/?url=${encodeURIComponent(
-            postUrl
-          )}&media=${encodeURIComponent(getSafeImageUrl())}`}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-pink-500 hover:bg-pink-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
-          title="Share on Instagram"
-          aria-label="Share on Instagram"
-        >
-          <FaInstagram size={20} className="text-white" />
-        </a>
+
         <a
           target="_blank"
           rel="noopener noreferrer"
