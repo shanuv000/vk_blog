@@ -55,7 +55,7 @@ export const getContentFragment = (index, text, obj, type) => {
       return (
         <Heading
           index={index}
-          className="font-serif text-4xl lg:text-5xl font-bold mb-8"
+          className="font-heading text-4xl lg:text-5xl font-bold mb-8 text-text-primary"
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
@@ -66,7 +66,7 @@ export const getContentFragment = (index, text, obj, type) => {
       return (
         <Heading
           index={index}
-          className="font-serif text-3xl lg:text-4xl font-medium mb-6"
+          className="font-heading text-3xl lg:text-4xl font-semibold mb-6 text-text-primary"
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
@@ -75,7 +75,10 @@ export const getContentFragment = (index, text, obj, type) => {
       );
     case "heading-three":
       return (
-        <Heading index={index} className="font-serif text-2xl lg:text-3xl mb-4">
+        <Heading
+          index={index}
+          className="font-heading text-2xl lg:text-3xl font-medium mb-4 text-text-primary"
+        >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
           ))}
@@ -88,7 +91,7 @@ export const getContentFragment = (index, text, obj, type) => {
       return (
         <Heading
           index={index}
-          className="font-serif lg:font-sans text-xl font-semibold mb-4"
+          className="font-heading text-xl font-medium mb-4 text-text-primary"
         >
           {modifiedText.map((item, i) => (
             <React.Fragment key={i}>{item}</React.Fragment>
@@ -100,7 +103,7 @@ export const getContentFragment = (index, text, obj, type) => {
         <div key={index}>
           <LazyLoadImage
             alt={"images"}
-            className="rounded-lg my-4 shadow-lg"
+            className="rounded-lg my-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
             height={obj.height}
             width={obj.width}
             src={obj.src} // use normal <img> attributes as props
@@ -155,7 +158,7 @@ export const getContentFragment = (index, text, obj, type) => {
                   <TwitterTweetEmbed tweetId={`${item}`} className="w-full" />
                 </div>
               ) : (
-                <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-3">
+                <blockquote className="border-l-4 border-primary pl-4 italic text-text-secondary my-3 py-2">
                   <p>{item}</p>
                 </blockquote>
               )
@@ -189,7 +192,7 @@ const renderList = (type, index, obj) => {
     }
     if (node.code) {
       return (
-        <code className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1">
+        <code className="bg-secondary-light text-primary font-mono rounded px-2 py-1">
           {node.text}
         </code>
       );
@@ -200,7 +203,7 @@ const renderList = (type, index, obj) => {
           href={node.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="underline decoration-sky-400 decoration-2 underline-offset-8 hover:text-sky-600 hover:underline transition duration-200"
+          className="text-primary hover:text-primary-dark underline decoration-2 underline-offset-4 transition duration-200"
         >
           {node.children.map(renderText)}
         </a>
@@ -227,7 +230,7 @@ const renderList = (type, index, obj) => {
       {obj.children.map((listItem, i) => (
         <li
           key={i}
-          className="mb-2 leading-relaxed text-gray-800 font-sans text-base md:text-lg lg:text-xl"
+          className="mb-2 leading-relaxed text-text-primary font-sans text-base md:text-lg"
         >
           {extractAndRenderChildren(listItem.children[0].children)}
         </li>

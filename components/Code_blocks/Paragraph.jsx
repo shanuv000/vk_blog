@@ -19,7 +19,7 @@ const ImageRenderer = ({ item, index }) => {
     <LazyLoadImage
       key={index}
       src={src}
-      className="rounded-lg my-4 shadow-lg"
+      className="rounded-lg my-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
       alt={item.children[0]?.text || "image"}
       onError={handleError}
     />
@@ -44,7 +44,7 @@ const Paragraph = ({ obj, modifiedText }) => {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline decoration-sky-400 decoration-2 underline-offset-8 hover:text-sky-600 hover:underline transition duration-200"
+            className="text-primary hover:text-primary-dark underline decoration-2 underline-offset-4 transition duration-200"
           >
             {item.children[0]?.text || "link"}
           </a>
@@ -62,7 +62,7 @@ const Paragraph = ({ obj, modifiedText }) => {
       return (
         <u
           key={index}
-          className="underline underline-offset-6 decoration-3 decoration-orange-500"
+          className="underline underline-offset-4 decoration-2 decoration-primary"
         >
           {item.text}
         </u>
@@ -72,7 +72,7 @@ const Paragraph = ({ obj, modifiedText }) => {
       return (
         <code
           key={index}
-          className="bg-gray-100 text-gray-800 font-mono rounded px-2 py-1"
+          className="bg-secondary-light text-primary font-mono rounded px-2 py-1"
         >
           {item.text}
         </code>
@@ -82,7 +82,7 @@ const Paragraph = ({ obj, modifiedText }) => {
       return item.text.split(" ").map((word, i) => (
         <React.Fragment key={i}>
           {word.startsWith("#") ? (
-            <span className="text-pink-500">{word} </span>
+            <span className="text-primary">{word} </span>
           ) : (
             word + " " // Add space after each word
           )}
@@ -92,7 +92,7 @@ const Paragraph = ({ obj, modifiedText }) => {
   };
 
   return (
-    <p className="mb-6 text-gray-800 font-sans text-base md:text-lg lg:text-xl leading-relaxed lg:leading-8 lg:my-9">
+    <p className="mb-6 text-text-primary font-sans text-base md:text-lg leading-relaxed lg:leading-8 lg:my-6">
       {(obj.children && obj.children.map(renderTextItem)) ||
         (modifiedText && modifiedText.map(renderTextItem)) || (
           <div className="text-green-500">Invalid paragraph</div>

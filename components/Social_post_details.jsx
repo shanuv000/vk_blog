@@ -94,107 +94,112 @@ const NavbarPostDetails = ({ post }) => {
   }, [controls, inView, imageUrl, hasFeaturedImage, post]);
 
   return (
-    <motion.nav
+    <motion.div
       ref={ref}
       initial={{ opacity: 0, y: -20 }}
       animate={controls}
       transition={{ duration: 0.5 }}
-      className="flex justify-center space-x-4 lg:mb-2 my-4"
+      className="mb-8 border-y border-secondary-light py-4"
     >
-      <a
-        href={`https://wa.me/?text=${encodeURIComponent(
-          `${title} - ${postUrl}${imageUrl ? " 📷" : ""}`
-        )}`}
-        data-action="share/whatsapp/share"
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-colors duration-300"
-        title="Share on WhatsApp"
-        aria-label="Share on WhatsApp"
-      >
-        <FaWhatsapp size={20} className="text-white" />
-      </a>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`https://www.instagram.com/?url=${encodeURIComponent(
-          postUrl
-        )}&media=${encodeURIComponent(getSafeImageUrl())}`}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-pink-500 hover:bg-pink-600 transition-colors duration-300"
-        title="Share on Instagram"
-        aria-label="Share on Instagram"
-      >
-        <FaInstagram size={20} className="text-white" />
-      </a>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-          postUrl
-        )}&picture=${encodeURIComponent(
-          getSafeImageUrl()
-        )}&quote=${encodeURIComponent(title)}`}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
-        title="Share on Facebook"
-        aria-label="Share on Facebook"
-      >
-        <FaFacebook size={20} className="text-white" />
-      </a>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          title
-        )}&url=${encodeURIComponent(
-          postUrl
-        )}&via=Onlyblogs_&hashtags=urtechy,blog${`&image=${encodeURIComponent(
-          getSafeImageUrl()
-        )}`}`}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-gray-800 transition-colors duration-300"
-        title="Share on Twitter"
-        aria-label="Share on Twitter"
-      >
-        <FaXTwitter size={20} className="text-white" />
-      </a>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-          postUrl
-        )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
-          title
-        )}&source=urTechy`}
-        className="items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors duration-300 hidden lg:flex"
-        title="Share on LinkedIn"
-        aria-label="Share on LinkedIn"
-      >
-        <FaLinkedin size={20} className="text-white" />
-      </a>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`http://www.reddit.com/submit?url=${encodeURIComponent(
-          postUrl
-        )}&title=${encodeURIComponent(title)}`}
-        className="items-center justify-center w-10 h-10 rounded-full bg-orange-600 hover:bg-orange-700 transition-colors duration-300 hidden lg:flex"
-        title="Share on Reddit"
-        aria-label="Share on Reddit"
-      >
-        <FaReddit size={20} className="text-white" />
-      </a>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
-          postUrl
-        )}&description=${encodeURIComponent(title)}&media=${encodeURIComponent(
-          getSafeImageUrl()
-        )}`}
-        className="items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-300 hidden lg:flex"
-        title="Share on Pinterest"
-        aria-label="Share on Pinterest"
-      >
-        <FaPinterest size={20} className="text-white" />
-      </a>
-    </motion.nav>
+      <h3 className="text-text-primary font-heading text-lg mb-3 text-center">
+        Share this article
+      </h3>
+      <div className="flex justify-center space-x-3 md:space-x-4">
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent(
+            `${title} - ${postUrl}${imageUrl ? " 📷" : ""}`
+          )}`}
+          data-action="share/whatsapp/share"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+          title="Share on WhatsApp"
+          aria-label="Share on WhatsApp"
+        >
+          <FaWhatsapp size={20} className="text-white" />
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://www.instagram.com/?url=${encodeURIComponent(
+            postUrl
+          )}&media=${encodeURIComponent(getSafeImageUrl())}`}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-pink-500 hover:bg-pink-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+          title="Share on Instagram"
+          aria-label="Share on Instagram"
+        >
+          <FaInstagram size={20} className="text-white" />
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            postUrl
+          )}&picture=${encodeURIComponent(
+            getSafeImageUrl()
+          )}&quote=${encodeURIComponent(title)}`}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+          title="Share on Facebook"
+          aria-label="Share on Facebook"
+        >
+          <FaFacebook size={20} className="text-white" />
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+            title
+          )}&url=${encodeURIComponent(
+            postUrl
+          )}&via=Onlyblogs_&hashtags=urtechy,blog${`&image=${encodeURIComponent(
+            getSafeImageUrl()
+          )}`}`}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-gray-800 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+          title="Share on Twitter"
+          aria-label="Share on Twitter"
+        >
+          <FaXTwitter size={20} className="text-white" />
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+            postUrl
+          )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
+            title
+          )}&source=urTechy`}
+          className="items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hidden lg:flex"
+          title="Share on LinkedIn"
+          aria-label="Share on LinkedIn"
+        >
+          <FaLinkedin size={20} className="text-white" />
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`http://www.reddit.com/submit?url=${encodeURIComponent(
+            postUrl
+          )}&title=${encodeURIComponent(title)}`}
+          className="items-center justify-center w-10 h-10 rounded-full bg-orange-600 hover:bg-orange-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hidden lg:flex"
+          title="Share on Reddit"
+          aria-label="Share on Reddit"
+        >
+          <FaReddit size={20} className="text-white" />
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+            postUrl
+          )}&description=${encodeURIComponent(
+            title
+          )}&media=${encodeURIComponent(getSafeImageUrl())}`}
+          className="items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hidden lg:flex"
+          title="Share on Pinterest"
+          aria-label="Share on Pinterest"
+        >
+          <FaPinterest size={20} className="text-white" />
+        </a>
+      </div>
+    </motion.div>
   );
 };
 
