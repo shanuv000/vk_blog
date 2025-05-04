@@ -3,7 +3,7 @@ import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaCalendarAlt, FaBookmark } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const FeaturedPostCard = ({ post = {} }) => {
@@ -17,6 +17,7 @@ const FeaturedPostCard = ({ post = {} }) => {
       name: "Anonymous",
       photo: { url: DEFAULT_AVATAR },
     },
+    categories: post.categories || [],
   };
 
   return (
@@ -25,11 +26,15 @@ const FeaturedPostCard = ({ post = {} }) => {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: 1.03 }}
     >
       <motion.div
         className="absolute rounded-lg shadow-lg inline-block w-full h-full overflow-hidden"
-        whileHover={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)" }}
+        whileHover={{
+          boxShadow: "0 25px 50px -12px rgba(229, 9, 20, 0.3)",
+          borderColor: "rgba(229, 9, 20, 0.5)",
+        }}
+        style={{ border: "1px solid transparent" }}
       >
         <Image
           src={safePost.featuredImage.url || DEFAULT_FEATURED_IMAGE}
@@ -38,39 +43,61 @@ const FeaturedPostCard = ({ post = {} }) => {
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           className="object-cover"
           priority={true}
-          quality={85}
+          quality={90}
           style={{ width: "100%", height: "100%" }}
         />
       </motion.div>
 
-      {/* Gradient overlay */}
-      <div className="absolute rounded-lg bg-center bg-gradient-to-b from-transparent via-secondary/70 to-secondary w-full h-full" />
+      {/* Enhanced gradient overlay for better text readability */}
+      <div className="absolute rounded-lg bg-center bg-gradient-to-b from-transparent via-secondary/80 to-secondary w-full h-full" />
 
       {/* Content */}
       <motion.div
         className="flex flex-col rounded-lg p-6 items-center justify-end absolute w-full h-full"
-        whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
+        whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }}
       >
-        {/* Featured badge */}
-        <div className="absolute top-4 left-4 bg-primary text-white text-xs px-3 py-1 rounded-full shadow-md">
-          Featured
-        </div>
+        {/* Featured badge - redesigned */}
+        <motion.div
+          className="absolute top-4 left-4 bg-gradient-to-r from-primary to-urtechy-orange text-white text-xs px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"
+          whileHover={{ scale: 1.05 }}
+        >
+          <FaBookmark className="text-xs" />
+          <span className="font-medium">Featured</span>
+        </motion.div>
 
-        {/* Date */}
-        <motion.p
-          className="text-text-primary mb-2 text-shadow text-sm"
+        {/* Categories if available */}
+        {safePost.categories && safePost.categories.length > 0 && (
+          <div className="absolute top-4 right-4 flex flex-wrap gap-2 justify-end">
+            {safePost.categories.slice(0, 2).map((category, index) => (
+              <motion.span
+                key={index}
+                className="bg-secondary-light/80 text-text-primary text-xs px-2.5 py-1 rounded-full backdrop-blur-sm"
+                whileHover={{ backgroundColor: "rgba(31, 31, 31, 0.9)" }}
+              >
+                {category.name}
+              </motion.span>
+            ))}
+          </div>
+        )}
+
+        {/* Date with icon */}
+        <motion.div
+          className="text-text-primary mb-2 text-shadow text-sm flex items-center gap-1.5"
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          {safePost.createdAt
-            ? moment(safePost.createdAt).format("MMM DD, YYYY")
-            : "No date"}
-        </motion.p>
+          <FaCalendarAlt className="text-primary-light" />
+          <span>
+            {safePost.createdAt
+              ? moment(safePost.createdAt).format("MMM DD, YYYY")
+              : "No date"}
+          </span>
+        </motion.div>
 
-        {/* Title */}
+        {/* Title - enhanced with better typography */}
         <motion.h3
-          className="text-white mb-4 text-shadow font-heading font-bold text-xl sm:text-2xl md:text-3xl text-center"
+          className="text-white mb-4 text-shadow font-heading font-bold text-xl sm:text-2xl md:text-3xl text-center leading-tight"
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.2 }}
@@ -78,12 +105,13 @@ const FeaturedPostCard = ({ post = {} }) => {
           {safePost.title || "Untitled Post"}
         </motion.h3>
 
-        {/* Author */}
+        {/* Author with enhanced styling */}
         <motion.div
-          className="flex items-center w-full justify-center"
+          className="flex items-center justify-center bg-secondary-light/50 px-3 py-1.5 rounded-full backdrop-blur-sm"
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.3 }}
+          whileHover={{ backgroundColor: "rgba(31, 31, 31, 0.7)" }}
         >
           {safePost.author?.photo?.url ? (
             <Image
@@ -104,7 +132,7 @@ const FeaturedPostCard = ({ post = {} }) => {
           </p>
         </motion.div>
 
-        {/* Read more button */}
+        {/* Enhanced Read more button */}
         <motion.div
           className="mt-4 w-full flex justify-center"
           initial={{ y: 10, opacity: 0 }}
@@ -112,11 +140,10 @@ const FeaturedPostCard = ({ post = {} }) => {
           transition={{ duration: 0.3, delay: 0.4 }}
         >
           <motion.span
-            className="inline-block bg-primary text-white px-4 py-2 rounded-md font-medium text-sm"
+            className="inline-block bg-gradient-to-r from-primary to-urtechy-orange text-white px-5 py-2.5 rounded-md font-medium text-sm shadow-lg"
             whileHover={{
               scale: 1.05,
-              backgroundColor: "#B81D24",
-              boxShadow: "0 10px 15px -3px rgba(229, 9, 20, 0.3)",
+              boxShadow: "0 10px 25px -5px rgba(229, 9, 20, 0.4)",
             }}
             whileTap={{ scale: 0.95 }}
           >

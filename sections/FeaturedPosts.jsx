@@ -4,31 +4,9 @@ import { ClipLoader } from "react-spinners";
 import Head from "next/head";
 import { motion } from "framer-motion";
 
-// Dynamically import the carousel with preload and error handling
-const Carousel = dynamic(
-  () =>
-    import("react-multi-carousel")
-      .then((mod) => mod.default)
-      .catch((err) => {
-        console.error("Failed to load carousel:", err);
-        // Return a fallback component if the carousel fails to load
-        return (props) => (
-          <div className="overflow-x-auto py-4">
-            <div className="flex space-x-4 px-4">{props.children}</div>
-          </div>
-        );
-      }),
-  {
-    ssr: true, // Enable SSR for faster initial load
-    loading: () => (
-      <div className="flex justify-center items-center py-8">
-        <ClipLoader color="#FF4500" size={30} />
-      </div>
-    ),
-  }
-);
-
-// Import styles directly to avoid preload warnings
+// Import carousel directly to avoid dynamic import issues
+import Carousel from "react-multi-carousel";
+// Import styles
 import "react-multi-carousel/lib/styles.css";
 
 import { FeaturedPostCard } from "../components";
@@ -58,14 +36,15 @@ const responsive = {
 // The onClick prop is passed by react-multi-carousel and needs to be used
 const LeftArrow = memo(({ onClick }) => (
   <motion.div
-    className="absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full z-10"
+    className="absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-gradient-to-r from-primary to-urtechy-orange rounded-full z-10"
     onClick={onClick}
     whileHover={{
       scale: 1.1,
-      boxShadow: "0 10px 15px -3px rgba(255, 69, 0, 0.3)",
+      boxShadow: "0 15px 25px -5px rgba(229, 9, 20, 0.4)",
     }}
     whileTap={{ scale: 0.95 }}
     transition={{ duration: 0.2 }}
+    style={{ backdropFilter: "blur(4px)" }}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -86,14 +65,15 @@ const LeftArrow = memo(({ onClick }) => (
 
 const RightArrow = memo(({ onClick }) => (
   <motion.div
-    className="absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-urtechy-red rounded-full z-10"
+    className="absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-gradient-to-r from-urtechy-orange to-primary rounded-full z-10"
     onClick={onClick}
     whileHover={{
       scale: 1.1,
-      boxShadow: "0 10px 15px -3px rgba(255, 69, 0, 0.3)",
+      boxShadow: "0 15px 25px -5px rgba(229, 9, 20, 0.4)",
     }}
     whileTap={{ scale: 0.95 }}
     transition={{ duration: 0.2 }}
+    style={{ backdropFilter: "blur(4px)" }}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -212,9 +192,27 @@ const FeaturedPosts = () => {
   // Render a placeholder with the same dimensions during loading
   if (isLoading) {
     return (
-      <div className="mb-8">
-        <div className="h-72 bg-gray-200 animate-pulse rounded-lg flex justify-center items-center">
-          <ClipLoader color="#FF4500" size={30} />
+      <div className="mb-12">
+        <div className="relative">
+          {/* Section heading for loading state */}
+          <motion.div
+            className="mb-6 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-primary inline-block relative">
+              <span className="bg-gradient-to-r from-primary to-urtechy-orange bg-clip-text text-transparent">
+                Featured Content
+              </span>
+              <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-urtechy-orange rounded-full"></span>
+            </h2>
+          </motion.div>
+
+          {/* Loading placeholder */}
+          <div className="h-80 bg-secondary-light/30 animate-pulse rounded-lg flex justify-center items-center backdrop-blur-sm border border-secondary-light/50">
+            <ClipLoader color="#E50914" size={40} />
+          </div>
         </div>
       </div>
     );
@@ -225,7 +223,30 @@ const FeaturedPosts = () => {
   }
 
   return (
-    <div className="mb-8">
+    <motion.div
+      className="mb-12 relative"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Decorative background element */}
+      <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/5 to-secondary-light/10 -z-10 rounded-xl blur-xl"></div>
+
+      {/* Section heading */}
+      <motion.div
+        className="mb-6 text-center"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-primary inline-block relative">
+          <span className="bg-gradient-to-r from-primary to-urtechy-orange bg-clip-text text-transparent">
+            Featured Content
+          </span>
+          <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-urtechy-orange rounded-full"></span>
+        </h2>
+      </motion.div>
+
       {preloadImages(featuredPosts)}
       <Carousel
         ref={carouselRef}
@@ -239,11 +260,13 @@ const FeaturedPosts = () => {
         draggable={true}
         partialVisible={false}
         minimumTouchDrag={80}
-        autoPlay={false}
+        autoPlay={true}
+        autoPlaySpeed={5000}
         shouldResetAutoplay={false}
-        // Reduce initial load time
-        renderDotsOutside={false}
-        showDots={false}
+        // Show dots for better navigation
+        renderDotsOutside={true}
+        showDots={true}
+        dotListClass="flex justify-center gap-2 mt-6"
         // Improve performance
         rewind={false}
         rewindWithAnimation={false}
@@ -252,7 +275,7 @@ const FeaturedPosts = () => {
           <FeaturedPostCard key={post.slug || index} post={post} />
         ))}
       </Carousel>
-    </div>
+    </motion.div>
   );
 };
 

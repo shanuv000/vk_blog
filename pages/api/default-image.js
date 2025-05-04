@@ -1,7 +1,5 @@
-// API route to generate a default image when the original image is not available
+// API route to redirect to placeholder images when the original image is not available
 // This helps avoid 404 errors for missing images
-
-import { createCanvas } from "canvas";
 
 export default async function handler(req, res) {
   // Set cache headers to improve performance
@@ -9,84 +7,26 @@ export default async function handler(req, res) {
     "Cache-Control",
     "public, immutable, max-age=31536000, stale-while-revalidate=86400"
   );
-  res.setHeader("Content-Type", "image/png");
-
-  // Add Vary header to help with caching
-  res.setHeader("Vary", "Accept");
-
-  // Add debug headers
-  res.setHeader("X-Cache-TTL", "31536000s"); // 1 year
-  res.setHeader("X-Cache-SWR", "86400s"); // 1 day
-  res.setHeader("X-Cache-Type", "STATIC");
-  res.setHeader("X-Image-Type", req.query.type || "featured");
 
   try {
     // Get image type from query parameter (avatar or featured)
     const { type = "featured" } = req.query;
 
-    // Set dimensions based on image type
-    const width = type === "avatar" ? 100 : 800;
-    const height = type === "avatar" ? 100 : 450;
+    // Define placeholder URLs based on type
+    const placeholderUrls = {
+      avatar: "https://via.placeholder.com/100?text=Author",
+      featured: "https://via.placeholder.com/800x450?text=urTechy+Blogs",
+      default: "https://via.placeholder.com/800x450?text=urTechy+Blogs",
+    };
 
-    // Create canvas
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext("2d");
+    // Get the appropriate placeholder URL
+    const redirectUrl = placeholderUrls[type] || placeholderUrls.default;
 
-    // Fill background
-    if (type === "avatar") {
-      // Avatar style - circular with gradient
-      ctx.fillStyle = "#f0f0f0";
-      ctx.fillRect(0, 0, width, height);
-
-      // Create gradient for avatar
-      const gradient = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        0,
-        width / 2,
-        height / 2,
-        width / 2
-      );
-      gradient.addColorStop(0, "#FF4500");
-      gradient.addColorStop(1, "#FF8C00");
-
-      // Draw circle
-      ctx.beginPath();
-      ctx.arc(width / 2, height / 2, width / 2 - 5, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-
-      // Draw placeholder icon
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "40px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("U", width / 2, height / 2);
-    } else {
-      // Featured image style - gradient background with text
-      // Create gradient background
-      const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, "#FF4500");
-      gradient.addColorStop(1, "#FF8C00");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      // Add text
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 40px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("urTechy Blogs", width / 2, height / 2 - 20);
-
-      ctx.font = "24px Arial";
-      ctx.fillText("Image not available", width / 2, height / 2 + 30);
-    }
-
-    // Convert canvas to buffer and send as response
-    const buffer = canvas.toBuffer("image/png");
-    res.send(buffer);
+    // Redirect to the placeholder image
+    res.redirect(302, redirectUrl);
   } catch (error) {
-    console.error("Error generating default image:", error);
-    res.status(500).send("Error generating image");
+    console.error("Error handling default image:", error);
+    // Redirect to a generic placeholder as fallback
+    res.redirect(302, "https://via.placeholder.com/800x450?text=Error");
   }
 }
