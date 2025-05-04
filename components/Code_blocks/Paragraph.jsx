@@ -93,8 +93,10 @@ const Paragraph = ({ obj, modifiedText }) => {
 
   return (
     <p className="mb-6 text-text-primary font-sans text-base md:text-lg leading-relaxed lg:leading-8 lg:my-6">
-      {(obj.children && obj.children.map(renderTextItem)) ||
-        (modifiedText && modifiedText.map(renderTextItem)) || (
+      {(obj.children &&
+        obj.children.map((item, idx) => renderTextItem(item, idx))) ||
+        (modifiedText &&
+          modifiedText.map((item, idx) => renderTextItem(item, idx))) || (
           <div className="text-green-500">Invalid paragraph</div>
         )}
     </p>

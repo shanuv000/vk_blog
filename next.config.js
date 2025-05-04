@@ -4,21 +4,18 @@ const withPWA = require("next-pwa")({
   register: true,
   skipWaiting: true,
   runtimeCaching: [
-    // Add placeholder images caching rule
+    // Local placeholder images caching rule
     {
-      urlPattern: /^https:\/\/via\.placeholder\.com\/.*$/i,
-      handler: "StaleWhileRevalidate",
+      urlPattern: /\/images\/placeholder-.*\.jpg$/i,
+      handler: "CacheFirst",
       options: {
-        cacheName: "placeholder-images",
+        cacheName: "local-placeholder-images",
         expiration: {
-          maxEntries: 20,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          maxEntries: 10,
+          maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year (these are static files)
         },
         cacheableResponse: {
           statuses: [0, 200],
-        },
-        matchOptions: {
-          ignoreSearch: true, // Ignore query parameters for better cache hits
         },
       },
     },
@@ -73,13 +70,13 @@ const withPWA = require("next-pwa")({
       urlPattern: /\/api\/default-image/,
       handler: "CacheFirst",
       options: {
-        cacheName: "default-images",
+        cacheName: "default-images-api",
         expiration: {
-          maxEntries: 20,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          maxEntries: 10,
+          maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year (these are static redirects)
         },
         cacheableResponse: {
-          statuses: [0, 200],
+          statuses: [0, 200, 302, 307], // Include redirect status codes
         },
       },
     },

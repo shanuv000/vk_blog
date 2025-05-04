@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 
-import { AdjacentPostCard } from "../components";
+// Import AdjacentPostCard component with no SSR to avoid hydration issues
+const AdjacentPostCard = dynamic(
+  () => import("../components/AdjacentPostCard"),
+  {
+    ssr: false,
+  }
+);
+
 import { getAdjacentPosts } from "../services";
 import { getDirectAdjacentPosts } from "../services/direct-api";
 
@@ -10,10 +18,14 @@ const AdjacentPosts = ({ createdAt, slug }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Skip initial server-side rendering to avoid hydration mismatch
+    if (typeof window === "undefined") {
+      return;
+    }
+
     const fetchAdjacentPosts = async () => {
       try {
         // Try the direct API first
-        console.log("Fetching adjacent posts with direct API");
         const directResult = await getDirectAdjacentPosts(createdAt, slug);
 
         if (directResult && (directResult.next || directResult.previous)) {
@@ -23,7 +35,6 @@ const AdjacentPosts = ({ createdAt, slug }) => {
         }
 
         // Fall back to the original method if direct API returns no results
-        console.log("Direct API returned no results, trying original method");
         const result = await getAdjacentPosts(createdAt, slug);
         setAdjacentPost(result);
         setDataLoaded(true);
@@ -40,7 +51,6 @@ const AdjacentPosts = ({ createdAt, slug }) => {
     if (createdAt && slug) {
       fetchAdjacentPosts();
     } else {
-      console.warn("Missing createdAt or slug for adjacent posts");
       setAdjacentPost({ next: null, previous: null });
       setDataLoaded(true);
     }

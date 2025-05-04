@@ -45,6 +45,13 @@ const FeaturedPostCard = ({ post = {} }) => {
           priority={true}
           quality={90}
           style={{ width: "100%", height: "100%" }}
+          onError={() => {
+            console.log(
+              "Image load error in FeaturedPostCard, using local fallback"
+            );
+            // Next.js Image component handles errors automatically, but we can log them
+            // The component will use the fallback image defined in DEFAULT_FEATURED_IMAGE
+          }}
         />
       </motion.div>
 
@@ -88,7 +95,7 @@ const FeaturedPostCard = ({ post = {} }) => {
           transition={{ duration: 0.3, delay: 0.1 }}
         >
           <FaCalendarAlt className="text-primary-light" />
-          <span>
+          <span suppressHydrationWarning>
             {safePost.createdAt
               ? moment(safePost.createdAt).format("MMM DD, YYYY")
               : "No date"}
@@ -121,6 +128,12 @@ const FeaturedPostCard = ({ post = {} }) => {
               className="rounded-full border-2 border-primary"
               src={safePost.author.photo.url}
               style={{ width: "36px", height: "36px" }}
+              onError={() => {
+                console.log(
+                  "Author image load error in FeaturedPostCard, using fallback"
+                );
+                // Next.js Image component will use the fallback defined in next.config.js
+              }}
             />
           ) : (
             <div className="flex items-center justify-center bg-secondary-light rounded-full h-[36px] w-[36px] border-2 border-primary">

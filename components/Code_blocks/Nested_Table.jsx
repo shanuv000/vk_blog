@@ -1,8 +1,12 @@
-// Intersection Observer Hook
 "use client";
+
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+
+// Intersection Observer Hook
 const useInView = (options) => {
   const ref = useRef(null);
-  const [inView, setInView] = React.useState(false);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -23,9 +27,6 @@ const useInView = (options) => {
 
   return [ref, inView];
 };
-
-import React, { useRef, useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
 
 const rowVariants = {
   hidden: { opacity: 0, y: 20 },

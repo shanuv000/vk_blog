@@ -58,8 +58,9 @@ const NavbarPostDetails = ({ post }) => {
     : `${rootUrl}${DEFAULT_FEATURED_IMAGE}`;
 
   // Function to handle image URL errors in social sharing
+  // Use a static URL without dynamic timestamps to avoid hydration errors
   const getSafeImageUrl = () => {
-    // If the original URL fails, use the fallback
+    // If the original URL fails, use the local fallback
     if (!hasFeaturedImage) {
       return `${rootUrl}${DEFAULT_FEATURED_IMAGE}`;
     }
@@ -70,18 +71,23 @@ const NavbarPostDetails = ({ post }) => {
       post.featuredImage.url.includes("hygraph.com")
     ) {
       try {
-        // Add a timestamp to bypass cache
-        const url = new URL(post.featuredImage.url);
-        url.searchParams.append("_t", Date.now());
-        return url.toString();
+        // Don't add timestamp to avoid hydration errors
+        return post.featuredImage.url;
       } catch (e) {
         // Keep console.error for production error tracking
         console.error("Error parsing image URL:", e);
-        return FALLBACK_FEATURED_IMAGE;
+        // Use absolute URL to local fallback image
+        return `${rootUrl}${FALLBACK_FEATURED_IMAGE}`;
       }
     }
 
-    return post.featuredImage.url;
+    // For external URLs that might fail, ensure we have a local fallback
+    try {
+      return post.featuredImage.url;
+    } catch (e) {
+      console.error("Error with featured image URL:", e);
+      return `${rootUrl}${FALLBACK_FEATURED_IMAGE}`;
+    }
   };
   const [ref, inView] = useInView({ threshold: 0.1 });
   const controls = useAnimation();
@@ -90,7 +96,7 @@ const NavbarPostDetails = ({ post }) => {
     if (inView) {
       controls.start({ opacity: 1, y: 0 });
     }
-  }, [controls, inView, imageUrl, hasFeaturedImage, post]);
+  }, [controls, inView]);
 
   return (
     <motion.div
@@ -121,8 +127,6 @@ const NavbarPostDetails = ({ post }) => {
           rel="noopener noreferrer"
           href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
             postUrl
-          )}&picture=${encodeURIComponent(
-            getSafeImageUrl()
           )}&quote=${encodeURIComponent(title)}`}
           className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
           title="Share on Facebook"
@@ -137,9 +141,7 @@ const NavbarPostDetails = ({ post }) => {
             title
           )}&url=${encodeURIComponent(
             postUrl
-          )}&via=Onlyblogs_&hashtags=urtechy,blog${`&image=${encodeURIComponent(
-            getSafeImageUrl()
-          )}`}`}
+          )}&via=Onlyblogs_&hashtags=urtechy,blog`}
           className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-gray-800 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
           title="Share on Twitter"
           aria-label="Share on Twitter"
@@ -177,9 +179,7 @@ const NavbarPostDetails = ({ post }) => {
           rel="noopener noreferrer"
           href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
             postUrl
-          )}&description=${encodeURIComponent(
-            title
-          )}&media=${encodeURIComponent(getSafeImageUrl())}`}
+          )}&description=${encodeURIComponent(title)}`}
           className="items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hidden lg:flex"
           title="Share on Pinterest"
           aria-label="Share on Pinterest"

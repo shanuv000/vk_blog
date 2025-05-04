@@ -51,7 +51,13 @@ const PostCard = ({ post = {} }) => {
                 height={450}
                 className="w-full h-full object-cover"
                 wrapperClassName="w-full h-full"
-                placeholderSrc="/placeholder-image.jpg"
+                placeholderSrc="/images/placeholder-featured.jpg"
+                onError={(e) => {
+                  console.log(
+                    "Image load error in PostCard, using local fallback"
+                  );
+                  e.target.src = "/images/placeholder-featured.jpg";
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-50"></div>
             </motion.div>
@@ -65,7 +71,7 @@ const PostCard = ({ post = {} }) => {
         {/* Date badge */}
         <div className="absolute top-4 right-4 bg-primary text-white text-sm px-3 py-1 rounded-full shadow-md flex items-center">
           <FaCalendarAlt className="mr-1" size={12} />
-          <span>
+          <span suppressHydrationWarning>
             {safePost.createdAt
               ? moment(safePost.createdAt).format("MMM DD, YYYY")
               : safePost.publishedAt
@@ -99,6 +105,12 @@ const PostCard = ({ post = {} }) => {
                 width={36}
                 className="rounded-full border-2 border-primary"
                 src={safePost.author.photo.url}
+                onError={() => {
+                  console.log(
+                    "Author image load error in PostCard, using fallback"
+                  );
+                  // Next.js Image component will use the fallback defined in next.config.js
+                }}
               />
             ) : (
               <div className="flex items-center justify-center bg-secondary-light rounded-full h-[36px] w-[36px] border-2 border-primary">

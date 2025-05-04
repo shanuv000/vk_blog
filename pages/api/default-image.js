@@ -1,4 +1,4 @@
-// API route to redirect to placeholder images when the original image is not available
+// API route to redirect to local placeholder images when the original image is not available
 // This helps avoid 404 errors for missing images
 
 export default async function handler(req, res) {
@@ -12,21 +12,21 @@ export default async function handler(req, res) {
     // Get image type from query parameter (avatar or featured)
     const { type = "featured" } = req.query;
 
-    // Define placeholder URLs based on type
+    // Define placeholder URLs based on type (using local images)
     const placeholderUrls = {
-      avatar: "https://via.placeholder.com/100?text=Author",
-      featured: "https://via.placeholder.com/800x450?text=urTechy+Blogs",
-      default: "https://via.placeholder.com/800x450?text=urTechy+Blogs",
+      avatar: "/images/placeholder-avatar.jpg",
+      featured: "/images/placeholder-featured.jpg",
+      default: "/images/placeholder-featured.jpg",
     };
 
     // Get the appropriate placeholder URL
     const redirectUrl = placeholderUrls[type] || placeholderUrls.default;
 
-    // Redirect to the placeholder image
+    // Redirect to the local placeholder image
     res.redirect(302, redirectUrl);
   } catch (error) {
     console.error("Error handling default image:", error);
     // Redirect to a generic placeholder as fallback
-    res.redirect(302, "https://via.placeholder.com/800x450?text=Error");
+    res.redirect(302, "/images/placeholder-featured.jpg");
   }
 }

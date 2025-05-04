@@ -129,7 +129,10 @@ const PostWidget = ({ categories, slug }) => {
                 )}
               </div>
               <div className="flex-grow ml-4">
-                <p className="text-text-secondary text-xs">
+                <p
+                  className="text-text-secondary text-xs"
+                  suppressHydrationWarning
+                >
                   {post.createdAt
                     ? moment(post.createdAt).format("MMM DD, YYYY")
                     : "No date"}

@@ -1,9 +1,7 @@
-// Direct placeholder URLs for better reliability
-export const DEFAULT_AVATAR = "https://via.placeholder.com/100?text=Author";
-export const DEFAULT_FEATURED_IMAGE =
-  "https://via.placeholder.com/800x450?text=urTechy+Blogs";
+// Local placeholder URLs for better reliability
+export const DEFAULT_AVATAR = "/images/placeholder-avatar.jpg";
+export const DEFAULT_FEATURED_IMAGE = "/images/placeholder-featured.jpg";
 
 // Fallback URLs (same as defaults for now)
-export const FALLBACK_AVATAR = "https://via.placeholder.com/100?text=Author";
-export const FALLBACK_FEATURED_IMAGE =
-  "https://via.placeholder.com/800x450?text=urTechy+Blogs";
+export const FALLBACK_AVATAR = "/images/placeholder-avatar.jpg";
+export const FALLBACK_FEATURED_IMAGE = "/images/placeholder-featured.jpg";
