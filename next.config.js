@@ -4,6 +4,24 @@ const withPWA = require("next-pwa")({
   register: true,
   skipWaiting: true,
   runtimeCaching: [
+    // Add placeholder images caching rule
+    {
+      urlPattern: /^https:\/\/via\.placeholder\.com\/.*$/i,
+      handler: "StaleWhileRevalidate",
+      options: {
+        cacheName: "placeholder-images",
+        expiration: {
+          maxEntries: 20,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+        matchOptions: {
+          ignoreSearch: true, // Ignore query parameters for better cache hits
+        },
+      },
+    },
     // API and data requests - use NetworkFirst to prioritize fresh data
     {
       urlPattern: /^https:\/\/ap-south-1\.cdn\.hygraph\.com\/.*$/,

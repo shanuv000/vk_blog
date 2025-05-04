@@ -80,7 +80,24 @@ export default PostDetails;
 // Fetch data at build time
 export async function getStaticProps({ params }) {
   try {
+    console.log(`getStaticProps called for slug: ${params.slug}`);
     const data = await getPostDetails(params.slug);
+
+    // Log detailed information about the result
+    if (!data) {
+      console.error(`No post data returned for slug: ${params.slug}`);
+    } else {
+      console.log(
+        `Successfully fetched post data for slug: ${params.slug}, title: ${data.title}`
+      );
+      // Check for critical fields
+      if (!data.content || !data.content.raw) {
+        console.warn(`Post for slug: ${params.slug} is missing content.raw`);
+      }
+      if (!data.featuredImage) {
+        console.warn(`Post for slug: ${params.slug} is missing featuredImage`);
+      }
+    }
 
     // If no post is found, return null (will be handled by the component)
     if (!data) {
@@ -98,6 +115,7 @@ export async function getStaticProps({ params }) {
     };
   } catch (error) {
     console.error(`Error fetching post details for ${params.slug}:`, error);
+    console.error(`Error stack: ${error.stack}`);
 
     // Return null post instead of failing
     return {

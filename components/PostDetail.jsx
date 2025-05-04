@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { motion, useScroll, useSpring } from "framer-motion";
 import HeadPostDetails from "./HeadPostDetails";
@@ -17,6 +17,24 @@ import {
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
   const hasFetchedData = useRef(true);
+  // Add error state to track rendering errors
+  const [renderError, setRenderError] = useState(null);
+
+  // Add error boundary for content rendering
+  useEffect(() => {
+    if (
+      post &&
+      (!post.content || !post.content.raw || !post.content.raw.children)
+    ) {
+      console.error(
+        `Post ${post.slug} has invalid content structure:`,
+        post.content
+      );
+      setRenderError("Invalid content structure");
+    } else {
+      setRenderError(null);
+    }
+  }, [post]);
 
   // Get data from Context
   useEffect(() => {
@@ -33,6 +51,36 @@ const PostDetail = ({ post }) => {
     damping: 30,
     restDelta: 0.001,
   });
+
+  // Show detailed error information if there's a rendering error
+  if (renderError) {
+    return (
+      <div className="bg-secondary rounded-lg shadow-lg p-6 mb-8">
+        <h2 className="text-xl font-bold text-red-500 mb-4">
+          Error Rendering Post
+        </h2>
+        <p className="mb-4">{renderError}</p>
+        <p className="text-sm text-gray-500">
+          Post ID: {post?.slug || "unknown"}
+          <br />
+          Title: {post?.title || "unknown"}
+        </p>
+      </div>
+    );
+  }
+
+  // If post is null, show a friendly error message
+  if (!post) {
+    return (
+      <div className="bg-secondary rounded-lg shadow-lg p-6 mb-8 text-center">
+        <h2 className="text-2xl font-bold text-primary mb-4">Post Not Found</h2>
+        <p className="mb-4 text-text-primary">
+          Sorry, we couldn't find the post you're looking for. It may have been
+          removed or is temporarily unavailable.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>

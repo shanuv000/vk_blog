@@ -116,7 +116,20 @@ export const getCategories = async () => {
 export const getPostDetails = async (slug) => {
   // Use Apollo Client if enabled
   if (USE_APOLLO) {
-    return apolloHooks.fetchPostDetails(slug);
+    try {
+      const result = await apolloHooks.fetchPostDetails(slug);
+      console.log(
+        `Apollo fetchPostDetails for slug "${slug}" returned:`,
+        result ? "data" : "null"
+      );
+      return result;
+    } catch (apolloError) {
+      console.error(
+        `Apollo fetchPostDetails failed for slug "${slug}":`,
+        apolloError
+      );
+      // Fall back to original implementation
+    }
   }
 
   // Original implementation as fallback
@@ -183,23 +196,33 @@ export const getPostDetails = async (slug) => {
   try {
     console.log(`Fetching post details for slug: ${slug}`);
 
-    // Skip proxy API for server-side rendering
-    // This avoids the URL error during build/SSR
+    // Try direct CDN first with detailed logging
+    try {
+      console.log(`Attempting direct CDN fetch for slug: ${slug}`);
+      const result = await fetchFromCDN(query, { slug });
 
-    // If proxy fails, fall back to direct CDN
-    console.log(
-      `Proxy API failed, falling back to direct CDN for slug: ${slug}`
-    );
-    const result = await fetchFromCDN(query, { slug });
-
-    if (result.post) {
-      return result.post;
+      if (result.post) {
+        console.log(`Successfully fetched post for slug: ${slug} from CDN`);
+        return result.post;
+      } else {
+        console.warn(`CDN returned no post data for slug: ${slug}`);
+      }
+    } catch (cdnError) {
+      console.error(`CDN fetch failed for slug: ${slug}:`, cdnError);
     }
 
     // Try alternative query as a last resort
-    const alternativeResult = await fetchFromCDN(alternativeQuery, { slug });
-    if (alternativeResult.posts && alternativeResult.posts.length > 0) {
-      return alternativeResult.posts[0];
+    console.log(`Trying alternative query for slug: ${slug}`);
+    try {
+      const alternativeResult = await fetchFromCDN(alternativeQuery, { slug });
+      if (alternativeResult.posts && alternativeResult.posts.length > 0) {
+        console.log(`Alternative query succeeded for slug: ${slug}`);
+        return alternativeResult.posts[0];
+      } else {
+        console.warn(`Alternative query returned no results for slug: ${slug}`);
+      }
+    } catch (altError) {
+      console.error(`Alternative query failed for slug: ${slug}:`, altError);
     }
 
     console.log(`All attempts to fetch post for slug: ${slug} failed`);
