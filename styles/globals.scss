@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap");
+/* Import modern fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 html,
 body {
@@ -13,57 +14,51 @@ body {
     border-style: solid;
     border-color: theme("borderColor.DEFAULT", currentColor);
   }
-  // @font-face {
-  //   src: url("/Helvetica-Font/helvetica-light-587ebe5a59211.ttf") format("ttf");
-
-  //   font-family: "Roboto";
-  //   font-weight: 100;
-  // }
 
   overflow-x: hidden;
   overflow-y: auto;
   padding: 0;
   margin: 0;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Inter", sans-serif;
+  color: #333;
+  background-color: theme('colors.secondary-dark');
+
   &:before {
-    content: "";
     content: "";
     width: 100%;
     height: 100vh;
-    //background: linear-gradient(to right bottom, #6d327c, #485DA6, #00a1ba, #01b18e, #32b37b);
-    // background: #D3D3D3;
-
-    // background-image: url("../public/bg.jpg");
-
-    // background-image: url("https://images.pexels.com/photos/2680270/pexels-photo-2680270.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
-
-    // background-image: linear-gradient(
-    //   to right top,
-    //   #051937,
-    //   #004d7a,
-    //   #008793,
-    //   #00bf72,
-    //   #a8eb12
-    // );
-    background: #a8c0ff; /* fallback for old browsers */
-    background: -webkit-linear-gradient(
-      to right,
-      #3f2b96,
-      #a8c0ff
-    ); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(
-      to right,
-      #3f2b96,
-      #a8c0ff
-    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+    background-color: theme('colors.secondary-dark');
     position: fixed;
     left: 0;
     top: 0;
     z-index: -1;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    background-size: cover;
+  }
+}
+
+/* Base styles */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-semibold;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl lg:text-3xl;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+
+  a {
+    @apply text-primary hover:text-primary-dark transition-colors duration-200;
   }
 }
 

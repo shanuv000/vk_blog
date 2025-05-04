@@ -172,15 +172,15 @@ const Header = () => {
     <header
       className={`${
         isVisible ? "top-0" : "-top-24"
-      }  w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 bg-transparent  transition-all duration-300`}
+      } w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 bg-secondary shadow-md transition-all duration-300 fixed`}
     >
       {/* Logo */}
       <div className="flex items-center flex-shrink-0">
         <Link href="/" className="flex items-center">
           <motion.img
-            src="/iconified/apple-touch-icon-144x144.png"
+            src="/iconified/logo4.ico"
             alt="urTechy Blogs Logo"
-            className="h-6 sm:h-8"
+            className="h-7 sm:h-9"
             initial="hidden"
             animate="visible"
             variants={logoVariants}
@@ -191,9 +191,9 @@ const Header = () => {
             animate="visible"
             variants={logoVariants}
           >
-            <span className="text-red-600">ur</span>
-            <span className="text-orange-600">Techy</span>
-            <span className="text-gray-800"> Blogs</span>
+            <span className="text-primary">ur</span>
+            <span className="text-primary-light">Techy</span>
+            <span className="text-text-primary"> Blogs</span>
           </motion.h1>
         </Link>
       </div>
@@ -202,7 +202,7 @@ const Header = () => {
       <div className="lg:hidden">
         <button
           onClick={toggleMobileMenu}
-          className="text-gray-600 hover:text-red-600 focus:outline-none"
+          className="text-text-primary hover:text-primary focus:outline-none"
           aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
@@ -220,8 +220,8 @@ const Header = () => {
             >
               <button
                 onClick={() => handleDropdownToggle(item.name, "desktop")}
-                className={`text-gray-800 hover:text-red-600 px-2 py-2 text-sm font-medium flex items-center transition-colors duration-200 ${
-                  activeDropdowns.desktop === item.name ? "text-red-600" : ""
+                className={`text-text-primary hover:text-primary px-3 py-2 text-sm font-medium flex items-center transition-colors duration-200 ${
+                  activeDropdowns.desktop === item.name ? "text-primary" : ""
                 }`}
                 aria-expanded={activeDropdowns.desktop === item.name}
                 aria-haspopup="true"
@@ -242,7 +242,7 @@ const Header = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 z-50 mt-1 w-56 origin-top-right rounded-lg bg-white p-2 shadow-lg ring-1 ring-gray-200 focus:outline-none max-h-96 overflow-y-auto"
+                    className="absolute right-0 z-50 mt-1 w-56 origin-top-right rounded-lg bg-secondary-light p-2 shadow-lg ring-1 ring-secondary focus:outline-none max-h-96 overflow-y-auto"
                   >
                     <div className="py-1 grid grid-cols-1">
                       {dropdownData[item.name] &&
@@ -257,13 +257,13 @@ const Header = () => {
                                 desktop: null,
                               }))
                             }
-                            className="block px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150"
+                            className="block px-3 py-2 text-sm rounded-md text-text-primary hover:bg-secondary-dark hover:text-primary transition-colors duration-150"
                           >
                             {dropdownItem.name}
                           </Link>
                         ))
                       ) : (
-                        <div className="px-3 py-2 text-sm text-gray-500">
+                        <div className="px-3 py-2 text-sm text-text-secondary">
                           No categories found
                         </div>
                       )}
@@ -276,11 +276,11 @@ const Header = () => {
             <Link
               key={item.key}
               href={item.href}
-              className="text-gray-800 hover:text-red-600 px-2 py-2 text-sm font-medium transition-colors duration-200 flex items-center"
+              className="text-text-primary hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200 flex items-center"
             >
               {item.isLive && isLive ? (
                 <motion.span
-                  className="text-red-500 mr-1"
+                  className="text-primary mr-1"
                   variants={liveTextVariants}
                   animate="pulse"
                 >
@@ -302,7 +302,7 @@ const Header = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+              className="fixed inset-0 bg-black/60 z-40 lg:hidden"
               onClick={toggleMobileMenu}
             />
 
@@ -313,29 +313,29 @@ const Header = () => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
-              className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white shadow-xl z-50 lg:hidden"
+              className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-secondary shadow-xl z-50 lg:hidden"
             >
               <div className="flex flex-col h-full">
                 {/* Drawer Header */}
-                <div className="flex justify-between items-center p-4 border-b border-gray-100">
+                <div className="flex justify-between items-center p-4 border-b border-secondary-light">
                   <Link
                     href="/"
                     onClick={toggleMobileMenu}
                     className="flex items-center"
                   >
                     <img
-                      src="/iconified/apple-touch-icon-144x144.png"
+                      src="/iconified/logo4.ico"
                       alt="Logo"
                       className="h-8"
                     />
                     <h1 className="text-lg font-bold ml-2">
-                      <span className="text-red-600">ur</span>
-                      <span className="text-orange-600">Techy</span>
+                      <span className="text-primary">ur</span>
+                      <span className="text-primary-light">Techy</span>
                     </h1>
                   </Link>
                   <button
                     onClick={toggleMobileMenu}
-                    className="text-gray-600 hover:text-red-600 p-1"
+                    className="text-text-primary hover:text-primary p-1"
                     aria-label="Close menu"
                   >
                     <FaTimes size={20} />
@@ -353,7 +353,7 @@ const Header = () => {
                               onClick={() =>
                                 handleDropdownToggle(item.name, "mobile")
                               }
-                              className="w-full text-left text-gray-800 font-medium py-3 text-base flex items-center justify-between"
+                              className="w-full text-left text-text-primary font-medium py-3 text-base flex items-center justify-between"
                               aria-expanded={
                                 activeDropdowns.mobile === item.name
                               }
@@ -378,7 +378,7 @@ const Header = () => {
                                   transition={{ duration: 0.2 }}
                                   className="overflow-hidden"
                                 >
-                                  <div className="mt-1 pl-4 border-l-2 border-gray-100 space-y-1">
+                                  <div className="mt-1 pl-4 border-l-2 border-secondary-light space-y-1">
                                     {dropdownData[item.name] &&
                                     dropdownData[item.name].length > 0 ? (
                                       dropdownData[item.name].map(
@@ -387,14 +387,14 @@ const Header = () => {
                                             key={index}
                                             href={subItem.href}
                                             onClick={toggleMobileMenu}
-                                            className="block py-2 pl-2 text-sm text-gray-600 hover:text-red-600"
+                                            className="block py-2 pl-2 text-sm text-text-secondary hover:text-primary"
                                           >
                                             {subItem.name}
                                           </Link>
                                         )
                                       )
                                     ) : (
-                                      <div className="py-2 pl-2 text-sm text-gray-500">
+                                      <div className="py-2 pl-2 text-sm text-text-secondary">
                                         No categories found
                                       </div>
                                     )}
@@ -407,11 +407,11 @@ const Header = () => {
                           <Link
                             href={item.href}
                             onClick={toggleMobileMenu}
-                            className="w-full text-gray-800 hover:text-red-600 font-medium py-3 text-base flex items-center"
+                            className="w-full text-text-primary hover:text-primary font-medium py-3 text-base flex items-center"
                           >
                             {item.isLive && isLive ? (
                               <motion.span
-                                className="text-red-500 mr-1"
+                                className="text-primary mr-1"
                                 variants={liveTextVariants}
                                 animate="pulse"
                               >
@@ -421,7 +421,7 @@ const Header = () => {
                             {item.name}
                           </Link>
                         )}
-                        <div className="border-b border-gray-100 mt-1"></div>
+                        <div className="border-b border-secondary-light mt-1"></div>
                       </div>
                     ))}
                   </nav>

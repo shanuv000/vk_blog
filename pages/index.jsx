@@ -47,25 +47,63 @@ export default function Home({ posts }) {
           posts={shuffledPosts.map((post) => post.node)}
         />
       </Head>
-      <div className="container mx-auto px-4 md:px-10 mb-8">
-        <FeaturedPosts />
+      <div className="mb-12">
+        {/* Hero section with featured posts */}
+        <div className="mb-12">
+          <FeaturedPosts />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Main content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Posts column */}
           <div className="lg:col-span-8 col-span-1">
-            {shuffledPosts.map((post, index) => (
-              <PostCard key={post.node.slug || index} post={post.node} />
-            ))}
+            <h2 className="text-2xl md:text-3xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
+              Latest Articles
+            </h2>
+            <div className="space-y-8">
+              {shuffledPosts.map((post, index) => (
+                <PostCard key={post.node.slug || index} post={post.node} />
+              ))}
+            </div>
           </div>
+
+          {/* Sidebar */}
           <div className="lg:col-span-4 col-span-1">
-            <div className="lg:sticky relative top-8">
-              {isLiveScore && !isMobile && <LiveMatch />}{" "}
-              {/* Conditionally render LiveMatch */}
-              <PostWidget />
-              <Categories />
+            <div className="lg:sticky relative top-8 space-y-8">
+              {/* Live cricket widget */}
+              {isLiveScore && !isMobile && (
+                <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
+                  <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
+                    Live Cricket
+                  </h3>
+                  <div className="p-4">
+                    <LiveMatch />
+                  </div>
+                </div>
+              )}
+
+              {/* Recent posts widget */}
+              <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
+                <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
+                  Recent Posts
+                </h3>
+                <div className="p-4">
+                  <PostWidget />
+                </div>
+              </div>
+
+              {/* Categories widget */}
+              <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
+                <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
+                  Categories
+                </h3>
+                <div className="p-4">
+                  <Categories />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        {/* <Footer /> */}
       </div>
     </>
   );

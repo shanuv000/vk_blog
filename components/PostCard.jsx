@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaCalendarAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const PostCard = ({ post = {} }) => {
@@ -25,85 +25,47 @@ const PostCard = ({ post = {} }) => {
 
   return (
     <motion.div
-      className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8 overflow-hidden"
+      className="bg-secondary rounded-lg overflow-hidden shadow-lg mb-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       whileHover={{
         y: -5,
-        boxShadow:
-          "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+        transition: { duration: 0.3 },
       }}
     >
-      <div className="relative shadow-md mb-6 overflow-hidden rounded-t-lg lg:rounded-lg">
+      <div className="relative overflow-hidden">
         {safePost.featuredImage?.url ? (
-          <motion.div
-            className="w-full"
-            style={{ maxHeight: "500px", overflow: "hidden" }}
-            whileHover={{ scale: 1.03 }}
-            transition={{ duration: 0.3 }}
-          >
-            <LazyLoadImage
-              src={safePost.featuredImage.url}
-              alt={safePost.title || "Featured image"}
-              effect="blur"
-              width={800}
-              height={600}
-              className="w-full"
-              wrapperClassName="w-full"
-              style={{ width: "100%", objectFit: "cover" }}
-              placeholderSrc="/placeholder-image.jpg"
-            />
-          </motion.div>
+          <Link href={`/post/${safePost.slug}`}>
+            <motion.div
+              className="w-full aspect-[16/9]"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
+              <LazyLoadImage
+                src={safePost.featuredImage.url}
+                alt={safePost.title || "Featured image"}
+                effect="blur"
+                width={800}
+                height={450}
+                className="w-full h-full object-cover"
+                wrapperClassName="w-full h-full"
+                placeholderSrc="/placeholder-image.jpg"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-50"></div>
+            </motion.div>
+          </Link>
         ) : (
-          <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-            <p className="text-gray-500">No image available</p>
+          <div className="w-full aspect-[16/9] bg-secondary-light flex items-center justify-center">
+            <p className="text-text-secondary">No image available</p>
           </div>
         )}
-      </div>
 
-      <motion.h1
-        className="text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl font-semibold"
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.2 }}
-      >
-        <Link href={`/post/${safePost.slug}`}>{safePost.title}</Link>
-      </motion.h1>
-      <div className="block lg:flex text-center items-center justify-center mb-8 w-full">
-        <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8">
-          {safePost.author?.photo?.url ? (
-            <Image
-              alt={safePost.author.name || "Author"}
-              height={30}
-              width={30}
-              className="align-middle rounded-full"
-              src={safePost.author.photo.url}
-            />
-          ) : (
-            <div className="flex items-center justify-center bg-gray-200 rounded-full h-[30px] w-[30px]">
-              <FaUser className="text-gray-500" size={16} />
-            </div>
-          )}
-          <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg">
-            {safePost.author?.name || "Anonymous"}
-          </p>
-        </div>
-        <div className="font-medium text-gray-700">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 inline mr-2 text-pink-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          <span className="align-middle">
+        {/* Date badge */}
+        <div className="absolute top-4 right-4 bg-primary text-white text-sm px-3 py-1 rounded-full shadow-md flex items-center">
+          <FaCalendarAlt className="mr-1" size={12} />
+          <span>
             {safePost.createdAt
               ? moment(safePost.createdAt).format("MMM DD, YYYY")
               : safePost.publishedAt
@@ -112,24 +74,57 @@ const PostCard = ({ post = {} }) => {
           </span>
         </div>
       </div>
-      <p className="text-center text-lg text-gray-700 font-normal px-4 lg:px-20 mb-8 truncate md:text-clip">
-        {safePost.excerpt}
-      </p>
-      <div className="text-center">
+
+      <div className="p-6">
         <Link href={`/post/${safePost.slug}`}>
-          <motion.span
-            className="inline-block bg-pink-600 text-lg font-medium rounded-full text-white px-8 py-3 cursor-pointer"
-            whileHover={{
-              scale: 1.05,
-              backgroundColor: "#ec4899",
-              boxShadow: "0 10px 15px -3px rgba(236, 72, 153, 0.3)",
-            }}
-            whileTap={{ scale: 0.95 }}
+          <motion.h2
+            className="text-xl md:text-2xl font-heading font-semibold mb-4 text-text-primary hover:text-primary transition-colors duration-200"
+            whileHover={{ x: 4 }}
             transition={{ duration: 0.2 }}
           >
-            Continue Reading
-          </motion.span>
+            {safePost.title}
+          </motion.h2>
         </Link>
+
+        <p className="text-text-secondary mb-6 line-clamp-3">
+          {safePost.excerpt}
+        </p>
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            {safePost.author?.photo?.url ? (
+              <Image
+                alt={safePost.author.name || "Author"}
+                height={36}
+                width={36}
+                className="rounded-full border-2 border-primary"
+                src={safePost.author.photo.url}
+              />
+            ) : (
+              <div className="flex items-center justify-center bg-secondary-light rounded-full h-[36px] w-[36px] border-2 border-primary">
+                <FaUser className="text-text-secondary" size={16} />
+              </div>
+            )}
+            <p className="ml-2 text-text-secondary font-medium">
+              {safePost.author?.name || "Anonymous"}
+            </p>
+          </div>
+
+          <Link href={`/post/${safePost.slug}`}>
+            <motion.span
+              className="inline-block bg-primary text-white px-4 py-2 rounded-md font-medium text-sm"
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "#B81D24",
+                boxShadow: "0 10px 15px -3px rgba(229, 9, 20, 0.3)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              Read More
+            </motion.span>
+          </Link>
+        </div>
       </div>
     </motion.div>
   );

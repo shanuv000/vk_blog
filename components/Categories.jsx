@@ -6,14 +6,14 @@ import { getDirectCategories } from "../services/direct-api";
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Use direct API for more reliable data fetching
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
         const result = await getDirectCategories();
-        
+
         if (result && result.length > 0) {
           setCategories(result);
         } else {
@@ -41,7 +41,7 @@ const Categories = () => {
         setLoading(false);
       }
     };
-    
+
     fetchCategories();
   }, []);
 
@@ -70,78 +70,54 @@ const Categories = () => {
   // Show loading state
   if (loading) {
     return (
-      <motion.div
-        className="bg-white shadow-lg rounded-lg p-8 mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h3 className="text-xl mb-8 font-semibold border-b pb-4">Categories</h3>
-        <div className="flex justify-center items-center">
-          <div className="animate-pulse w-full">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <div
-                key={item}
-                className="h-4 bg-gray-200 rounded mb-3"
-                style={{ width: `${Math.floor(Math.random() * 40) + 60}%` }}
-              />
-            ))}
-          </div>
-        </div>
-      </motion.div>
+      <div className="animate-pulse w-full">
+        {[1, 2, 3, 4, 5].map((item) => (
+          <div
+            key={item}
+            className="h-4 bg-secondary-light rounded mb-3"
+            style={{ width: `${Math.floor(Math.random() * 40) + 60}%` }}
+          />
+        ))}
+      </div>
     );
   }
 
   // If no categories available
   if (!categories || categories.length === 0) {
     return (
-      <motion.div
-        className="bg-white shadow-lg rounded-lg p-8 mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h3 className="text-xl mb-8 font-semibold border-b pb-4">Categories</h3>
-        <p className="text-center py-4">No categories found</p>
-      </motion.div>
+      <p className="text-center py-4 text-text-secondary">
+        No categories found
+      </p>
     );
   }
 
   return (
     <motion.div
-      className="bg-white shadow-lg rounded-lg p-8 mb-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-2"
     >
-      <motion.h3
-        className="text-xl mb-8 font-semibold border-b pb-4"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        Categories
-      </motion.h3>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {categories.map((category) => (
-          <motion.div
-            key={category.slug || category.name}
-            variants={itemVariants}
-            whileHover={{ x: 5, color: "#ec4899" }}
-            transition={{ duration: 0.2 }}
-          >
-            <Link href={`/category/${category.slug}`}>
-              <span className="cursor-pointer block pb-3 mb-3">
-                {category.name.toUpperCase()}
-              </span>
-            </Link>
-          </motion.div>
-        ))}
-      </motion.div>
+      {categories.map((category) => (
+        <motion.div
+          key={category.slug || category.name}
+          variants={itemVariants}
+          className="group"
+        >
+          <Link href={`/category/${category.slug}`}>
+            <div className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-secondary-light transition-colors duration-200 group-hover:text-primary">
+              <span className="font-medium">{category.name}</span>
+              <motion.span
+                initial={{ x: 0 }}
+                whileHover={{ x: 3 }}
+                className="text-text-secondary group-hover:text-primary"
+              >
+                →
+              </motion.span>
+            </div>
+          </Link>
+        </motion.div>
+      ))}
     </motion.div>
   );
 };

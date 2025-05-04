@@ -42,11 +42,13 @@ const Layout = memo(({ children }) => {
   return (
     <>
       <DataProvider>
-        <main className="scroll-smooth">
+        <main className="scroll-smooth bg-secondary-dark text-text-primary min-h-screen">
           <Header />
           <div className="pt-24 sm:pt-28">
-            {children}
-            <div className="sm:container mx-auto px-4 lg:px-10 mb-4 lg:mb-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              {children}
+            </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 lg:mb-8">
               <Footer />
             </div>
           </div>
