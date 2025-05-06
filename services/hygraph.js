@@ -1,8 +1,12 @@
 import { GraphQLClient, gql } from "graphql-request";
 
 // API endpoints
-export const HYGRAPH_CONTENT_API = process.env.NEXT_PUBLIC_HYGRAPH_CONTENT_API;
-export const HYGRAPH_CDN_API = process.env.NEXT_PUBLIC_HYGRAPH_CDN_API;
+export const HYGRAPH_CONTENT_API =
+  process.env.NEXT_PUBLIC_HYGRAPH_CONTENT_API ||
+  "https://api-ap-south-1.hygraph.com/v2/cky5wgpym15ym01z44tk90zeb/master";
+export const HYGRAPH_CDN_API =
+  process.env.NEXT_PUBLIC_HYGRAPH_CDN_API ||
+  "https://ap-south-1.cdn.hygraph.com/content/cky5wgpym15ym01z44tk90zeb/master";
 export const HYGRAPH_AUTH_TOKEN = process.env.HYGRAPH_AUTH_TOKEN;
 
 // Determine if we're running in the browser

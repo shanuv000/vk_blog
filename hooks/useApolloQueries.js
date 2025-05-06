@@ -53,6 +53,8 @@ export const POST_DETAILS_QUERY = gql`
       excerpt
       featuredImage {
         url
+        width
+        height
       }
       author {
         name
@@ -62,9 +64,21 @@ export const POST_DETAILS_QUERY = gql`
         }
       }
       createdAt
+      publishedAt
       slug
       content {
         raw
+        json
+        references {
+          __typename
+          ... on Asset {
+            id
+            url
+            mimeType
+            width
+            height
+          }
+        }
       }
       categories {
         name
@@ -360,6 +374,8 @@ export const fetchPostDetails = async (slug) => {
           excerpt
           featuredImage {
             url
+            width
+            height
           }
           author {
             name
@@ -369,9 +385,21 @@ export const fetchPostDetails = async (slug) => {
             }
           }
           createdAt
+          publishedAt
           slug
           content {
             raw
+            json
+            references {
+              __typename
+              ... on Asset {
+                id
+                url
+                mimeType
+                width
+                height
+              }
+            }
           }
           categories {
             name

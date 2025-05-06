@@ -129,6 +129,8 @@ export default async function handler(req, res) {
               createdAt
               featuredImage {
                 url
+                width
+                height
               }
               author {
                 name
@@ -259,6 +261,8 @@ export default async function handler(req, res) {
                 createdAt
                 featuredImage {
                   url
+                  width
+                  height
                 }
                 author {
                   name
