@@ -7,7 +7,6 @@ import Navbar_post_details from "./Social_post_details";
 import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
 import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
-import RichTextRenderer from "./RichTextRenderer";
 import {
   DEFAULT_AVATAR,
   DEFAULT_FEATURED_IMAGE,
@@ -205,13 +204,7 @@ const PostDetail = ({ post }) => {
             </ErrorBoundary>
 
             <div className="prose prose-lg max-w-none mt-8 text-text-primary">
-              {post.content?.json ? (
-                <RichTextRenderer
-                  content={post.content.json}
-                  references={post.content.references || []}
-                />
-              ) : post.content?.raw?.children ? (
-                // Fallback to old rendering method if json format is not available
+              {post.content?.raw?.children ? (
                 post.content.raw.children.map((typeObj, index) => {
                   const children = typeObj.children.map((item, itemindex) =>
                     getContentFragment(itemindex, item.text, item)
