@@ -71,13 +71,11 @@ export const POST_DETAILS_QUERY = gql`
         json
         references {
           __typename
-          ... on Asset {
-            id
-            url
-            mimeType
-            width
-            height
-          }
+          id
+          url
+          mimeType
+          width
+          height
         }
       }
       categories {
@@ -407,13 +405,11 @@ export const fetchPostDetails = async (slug) => {
             json
             references {
               __typename
-              ... on Asset {
-                id
-                url
-                mimeType
-                width
-                height
-              }
+              id
+              url
+              mimeType
+              width
+              height
             }
           }
           categories {

@@ -297,13 +297,12 @@ const GET_POST_DETAILS = gql`
       content {
         json
         references {
-          ... on Asset {
-            id
-            url
-            mimeType
-            width
-            height
-          }
+          __typename
+          id
+          url
+          mimeType
+          width
+          height
         }
       }
       categories {
