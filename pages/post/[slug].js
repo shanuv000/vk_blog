@@ -90,10 +90,35 @@ export async function getStaticProps({ params }) {
       console.log(
         `Successfully fetched post data for slug: ${params.slug}, title: ${data.title}`
       );
+
+      // Log the structure of the post data
+      console.log(`Post data structure: ${Object.keys(data).join(", ")}`);
+
       // Check for critical fields
-      if (!data.content || !data.content.raw) {
-        console.warn(`Post for slug: ${params.slug} is missing content.raw`);
+      if (!data.content) {
+        console.warn(
+          `Post for slug: ${params.slug} is missing content property entirely`
+        );
+      } else {
+        console.log(
+          `Content structure: ${Object.keys(data.content).join(", ")}`
+        );
+
+        // Check for raw and json content
+        if (!data.content.raw && !data.content.json) {
+          console.warn(
+            `Post for slug: ${params.slug} is missing both content.raw and content.json`
+          );
+        }
+
+        // Check for references
+        if (data.content.references) {
+          console.log(`References count: ${data.content.references.length}`);
+        } else {
+          console.warn(`Post for slug: ${params.slug} has no references array`);
+        }
       }
+
       if (!data.featuredImage) {
         console.warn(`Post for slug: ${params.slug} is missing featuredImage`);
       }
@@ -106,6 +131,38 @@ export async function getStaticProps({ params }) {
         // Shorter revalidation time for missing posts
         revalidate: 60,
       };
+    }
+
+    // Ensure the content structure is valid
+    if (data.content) {
+      // If we have json content but it's a string, try to parse it
+      if (data.content.json && typeof data.content.json === "string") {
+        try {
+          data.content.json = JSON.parse(data.content.json);
+          console.log(`Successfully parsed content.json string to object`);
+        } catch (parseError) {
+          console.error(`Failed to parse content.json string:`, parseError);
+        }
+      }
+
+      // If we have raw content but it's a string, try to parse it
+      if (data.content.raw && typeof data.content.raw === "string") {
+        try {
+          data.content.raw = JSON.parse(data.content.raw);
+          console.log(`Successfully parsed content.raw string to object`);
+        } catch (parseError) {
+          console.error(`Failed to parse content.raw string:`, parseError);
+        }
+      }
+
+      // Ensure references is always an array
+      if (!data.content.references) {
+        data.content.references = [];
+        console.log(`Added empty references array to content`);
+      } else if (!Array.isArray(data.content.references)) {
+        console.warn(`References is not an array, converting to array`);
+        data.content.references = Object.values(data.content.references);
+      }
     }
 
     return {

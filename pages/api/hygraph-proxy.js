@@ -20,6 +20,10 @@ const HYGRAPH_CONTENT_API =
   process.env.NEXT_PUBLIC_HYGRAPH_CONTENT_API ||
   "https://api-ap-south-1.hygraph.com/v2/cky5wgpym15ym01z44tk90zeb/master";
 
+// Log the API endpoints being used
+console.log("[Hygraph Proxy] Using CDN API:", HYGRAPH_CDN_API);
+console.log("[Hygraph Proxy] Using Content API:", HYGRAPH_CONTENT_API);
+
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== "POST") {

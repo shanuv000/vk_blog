@@ -77,11 +77,25 @@ const PostWidget = ({ categories, slug }) => {
 
   // Determine which posts to show based on props
   const posts = useMemo(() => {
+    let result;
     if (slug) {
-      return similarPosts;
+      result = similarPosts;
     } else {
-      return recentPosts;
+      result = recentPosts;
     }
+
+    // Ensure posts is always an array
+    if (!result) {
+      return [];
+    }
+
+    // Convert object to array if needed (fixes "Expected array data but received: object" error)
+    if (!Array.isArray(result) && typeof result === "object") {
+      console.log("Converting posts object to array:", result);
+      return Object.values(result);
+    }
+
+    return result;
   }, [slug, similarPosts, recentPosts]);
 
   // Loading state

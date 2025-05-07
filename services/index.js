@@ -122,7 +122,19 @@ export const getPostDetails = async (slug) => {
         `Apollo fetchPostDetails for slug "${slug}" returned:`,
         result ? "data" : "null"
       );
-      return result;
+
+      // If we got a result, validate it has the necessary content structure
+      if (result) {
+        if (!result.content) {
+          console.warn(`Post for slug "${slug}" is missing content property`);
+        } else {
+          console.log(
+            `Content structure for "${slug}":`,
+            Object.keys(result.content).join(", ")
+          );
+        }
+        return result;
+      }
     } catch (apolloError) {
       console.error(
         `Apollo fetchPostDetails failed for slug "${slug}":`,
@@ -133,7 +145,7 @@ export const getPostDetails = async (slug) => {
   }
 
   // Original implementation as fallback
-  // Define the query to fetch post details
+  // Define the query to fetch post details with updated structure
   const query = gql`
     query GetPostDetails($slug: String!) {
       post(where: { slug: $slug }) {
@@ -154,6 +166,17 @@ export const getPostDetails = async (slug) => {
         slug
         content {
           raw
+          json
+          references {
+            __typename
+            ... on Asset {
+              id
+              url
+              mimeType
+              width
+              height
+            }
+          }
         }
         categories {
           name
@@ -184,6 +207,45 @@ export const getPostDetails = async (slug) => {
         slug
         content {
           raw
+          json
+          references {
+            __typename
+            ... on Asset {
+              id
+              url
+              mimeType
+              width
+              height
+            }
+          }
+        }
+        categories {
+          name
+          slug
+        }
+      }
+    }
+  `;
+
+  // Simplified query as a last resort
+  const simplifiedQuery = gql`
+    query GetSimplifiedPostDetails($slug: String!) {
+      post(where: { slug: $slug }) {
+        title
+        excerpt
+        featuredImage {
+          url
+        }
+        author {
+          name
+          photo {
+            url
+          }
+        }
+        createdAt
+        slug
+        content {
+          raw
         }
         categories {
           name
@@ -203,15 +265,27 @@ export const getPostDetails = async (slug) => {
 
       if (result.post) {
         console.log(`Successfully fetched post for slug: ${slug} from CDN`);
+        // Log content structure to help debug
+        if (result.post.content) {
+          console.log(
+            `Content structure: ${Object.keys(result.post.content).join(", ")}`
+          );
+          if (result.post.content.references) {
+            console.log(
+              `References count: ${result.post.content.references.length}`
+            );
+          }
+        }
         return result.post;
       } else {
         console.warn(`CDN returned no post data for slug: ${slug}`);
       }
     } catch (cdnError) {
       console.error(`CDN fetch failed for slug: ${slug}:`, cdnError);
+      console.error(`Error details:`, cdnError.message);
     }
 
-    // Try alternative query as a last resort
+    // Try alternative query as a second attempt
     console.log(`Trying alternative query for slug: ${slug}`);
     try {
       const alternativeResult = await fetchFromCDN(alternativeQuery, { slug });
@@ -225,10 +299,28 @@ export const getPostDetails = async (slug) => {
       console.error(`Alternative query failed for slug: ${slug}:`, altError);
     }
 
+    // Try simplified query as a last resort
+    console.log(`Trying simplified query for slug: ${slug}`);
+    try {
+      const simplifiedResult = await fetchFromCDN(simplifiedQuery, { slug });
+      if (simplifiedResult.post) {
+        console.log(`Simplified query succeeded for slug: ${slug}`);
+        return simplifiedResult.post;
+      } else {
+        console.warn(`Simplified query returned no results for slug: ${slug}`);
+      }
+    } catch (simplifiedError) {
+      console.error(
+        `Simplified query failed for slug: ${slug}:`,
+        simplifiedError
+      );
+    }
+
     console.log(`All attempts to fetch post for slug: ${slug} failed`);
     return null;
   } catch (error) {
     console.error(`Error fetching post details for slug: ${slug}:`, error);
+    console.error(`Error stack:`, error.stack);
     return null;
   }
 };

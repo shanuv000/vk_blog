@@ -24,15 +24,16 @@ function MyApp({ Component, pageProps }) {
       console.error("Error preloading carousel:", err)
     );
 
-    // Preload the carousel styles
+    // Load the carousel styles properly
     const styleLink = document.createElement("link");
-    styleLink.rel = "preload";
-    styleLink.as = "style";
+    styleLink.rel = "stylesheet"; // Changed from preload to stylesheet
     styleLink.href = "/react-multi-carousel/lib/styles.css";
     document.head.appendChild(styleLink);
 
     return () => {
-      document.head.removeChild(styleLink);
+      if (styleLink.parentNode) {
+        document.head.removeChild(styleLink);
+      }
     };
   }, []);
 
@@ -58,8 +59,8 @@ function MyApp({ Component, pageProps }) {
           />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-          {/* Preload default images */}
-          <link rel="preload" as="image" href={DEFAULT_FEATURED_IMAGE} />
+          {/* Default images - using prefetch instead of preload */}
+          <link rel="prefetch" href={DEFAULT_FEATURED_IMAGE} />
 
           {/* Preconnect to image domains */}
           <link
@@ -72,10 +73,16 @@ function MyApp({ Component, pageProps }) {
             href="https://media.graphassets.com"
             crossOrigin="anonymous"
           />
+          <link
+            rel="preconnect"
+            href="https://ap-south-1.graphassets.com"
+            crossOrigin="anonymous"
+          />
 
           {/* Resource hints for faster loading */}
           <link rel="dns-prefetch" href="https://ap-south-1.cdn.hygraph.com" />
           <link rel="dns-prefetch" href="https://media.graphassets.com" />
+          <link rel="dns-prefetch" href="https://ap-south-1.graphassets.com" />
 
           {/* Preconnect to Google Analytics */}
           <link rel="preconnect" href="https://www.googletagmanager.com" />
@@ -85,16 +92,8 @@ function MyApp({ Component, pageProps }) {
         {/* Microsoft Clarity - load after page interaction */}
         <Script
           id="clarity-script"
-          strategy="lazyOnload"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "o2yidwokf0");
-            `,
-          }}
+          strategy="afterInteraction" // Changed from lazyOnload to afterInteraction
+          src="https://www.clarity.ms/tag/o2yidwokf0"
         />
 
         <AnalyticsProvider measurementId={gaId}>

@@ -61,7 +61,26 @@ const useFetchData = (url, extractData = (data) => data, initialState = []) => {
       ) {
         console.warn("Expected array data but received:", typeof fetchedData);
         // Convert to array if possible or use empty array
-        fetchedData = Array.isArray(fetchedData) ? fetchedData : [];
+        if (typeof fetchedData === "object") {
+          // Try to convert object to array if it has numeric keys
+          const hasNumericKeys = Object.keys(fetchedData).some(
+            (key) => !isNaN(parseInt(key))
+          );
+          if (hasNumericKeys) {
+            fetchedData = Object.values(fetchedData);
+          } else {
+            // If it's an object with data property that's an array, use that
+            if (fetchedData.data && Array.isArray(fetchedData.data)) {
+              fetchedData = fetchedData.data;
+            } else {
+              // Wrap the object in an array as last resort
+              fetchedData = [fetchedData];
+            }
+          }
+        } else {
+          // Default to empty array if conversion not possible
+          fetchedData = [];
+        }
       }
 
       setData(fetchedData || initialState);

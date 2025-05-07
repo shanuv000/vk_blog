@@ -107,8 +107,17 @@ export const getDirectFeaturedPosts = async () => {
   try {
     const data = await fetchDirectApi("featuredPosts");
 
+    // Ensure we have an array of posts
+    let posts = data.posts || [];
+
+    // Convert object to array if needed
+    if (!Array.isArray(posts) && typeof posts === "object") {
+      console.log("Converting posts object to array in getDirectFeaturedPosts");
+      posts = Object.values(posts);
+    }
+
     // Process posts to ensure they have width and height
-    return (data.posts || []).map((post) => ({
+    return posts.map((post) => ({
       ...post,
       featuredImage: post.featuredImage
         ? {
@@ -136,7 +145,19 @@ export const getDirectFeaturedPosts = async () => {
 export const getDirectRecentPosts = async () => {
   try {
     const data = await fetchDirectApi("recentPosts");
-    return data.posts || [];
+
+    // Ensure we return an array
+    if (!data.posts) {
+      return [];
+    }
+
+    // Convert object to array if needed
+    if (!Array.isArray(data.posts) && typeof data.posts === "object") {
+      console.log("Converting posts object to array in getDirectRecentPosts");
+      return Object.values(data.posts);
+    }
+
+    return data.posts;
   } catch (error) {
     console.error("Error fetching recent posts directly:", error);
     return [];
@@ -228,7 +249,18 @@ export const getDirectSimilarPosts = async (slug, categories) => {
     // Log the response for debugging
     console.log("Similar posts response:", data);
 
-    return data.posts || [];
+    // Ensure we return an array
+    if (!data.posts) {
+      return [];
+    }
+
+    // Convert object to array if needed
+    if (!Array.isArray(data.posts) && typeof data.posts === "object") {
+      console.log("Converting posts object to array in getDirectSimilarPosts");
+      return Object.values(data.posts);
+    }
+
+    return data.posts;
   } catch (error) {
     console.error("Error fetching similar posts directly:", error);
     return [];

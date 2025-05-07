@@ -53,6 +53,8 @@ export const POST_DETAILS_QUERY = gql`
       excerpt
       featuredImage {
         url
+        width
+        height
       }
       author {
         name
@@ -62,9 +64,21 @@ export const POST_DETAILS_QUERY = gql`
         }
       }
       createdAt
+      publishedAt
       slug
       content {
         raw
+        json
+        references {
+          __typename
+          ... on Asset {
+            id
+            url
+            mimeType
+            width
+            height
+          }
+        }
       }
       categories {
         name
@@ -341,6 +355,7 @@ export const fetchPosts = async () => {
 
 export const fetchPostDetails = async (slug) => {
   try {
+    console.log(`Fetching post details for slug: ${slug} using Apollo Client`);
     const client = getApolloClient();
     const { data } = await client.query({
       query: POST_DETAILS_QUERY,
@@ -348,8 +363,22 @@ export const fetchPostDetails = async (slug) => {
       fetchPolicy: "network-only", // For SSR, always fetch fresh data
     });
 
-    if (data.post) {
+    if (data && data.post) {
+      console.log(`Successfully fetched post data for slug: ${slug}`);
+      // Log content structure to help debug
+      if (data.post.content) {
+        console.log(
+          `Content structure: ${Object.keys(data.post.content).join(", ")}`
+        );
+        if (data.post.content.references) {
+          console.log(
+            `References count: ${data.post.content.references.length}`
+          );
+        }
+      }
       return data.post;
+    } else {
+      console.log(`No post found for slug: ${slug}, trying alternative query`);
     }
 
     // If post not found, try an alternative query
@@ -360,10 +389,67 @@ export const fetchPostDetails = async (slug) => {
           excerpt
           featuredImage {
             url
+            width
+            height
           }
           author {
             name
             bio
+            photo {
+              url
+            }
+          }
+          createdAt
+          publishedAt
+          slug
+          content {
+            raw
+            json
+            references {
+              __typename
+              ... on Asset {
+                id
+                url
+                mimeType
+                width
+                height
+              }
+            }
+          }
+          categories {
+            name
+            slug
+          }
+        }
+      }
+    `;
+
+    const { data: alternativeData } = await client.query({
+      query: ALTERNATIVE_QUERY,
+      variables: { slug },
+      fetchPolicy: "network-only",
+    });
+
+    if (
+      alternativeData &&
+      alternativeData.posts &&
+      alternativeData.posts.length > 0
+    ) {
+      console.log(`Found post using alternative query for slug: ${slug}`);
+      return alternativeData.posts[0];
+    }
+
+    // If both queries fail, try a simplified query as last resort
+    const SIMPLIFIED_QUERY = gql`
+      query GetSimplifiedPostBySlug($slug: String!) {
+        post(where: { slug: $slug }) {
+          title
+          excerpt
+          featuredImage {
+            url
+          }
+          author {
+            name
             photo {
               url
             }
@@ -381,19 +467,36 @@ export const fetchPostDetails = async (slug) => {
       }
     `;
 
-    const { data: alternativeData } = await client.query({
-      query: ALTERNATIVE_QUERY,
-      variables: { slug },
-      fetchPolicy: "network-only",
-    });
+    try {
+      console.log(`Trying simplified query for slug: ${slug}`);
+      const { data: simplifiedData } = await client.query({
+        query: SIMPLIFIED_QUERY,
+        variables: { slug },
+        fetchPolicy: "network-only",
+      });
 
-    if (alternativeData.posts && alternativeData.posts.length > 0) {
-      return alternativeData.posts[0];
+      if (simplifiedData && simplifiedData.post) {
+        console.log(`Found post using simplified query for slug: ${slug}`);
+        return simplifiedData.post;
+      }
+    } catch (simplifiedError) {
+      console.error(
+        `Simplified query failed for slug: ${slug}:`,
+        simplifiedError
+      );
     }
 
+    console.log(`All queries failed for slug: ${slug}`);
     return null;
   } catch (error) {
     console.error(`Error fetching post details for slug: ${slug}:`, error);
+    console.error(`Error details:`, error.message);
+    if (error.graphQLErrors) {
+      console.error(`GraphQL Errors:`, error.graphQLErrors);
+    }
+    if (error.networkError) {
+      console.error(`Network Error:`, error.networkError);
+    }
     return null;
   }
 };

@@ -4,9 +4,10 @@ import { motion, useScroll, useSpring } from "framer-motion";
 import dynamic from "next/dynamic";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Social_post_details";
-import { getContentFragment } from "./Code_blocks/PostCodeBlocks";
+
 import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
+import RichTextRenderer from "./RichTextRenderer";
 import {
   DEFAULT_AVATAR,
   DEFAULT_FEATURED_IMAGE,
@@ -28,18 +29,135 @@ const PostDetail = ({ post }) => {
   // Add error state to track rendering errors
   const [renderError, setRenderError] = useState(null);
 
-  // Add error boundary for content rendering
+  // Enhanced error boundary for content rendering with more detailed logging
   useEffect(() => {
-    if (
-      post &&
-      (!post.content || !post.content.raw || !post.content.raw.children)
-    ) {
-      console.error(
-        `Post ${post.slug} has invalid content structure:`,
-        post.content
-      );
-      setRenderError("Invalid content structure");
-    } else {
+    if (post) {
+      console.log(`Post ${post.slug} received for rendering`);
+
+      // Log basic post structure
+      console.log(`Post structure: ${Object.keys(post).join(", ")}`);
+
+      // Check if content exists
+      if (!post.content) {
+        console.error(`Post ${post.slug} has no content`);
+        setRenderError("No content available");
+        return;
+      }
+
+      // Log content structure
+      console.log(`Content structure: ${Object.keys(post.content).join(", ")}`);
+
+      try {
+        // Safely log a sample of the content
+        const contentSample =
+          JSON.stringify(post.content).substring(0, 200) + "...";
+        console.log(`Content sample: ${contentSample}`);
+      } catch (e) {
+        console.error(`Error stringifying content: ${e.message}`);
+      }
+
+      // Check for json content
+      if (post.content.json) {
+        console.log(
+          `Post ${post.slug} has json content type:`,
+          typeof post.content.json
+        );
+
+        // Try to safely inspect the json content
+        try {
+          if (typeof post.content.json === "object") {
+            const keys = Object.keys(post.content.json);
+            console.log(`JSON content keys: ${keys.join(", ")}`);
+
+            // Check for children array which is required by RichText renderer
+            if (post.content.json.children) {
+              console.log(
+                `Children array: ${
+                  Array.isArray(post.content.json.children)
+                    ? `Array with ${post.content.json.children.length} items`
+                    : "Not an array"
+                }`
+              );
+            } else {
+              console.warn(`JSON content missing children array`);
+            }
+          } else {
+            console.log(
+              `JSON content is not an object but ${typeof post.content.json}`
+            );
+          }
+        } catch (e) {
+          console.error(`Error inspecting json content: ${e.message}`);
+        }
+      }
+
+      // Check for raw content
+      if (post.content.raw) {
+        console.log(
+          `Post ${post.slug} has raw content type:`,
+          typeof post.content.raw
+        );
+
+        // Try to safely inspect the raw content
+        try {
+          if (typeof post.content.raw === "object") {
+            const keys = Object.keys(post.content.raw);
+            console.log(`Raw content keys: ${keys.join(", ")}`);
+
+            // Check for children array which is required by RichText renderer
+            if (post.content.raw.children) {
+              console.log(
+                `Children array: ${
+                  Array.isArray(post.content.raw.children)
+                    ? `Array with ${post.content.raw.children.length} items`
+                    : "Not an array"
+                }`
+              );
+            } else {
+              console.warn(`Raw content missing children array`);
+            }
+          } else if (typeof post.content.raw === "string") {
+            // Try to parse string content as JSON
+            try {
+              const parsedContent = JSON.parse(post.content.raw);
+              console.log(
+                `Parsed raw content keys: ${Object.keys(parsedContent).join(
+                  ", "
+                )}`
+              );
+            } catch (parseError) {
+              console.log(`Raw content is a string but not valid JSON`);
+            }
+          } else {
+            console.log(`Raw content is ${typeof post.content.raw}`);
+          }
+        } catch (e) {
+          console.error(`Error inspecting raw content: ${e.message}`);
+        }
+      }
+
+      // Check for references
+      if (post.content.references) {
+        console.log(
+          `Post ${post.slug} has references:`,
+          typeof post.content.references,
+          Array.isArray(post.content.references),
+          post.content.references.length || 0
+        );
+
+        // Log first reference for debugging
+        if (
+          Array.isArray(post.content.references) &&
+          post.content.references.length > 0
+        ) {
+          const firstRef = post.content.references[0];
+          console.log(`First reference: ${JSON.stringify(firstRef)}`);
+        }
+      } else {
+        console.log(`Post ${post.slug} has no references`);
+      }
+
+      // Clear any previous render errors
       setRenderError(null);
     }
   }, [post]);
@@ -204,19 +322,54 @@ const PostDetail = ({ post }) => {
             </ErrorBoundary>
 
             <div className="prose prose-lg max-w-none mt-8 text-text-primary">
-              {post.content?.raw?.children ? (
-                post.content.raw.children.map((typeObj, index) => {
-                  const children = typeObj.children.map((item, itemindex) =>
-                    getContentFragment(itemindex, item.text, item)
-                  );
-
-                  return getContentFragment(
-                    index,
-                    children,
-                    typeObj,
-                    typeObj.type
-                  );
-                })
+              {post.content ? (
+                <ErrorBoundary
+                  fallback={
+                    <div className="bg-red-50 border border-red-200 p-4 rounded-md">
+                      <h3 className="text-red-600 font-medium">
+                        Error displaying content
+                      </h3>
+                      <p className="text-gray-700 mt-2">
+                        We're having trouble displaying this content. Please try
+                        refreshing the page.
+                      </p>
+                    </div>
+                  }
+                >
+                  <RichTextRenderer
+                    content={
+                      post.content.json || post.content.raw || post.content
+                    }
+                    references={post.content.references || []}
+                  />
+                  {/* Add debug information in development */}
+                  {process.env.NODE_ENV === "development" && (
+                    <div className="mt-4 p-4 bg-gray-100 rounded-md text-xs">
+                      <details>
+                        <summary className="cursor-pointer font-medium text-gray-700">
+                          Debug Information
+                        </summary>
+                        <div className="mt-2 overflow-auto max-h-40">
+                          <p>
+                            Content Format:{" "}
+                            {post.content.json
+                              ? "JSON"
+                              : post.content.raw
+                              ? "RAW"
+                              : "Unknown"}
+                          </p>
+                          <p>
+                            References:{" "}
+                            {post.content.references
+                              ? post.content.references.length
+                              : "None"}
+                          </p>
+                          <p>Post ID: {post.slug}</p>
+                        </div>
+                      </details>
+                    </div>
+                  )}
+                </ErrorBoundary>
               ) : (
                 <p className="text-center text-lg text-text-secondary font-normal">
                   No content available for this post.
