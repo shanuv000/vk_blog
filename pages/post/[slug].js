@@ -186,10 +186,36 @@ export async function getStaticProps({ params }) {
 // Specify dynamic routes to pre-render pages based on data.
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
-  const posts = await getPosts();
-  return {
-    paths: posts.map(({ node: { slug } }) => ({ params: { slug } })),
-    // Use 'blocking' to wait for the page to be generated on-demand
-    fallback: "blocking",
-  };
+  try {
+    console.log("Fetching posts for getStaticPaths");
+    const posts = await getPosts();
+
+    // Filter out any posts that don't have a slug
+    const validPosts = posts.filter((post) => post.node && post.node.slug);
+
+    console.log(
+      `Found ${validPosts.length} valid posts out of ${posts.length} total posts`
+    );
+
+    // Only pre-render the most recent posts to speed up build time
+    // Other posts will be generated on-demand using fallback: 'blocking'
+    const recentPosts = validPosts.slice(0, 10); // Only pre-render the 10 most recent posts
+
+    console.log(`Pre-rendering ${recentPosts.length} recent posts`);
+
+    return {
+      paths: recentPosts.map(({ node: { slug } }) => ({ params: { slug } })),
+      // Use 'blocking' to wait for the page to be generated on-demand
+      fallback: "blocking",
+    };
+  } catch (error) {
+    console.error("Error in getStaticPaths:", error);
+
+    // Return empty paths array but still use blocking fallback
+    // This ensures the site builds even if we can't fetch posts
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
 }

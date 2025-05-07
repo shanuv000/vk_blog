@@ -266,11 +266,26 @@ export const getPostDetails = async (slug) => {
           console.log(
             `Content structure: ${Object.keys(result.post.content).join(", ")}`
           );
-          if (result.post.content.references) {
-            console.log(
-              `References count: ${result.post.content.references.length}`
-            );
+
+          // Handle references field - ensure it's always an array
+          if (!result.post.content.references) {
+            console.log(`No references found, adding empty array`);
+            result.post.content.references = [];
+          } else if (!Array.isArray(result.post.content.references)) {
+            console.log(`References is not an array, converting to array`);
+            try {
+              result.post.content.references = Object.values(
+                result.post.content.references
+              );
+            } catch (e) {
+              console.error(`Failed to convert references to array:`, e);
+              result.post.content.references = [];
+            }
           }
+
+          console.log(
+            `References count: ${result.post.content.references.length}`
+          );
         }
         return result.post;
       } else {
@@ -279,6 +294,61 @@ export const getPostDetails = async (slug) => {
     } catch (cdnError) {
       console.error(`CDN fetch failed for slug: ${slug}:`, cdnError);
       console.error(`Error details:`, cdnError.message);
+
+      // Check if this is a GraphQL error related to the references field
+      const isReferencesError =
+        cdnError.message &&
+        (cdnError.message.includes("Fragment cannot be spread here") ||
+          cdnError.message.includes("PostContentRichTextEmbeddedTypes") ||
+          cdnError.message.includes("Asset"));
+
+      if (isReferencesError) {
+        console.log(`Detected references field error, trying minimal query`);
+
+        // Create a minimal query that doesn't include the references field
+        const minimalQuery = gql`
+          query GetMinimalPostDetails($slug: String!) {
+            post(where: { slug: $slug }) {
+              title
+              excerpt
+              featuredImage {
+                url
+              }
+              author {
+                name
+                photo {
+                  url
+                }
+              }
+              createdAt
+              slug
+              content {
+                raw
+              }
+              categories {
+                name
+                slug
+              }
+            }
+          }
+        `;
+
+        try {
+          const minimalResult = await fetchFromCDN(minimalQuery, { slug });
+          if (minimalResult.post) {
+            console.log(`Minimal query succeeded for slug: ${slug}`);
+
+            // Add empty references array to avoid errors in the renderer
+            if (minimalResult.post.content) {
+              minimalResult.post.content.references = [];
+            }
+
+            return minimalResult.post;
+          }
+        } catch (minimalError) {
+          console.error(`Minimal query also failed:`, minimalError);
+        }
+      }
     }
 
     // Try alternative query as a second attempt
@@ -287,7 +357,20 @@ export const getPostDetails = async (slug) => {
       const alternativeResult = await fetchFromCDN(alternativeQuery, { slug });
       if (alternativeResult.posts && alternativeResult.posts.length > 0) {
         console.log(`Alternative query succeeded for slug: ${slug}`);
-        return alternativeResult.posts[0];
+
+        // Ensure references is an array
+        const post = alternativeResult.posts[0];
+        if (post.content && !post.content.references) {
+          post.content.references = [];
+        } else if (post.content && !Array.isArray(post.content.references)) {
+          try {
+            post.content.references = Object.values(post.content.references);
+          } catch (e) {
+            post.content.references = [];
+          }
+        }
+
+        return post;
       } else {
         console.warn(`Alternative query returned no results for slug: ${slug}`);
       }
@@ -301,6 +384,12 @@ export const getPostDetails = async (slug) => {
       const simplifiedResult = await fetchFromCDN(simplifiedQuery, { slug });
       if (simplifiedResult.post) {
         console.log(`Simplified query succeeded for slug: ${slug}`);
+
+        // Add empty references array to avoid errors in the renderer
+        if (simplifiedResult.post.content) {
+          simplifiedResult.post.content.references = [];
+        }
+
         return simplifiedResult.post;
       } else {
         console.warn(`Simplified query returned no results for slug: ${slug}`);
