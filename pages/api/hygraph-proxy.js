@@ -30,8 +30,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  // Set CORS headers to allow requests from both domains
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // Set CORS headers to allow requests from specific domains
+  const allowedOrigins = [
+    "https://blog.urtechy.com",
+    "https://urtechy.com",
+    "http://localhost:3000",
+  ];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    // For any other origin, use a wildcard (less secure but more permissive)
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 

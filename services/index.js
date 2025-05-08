@@ -114,33 +114,84 @@ export const getCategories = async () => {
 };
 
 export const getPostDetails = async (slug) => {
+  console.log(`[getPostDetails] Starting fetch for slug: "${slug}"`);
+
   // Use Apollo Client if enabled
   if (USE_APOLLO) {
     try {
-      const result = await apolloHooks.fetchPostDetails(slug);
       console.log(
-        `Apollo fetchPostDetails for slug "${slug}" returned:`,
-        result ? "data" : "null"
+        `[getPostDetails] Attempting Apollo fetch for slug: "${slug}"`
       );
+      const result = await apolloHooks.fetchPostDetails(slug);
 
-      // If we got a result, validate it has the necessary content structure
-      if (result) {
+      if (!result) {
+        console.warn(
+          `[getPostDetails] Apollo returned null for slug: "${slug}"`
+        );
+      } else {
+        console.log(
+          `[getPostDetails] Apollo successfully fetched data for slug: "${slug}"`
+        );
+
+        // Validate content structure
         if (!result.content) {
-          console.warn(`Post for slug "${slug}" is missing content property`);
+          console.warn(
+            `[getPostDetails] Post for slug "${slug}" is missing content property`
+          );
         } else {
+          const contentKeys = Object.keys(result.content);
           console.log(
-            `Content structure for "${slug}":`,
-            Object.keys(result.content).join(", ")
+            `[getPostDetails] Content structure for "${slug}": ${contentKeys.join(
+              ", "
+            )}`
+          );
+
+          // Check for critical content fields
+          if (!result.content.raw && !result.content.json) {
+            console.warn(
+              `[getPostDetails] Post "${slug}" missing both content.raw and content.json`
+            );
+          }
+        }
+
+        // Check for other critical fields
+        if (!result.title) {
+          console.warn(`[getPostDetails] Post "${slug}" missing title`);
+        }
+
+        if (!result.featuredImage || !result.featuredImage.url) {
+          console.warn(
+            `[getPostDetails] Post "${slug}" missing featuredImage or url`
           );
         }
+
         return result;
       }
     } catch (apolloError) {
       console.error(
-        `Apollo fetchPostDetails failed for slug "${slug}":`,
-        apolloError
+        `[getPostDetails] Apollo fetch failed for slug "${slug}":`,
+        apolloError.message
       );
+      console.error(`[getPostDetails] Error stack:`, apolloError.stack);
+
+      // Log more details about the error
+      if (apolloError.graphQLErrors) {
+        console.error(
+          `[getPostDetails] GraphQL Errors:`,
+          JSON.stringify(apolloError.graphQLErrors)
+        );
+      }
+      if (apolloError.networkError) {
+        console.error(
+          `[getPostDetails] Network Error:`,
+          apolloError.networkError.message
+        );
+      }
+
       // Fall back to original implementation
+      console.log(
+        `[getPostDetails] Falling back to direct implementation for "${slug}"`
+      );
     }
   }
 

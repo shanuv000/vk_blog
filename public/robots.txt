@@ -7,3 +7,4 @@ Host: https://blog.urtechy.com
 
 # Sitemaps
 Sitemap: https://blog.urtechy.com/sitemap.xml
+Sitemap: https://blog.urtechy.com/sitemap-news.xml

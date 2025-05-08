@@ -14,7 +14,7 @@ import { getPosts, getPostDetails } from "../../services";
 import { AdjacentPosts } from "../../sections";
 // import Footer from "../../components/footer/Footer";
 
-const PostDetails = ({ post }) => {
+const PostDetails = ({ post, error, lastFetched }) => {
   const router = useRouter();
 
   // With fallback: 'blocking', we don't need to handle isFallback
@@ -22,6 +22,9 @@ const PostDetails = ({ post }) => {
   if (router.isFallback) {
     return <Loader />;
   }
+
+  // If we have an error object, display it for debugging in development
+  const isDevEnvironment = process.env.NODE_ENV === "development";
 
   // Handle case where post might be null or undefined
   if (!post) {
@@ -31,12 +34,83 @@ const PostDetails = ({ post }) => {
         <p className="mb-8">
           The post you're looking for doesn't exist or has been removed.
         </p>
-        <button
-          onClick={() => router.push("/")}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-        >
-          Return to Home
-        </button>
+        <p className="text-gray-600 mb-8">
+          URL: {router.asPath}
+          <br />
+          Slug: {router.query.slug}
+        </p>
+
+        {/* Show error details in development environment */}
+        {isDevEnvironment && error && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-8 text-left">
+            <h3 className="text-red-800 font-semibold mb-2">Error Details:</h3>
+            <p className="text-red-700 mb-1">Type: {error.type}</p>
+            <p className="text-red-700 mb-1">Message: {error.message}</p>
+            {lastFetched && (
+              <p className="text-gray-500 text-sm mt-2">
+                Last attempted fetch: {new Date(lastFetched).toLocaleString()}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="flex justify-center space-x-4">
+          <button
+            onClick={() => router.push("/")}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          >
+            Return to Home
+          </button>
+          <button
+            onClick={() => router.reload()}
+            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle case where post content is missing
+  if (!post.content || (!post.content.raw && !post.content.json)) {
+    return (
+      <div className="sm:container mx-auto px-4 lg:px-10 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="col-span-1 lg:col-span-8">
+            <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
+              <h1 className="text-3xl font-semibold mb-4">{post.title}</h1>
+              <div className="border-b border-gray-200 mb-4 pb-4">
+                {post.excerpt && (
+                  <p className="text-lg text-gray-700">{post.excerpt}</p>
+                )}
+              </div>
+              <div className="text-center py-10">
+                <p className="text-red-500 mb-4">
+                  We're having trouble loading the content for this post.
+                </p>
+                <button
+                  onClick={() => router.reload()}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+                >
+                  Try Refreshing
+                </button>
+              </div>
+            </div>
+            {post.author && <Author author={post.author} />}
+          </div>
+          <div className="col-span-1 lg:col-span-4">
+            <div className="relative lg:sticky top-8">
+              <PostWidget
+                slug={post.slug || ""}
+                categories={
+                  post.categories?.map((category) => category.slug) || []
+                }
+              />
+              <Categories />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -80,105 +154,143 @@ export default PostDetails;
 // Fetch data at build time
 export async function getStaticProps({ params }) {
   try {
-    console.log(`getStaticProps called for slug: ${params.slug}`);
-    const data = await getPostDetails(params.slug);
+    console.log(`[getStaticProps] Called for slug: ${params.slug}`);
+
+    // Add a try/catch around getPostDetails to get more detailed error information
+    let data;
+    try {
+      data = await getPostDetails(params.slug);
+    } catch (fetchError) {
+      console.error(
+        `[getStaticProps] Error in getPostDetails for ${params.slug}:`,
+        fetchError.message
+      );
+      console.error(`[getStaticProps] Error stack:`, fetchError.stack);
+
+      // Return null post instead of failing
+      return {
+        props: {
+          post: null,
+          error: {
+            message: fetchError.message,
+            type: "FETCH_ERROR",
+          },
+        },
+        // Shorter revalidation time for error cases
+        revalidate: 30,
+      };
+    }
 
     // Log detailed information about the result
     if (!data) {
-      console.error(`No post data returned for slug: ${params.slug}`);
-    } else {
-      console.log(
-        `Successfully fetched post data for slug: ${params.slug}, title: ${data.title}`
+      console.error(
+        `[getStaticProps] No post data returned for slug: ${params.slug}`
       );
 
-      // Log the structure of the post data
-      console.log(`Post data structure: ${Object.keys(data).join(", ")}`);
+      return {
+        props: {
+          post: null,
+          error: {
+            message: "No data returned from API",
+            type: "NO_DATA",
+          },
+        },
+        // Shorter revalidation time for missing posts
+        revalidate: 30,
+      };
+    }
 
-      // Check for critical fields
-      if (!data.content) {
+    console.log(
+      `[getStaticProps] Successfully fetched post data for slug: ${
+        params.slug
+      }, title: ${data.title || "NO TITLE"}`
+    );
+
+    // Log the structure of the post data
+    const dataKeys = Object.keys(data);
+    console.log(`[getStaticProps] Post data structure: ${dataKeys.join(", ")}`);
+
+    // Check for critical fields
+    if (!data.content) {
+      console.warn(
+        `[getStaticProps] Post for slug: ${params.slug} is missing content property entirely`
+      );
+
+      // Create a minimal content object to prevent errors
+      data.content = { raw: null };
+    } else {
+      const contentKeys = Object.keys(data.content);
+      console.log(
+        `[getStaticProps] Content structure: ${contentKeys.join(", ")}`
+      );
+
+      // Check for raw content
+      if (!data.content.raw) {
         console.warn(
-          `Post for slug: ${params.slug} is missing content property entirely`
-        );
-      } else {
-        console.log(
-          `Content structure: ${Object.keys(data.content).join(", ")}`
+          `[getStaticProps] Post for slug: ${params.slug} is missing content.raw`
         );
 
-        // Check for raw and json content
-        if (!data.content.raw && !data.content.json) {
-          console.warn(
-            `Post for slug: ${params.slug} is missing both content.raw and content.json`
-          );
-        }
-
-        // Check for references
-        if (data.content.references) {
-          console.log(`References count: ${data.content.references.length}`);
-        } else {
-          console.warn(`Post for slug: ${params.slug} has no references array`);
-        }
-      }
-
-      if (!data.featuredImage) {
-        console.warn(`Post for slug: ${params.slug} is missing featuredImage`);
+        // Create an empty raw content to prevent errors
+        data.content.raw = null;
       }
     }
 
-    // If no post is found, return null (will be handled by the component)
-    if (!data) {
-      return {
-        props: { post: null },
-        // Shorter revalidation time for missing posts
-        revalidate: 60,
+    if (!data.featuredImage) {
+      console.warn(
+        `[getStaticProps] Post for slug: ${params.slug} is missing featuredImage`
+      );
+      // Add a default featured image to prevent errors
+      data.featuredImage = {
+        url: "/default-image.jpg",
       };
     }
 
     // Ensure the content structure is valid
-    if (data.content) {
-      // If we have json content but it's a string, try to parse it
-      if (data.content.json && typeof data.content.json === "string") {
-        try {
-          data.content.json = JSON.parse(data.content.json);
-          console.log(`Successfully parsed content.json string to object`);
-        } catch (parseError) {
-          console.error(`Failed to parse content.json string:`, parseError);
-        }
-      }
-
+    if (data.content && data.content.raw) {
       // If we have raw content but it's a string, try to parse it
-      if (data.content.raw && typeof data.content.raw === "string") {
+      if (typeof data.content.raw === "string") {
         try {
           data.content.raw = JSON.parse(data.content.raw);
-          console.log(`Successfully parsed content.raw string to object`);
+          console.log(
+            `[getStaticProps] Successfully parsed content.raw string to object`
+          );
         } catch (parseError) {
-          console.error(`Failed to parse content.raw string:`, parseError);
+          console.error(
+            `[getStaticProps] Failed to parse content.raw string:`,
+            parseError.message
+          );
+          // Set to null if parsing fails
+          data.content.raw = null;
         }
-      }
-
-      // Ensure references is always an array
-      if (!data.content.references) {
-        data.content.references = [];
-        console.log(`Added empty references array to content`);
-      } else if (!Array.isArray(data.content.references)) {
-        console.warn(`References is not an array, converting to array`);
-        data.content.references = Object.values(data.content.references);
       }
     }
 
     return {
-      props: { post: data },
+      props: {
+        post: data,
+        lastFetched: new Date().toISOString(),
+      },
       // Add revalidation to refresh the page every 1 minute
       revalidate: 60,
     };
   } catch (error) {
-    console.error(`Error fetching post details for ${params.slug}:`, error);
-    console.error(`Error stack: ${error.stack}`);
+    console.error(
+      `[getStaticProps] Unhandled error for ${params.slug}:`,
+      error.message
+    );
+    console.error(`[getStaticProps] Error stack: ${error.stack}`);
 
     // Return null post instead of failing
     return {
-      props: { post: null },
+      props: {
+        post: null,
+        error: {
+          message: error.message,
+          type: "UNHANDLED_ERROR",
+        },
+      },
       // Shorter revalidation time for error cases
-      revalidate: 60,
+      revalidate: 30,
     };
   }
 }

@@ -1,6 +1,426 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   <url>
+    <loc>https://blog.urtechy.com/post/google-ai-conquers-classic-game-milestone-ai-gaming</loc>
+    <lastmod>2025-05-05T20:56:35.511363+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2025-05-05T20:56:35.511363+00:00</news:publication_date>
+      <news:title>Google&apos;s AI Conquers Classic Game: A Milestone in AI Gaming</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/react-19-new-features-and-updates</loc>
+    <lastmod>2025-05-05T11:39:01.419525+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2025-05-05T11:39:01.419525+00:00</news:publication_date>
+      <news:title>Spark the Buzz: Skyrocketing Engagement with React 19’s Magic!</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/harley-keener-next-iron-man</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>The Forgotten Marvel Hero: Is Harley Keener the Next Iron Man?</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/neuzboy-carryminati-dhruv-rathee-abhi-and-beerbiceps-controversy-and-bias</loc>
+    <lastmod>2024-05-21T11:37:38.821585+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T11:37:38.821585+00:00</news:publication_date>
+      <news:title>CarryMinati, Dhruv Rathee, Abhi and BeerBiceps - Controversy and Bias</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/ironheart-release-delay-2025</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Ironheart Release Delayed to 2025: What This Means for the MCU</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/india-ai-leadership-sundar-pichai</loc>
+    <lastmod>2024-05-17T06:20:35.402334+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-17T06:20:35.402334+00:00</news:publication_date>
+      <news:title>AI Revolution: How India is Leading the Charge (According to Google&apos;s CEO)</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/linear-regression-coefficients-intercepts</loc>
+    <lastmod>2024-05-17T06:20:35.402334+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-17T06:20:35.402334+00:00</news:publication_date>
+      <news:title>Mastering Machine Learning: A Deep Dive into Linear Regression&apos;s Building Blocks</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/carlsen-10-win-streak-superbet-victory</loc>
+    <lastmod>2024-05-20T06:46:22.615307+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-20T06:46:22.615307+00:00</news:publication_date>
+      <news:title>Carlsen&apos;s Unstoppable 10-Win Streak Dominates Superbet Rapid &amp; Blitz 2024</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/getting-started-react-nextjs</loc>
+    <lastmod>2024-05-17T06:20:35.402334+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-17T06:20:35.402334+00:00</news:publication_date>
+      <news:title>React + Next.js: A Beginner-Friendly Guide to Building Awesome Web Apps</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/your-browsing-history-and-privacy</loc>
+    <lastmod>2024-05-17T06:20:35.402334+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-17T06:20:35.402334+00:00</news:publication_date>
+      <news:title>Why Incognito Mode isn&apos;t Enough: Protecting Your Browsing History Online</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/ipl-media-rights-cofused-about-packages</loc>
+    <lastmod>2024-05-20T06:45:21.134119+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-20T06:45:21.134119+00:00</news:publication_date>
+      <news:title>For those who are confused about package system (specially package C)  in #IPLMediaRights Auction. </news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/thor-4-leak-spoilers-marvel-photo</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Thor 4 Star Apologizes to Marvel for Sharing Spoilery Photo</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/marvels-avengers-infinity-war-iron-man-game-mcu-suit</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Marvel&apos;s Avengers Fans Shocked by New Infinity War Surprise</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/thor-love-and-thunder-trailer-broke-record-mcu-fans-will-hate</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Thor: Love and Thunder Trailer Just Broke a Record That MCU Fans Will Hate</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/joe-rogan-shuts-down-donald-trump-jre-podcast-rumors-once-and-for-all</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Joe Rogan shuts down Donald Trump JRE podcast rumors once and for all</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/disney-marvel-netflix-watch-shows-name</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Watch: Disney+ Hilariously Removes Netflix Name From Marvel Show</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/ant-man-3-samuel-l-jackson-spoilers</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Did Samuel L. Jackson Just Spoil His Ant-Man 3 Role?</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/marvel-studios-lgbtq-florida-law</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Marvel Studios Speaks Out Against Florida&apos;s LGBTQ+ Law</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/spider-man-blue-ray-movie-leak</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Spider-Man: No Way Home Hits Home Video Early Following Blu-ray Leak</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/marvel-benedict-cumberbatch-mcu-anchor</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Marvel Boss Explains Why Benedict Cumberbatch Is Now the MCU’s Anchor</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/batman-movie-reviews-critics-reactions</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>The Batman Movie Reviews: What Are Critics&apos; First Reactions?</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/spider-man-michael-keaton-morbius-spin-off</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Morbius Star Teases Michael Keaton&apos;s Surprising Role In Spider-Man Spin-off</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/ipl-2022-all-teams-are-set-in-ipl-game</loc>
+    <lastmod>2024-05-20T06:45:21.134119+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-20T06:45:21.134119+00:00</news:publication_date>
+      <news:title>IPL 2022: All teams set for the IPL games</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/aryan-khan-and-suhana-khan-represent-dad-shah-rukh-khan-at-ipl-auction-see-pics-101644644393625</loc>
+    <lastmod>2024-05-20T06:45:21.134119+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-20T06:45:21.134119+00:00</news:publication_date>
+      <news:title>Gauri Khan is proud as Aryan and Suhana represent Shah Rukh Khan, join Kolkata Knight Riders at IPL auction</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/spider-man-no-way-home-one-billion-overseas-scream-sing-2-belfast-global-international-box-office-1234922668</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>‘Spider-Man: No Way Home’ Swings Past $1B Overseas; Global Now $1.74B – International Box Office</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/doctor-strange-in-the-multiverse-of-madness-is-going-to-have-a-lot-of-horror-scenes</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Doctor Strange In The Multiverse Of Madness is going to have a lot of horror scenes</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/thor-4-natalie-portman-marvel-plans-after</loc>
+    <lastmod>2024-05-21T07:59:02.352131+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-21T07:59:02.352131+00:00</news:publication_date>
+      <news:title>Marvel Rumor Teases Big Plans for Natalie Portman After Thor 4</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/ganurdiansofthegalaxyunderproduction123</loc>
+    <lastmod>2022-01-30T21:18:35.226016+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2022-01-30T21:18:35.226016+00:00</news:publication_date>
+      <news:title>Gallery: Guardians of the Galaxy 3 Is Under Production. Pics Posted by Actors. </news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/anish-giri-i-have-had-it-all-in-wijk-aan-zee</loc>
+    <lastmod>2024-05-20T06:46:22.615307+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-20T06:46:22.615307+00:00</news:publication_date>
+      <news:title>Anish Giri: ‘I have had it all in Wijk aan Zee’</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/ipl-to-begin-from-last-week-of-march</loc>
+    <lastmod>2024-05-20T06:44:37.485647+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2024-05-20T06:44:37.485647+00:00</news:publication_date>
+      <news:title> &apos;IPL 2022 to begin from last week of March&apos;: confirms BCCI Secretary Jay Shah</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/valorant-players-can-use-sound-radius-circle-to-line-up-viper-snake-bite-ability</loc>
+    <lastmod>2022-01-24T18:07:13.165234+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2022-01-24T18:07:13.165234+00:00</news:publication_date>
+      <news:title>VALORANT players can use sound radius circle to line up Viper’s Snake Bite ability</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr</loc>
+    <lastmod>2025-05-05T00:07:21.492362+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2025-05-05T00:07:21.492362+00:00</news:publication_date>
+      <news:title>IPL 2025: Riyan Parag Smashes 6 Consecutive Sixes, Joins Yuvraj Singh and Kieron Pollard in Elite Club</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram</loc>
+    <lastmod>2025-05-04T19:24:19.238885+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2025-05-04T19:24:19.238885+00:00</news:publication_date>
+      <news:title>Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 and Low VRAM Are Holding It Back</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/rcb-vs-dc-ipl-2025-match-46-highlights-krunal-pandya-virat-kohli-lead-rcb-to-victory</loc>
+    <lastmod>2025-05-04T15:55:13.521632+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2025-05-04T15:55:13.521632+00:00</news:publication_date>
+      <news:title>RCB vs DC Match 46, IPL 2025: Royal Challengers Bengaluru Crush Delhi Capitals by 6 Wickets | Full Match Report</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.urtechy.com/post/virat-kohli-rcb-csk-ipl-2025-rivalry-match-preview</loc>
+    <lastmod>2025-05-02T16:26:26.006276+00:00</lastmod>
+    <news:news>
+      <news:publication>
+        <news:name>urTechy Blogs</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2025-05-02T16:26:26.006276+00:00</news:publication_date>
+      <news:title>Virat Kohli Reveals Why RCB vs CSK is the IPL&apos;s Fiercest Rivalry | IPL 2025 Showdown</news:title>
+    </news:news>
+  </url>
+  <url>
     <loc>https://blog.urtechy.com/post/caste-census-bjp-adapting-puncturing-opposition-politics-ready-for-numbers</loc>
     <lastmod>2025-04-30T17:18:20.996956+00:00</lastmod>
     <news:news>
@@ -10,18 +430,6 @@
       </news:publication>
       <news:publication_date>2025-04-30T17:18:20.996956+00:00</news:publication_date>
       <news:title>Why now? On sure footing, Govt changes course to take the big step, announces Caste Census</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/rcb-vs-dc-ipl-2025-match-46-highlights-krunal-pandya-virat-kohli-lead-rcb-to-victory</loc>
-    <lastmod>2025-04-28T08:40:54.037966+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2025-04-28T08:40:54.037966+00:00</news:publication_date>
-      <news:title>RCB vs DC Match 46, IPL 2025: Royal Challengers Bengaluru Crush Delhi Capitals by 6 Wickets | Full Match Report</news:title>
     </news:news>
   </url>
   <url>
@@ -205,18 +613,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/harley-keener-next-iron-man</loc>
-    <lastmod>2024-05-21T07:56:48.615475+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-21T07:56:48.615475+00:00</news:publication_date>
-      <news:title>The Forgotten Marvel Hero: Is Harley Keener the Next Iron Man?</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/beyond-batcave-avengers-tower-preview</loc>
     <lastmod>2024-05-21T07:46:04.206292+00:00</lastmod>
     <news:news>
@@ -226,18 +622,6 @@
       </news:publication>
       <news:publication_date>2024-05-21T07:46:04.206292+00:00</news:publication_date>
       <news:title>Marvel vs. DC: The Epic Battle for Superhero Supremacy Continues</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/neuzboy-carryminati-dhruv-rathee-abhi-and-beerbiceps-controversy-and-bias</loc>
-    <lastmod>2024-05-21T06:33:51.01929+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-21T06:33:51.01929+00:00</news:publication_date>
-      <news:title>CarryMinati, Dhruv Rathee, Abhi and BeerBiceps - Controversy and Bias</news:title>
     </news:news>
   </url>
   <url>
@@ -301,18 +685,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/ironheart-release-delay-2025</loc>
-    <lastmod>2024-05-17T06:18:16.047789+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-17T06:18:16.047789+00:00</news:publication_date>
-      <news:title>Ironheart Release Delayed to 2025: What This Means for the MCU</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/new-coder-mistakes-avoiding-tutorial-hell</loc>
     <lastmod>2024-05-17T06:13:44.299402+00:00</lastmod>
     <news:news>
@@ -322,18 +694,6 @@
       </news:publication>
       <news:publication_date>2024-05-17T06:13:44.299402+00:00</news:publication_date>
       <news:title>The Beginner&apos;s Guide to Escaping Tutorial Hell (and Actually Coding)</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/your-browsing-history-and-privacy</loc>
-    <lastmod>2024-05-16T16:16:05.81567+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-16T16:16:05.81567+00:00</news:publication_date>
-      <news:title>Why Incognito Mode isn&apos;t Enough: Protecting Your Browsing History Online</news:title>
     </news:news>
   </url>
   <url>
@@ -361,18 +721,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/india-ai-leadership-sundar-pichai</loc>
-    <lastmod>2024-05-16T05:19:15.21334+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-16T05:19:15.21334+00:00</news:publication_date>
-      <news:title>AI Revolution: How India is Leading the Charge (According to Google&apos;s CEO)</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/decoding-google-2024-io-keynote-future-ai</loc>
     <lastmod>2024-05-15T05:33:20.738377+00:00</lastmod>
     <news:news>
@@ -394,42 +742,6 @@
       </news:publication>
       <news:publication_date>2024-05-14T11:16:27.334627+00:00</news:publication_date>
       <news:title>Narendra Modi&apos;s Nomination from Varanasi: A Closer Look at the Symbolism and Strategy</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/linear-regression-coefficients-intercepts</loc>
-    <lastmod>2024-05-14T08:28:05.317313+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-14T08:28:05.317313+00:00</news:publication_date>
-      <news:title>Mastering Machine Learning: A Deep Dive into Linear Regression&apos;s Building Blocks</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/getting-started-react-nextjs</loc>
-    <lastmod>2024-05-14T04:45:52.141594+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-14T04:45:52.141594+00:00</news:publication_date>
-      <news:title>React + Next.js: A Beginner-Friendly Guide to Building Awesome Web Apps</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/carlsen-10-win-streak-superbet-victory</loc>
-    <lastmod>2024-05-13T10:58:18.943666+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2024-05-13T10:58:18.943666+00:00</news:publication_date>
-      <news:title>Carlsen&apos;s Unstoppable 10-Win Streak Dominates Superbet Rapid &amp; Blitz 2024</news:title>
     </news:news>
   </url>
   <url>
@@ -517,30 +829,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/ipl-media-rights-cofused-about-packages</loc>
-    <lastmod>2022-06-14T18:20:58.941545+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-06-14T18:20:58.941545+00:00</news:publication_date>
-      <news:title>For those who are confused about package system (specially package C)  in #IPLMediaRights Auction. </news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/thor-4-leak-spoilers-marvel-photo</loc>
-    <lastmod>2022-06-14T06:21:17.137387+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-06-14T06:21:17.137387+00:00</news:publication_date>
-      <news:title>Thor 4 Star Apologizes to Marvel for Sharing Spoilery Photo</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/karan-kundrra-shares-a-glimpse-of-his-romantic-getaway-with-tejasswi-prakash</loc>
     <lastmod>2022-06-12T16:00:39.20085+00:00</lastmod>
     <news:news>
@@ -577,30 +865,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/marvels-avengers-infinity-war-iron-man-game-mcu-suit</loc>
-    <lastmod>2022-04-07T15:36:03.788176+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-04-07T15:36:03.788176+00:00</news:publication_date>
-      <news:title>Marvel&apos;s Avengers Fans Shocked by New Infinity War Surprise</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/thor-love-and-thunder-trailer-broke-record-mcu-fans-will-hate</loc>
-    <lastmod>2022-04-07T15:25:11.350056+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-04-07T15:25:11.350056+00:00</news:publication_date>
-      <news:title>Thor: Love and Thunder Trailer Just Broke a Record That MCU Fans Will Hate</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/spider-man-tobey-maguire-no-way-home-poster</loc>
     <lastmod>2022-03-23T05:36:02.168829+00:00</lastmod>
     <news:news>
@@ -622,30 +886,6 @@
       </news:publication>
       <news:publication_date>2022-03-22T05:15:54.729966+00:00</news:publication_date>
       <news:title>Are Karan Kundrra and Tejasswi Prakash getting married? He responds</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/joe-rogan-shuts-down-donald-trump-jre-podcast-rumors-once-and-for-all</loc>
-    <lastmod>2022-03-20T18:09:27.026648+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-03-20T18:09:27.026648+00:00</news:publication_date>
-      <news:title>Joe Rogan shuts down Donald Trump JRE podcast rumors once and for all</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/disney-marvel-netflix-watch-shows-name</loc>
-    <lastmod>2022-03-20T05:12:49.126151+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-03-20T05:12:49.126151+00:00</news:publication_date>
-      <news:title>Watch: Disney+ Hilariously Removes Netflix Name From Marvel Show</news:title>
     </news:news>
   </url>
   <url>
@@ -685,30 +925,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/ant-man-3-samuel-l-jackson-spoilers</loc>
-    <lastmod>2022-03-18T11:14:50.771154+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-03-18T11:14:50.771154+00:00</news:publication_date>
-      <news:title>Did Samuel L. Jackson Just Spoil His Ant-Man 3 Role?</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/marvel-studios-lgbtq-florida-law</loc>
-    <lastmod>2022-03-16T13:08:06.971718+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-03-16T13:08:06.971718+00:00</news:publication_date>
-      <news:title>Marvel Studios Speaks Out Against Florida&apos;s LGBTQ+ Law</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/shah-rukh-khan-teases-new-ott-venture-but-salman-khan-leaks-details-fans-say-suspense-hi-khatam-kar-diya-bhai</loc>
     <lastmod>2022-03-15T10:48:45.139576+00:00</lastmod>
     <news:news>
@@ -742,18 +958,6 @@
       </news:publication>
       <news:publication_date>2022-03-14T15:58:01.901742+00:00</news:publication_date>
       <news:title>Will Spider-Man Appear In Morbius? Jared Leto Responds</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/spider-man-blue-ray-movie-leak</loc>
-    <lastmod>2022-03-13T03:48:39.506622+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-03-13T03:48:39.506622+00:00</news:publication_date>
-      <news:title>Spider-Man: No Way Home Hits Home Video Early Following Blu-ray Leak</news:title>
     </news:news>
   </url>
   <url>
@@ -841,30 +1045,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/marvel-benedict-cumberbatch-mcu-anchor</loc>
-    <lastmod>2022-03-01T06:50:35.328515+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-03-01T06:50:35.328515+00:00</news:publication_date>
-      <news:title>Marvel Boss Explains Why Benedict Cumberbatch Is Now the MCU’s Anchor</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/batman-movie-reviews-critics-reactions</loc>
-    <lastmod>2022-03-01T06:29:21.552944+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-03-01T06:29:21.552944+00:00</news:publication_date>
-      <news:title>The Batman Movie Reviews: What Are Critics&apos; First Reactions?</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/avengers-endgame-robert-downey-jr-mcu-james-darcy</loc>
     <lastmod>2022-02-26T05:54:12.572655+00:00</lastmod>
     <news:news>
@@ -886,18 +1066,6 @@
       </news:publication>
       <news:publication_date>2022-02-26T05:44:28.660822+00:00</news:publication_date>
       <news:title>Kirsten Dunst Teases Possible Spider-Man Return After Tobey Maguire&apos;s Comeback</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/spider-man-michael-keaton-morbius-spin-off</loc>
-    <lastmod>2022-02-24T15:57:35.281948+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-02-24T15:57:35.281948+00:00</news:publication_date>
-      <news:title>Morbius Star Teases Michael Keaton&apos;s Surprising Role In Spider-Man Spin-off</news:title>
     </news:news>
   </url>
   <url>
@@ -1033,18 +1201,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/ipl-2022-all-teams-are-set-in-ipl-game</loc>
-    <lastmod>2022-02-14T16:23:27.000139+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-02-14T16:23:27.000139+00:00</news:publication_date>
-      <news:title>IPL 2022: All teams set for the IPL games</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/gerena-free-fire-banned-in-india-2022</loc>
     <lastmod>2022-02-14T16:18:07.895723+00:00</lastmod>
     <news:news>
@@ -1102,18 +1258,6 @@
       </news:publication>
       <news:publication_date>2022-02-13T13:37:39.88358+00:00</news:publication_date>
       <news:title>Happy Birthday: Rashami Desai rocking in Pictures</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/aryan-khan-and-suhana-khan-represent-dad-shah-rukh-khan-at-ipl-auction-see-pics-101644644393625</loc>
-    <lastmod>2022-02-12T17:59:52.743533+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-02-12T17:59:52.743533+00:00</news:publication_date>
-      <news:title>Gauri Khan is proud as Aryan and Suhana represent Shah Rukh Khan, join Kolkata Knight Riders at IPL auction</news:title>
     </news:news>
   </url>
   <url>
@@ -1429,30 +1573,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/spider-man-no-way-home-one-billion-overseas-scream-sing-2-belfast-global-international-box-office-1234922668</loc>
-    <lastmod>2022-01-30T21:29:04.19771+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-01-30T21:29:04.19771+00:00</news:publication_date>
-      <news:title>‘Spider-Man: No Way Home’ Swings Past $1B Overseas; Global Now $1.74B – International Box Office</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/doctor-strange-in-the-multiverse-of-madness-is-going-to-have-a-lot-of-horror-scenes</loc>
-    <lastmod>2022-01-30T21:07:02.152314+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-01-30T21:07:02.152314+00:00</news:publication_date>
-      <news:title>Doctor Strange In The Multiverse Of Madness is going to have a lot of horror scenes</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/its-our-collective-endeavour-to-pm-modis-tribute-to-mahatma-gandhi-on-his-death-anniversary</loc>
     <lastmod>2022-01-30T04:56:26.171275+00:00</lastmod>
     <news:news>
@@ -1462,18 +1582,6 @@
       </news:publication>
       <news:publication_date>2022-01-30T04:56:26.171275+00:00</news:publication_date>
       <news:title>&quot;It&apos;s Our Collective Endeavour To...&quot;: PM&apos;s Tribute To Mahatma Gandhi</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/thor-4-natalie-portman-marvel-plans-after</loc>
-    <lastmod>2022-01-30T04:43:51.699414+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-01-30T04:43:51.699414+00:00</news:publication_date>
-      <news:title>Marvel Rumor Teases Big Plans for Natalie Portman After Thor 4</news:title>
     </news:news>
   </url>
   <url>
@@ -1546,18 +1654,6 @@
       </news:publication>
       <news:publication_date>2022-01-25T04:55:52.413974+00:00</news:publication_date>
       <news:title>Issue to  pair (connect) Sony Bluetooth wireless headphones to another device</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/ganurdiansofthegalaxyunderproduction123</loc>
-    <lastmod>2022-01-25T05:39:06.848535+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-01-25T05:39:06.848535+00:00</news:publication_date>
-      <news:title>Gallery: Guardians of the Galaxy 3 Is Under Production. Pics Posted by Actors. </news:title>
     </news:news>
   </url>
   <url>
@@ -1693,18 +1789,6 @@
     </news:news>
   </url>
   <url>
-    <loc>https://blog.urtechy.com/post/valorant-players-can-use-sound-radius-circle-to-line-up-viper-snake-bite-ability</loc>
-    <lastmod>2022-01-22T13:59:25.114059+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-01-22T13:59:25.114059+00:00</news:publication_date>
-      <news:title>VALORANT players can use sound radius circle to line up Viper’s Snake Bite ability</news:title>
-    </news:news>
-  </url>
-  <url>
     <loc>https://blog.urtechy.com/post/cyberbullying-prevention</loc>
     <lastmod>2022-01-22T22:50:45.554002+00:00</lastmod>
     <news:news>
@@ -1726,30 +1810,6 @@
       </news:publication>
       <news:publication_date>2022-01-22T16:38:14.615882+00:00</news:publication_date>
       <news:title>In a first, kidneys from a genetically altered pig successfully implanted in brain-dead man in the US</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/anish-giri-i-have-had-it-all-in-wijk-aan-zee</loc>
-    <lastmod>2022-01-22T15:03:41.894255+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-01-22T15:03:41.894255+00:00</news:publication_date>
-      <news:title>Anish Giri: ‘I have had it all in Wijk aan Zee’</news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://blog.urtechy.com/post/ipl-to-begin-from-last-week-of-march</loc>
-    <lastmod>2022-01-22T14:16:39.365784+00:00</lastmod>
-    <news:news>
-      <news:publication>
-        <news:name>urTechy Blogs</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2022-01-22T14:16:39.365784+00:00</news:publication_date>
-      <news:title> &apos;IPL 2022 to begin from last week of March&apos;: confirms BCCI Secretary Jay Shah</news:title>
     </news:news>
   </url>
 </urlset>
