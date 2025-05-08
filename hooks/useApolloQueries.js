@@ -68,6 +68,7 @@ export const POST_DETAILS_QUERY = gql`
       slug
       content {
         raw
+        json
       }
       categories {
         name
@@ -393,6 +394,7 @@ export const fetchPostDetails = async (slug) => {
           slug
           content {
             raw
+            json
           }
           categories {
             name
@@ -436,6 +438,7 @@ export const fetchPostDetails = async (slug) => {
           slug
           content {
             raw
+            json
           }
           categories {
             name

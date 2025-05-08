@@ -89,12 +89,57 @@ const PostDetails = ({ post, error, lastFetched }) => {
                 <p className="text-red-500 mb-4">
                   We're having trouble loading the content for this post.
                 </p>
-                <button
-                  onClick={() => router.reload()}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-                >
-                  Try Refreshing
-                </button>
+
+                {isDevEnvironment && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-8 text-left">
+                    <h3 className="text-yellow-800 font-semibold mb-2">
+                      Content Debug Info:
+                    </h3>
+                    <p className="text-yellow-700 mb-1">
+                      Content object: {post.content ? "exists" : "missing"}
+                    </p>
+                    {post.content && (
+                      <>
+                        <p className="text-yellow-700 mb-1">
+                          Content keys: {Object.keys(post.content).join(", ")}
+                        </p>
+                        <p className="text-yellow-700 mb-1">
+                          Raw:{" "}
+                          {post.content.raw
+                            ? typeof post.content.raw === "string"
+                              ? "string"
+                              : "object"
+                            : "missing"}
+                        </p>
+                        <p className="text-yellow-700 mb-1">
+                          JSON:{" "}
+                          {post.content.json
+                            ? typeof post.content.json === "string"
+                              ? "string"
+                              : "object"
+                            : "missing"}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={() => router.reload()}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+                  >
+                    Try Refreshing
+                  </button>
+                  <button
+                    onClick={() =>
+                      (window.location.href = `/api/debug-post?slug=${post.slug}`)
+                    }
+                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700"
+                  >
+                    Debug Post
+                  </button>
+                </div>
               </div>
             </div>
             {post.author && <Author author={post.author} />}
@@ -246,22 +291,57 @@ export async function getStaticProps({ params }) {
     }
 
     // Ensure the content structure is valid
-    if (data.content && data.content.raw) {
-      // If we have raw content but it's a string, try to parse it
-      if (typeof data.content.raw === "string") {
-        try {
-          data.content.raw = JSON.parse(data.content.raw);
-          console.log(
-            `[getStaticProps] Successfully parsed content.raw string to object`
-          );
-        } catch (parseError) {
-          console.error(
-            `[getStaticProps] Failed to parse content.raw string:`,
-            parseError.message
-          );
-          // Set to null if parsing fails
-          data.content.raw = null;
+    if (data.content) {
+      // Handle raw content
+      if (data.content.raw) {
+        // If we have raw content but it's a string, try to parse it
+        if (typeof data.content.raw === "string") {
+          try {
+            data.content.raw = JSON.parse(data.content.raw);
+            console.log(
+              `[getStaticProps] Successfully parsed content.raw string to object`
+            );
+          } catch (parseError) {
+            console.error(
+              `[getStaticProps] Failed to parse content.raw string:`,
+              parseError.message
+            );
+            // Keep as string if parsing fails - don't set to null
+            console.log(`[getStaticProps] Keeping raw content as string`);
+          }
         }
+      }
+
+      // Handle json content
+      if (data.content.json) {
+        // If we have json content but it's a string, try to parse it
+        if (typeof data.content.json === "string") {
+          try {
+            data.content.json = JSON.parse(data.content.json);
+            console.log(
+              `[getStaticProps] Successfully parsed content.json string to object`
+            );
+          } catch (parseError) {
+            console.error(
+              `[getStaticProps] Failed to parse content.json string:`,
+              parseError.message
+            );
+            // Keep as string if parsing fails - don't set to null
+            console.log(`[getStaticProps] Keeping json content as string`);
+          }
+        }
+      }
+
+      // If neither raw nor json content is available, create a minimal content object
+      if (!data.content.raw && !data.content.json) {
+        console.warn(
+          `[getStaticProps] Post for slug: ${params.slug} is missing both raw and json content`
+        );
+        // Create a minimal content object to prevent errors
+        data.content = {
+          raw: null,
+          json: null,
+        };
       }
     }
 
