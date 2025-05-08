@@ -1,102 +1,102 @@
-import React, { useState, useEffect, memo, useRef } from "react";
-import dynamic from "next/dynamic";
+import React, { useState, useEffect, useRef } from "react";
 import { ClipLoader } from "react-spinners";
 import Head from "next/head";
 import { motion } from "framer-motion";
 
-// Import carousel directly to avoid dynamic import issues
-import Carousel from "react-multi-carousel";
-// Import styles
-import "react-multi-carousel/lib/styles.css";
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+// Custom styles for Swiper
+const swiperStyles = `
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    display: none;
+  }
+
+  .swiper-pagination-bullet {
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+`;
+// Import required modules
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
 
 import { FeaturedPostCard } from "../components";
 import { getFeaturedPosts } from "../services";
 import { getDirectFeaturedPosts } from "../services/direct-api";
 
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 1024 },
-    items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 1024, min: 768 },
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 768, min: 640 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 640, min: 0 },
-    items: 1,
-  },
+// Custom navigation buttons for Swiper
+const NavigationButtons = () => {
+  return (
+    <>
+      <motion.div
+        className="swiper-button-prev absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-gradient-to-r from-primary to-urtechy-orange rounded-full z-10"
+        whileHover={{
+          scale: 1.1,
+          boxShadow: "0 15px 25px -5px rgba(229, 9, 20, 0.4)",
+        }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.2 }}
+        style={{ backdropFilter: "blur(4px)" }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 text-white w-full"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+      </motion.div>
+      <motion.div
+        className="swiper-button-next absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-gradient-to-r from-urtechy-orange to-primary rounded-full z-10"
+        whileHover={{
+          scale: 1.1,
+          boxShadow: "0 15px 25px -5px rgba(229, 9, 20, 0.4)",
+        }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.2 }}
+        style={{ backdropFilter: "blur(4px)" }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 text-white w-full"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M14 5l7 7m0 0l-7 7m7-7H3"
+          />
+        </svg>
+      </motion.div>
+    </>
+  );
 };
-
-// Custom arrow components memoized to prevent re-renders
-// The onClick prop is passed by react-multi-carousel and needs to be used
-const LeftArrow = memo(({ onClick }) => (
-  <motion.div
-    className="absolute arrow-btn left-0 text-center py-3 cursor-pointer bg-gradient-to-r from-primary to-urtechy-orange rounded-full z-10"
-    onClick={onClick}
-    whileHover={{
-      scale: 1.1,
-      boxShadow: "0 15px 25px -5px rgba(229, 9, 20, 0.4)",
-    }}
-    whileTap={{ scale: 0.95 }}
-    transition={{ duration: 0.2 }}
-    style={{ backdropFilter: "blur(4px)" }}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 text-white w-full"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M10 19l-7-7m0 0l7-7m-7 7h18"
-      />
-    </svg>
-  </motion.div>
-));
-
-const RightArrow = memo(({ onClick }) => (
-  <motion.div
-    className="absolute arrow-btn right-0 text-center py-3 cursor-pointer bg-gradient-to-r from-urtechy-orange to-primary rounded-full z-10"
-    onClick={onClick}
-    whileHover={{
-      scale: 1.1,
-      boxShadow: "0 15px 25px -5px rgba(229, 9, 20, 0.4)",
-    }}
-    whileTap={{ scale: 0.95 }}
-    transition={{ duration: 0.2 }}
-    style={{ backdropFilter: "blur(4px)" }}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 text-white w-full"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M14 5l7 7m0 0l-7 7m7-7H3"
-      />
-    </svg>
-  </motion.div>
-));
 
 const FeaturedPosts = () => {
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const carouselRef = useRef(null);
+  const swiperRef = useRef(null);
 
   // Preload images for better LCP
   const preloadImages = (posts) => {
@@ -248,33 +248,62 @@ const FeaturedPosts = () => {
       </motion.div>
 
       {preloadImages(featuredPosts)}
-      <Carousel
-        ref={carouselRef}
-        infinite
-        customLeftArrow={<LeftArrow />}
-        customRightArrow={<RightArrow />}
-        responsive={responsive}
-        itemClass="px-4"
-        ssr={true}
-        swipeable={true}
-        draggable={true}
-        partialVisible={false}
-        minimumTouchDrag={80}
-        autoPlay={true}
-        autoPlaySpeed={5000}
-        shouldResetAutoplay={false}
-        // Show dots for better navigation
-        renderDotsOutside={true}
-        showDots={true}
-        dotListClass="flex justify-center gap-2 mt-6"
-        // Improve performance
-        rewind={false}
-        rewindWithAnimation={false}
-      >
-        {featuredPosts.map((post, index) => (
-          <FeaturedPostCard key={post.slug || index} post={post} />
-        ))}
-      </Carousel>
+      <style jsx global>
+        {swiperStyles}
+      </style>
+      <div className="relative">
+        <Swiper
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
+          modules={[Pagination, Navigation, Autoplay]}
+          spaceBetween={20}
+          slidesPerView={1}
+          pagination={{
+            clickable: true,
+            el: ".swiper-pagination",
+            bulletClass:
+              "swiper-pagination-bullet bg-primary/50 inline-block w-3 h-3 rounded-full mx-1 cursor-pointer transition-all duration-300",
+            bulletActiveClass:
+              "swiper-pagination-bullet-active bg-primary w-4 h-4",
+          }}
+          navigation={{
+            prevEl: ".swiper-button-prev",
+            nextEl: ".swiper-button-next",
+            disabledClass: "opacity-30 cursor-not-allowed",
+          }}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          breakpoints={{
+            640: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 3,
+              spaceBetween: 30,
+            },
+            1280: {
+              slidesPerView: 4,
+              spaceBetween: 40,
+            },
+          }}
+          className="pb-12"
+        >
+          {featuredPosts.map((post, index) => (
+            <SwiperSlide key={post.slug || index} className="px-2">
+              <FeaturedPostCard post={post} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <div className="swiper-pagination mt-6 flex justify-center gap-2"></div>
+        <NavigationButtons />
+      </div>
     </motion.div>
   );
 };
