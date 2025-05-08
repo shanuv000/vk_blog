@@ -28,6 +28,8 @@ const PostDetails = ({ post, error, lastFetched }) => {
 
   // Handle case where post might be null or undefined
   if (!post) {
+    const slug = router.query.slug;
+
     return (
       <div className="sm:container mx-auto px-4 lg:px-10 mb-8 text-center py-20">
         <h1 className="text-3xl font-bold mb-4">Post Not Found</h1>
@@ -37,7 +39,7 @@ const PostDetails = ({ post, error, lastFetched }) => {
         <p className="text-gray-600 mb-8">
           URL: {router.asPath}
           <br />
-          Slug: {router.query.slug}
+          Slug: {slug}
         </p>
 
         {/* Show error details in development environment */}
@@ -53,6 +55,55 @@ const PostDetails = ({ post, error, lastFetched }) => {
             )}
           </div>
         )}
+
+        {/* Debugging tools - visible in all environments */}
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-8 mx-auto max-w-2xl">
+          <h3 className="text-blue-800 font-semibold mb-2">
+            Troubleshooting Options:
+          </h3>
+          <p className="text-blue-700 mb-4">
+            This post might not exist in our content management system or there
+            might be an issue with the connection.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <a
+              href={`/api/debug-post?slug=${slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-center"
+            >
+              Debug Post Data
+            </a>
+
+            <a
+              href={`/api/check-post?slug=${slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-center"
+            >
+              Check Similar Posts
+            </a>
+
+            <a
+              href={`/api/hygraph-schema`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-center"
+            >
+              Validate Schema
+            </a>
+
+            <a
+              href="https://app.hygraph.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-center"
+            >
+              Open Hygraph CMS
+            </a>
+          </div>
+        </div>
 
         <div className="flex justify-center space-x-4">
           <button
@@ -379,34 +430,75 @@ export async function getStaticProps({ params }) {
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
   try {
-    console.log("Fetching posts for getStaticPaths");
+    console.log("[getStaticPaths] Fetching posts");
     const posts = await getPosts();
 
     // Filter out any posts that don't have a slug
     const validPosts = posts.filter((post) => post.node && post.node.slug);
 
     console.log(
-      `Found ${validPosts.length} valid posts out of ${posts.length} total posts`
+      `[getStaticPaths] Found ${validPosts.length} valid posts out of ${posts.length} total posts`
     );
+
+    // Add specific slugs that we know should exist but might be missing from the API response
+    const knownSlugs = [
+      "marvel-benedict-cumberbatch-mcu-anchor",
+      "ipl-media-rights-cofused-about-packages",
+      "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
+    ];
+
+    // Create a set of existing slugs from the API
+    const existingSlugs = new Set(validPosts.map((post) => post.node.slug));
+
+    // Add missing known slugs to our paths
+    const additionalSlugs = knownSlugs.filter(
+      (slug) => !existingSlugs.has(slug)
+    );
+
+    if (additionalSlugs.length > 0) {
+      console.log(
+        `[getStaticPaths] Adding ${additionalSlugs.length} known slugs that were missing from API response`
+      );
+    }
 
     // Only pre-render the most recent posts to speed up build time
     // Other posts will be generated on-demand using fallback: 'blocking'
-    const recentPosts = validPosts.slice(0, 10); // Only pre-render the 10 most recent posts
+    const recentPosts = validPosts.slice(0, 20); // Pre-render the 20 most recent posts
 
-    console.log(`Pre-rendering ${recentPosts.length} recent posts`);
+    // Combine API posts with additional known slugs
+    const pathsFromPosts = recentPosts.map(({ node: { slug } }) => ({
+      params: { slug },
+    }));
+    const pathsFromKnownSlugs = additionalSlugs.map((slug) => ({
+      params: { slug },
+    }));
+    const allPaths = [...pathsFromPosts, ...pathsFromKnownSlugs];
+
+    console.log(`[getStaticPaths] Pre-rendering ${allPaths.length} posts`);
 
     return {
-      paths: recentPosts.map(({ node: { slug } }) => ({ params: { slug } })),
+      paths: allPaths,
       // Use 'blocking' to wait for the page to be generated on-demand
       fallback: "blocking",
     };
   } catch (error) {
-    console.error("Error in getStaticPaths:", error);
+    console.error("[getStaticPaths] Error:", error);
 
-    // Return empty paths array but still use blocking fallback
-    // This ensures the site builds even if we can't fetch posts
+    // If we can't fetch posts, at least pre-render the known problematic slugs
+    const fallbackSlugs = [
+      "marvel-benedict-cumberbatch-mcu-anchor",
+      "ipl-media-rights-cofused-about-packages",
+      "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
+    ];
+
+    console.log(
+      `[getStaticPaths] Using fallback slugs due to error: ${fallbackSlugs.join(
+        ", "
+      )}`
+    );
+
     return {
-      paths: [],
+      paths: fallbackSlugs.map((slug) => ({ params: { slug } })),
       fallback: "blocking",
     };
   }
