@@ -298,11 +298,6 @@ const GET_POST_DETAILS = gql`
         json
         references {
           __typename
-          id
-          url
-          mimeType
-          width
-          height
         }
       }
       categories {

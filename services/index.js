@@ -169,11 +169,6 @@ export const getPostDetails = async (slug) => {
           json
           references {
             __typename
-            id
-            url
-            mimeType
-            width
-            height
           }
         }
         categories {
@@ -208,11 +203,6 @@ export const getPostDetails = async (slug) => {
           json
           references {
             __typename
-            id
-            url
-            mimeType
-            width
-            height
           }
         }
         categories {
@@ -324,6 +314,7 @@ export const getPostDetails = async (slug) => {
               slug
               content {
                 raw
+                json
               }
               categories {
                 name
