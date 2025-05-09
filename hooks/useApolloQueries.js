@@ -329,16 +329,55 @@ export const useRecentPosts = () => {
 };
 
 // Direct client methods for SSR and special cases
-export const fetchPosts = async () => {
+export const fetchPosts = async (limit = 20) => {
   try {
     const client = getApolloClient();
+
+    // Create a dynamic query with the limit parameter
+    const DYNAMIC_POSTS_QUERY = gql`
+      query GetPosts($limit: Int!) {
+        postsConnection(first: $limit, orderBy: publishedAt_DESC) {
+          edges {
+            cursor
+            node {
+              author {
+                bio
+                name
+                id
+                photo {
+                  url
+                }
+              }
+              publishedAt
+              createdAt
+              slug
+              title
+              excerpt
+              featuredImage {
+                url
+              }
+              categories {
+                name
+                slug
+              }
+            }
+          }
+        }
+      }
+    `;
+
     const { data } = await client.query({
-      query: POSTS_QUERY,
+      query: DYNAMIC_POSTS_QUERY,
+      variables: { limit },
       fetchPolicy: "network-only", // For SSR, always fetch fresh data
     });
+
+    console.log(
+      `[fetchPosts] Fetched ${data.postsConnection.edges.length} posts with Apollo`
+    );
     return data.postsConnection.edges;
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error("[fetchPosts] Error fetching posts with Apollo:", error);
     return [];
   }
 };

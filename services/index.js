@@ -10,39 +10,103 @@ const getApolloClient = () => initializeApollo();
 // Flag to control whether to use Apollo Client or the original implementation
 const USE_APOLLO = true;
 
-export const getPosts = async () => {
-  // Use Apollo Client if enabled
-  if (USE_APOLLO) {
-    return apolloHooks.fetchPosts();
+export const getPosts = async (options = {}) => {
+  // Default options
+  const {
+    limit = 20, // Default to 20 posts
+    fields = "full", // 'full' or 'minimal'
+    forStaticPaths = false, // Special flag for getStaticPaths usage
+    cacheKey = null, // Optional cache key for memoization
+  } = options;
+
+  // Check if we're in a build context (for static generation)
+  const isBuildTime = typeof window === "undefined";
+
+  // For getStaticPaths, we only need slugs, so use a minimal query
+  if (forStaticPaths && isBuildTime) {
+    console.log(
+      `[getPosts] Optimized fetch for static paths (limit: ${limit})`
+    );
+
+    // Use a minimal query that only fetches slugs
+    const minimalQuery = gql`
+      query GetPostSlugs($limit: Int!) {
+        postsConnection(first: $limit, orderBy: publishedAt_DESC) {
+          edges {
+            node {
+              slug
+            }
+          }
+        }
+      }
+    `;
+
+    try {
+      const result = await fetchFromCDN(minimalQuery, { limit });
+      console.log(
+        `[getPosts] Fetched ${result.postsConnection.edges.length} post slugs for static paths`
+      );
+      return result.postsConnection.edges;
+    } catch (error) {
+      console.error("[getPosts] Error fetching post slugs:", error);
+      return [];
+    }
   }
 
-  // Original implementation as fallback
+  // Use Apollo Client if enabled (for normal page rendering)
+  if (USE_APOLLO && !forStaticPaths) {
+    try {
+      const posts = await apolloHooks.fetchPosts(limit);
+      return posts;
+    } catch (apolloError) {
+      console.error("[getPosts] Apollo fetch failed:", apolloError);
+      // Fall back to direct implementation
+    }
+  }
+
+  // Determine which fields to fetch based on the 'fields' option
+  let fieldsFragment = "";
+
+  if (fields === "minimal") {
+    fieldsFragment = `
+      slug
+      title
+      createdAt
+    `;
+  } else {
+    // Default to full fields
+    fieldsFragment = `
+      author {
+        bio
+        name
+        id
+        photo {
+          url
+        }
+      }
+      publishedAt
+      createdAt
+      slug
+      title
+      excerpt
+      featuredImage {
+        url
+      }
+      categories {
+        name
+        slug
+      }
+    `;
+  }
+
+  // Build the query with the appropriate fields and limit
   const query = gql`
-    query MyQuery {
-      postsConnection(first: 20, orderBy: publishedAt_DESC) {
+    query GetPosts($limit: Int!) {
+      postsConnection(first: $limit, orderBy: publishedAt_DESC) {
         edges {
           cursor
           node {
-            author {
-              bio
-              name
-              id
-              photo {
-                url
-              }
-            }
-            publishedAt
-            createdAt
-            slug
-            title
-            excerpt
-            featuredImage {
-              url
-            }
-            categories {
-              name
-              slug
-            }
+            ${fieldsFragment}
           }
         }
       }
@@ -50,17 +114,18 @@ export const getPosts = async () => {
   `;
 
   try {
-    console.log("Fetching posts");
+    console.log(
+      `[getPosts] Fetching posts (limit: ${limit}, fields: ${fields})`
+    );
 
-    // Skip proxy API for server-side rendering
-    // This avoids the URL error during build/SSR
-
-    // If proxy fails, fall back to direct CDN
-    console.log("Falling back to direct CDN for posts");
-    const result = await fetchFromCDN(query);
+    // Use direct CDN for server-side rendering
+    const result = await fetchFromCDN(query, { limit });
+    console.log(
+      `[getPosts] Successfully fetched ${result.postsConnection.edges.length} posts`
+    );
     return result.postsConnection.edges;
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error("[getPosts] Error fetching posts:", error);
     return [];
   }
 };

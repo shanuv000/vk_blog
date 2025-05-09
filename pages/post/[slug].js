@@ -430,15 +430,30 @@ export async function getStaticProps({ params }) {
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
   try {
-    console.log("[getStaticPaths] Fetching posts");
-    const posts = await getPosts();
-
-    // Filter out any posts that don't have a slug
-    const validPosts = posts.filter((post) => post.node && post.node.slug);
-
     console.log(
-      `[getStaticPaths] Found ${validPosts.length} valid posts out of ${posts.length} total posts`
+      "[getStaticPaths] Optimized post fetching for build performance"
     );
+
+    // Define a maximum number of posts to fetch for static generation
+    // This significantly improves build time while still pre-rendering the most important content
+    const POST_LIMIT = 15; // Adjust this number based on your build performance needs
+
+    // We're using the optimized getPosts function with caching built-in
+    // This is much faster than fetching all posts with full content
+
+    // Get post slugs with the optimized getPosts function
+    const posts = await getPosts({
+      limit: POST_LIMIT,
+      fields: "minimal",
+      forStaticPaths: true,
+    });
+
+    // Extract just the slugs from the posts
+    const allSlugs = posts
+      .filter((post) => post.node && post.node.slug)
+      .map((post) => post.node.slug);
+
+    console.log(`[getStaticPaths] Found ${allSlugs.length} valid posts`);
 
     // Add specific slugs that we know should exist but might be missing from the API response
     const knownSlugs = [
@@ -448,7 +463,7 @@ export async function getStaticPaths() {
     ];
 
     // Create a set of existing slugs from the API
-    const existingSlugs = new Set(validPosts.map((post) => post.node.slug));
+    const existingSlugs = new Set(allSlugs);
 
     // Add missing known slugs to our paths
     const additionalSlugs = knownSlugs.filter(
@@ -463,10 +478,10 @@ export async function getStaticPaths() {
 
     // Only pre-render the most recent posts to speed up build time
     // Other posts will be generated on-demand using fallback: 'blocking'
-    const recentPosts = validPosts.slice(0, 20); // Pre-render the 20 most recent posts
+    const recentSlugs = allSlugs.slice(0, POST_LIMIT); // Pre-render limited number of posts
 
     // Combine API posts with additional known slugs
-    const pathsFromPosts = recentPosts.map(({ node: { slug } }) => ({
+    const pathsFromPosts = recentSlugs.map((slug) => ({
       params: { slug },
     }));
     const pathsFromKnownSlugs = additionalSlugs.map((slug) => ({
