@@ -5,6 +5,10 @@ import Link from "next/link";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { TwitterTweetEmbed } from "react-twitter-embed";
+import {
+  extractImageDimensions,
+  createImageDebugUrl,
+} from "../utils/imageUtils";
 
 const RichTextRenderer = ({ content, references = [] }) => {
   // Enhanced debugging for content structure
@@ -578,23 +582,146 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   {children}
                 </Link>
               ),
-              img: ({ src, altText, height, width }) => (
-                <div className="my-8">
-                  {src ? (
-                    <Image
-                      src={src}
-                      alt={altText || "Blog image"}
-                      height={height || 600}
-                      width={width || 1200}
-                      className="rounded-lg shadow-md"
-                    />
-                  ) : (
-                    <div className="bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center">
+              img: ({ src, altText, height, width }) => {
+                // Log image details for debugging
+                console.log(
+                  `Rendering image: ${src}, height: ${height}, width: ${width}`
+                );
+
+                // Extract dimensions from URL if not provided
+                const extractedDimensions = extractImageDimensions(src);
+
+                // Use extracted dimensions as fallback
+                const imageHeight =
+                  height && !isNaN(parseInt(height))
+                    ? parseInt(height)
+                    : extractedDimensions.height || 600;
+
+                const imageWidth =
+                  width && !isNaN(parseInt(width))
+                    ? parseInt(width)
+                    : extractedDimensions.width || 1200;
+
+                // If no source, render placeholder
+                if (!src) {
+                  console.log(
+                    "No image source provided, rendering placeholder"
+                  );
+                  return (
+                    <div className="my-8 bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center">
                       <p className="text-gray-500">Image not available</p>
                     </div>
-                  )}
-                </div>
-              ),
+                  );
+                }
+
+                // Create debug URL for troubleshooting
+                const debugUrl = createImageDebugUrl(src);
+
+                // Use a try-catch block to handle any rendering errors
+                try {
+                  return (
+                    <div className="my-8 relative">
+                      {/* For development, use Next.js Image with fallback */}
+                      {process.env.NODE_ENV === "development" ? (
+                        <>
+                          <Image
+                            src={src}
+                            alt={altText || "Blog image"}
+                            height={imageHeight}
+                            width={imageWidth}
+                            className="rounded-lg shadow-md"
+                            onError={(e) => {
+                              console.error(`Failed to load image: ${src}`);
+                              e.target.style.display = "none";
+                              const fallback = document.createElement("div");
+                              fallback.className =
+                                "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                              fallback.innerHTML =
+                                '<p class="text-gray-500">Image failed to load</p>';
+                              e.target.parentNode.appendChild(fallback);
+                            }}
+                          />
+                          <div className="mt-1 text-xs text-gray-500">
+                            <details>
+                              <summary className="cursor-pointer">
+                                Image Debug
+                              </summary>
+                              <p>Source: {src}</p>
+                              <p>
+                                Dimensions: {imageWidth}x{imageHeight}
+                              </p>
+                              <a
+                                href={debugUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:underline"
+                              >
+                                Check Image
+                              </a>
+                            </details>
+                          </div>
+                        </>
+                      ) : (
+                        // For production, use a more robust approach with multiple fallbacks
+                        <>
+                          {/* First try with Next.js Image */}
+                          <div className="relative">
+                            <img
+                              src={src}
+                              alt={altText || "Blog image"}
+                              className="rounded-lg shadow-md w-full"
+                              style={{
+                                maxHeight: "800px",
+                                objectFit: "contain",
+                              }}
+                              onError={(e) => {
+                                console.error(`Failed to load image: ${src}`);
+                                e.target.style.display = "none";
+
+                                // Try with a direct img tag as fallback
+                                const fallbackImg =
+                                  document.createElement("img");
+                                fallbackImg.src = src;
+                                fallbackImg.alt = altText || "Blog image";
+                                fallbackImg.className =
+                                  "rounded-lg shadow-md w-full";
+                                fallbackImg.style =
+                                  "max-height: 800px; object-fit: contain;";
+
+                                // If that also fails, show a placeholder
+                                fallbackImg.onerror = () => {
+                                  fallbackImg.style.display = "none";
+                                  const fallbackDiv =
+                                    document.createElement("div");
+                                  fallbackDiv.className =
+                                    "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                  fallbackDiv.innerHTML =
+                                    '<p class="text-gray-500">Image failed to load</p>';
+                                  e.target.parentNode.appendChild(fallbackDiv);
+                                };
+
+                                e.target.parentNode.appendChild(fallbackImg);
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  );
+                } catch (error) {
+                  console.error(`Error rendering image ${src}:`, error);
+                  return (
+                    <div className="my-8 bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center">
+                      <p className="text-gray-500">Error displaying image</p>
+                      {process.env.NODE_ENV === "development" && (
+                        <p className="text-xs text-red-500 mt-2">
+                          Error: {error.message}
+                        </p>
+                      )}
+                    </div>
+                  );
+                }
+              },
               code_block: ({ children }) => {
                 // Extract language and code
                 const language =

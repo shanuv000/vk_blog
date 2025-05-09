@@ -336,12 +336,46 @@ const PostDetail = ({ post }) => {
                     </div>
                   }
                 >
-                  <RichTextRenderer
-                    content={
-                      post.content.json || post.content.raw || post.content
+                  {/* Wrap RichTextRenderer in a try-catch block for additional error handling */}
+                  {(() => {
+                    try {
+                      // Log content structure for debugging
+                      console.log(`Rendering content for post: ${post.slug}`);
+                      console.log(`Content type: ${typeof post.content}`);
+
+                      // Determine which content format to use
+                      const contentToUse =
+                        post.content.json || post.content.raw || post.content;
+
+                      return (
+                        <RichTextRenderer
+                          content={contentToUse}
+                          references={post.content.references || []}
+                        />
+                      );
+                    } catch (error) {
+                      console.error(
+                        `Error rendering post content: ${error.message}`
+                      );
+                      return (
+                        <div className="bg-red-50 border border-red-200 p-4 rounded-md">
+                          <h3 className="text-red-600 font-medium">
+                            Error displaying content
+                          </h3>
+                          <p className="text-gray-700 mt-2">
+                            We encountered an error while rendering this
+                            content. Please try refreshing the page.
+                          </p>
+                          {process.env.NODE_ENV === "development" && (
+                            <p className="text-xs text-red-500 mt-2">
+                              Error: {error.message}
+                            </p>
+                          )}
+                        </div>
+                      );
                     }
-                    references={post.content.references || []}
-                  />
+                  })()}
+
                   {/* Add debug information in development */}
                   {process.env.NODE_ENV === "development" && (
                     <div className="mt-4 p-4 bg-gray-100 rounded-md text-xs">
@@ -365,6 +399,18 @@ const PostDetail = ({ post }) => {
                               : "None"}
                           </p>
                           <p>Post ID: {post.slug}</p>
+                          <p>
+                            Content Structure:{" "}
+                            {post.content.json
+                              ? `JSON keys: ${Object.keys(
+                                  post.content.json
+                                ).join(", ")}`
+                              : post.content.raw
+                              ? `RAW keys: ${Object.keys(post.content.raw).join(
+                                  ", "
+                                )}`
+                              : "Unknown structure"}
+                          </p>
                         </div>
                       </details>
                     </div>
