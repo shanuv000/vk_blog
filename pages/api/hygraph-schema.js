@@ -12,29 +12,26 @@ export const config = {
   },
 };
 
-// Get the Hygraph API endpoints from environment variables
+// Get the Hygraph API endpoint from environment variables
 const HYGRAPH_CDN_API =
   process.env.NEXT_PUBLIC_HYGRAPH_CDN_API ||
   "https://ap-south-1.cdn.hygraph.com/content/cky5wgpym15ym01z44tk90zeb/master";
-const HYGRAPH_CONTENT_API =
-  process.env.NEXT_PUBLIC_HYGRAPH_CONTENT_API ||
-  "https://api-ap-south-1.hygraph.com/v2/cky5wgpym15ym01z44tk90zeb/master";
 
 export default async function handler(req, res) {
   // Set CORS headers to allow requests from specific domains
   const allowedOrigins = [
-    'https://blog.urtechy.com',
-    'https://urtechy.com',
-    'http://localhost:3000'
+    "https://blog.urtechy.com",
+    "https://urtechy.com",
+    "http://localhost:3000",
   ];
   const origin = req.headers.origin;
-  
+
   if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader("Access-Control-Allow-Origin", origin);
   } else {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Access-Control-Allow-Origin", "*");
   }
-  
+
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
@@ -48,126 +45,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  // Define the introspection query to get schema information
-  const introspectionQuery = `
-    query IntrospectionQuery {
-      __schema {
-        types {
-          name
-          kind
-          description
-          fields(includeDeprecated: true) {
-            name
-            description
-            args {
-              name
-              description
-              type {
-                name
-                kind
-                ofType {
-                  name
-                  kind
-                }
-              }
-              defaultValue
-            }
-            type {
-              name
-              kind
-              ofType {
-                name
-                kind
-                ofType {
-                  name
-                  kind
-                  ofType {
-                    name
-                    kind
-                  }
-                }
-              }
-            }
-            isDeprecated
-            deprecationReason
-          }
-          inputFields {
-            name
-            description
-            type {
-              name
-              kind
-              ofType {
-                name
-                kind
-                ofType {
-                  name
-                  kind
-                  ofType {
-                    name
-                    kind
-                  }
-                }
-              }
-            }
-            defaultValue
-          }
-          interfaces {
-            name
-          }
-          enumValues(includeDeprecated: true) {
-            name
-            description
-            isDeprecated
-            deprecationReason
-          }
-          possibleTypes {
-            name
-          }
-        }
-        queryType {
-          name
-        }
-        mutationType {
-          name
-        }
-        subscriptionType {
-          name
-        }
-        directives {
-          name
-          description
-          locations
-          args {
-            name
-            description
-            type {
-              name
-              kind
-              ofType {
-                name
-                kind
-                ofType {
-                  name
-                  kind
-                  ofType {
-                    name
-                    kind
-                  }
-                }
-              }
-            }
-            defaultValue
-          }
-        }
-      }
-    }
-  `;
-
-  // Also define a simpler query to check for the Post type
+  // Define queries to validate the Hygraph schema
   const postTypeQuery = `
     query PostTypeQuery {
-      __type(name: "Post") {
+      postType: __type(name: "Post") {
         name
         kind
         fields {
@@ -182,7 +63,7 @@ export default async function handler(req, res) {
           }
         }
       }
-      __type(name: "RichText") {
+      richTextType: __type(name: "RichText") {
         name
         kind
         fields {
@@ -236,8 +117,8 @@ export default async function handler(req, res) {
     // Prepare the response
     const result = {
       timestamp: new Date().toISOString(),
-      postType: postTypeResult.__type,
-      richTextType: postTypeResult.__type,
+      postType: postTypeResult.postType,
+      richTextType: postTypeResult.richTextType,
       postCheck: {
         slug,
         found: !!checkPostResult.post,
@@ -250,12 +131,33 @@ export default async function handler(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("Error validating Hygraph schema:", error);
-    
-    return res.status(200).json({
+
+    // Extract detailed error information
+    const errorDetails = {
       error: true,
       message: error.message,
       details: error.response?.errors || [],
+      requestInfo: error.request
+        ? {
+            query: error.request.query,
+            variables: error.request.variables,
+          }
+        : undefined,
+      responseInfo: error.response
+        ? {
+            status: error.response.status,
+            headers: error.response.headers,
+          }
+        : undefined,
       stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
-    });
+    };
+
+    // Log detailed error for debugging
+    console.error(
+      "Detailed error information:",
+      JSON.stringify(errorDetails, null, 2)
+    );
+
+    return res.status(200).json(errorDetails);
   }
 }
