@@ -283,10 +283,68 @@ export async function getStaticProps({ params }) {
   try {
     console.log(`[getStaticProps] Called for slug: ${params.slug}`);
 
+    // Special handling for known problematic slugs
+    const isProblematicSlug =
+      params.slug === "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram";
+    if (isProblematicSlug) {
+      console.log(
+        `[getStaticProps] Using special handling for problematic slug: ${params.slug}`
+      );
+    }
+
     // Add a try/catch around getPostDetails to get more detailed error information
     let data;
     try {
+      // First attempt with standard getPostDetails
       data = await getPostDetails(params.slug);
+
+      // If this is a problematic slug and we didn't get data, try a direct API call
+      if (isProblematicSlug && !data) {
+        console.log(
+          `[getStaticProps] First attempt failed for problematic slug, trying direct API call`
+        );
+
+        // Import the direct API client
+        const { gql, fetchFromCDN } = require("../services/hygraph");
+
+        // Use a simplified query that avoids potential schema issues
+        const directQuery = gql`
+          query GetPostDirectly($slug: String!) {
+            post(where: { slug: $slug }) {
+              title
+              excerpt
+              featuredImage {
+                url
+              }
+              author {
+                name
+                bio
+                photo {
+                  url
+                }
+              }
+              createdAt
+              publishedAt
+              slug
+              content {
+                raw
+              }
+              categories {
+                name
+                slug
+              }
+            }
+          }
+        `;
+
+        const result = await fetchFromCDN(directQuery, { slug: params.slug });
+        if (result && result.post) {
+          console.log(
+            `[getStaticProps] Successfully fetched data directly for problematic slug`
+          );
+          data = result.post;
+        }
+      }
     } catch (fetchError) {
       console.error(
         `[getStaticProps] Error in getPostDetails for ${params.slug}:`,
@@ -294,18 +352,77 @@ export async function getStaticProps({ params }) {
       );
       console.error(`[getStaticProps] Error stack:`, fetchError.stack);
 
-      // Return null post instead of failing
-      return {
-        props: {
-          post: null,
-          error: {
-            message: fetchError.message,
-            type: "FETCH_ERROR",
+      // For problematic slugs, try one more approach with a different query structure
+      if (isProblematicSlug) {
+        try {
+          console.log(
+            `[getStaticProps] Trying fallback approach for problematic slug`
+          );
+
+          // Import the direct API client
+          const { gql, fetchFromCDN } = require("../services/hygraph");
+
+          // Use an even more simplified query as a last resort
+          const fallbackQuery = gql`
+            query GetPostFallback($slug: String!) {
+              posts(where: { slug: $slug }, first: 1) {
+                title
+                excerpt
+                featuredImage {
+                  url
+                }
+                author {
+                  name
+                  bio
+                  photo {
+                    url
+                  }
+                }
+                createdAt
+                publishedAt
+                slug
+                content {
+                  raw
+                }
+                categories {
+                  name
+                  slug
+                }
+              }
+            }
+          `;
+
+          const result = await fetchFromCDN(fallbackQuery, {
+            slug: params.slug,
+          });
+          if (result && result.posts && result.posts.length > 0) {
+            console.log(
+              `[getStaticProps] Successfully fetched data with fallback approach`
+            );
+            data = result.posts[0];
+          }
+        } catch (fallbackError) {
+          console.error(
+            `[getStaticProps] Fallback approach also failed:`,
+            fallbackError.message
+          );
+        }
+      }
+
+      // If we still don't have data, return the error
+      if (!data) {
+        return {
+          props: {
+            post: null,
+            error: {
+              message: fetchError.message,
+              type: "FETCH_ERROR",
+            },
           },
-        },
-        // Shorter revalidation time for error cases
-        revalidate: 30,
-      };
+          // Shorter revalidation time for error cases
+          revalidate: 30,
+        };
+      }
     }
 
     // Log detailed information about the result
@@ -400,7 +517,7 @@ export async function getStaticPaths() {
 
     // Define a maximum number of posts to fetch for static generation
     // This significantly improves build time while still pre-rendering the most important content
-    const POST_LIMIT = 15; // Adjust this number based on your build performance needs
+    const POST_LIMIT = 30; // Increased from 15 to include more posts in the static build
 
     // We're using the optimized getPosts function with caching built-in
     // This is much faster than fetching all posts with full content
@@ -420,10 +537,13 @@ export async function getStaticPaths() {
     console.log(`[getStaticPaths] Found ${allSlugs.length} valid posts`);
 
     // Add specific slugs that we know should exist but might be missing from the API response
+    // Include the problematic slug explicitly
     const knownSlugs = [
       "marvel-benedict-cumberbatch-mcu-anchor",
       "ipl-media-rights-cofused-about-packages",
       "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
+      "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram", // The problematic slug
+      // Add any other known slugs here
     ];
 
     // Create a set of existing slugs from the API
@@ -436,12 +556,16 @@ export async function getStaticPaths() {
 
     if (additionalSlugs.length > 0) {
       console.log(
-        `[getStaticPaths] Adding ${additionalSlugs.length} known slugs that were missing from API response`
+        `[getStaticPaths] Adding ${
+          additionalSlugs.length
+        } known slugs that were missing from API response: ${additionalSlugs.join(
+          ", "
+        )}`
       );
     }
 
-    // Only pre-render the most recent posts to speed up build time
-    // Other posts will be generated on-demand using fallback: 'blocking'
+    // For better performance, we'll pre-render all known slugs plus a subset of recent posts
+    // This ensures important pages are pre-rendered while keeping build times reasonable
     const recentSlugs = allSlugs.slice(0, POST_LIMIT); // Pre-render limited number of posts
 
     // Combine API posts with additional known slugs
@@ -455,9 +579,22 @@ export async function getStaticPaths() {
 
     console.log(`[getStaticPaths] Pre-rendering ${allPaths.length} posts`);
 
+    // Explicitly log the problematic slug to confirm it's included
+    const isProblematicSlugIncluded = allPaths.some(
+      (path) =>
+        path.params.slug ===
+        "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram"
+    );
+    console.log(
+      `[getStaticPaths] Is problematic slug included? ${
+        isProblematicSlugIncluded ? "YES" : "NO"
+      }`
+    );
+
     return {
       paths: allPaths,
       // Use 'blocking' to wait for the page to be generated on-demand
+      // This is crucial for pages not included in the static build
       fallback: "blocking",
     };
   } catch (error) {
@@ -468,6 +605,7 @@ export async function getStaticPaths() {
       "marvel-benedict-cumberbatch-mcu-anchor",
       "ipl-media-rights-cofused-about-packages",
       "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
+      "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram", // The problematic slug
     ];
 
     console.log(

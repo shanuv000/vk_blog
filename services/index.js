@@ -284,7 +284,13 @@ export const getPostDetails = async (slug) => {
           raw
           json
           references {
-            __typename
+            ... on Asset {
+              id
+              url
+              mimeType
+              width
+              height
+            }
           }
         }
         categories {
@@ -318,7 +324,13 @@ export const getPostDetails = async (slug) => {
           raw
           json
           references {
-            __typename
+            ... on Asset {
+              id
+              url
+              mimeType
+              width
+              height
+            }
           }
         }
         categories {
