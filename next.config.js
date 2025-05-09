@@ -224,6 +224,7 @@ const nextConfig = {
       "png.pngtree.com",
       "e7.pngegg.com",
       "ap-south-1.cdn.hygraph.com", // Add Hygraph CDN domain
+      "via.placeholder.com", // Add placeholder.com for fallback images
     ], // Allowed image domains
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
@@ -248,7 +249,14 @@ const nextConfig = {
         hostname: "**.graphassets.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+        pathname: "**",
+      },
     ],
+    // Unoptimized option for problematic images
+    unoptimized: process.env.NODE_ENV === "production",
   },
 
   // Rewrites configuration

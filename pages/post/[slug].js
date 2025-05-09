@@ -283,25 +283,39 @@ export async function getStaticProps({ params }) {
   try {
     console.log(`[getStaticProps] Called for slug: ${params.slug}`);
 
-    // Special handling for known problematic slugs
-    const isProblematicSlug =
-      params.slug === "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram";
-    if (isProblematicSlug) {
-      console.log(
-        `[getStaticProps] Using special handling for problematic slug: ${params.slug}`
-      );
-    }
+    // IMPORTANT: We're now treating ALL posts as potentially problematic
+    // This ensures maximum compatibility and resilience
+    console.log(
+      `[getStaticProps] Using robust data fetching for: ${params.slug}`
+    );
 
-    // Add a try/catch around getPostDetails to get more detailed error information
-    let data;
+    // We'll try multiple approaches to fetch the post data
+    // This ensures we get the data even if one approach fails
+    let data = null;
+    let fetchErrors = [];
+
+    // Approach 1: Standard getPostDetails function
     try {
-      // First attempt with standard getPostDetails
+      console.log(`[getStaticProps] Attempt 1: Using standard getPostDetails`);
       data = await getPostDetails(params.slug);
 
-      // If this is a problematic slug and we didn't get data, try a direct API call
-      if (isProblematicSlug && !data) {
+      if (data) {
+        console.log(`[getStaticProps] Attempt 1 succeeded for: ${params.slug}`);
+      } else {
         console.log(
-          `[getStaticProps] First attempt failed for problematic slug, trying direct API call`
+          `[getStaticProps] Attempt 1 returned no data for: ${params.slug}`
+        );
+      }
+    } catch (error1) {
+      console.error(`[getStaticProps] Attempt 1 failed:`, error1.message);
+      fetchErrors.push({ approach: "standard", error: error1.message });
+    }
+
+    // Approach 2: Direct API call with simplified query
+    if (!data) {
+      try {
+        console.log(
+          `[getStaticProps] Attempt 2: Using direct API call with simplified query`
         );
 
         // Import the direct API client
@@ -340,106 +354,139 @@ export async function getStaticProps({ params }) {
         const result = await fetchFromCDN(directQuery, { slug: params.slug });
         if (result && result.post) {
           console.log(
-            `[getStaticProps] Successfully fetched data directly for problematic slug`
+            `[getStaticProps] Attempt 2 succeeded for: ${params.slug}`
           );
           data = result.post;
-        }
-      }
-    } catch (fetchError) {
-      console.error(
-        `[getStaticProps] Error in getPostDetails for ${params.slug}:`,
-        fetchError.message
-      );
-      console.error(`[getStaticProps] Error stack:`, fetchError.stack);
-
-      // For problematic slugs, try one more approach with a different query structure
-      if (isProblematicSlug) {
-        try {
+        } else {
           console.log(
-            `[getStaticProps] Trying fallback approach for problematic slug`
-          );
-
-          // Import the direct API client
-          const { gql, fetchFromCDN } = require("../services/hygraph");
-
-          // Use an even more simplified query as a last resort
-          const fallbackQuery = gql`
-            query GetPostFallback($slug: String!) {
-              posts(where: { slug: $slug }, first: 1) {
-                title
-                excerpt
-                featuredImage {
-                  url
-                }
-                author {
-                  name
-                  bio
-                  photo {
-                    url
-                  }
-                }
-                createdAt
-                publishedAt
-                slug
-                content {
-                  raw
-                }
-                categories {
-                  name
-                  slug
-                }
-              }
-            }
-          `;
-
-          const result = await fetchFromCDN(fallbackQuery, {
-            slug: params.slug,
-          });
-          if (result && result.posts && result.posts.length > 0) {
-            console.log(
-              `[getStaticProps] Successfully fetched data with fallback approach`
-            );
-            data = result.posts[0];
-          }
-        } catch (fallbackError) {
-          console.error(
-            `[getStaticProps] Fallback approach also failed:`,
-            fallbackError.message
+            `[getStaticProps] Attempt 2 returned no data for: ${params.slug}`
           );
         }
-      }
-
-      // If we still don't have data, return the error
-      if (!data) {
-        return {
-          props: {
-            post: null,
-            error: {
-              message: fetchError.message,
-              type: "FETCH_ERROR",
-            },
-          },
-          // Shorter revalidation time for error cases
-          revalidate: 30,
-        };
+      } catch (error2) {
+        console.error(`[getStaticProps] Attempt 2 failed:`, error2.message);
+        fetchErrors.push({ approach: "direct", error: error2.message });
       }
     }
 
-    // Log detailed information about the result
+    // Approach 3: Collection query instead of single post query
+    if (!data) {
+      try {
+        console.log(`[getStaticProps] Attempt 3: Using posts collection query`);
+
+        // Import the direct API client
+        const { gql, fetchFromCDN } = require("../services/hygraph");
+
+        // Use a query that fetches from the posts collection instead of a single post
+        const collectionQuery = gql`
+          query GetPostFromCollection($slug: String!) {
+            posts(where: { slug: $slug }, first: 1) {
+              title
+              excerpt
+              featuredImage {
+                url
+              }
+              author {
+                name
+                bio
+                photo {
+                  url
+                }
+              }
+              createdAt
+              publishedAt
+              slug
+              content {
+                raw
+              }
+              categories {
+                name
+                slug
+              }
+            }
+          }
+        `;
+
+        const result = await fetchFromCDN(collectionQuery, {
+          slug: params.slug,
+        });
+        if (result && result.posts && result.posts.length > 0) {
+          console.log(
+            `[getStaticProps] Attempt 3 succeeded for: ${params.slug}`
+          );
+          data = result.posts[0];
+        } else {
+          console.log(
+            `[getStaticProps] Attempt 3 returned no data for: ${params.slug}`
+          );
+        }
+      } catch (error3) {
+        console.error(`[getStaticProps] Attempt 3 failed:`, error3.message);
+        fetchErrors.push({ approach: "collection", error: error3.message });
+      }
+    }
+
+    // Approach 4: Minimal query with only essential fields
+    if (!data) {
+      try {
+        console.log(
+          `[getStaticProps] Attempt 4: Using minimal query with essential fields only`
+        );
+
+        // Import the direct API client
+        const { gql, fetchFromCDN } = require("../services/hygraph");
+
+        // Use an extremely minimal query with only the most essential fields
+        const minimalQuery = gql`
+          query GetPostMinimal($slug: String!) {
+            post(where: { slug: $slug }) {
+              title
+              slug
+              content {
+                raw
+              }
+            }
+          }
+        `;
+
+        const result = await fetchFromCDN(minimalQuery, { slug: params.slug });
+        if (result && result.post) {
+          console.log(
+            `[getStaticProps] Attempt 4 succeeded for: ${params.slug}`
+          );
+          // This will be a partial post object, but we'll fill in defaults later
+          data = result.post;
+        } else {
+          console.log(
+            `[getStaticProps] Attempt 4 returned no data for: ${params.slug}`
+          );
+        }
+      } catch (error4) {
+        console.error(`[getStaticProps] Attempt 4 failed:`, error4.message);
+        fetchErrors.push({ approach: "minimal", error: error4.message });
+      }
+    }
+
+    // If we still don't have data after all attempts, return an error
     if (!data) {
       console.error(
-        `[getStaticProps] No post data returned for slug: ${params.slug}`
+        `[getStaticProps] All attempts failed for slug: ${params.slug}`
+      );
+      console.error(
+        `[getStaticProps] Errors:`,
+        JSON.stringify(fetchErrors, null, 2)
       );
 
       return {
         props: {
           post: null,
           error: {
-            message: "No data returned from API",
-            type: "NO_DATA",
+            message: "Failed to fetch post data after multiple attempts",
+            type: "ALL_ATTEMPTS_FAILED",
+            details: fetchErrors,
           },
         },
-        // Shorter revalidation time for missing posts
+        // Use a shorter revalidation time for error cases
+        // This will try again sooner in case the issue is temporary
         revalidate: 30,
       };
     }
@@ -454,43 +501,96 @@ export async function getStaticProps({ params }) {
     const dataKeys = Object.keys(data);
     console.log(`[getStaticProps] Post data structure: ${dataKeys.join(", ")}`);
 
-    // Log the structure of the post data
-    const debugInfo = getContentDebugInfo(data);
-    console.log(`[getStaticProps] Post content debug info:`, debugInfo);
+    // Ensure the post has all required fields with defaults if missing
 
-    // Ensure the post has valid content structure
-    data = ensureValidContent(data);
+    // Add default excerpt if missing
+    if (!data.excerpt) {
+      console.log(
+        `[getStaticProps] Adding default excerpt for: ${params.slug}`
+      );
+      data.excerpt = data.title || "Read this interesting post";
+    }
 
     // Add default featured image if missing
     if (!data.featuredImage) {
-      console.warn(
-        `[getStaticProps] Post for slug: ${params.slug} is missing featuredImage`
+      console.log(
+        `[getStaticProps] Adding default featuredImage for: ${params.slug}`
       );
-      // Add a default featured image to prevent errors
       data.featuredImage = {
         url: "/default-image.jpg",
       };
     }
+
+    // Add default author if missing
+    if (!data.author) {
+      console.log(`[getStaticProps] Adding default author for: ${params.slug}`);
+      data.author = {
+        name: "urTechy",
+        bio: "Tech enthusiast and blogger",
+        photo: {
+          url: "/images/placeholder-author.jpg",
+        },
+      };
+    }
+
+    // Add default categories if missing
+    if (!data.categories || !data.categories.length) {
+      console.log(
+        `[getStaticProps] Adding default category for: ${params.slug}`
+      );
+      data.categories = [
+        {
+          name: "Uncategorized",
+          slug: "uncategorized",
+        },
+      ];
+    }
+
+    // Add default dates if missing
+    if (!data.createdAt) {
+      console.log(
+        `[getStaticProps] Adding default createdAt for: ${params.slug}`
+      );
+      data.createdAt = new Date().toISOString();
+    }
+
+    if (!data.publishedAt) {
+      console.log(
+        `[getStaticProps] Adding default publishedAt for: ${params.slug}`
+      );
+      data.publishedAt = data.createdAt || new Date().toISOString();
+    }
+
+    // Ensure the post has valid content structure
+    data = ensureValidContent(data);
 
     // Process post content (parse strings if needed)
     data = processPostContent(data, (message) => {
       console.log(`[getStaticProps] ${message}`);
     });
 
+    // Log debug info after processing
+    const debugInfo = getContentDebugInfo(data);
+    console.log(
+      `[getStaticProps] Post content debug info after processing:`,
+      debugInfo
+    );
+
     return {
       props: {
         post: data,
         lastFetched: new Date().toISOString(),
       },
-      // Add revalidation to refresh the page every 1 minute
-      revalidate: 60,
+      // Use a longer revalidation time for successful fetches
+      // This reduces the load on your CMS while still keeping content fresh
+      revalidate: 60 * 60, // 1 hour
     };
   } catch (error) {
     console.error(
       `[getStaticProps] Unhandled error for ${params.slug}:`,
       error.message
     );
-    console.error(`[getStaticProps] Error stack: ${error.stack}`);
+    console.error(`[getStaticProps] Error stack:`, error.stack);
 
     // Return null post instead of failing
     return {
@@ -511,111 +611,60 @@ export async function getStaticProps({ params }) {
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
   try {
-    console.log(
-      "[getStaticPaths] Optimized post fetching for build performance"
-    );
+    console.log("[getStaticPaths] Using minimal static generation approach");
 
-    // Define a maximum number of posts to fetch for static generation
-    // This significantly improves build time while still pre-rendering the most important content
-    const POST_LIMIT = 30; // Increased from 15 to include more posts in the static build
+    // CONCRETE SOLUTION: Instead of trying to pre-render many posts at build time,
+    // we'll only pre-render an absolute minimum set of posts and rely completely
+    // on Next.js's ISR (Incremental Static Regeneration) for all other posts.
 
-    // We're using the optimized getPosts function with caching built-in
-    // This is much faster than fetching all posts with full content
+    // This approach has several advantages:
+    // 1. Much faster build times
+    // 2. No risk of build failures due to large number of pages
+    // 3. All pages will work, even if not explicitly included in the build
+    // 4. Pages will be generated on-demand and then cached
 
-    // Get post slugs with the optimized getPosts function
-    const posts = await getPosts({
-      limit: POST_LIMIT,
-      fields: "minimal",
-      forStaticPaths: true,
-    });
-
-    // Extract just the slugs from the posts
-    const allSlugs = posts
-      .filter((post) => post.node && post.node.slug)
-      .map((post) => post.node.slug);
-
-    console.log(`[getStaticPaths] Found ${allSlugs.length} valid posts`);
-
-    // Add specific slugs that we know should exist but might be missing from the API response
-    // Include the problematic slug explicitly
-    const knownSlugs = [
+    // Define a list of absolutely critical posts that must be pre-rendered
+    // Keep this list very small - just the most important pages
+    const criticalSlugs = [
+      // Known problematic slugs that must be pre-rendered
+      "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
       "marvel-benedict-cumberbatch-mcu-anchor",
       "ipl-media-rights-cofused-about-packages",
       "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
-      "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram", // The problematic slug
-      // Add any other known slugs here
     ];
 
-    // Create a set of existing slugs from the API
-    const existingSlugs = new Set(allSlugs);
-
-    // Add missing known slugs to our paths
-    const additionalSlugs = knownSlugs.filter(
-      (slug) => !existingSlugs.has(slug)
-    );
-
-    if (additionalSlugs.length > 0) {
-      console.log(
-        `[getStaticPaths] Adding ${
-          additionalSlugs.length
-        } known slugs that were missing from API response: ${additionalSlugs.join(
-          ", "
-        )}`
-      );
-    }
-
-    // For better performance, we'll pre-render all known slugs plus a subset of recent posts
-    // This ensures important pages are pre-rendered while keeping build times reasonable
-    const recentSlugs = allSlugs.slice(0, POST_LIMIT); // Pre-render limited number of posts
-
-    // Combine API posts with additional known slugs
-    const pathsFromPosts = recentSlugs.map((slug) => ({
-      params: { slug },
-    }));
-    const pathsFromKnownSlugs = additionalSlugs.map((slug) => ({
-      params: { slug },
-    }));
-    const allPaths = [...pathsFromPosts, ...pathsFromKnownSlugs];
-
-    console.log(`[getStaticPaths] Pre-rendering ${allPaths.length} posts`);
-
-    // Explicitly log the problematic slug to confirm it's included
-    const isProblematicSlugIncluded = allPaths.some(
-      (path) =>
-        path.params.slug ===
-        "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram"
-    );
     console.log(
-      `[getStaticPaths] Is problematic slug included? ${
-        isProblematicSlugIncluded ? "YES" : "NO"
-      }`
+      `[getStaticPaths] Pre-rendering only ${criticalSlugs.length} critical posts`
     );
+
+    // Create paths array for Next.js with just these critical slugs
+    const paths = criticalSlugs.map((slug) => ({
+      params: { slug },
+    }));
+
+    // IMPORTANT: We're returning an empty paths array and relying entirely on
+    // fallback: 'blocking' to handle all pages. This ensures that:
+    // 1. Build times are extremely fast
+    // 2. All pages will work, even if not explicitly included
+    // 3. The first request to any page will generate the static HTML
+    // 4. Subsequent requests will use the cached HTML
 
     return {
-      paths: allPaths,
-      // Use 'blocking' to wait for the page to be generated on-demand
-      // This is crucial for pages not included in the static build
+      // Only include the critical slugs in the static build
+      paths,
+
+      // CRITICAL: Use 'blocking' to ensure all other posts are generated on-demand
+      // This means the first request to any post not in the paths array will be server-rendered
+      // and then cached for subsequent visitors
       fallback: "blocking",
     };
   } catch (error) {
-    console.error("[getStaticPaths] Error:", error);
+    console.error("[getStaticPaths] Unhandled error:", error);
 
-    // If we can't fetch posts, at least pre-render the known problematic slugs
-    const fallbackSlugs = [
-      "marvel-benedict-cumberbatch-mcu-anchor",
-      "ipl-media-rights-cofused-about-packages",
-      "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
-      "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram", // The problematic slug
-    ];
-
-    console.log(
-      `[getStaticPaths] Using fallback slugs due to error: ${fallbackSlugs.join(
-        ", "
-      )}`
-    );
-
+    // Even in case of a complete failure, we'll still return a valid configuration
+    // with fallback: 'blocking' to ensure all posts can be generated on-demand
     return {
-      paths: fallbackSlugs.map((slug) => ({ params: { slug } })),
+      paths: [],
       fallback: "blocking",
     };
   }
