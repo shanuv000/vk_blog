@@ -2,16 +2,28 @@ import React from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
+// Import components using the organization's established pattern
 import {
   PostDetail,
   Categories,
   PostWidget,
   Author,
   Loader,
+  SchemaManager,
 } from "../../components";
-import SchemaManager from "../../components/SchemaManager";
+
+// Import data hooks instead of direct service calls
+import { usePostDetails } from "../../hooks/useApolloQueries";
 import { getPosts, getPostDetails } from "../../services";
 import { AdjacentPosts } from "../../sections";
+
+// Import post validation utilities
+import {
+  hasValidContent,
+  getContentDebugInfo,
+  ensureValidContent,
+  processPostContent,
+} from "../../utils/postValidation";
 // import Footer from "../../components/footer/Footer";
 
 const PostDetails = ({ post, error, lastFetched }) => {
@@ -123,8 +135,8 @@ const PostDetails = ({ post, error, lastFetched }) => {
     );
   }
 
-  // Handle case where post content is missing
-  if (!post.content || (!post.content.raw && !post.content.json)) {
+  // Handle case where post content is missing using our utility function
+  if (!hasValidContent(post)) {
     return (
       <div className="sm:container mx-auto px-4 lg:px-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -146,32 +158,51 @@ const PostDetails = ({ post, error, lastFetched }) => {
                     <h3 className="text-yellow-800 font-semibold mb-2">
                       Content Debug Info:
                     </h3>
-                    <p className="text-yellow-700 mb-1">
-                      Content object: {post.content ? "exists" : "missing"}
-                    </p>
-                    {post.content && (
-                      <>
-                        <p className="text-yellow-700 mb-1">
-                          Content keys: {Object.keys(post.content).join(", ")}
-                        </p>
-                        <p className="text-yellow-700 mb-1">
-                          Raw:{" "}
-                          {post.content.raw
-                            ? typeof post.content.raw === "string"
-                              ? "string"
-                              : "object"
-                            : "missing"}
-                        </p>
-                        <p className="text-yellow-700 mb-1">
-                          JSON:{" "}
-                          {post.content.json
-                            ? typeof post.content.json === "string"
-                              ? "string"
-                              : "object"
-                            : "missing"}
-                        </p>
-                      </>
-                    )}
+                    {(() => {
+                      // Use our utility function to get detailed content debug info
+                      const debugInfo = getContentDebugInfo(post);
+                      return (
+                        <>
+                          <p className="text-yellow-700 mb-1">
+                            Content object:{" "}
+                            {debugInfo.hasContent ? "exists" : "missing"}
+                          </p>
+                          {debugInfo.hasContent && (
+                            <>
+                              <p className="text-yellow-700 mb-1">
+                                Content keys: {debugInfo.contentKeys.join(", ")}
+                              </p>
+                              <p className="text-yellow-700 mb-1">
+                                Raw:{" "}
+                                {debugInfo.hasRaw
+                                  ? `${debugInfo.rawType} (${
+                                      debugInfo.rawType === "string"
+                                        ? "needs parsing"
+                                        : "ready to use"
+                                    })`
+                                  : "missing"}
+                              </p>
+                              <p className="text-yellow-700 mb-1">
+                                JSON:{" "}
+                                {debugInfo.hasJson
+                                  ? `${debugInfo.jsonType} (${
+                                      debugInfo.jsonType === "string"
+                                        ? "needs parsing"
+                                        : "ready to use"
+                                    })`
+                                  : "missing"}
+                              </p>
+                              <p className="text-yellow-700 mt-2 font-semibold">
+                                Status:{" "}
+                                {debugInfo.isValid
+                                  ? "Valid content available"
+                                  : "No valid content found"}
+                              </p>
+                            </>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 )}
 
@@ -184,7 +215,7 @@ const PostDetails = ({ post, error, lastFetched }) => {
                   </button>
                   <button
                     onClick={() =>
-                      (window.location.href = `/api/debug-post?slug=${post.slug}`)
+                      router.push(`/api/debug-post?slug=${post.slug}`)
                     }
                     className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700"
                   >
@@ -306,31 +337,14 @@ export async function getStaticProps({ params }) {
     const dataKeys = Object.keys(data);
     console.log(`[getStaticProps] Post data structure: ${dataKeys.join(", ")}`);
 
-    // Check for critical fields
-    if (!data.content) {
-      console.warn(
-        `[getStaticProps] Post for slug: ${params.slug} is missing content property entirely`
-      );
+    // Log the structure of the post data
+    const debugInfo = getContentDebugInfo(data);
+    console.log(`[getStaticProps] Post content debug info:`, debugInfo);
 
-      // Create a minimal content object to prevent errors
-      data.content = { raw: null };
-    } else {
-      const contentKeys = Object.keys(data.content);
-      console.log(
-        `[getStaticProps] Content structure: ${contentKeys.join(", ")}`
-      );
+    // Ensure the post has valid content structure
+    data = ensureValidContent(data);
 
-      // Check for raw content
-      if (!data.content.raw) {
-        console.warn(
-          `[getStaticProps] Post for slug: ${params.slug} is missing content.raw`
-        );
-
-        // Create an empty raw content to prevent errors
-        data.content.raw = null;
-      }
-    }
-
+    // Add default featured image if missing
     if (!data.featuredImage) {
       console.warn(
         `[getStaticProps] Post for slug: ${params.slug} is missing featuredImage`
@@ -341,60 +355,10 @@ export async function getStaticProps({ params }) {
       };
     }
 
-    // Ensure the content structure is valid
-    if (data.content) {
-      // Handle raw content
-      if (data.content.raw) {
-        // If we have raw content but it's a string, try to parse it
-        if (typeof data.content.raw === "string") {
-          try {
-            data.content.raw = JSON.parse(data.content.raw);
-            console.log(
-              `[getStaticProps] Successfully parsed content.raw string to object`
-            );
-          } catch (parseError) {
-            console.error(
-              `[getStaticProps] Failed to parse content.raw string:`,
-              parseError.message
-            );
-            // Keep as string if parsing fails - don't set to null
-            console.log(`[getStaticProps] Keeping raw content as string`);
-          }
-        }
-      }
-
-      // Handle json content
-      if (data.content.json) {
-        // If we have json content but it's a string, try to parse it
-        if (typeof data.content.json === "string") {
-          try {
-            data.content.json = JSON.parse(data.content.json);
-            console.log(
-              `[getStaticProps] Successfully parsed content.json string to object`
-            );
-          } catch (parseError) {
-            console.error(
-              `[getStaticProps] Failed to parse content.json string:`,
-              parseError.message
-            );
-            // Keep as string if parsing fails - don't set to null
-            console.log(`[getStaticProps] Keeping json content as string`);
-          }
-        }
-      }
-
-      // If neither raw nor json content is available, create a minimal content object
-      if (!data.content.raw && !data.content.json) {
-        console.warn(
-          `[getStaticProps] Post for slug: ${params.slug} is missing both raw and json content`
-        );
-        // Create a minimal content object to prevent errors
-        data.content = {
-          raw: null,
-          json: null,
-        };
-      }
-    }
+    // Process post content (parse strings if needed)
+    data = processPostContent(data, (message) => {
+      console.log(`[getStaticProps] ${message}`);
+    });
 
     return {
       props: {
