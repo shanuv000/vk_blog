@@ -319,7 +319,7 @@ export async function getStaticProps({ params }) {
         );
 
         // Import the direct API client
-        const { gql, fetchFromCDN } = require("../services/hygraph");
+        const { gql, fetchFromCDN } = require("../../services/hygraph");
 
         // Use a simplified query that avoids potential schema issues
         const directQuery = gql`
@@ -374,7 +374,7 @@ export async function getStaticProps({ params }) {
         console.log(`[getStaticProps] Attempt 3: Using posts collection query`);
 
         // Import the direct API client
-        const { gql, fetchFromCDN } = require("../services/hygraph");
+        const { gql, fetchFromCDN } = require("../../services/hygraph");
 
         // Use a query that fetches from the posts collection instead of a single post
         const collectionQuery = gql`
@@ -433,7 +433,7 @@ export async function getStaticProps({ params }) {
         );
 
         // Import the direct API client
-        const { gql, fetchFromCDN } = require("../services/hygraph");
+        const { gql, fetchFromCDN } = require("../../services/hygraph");
 
         // Use an extremely minimal query with only the most essential fields
         const minimalQuery = gql`
