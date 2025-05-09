@@ -582,10 +582,18 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   {children}
                 </Link>
               ),
-              img: ({ src, altText, height, width }) => {
+              img: ({
+                src,
+                altText,
+                height,
+                width,
+                handle,
+                title,
+                mimeType,
+              }) => {
                 // Log image details for debugging
                 console.log(
-                  `Rendering image: ${src}, height: ${height}, width: ${width}`
+                  `Rendering image: ${src}, height: ${height}, width: ${width}, handle: ${handle}`
                 );
 
                 // Extract dimensions from URL if not provided
@@ -617,6 +625,27 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 // Create debug URL for troubleshooting
                 const debugUrl = createImageDebugUrl(src);
 
+                // Generate alternative URLs to try if the main one fails
+                const generateAlternativeUrls = (originalSrc, assetHandle) => {
+                  if (!originalSrc || !assetHandle) return [];
+
+                  // Extract the project ID from the URL
+                  const projectIdMatch =
+                    originalSrc.match(/\/([A-Za-z0-9]+)\//);
+                  const projectId = projectIdMatch ? projectIdMatch[1] : null;
+
+                  if (!projectId) return [];
+
+                  return [
+                    // Without resize parameters
+                    `https://ap-south-1.graphassets.com/${projectId}/${assetHandle}`,
+                    // CDN URL format
+                    `https://ap-south-1.cdn.hygraph.com/content/cky5wgpym15ym01z44tk90zeb/master/${assetHandle}`,
+                  ];
+                };
+
+                const alternativeUrls = generateAlternativeUrls(src, handle);
+
                 // Use a try-catch block to handle any rendering errors
                 try {
                   return (
@@ -626,19 +655,75 @@ const RichTextRenderer = ({ content, references = [] }) => {
                         <>
                           <Image
                             src={src}
-                            alt={altText || "Blog image"}
+                            alt={altText || title || "Blog image"}
                             height={imageHeight}
                             width={imageWidth}
                             className="rounded-lg shadow-md"
                             onError={(e) => {
                               console.error(`Failed to load image: ${src}`);
                               e.target.style.display = "none";
-                              const fallback = document.createElement("div");
-                              fallback.className =
-                                "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                              fallback.innerHTML =
-                                '<p class="text-gray-500">Image failed to load</p>';
-                              e.target.parentNode.appendChild(fallback);
+
+                              // Try alternative URLs
+                              if (alternativeUrls.length > 0) {
+                                console.log(
+                                  `Trying alternative URLs: ${alternativeUrls.join(
+                                    ", "
+                                  )}`
+                                );
+                                const fallbackImg =
+                                  document.createElement("img");
+                                fallbackImg.src = alternativeUrls[0];
+                                fallbackImg.alt =
+                                  altText || title || "Blog image";
+                                fallbackImg.className =
+                                  "rounded-lg shadow-md w-full";
+
+                                // If first alternative fails, try the second
+                                fallbackImg.onerror = () => {
+                                  if (alternativeUrls.length > 1) {
+                                    console.log(
+                                      `Trying second alternative URL: ${alternativeUrls[1]}`
+                                    );
+                                    fallbackImg.src = alternativeUrls[1];
+
+                                    // If second alternative fails, show placeholder
+                                    fallbackImg.onerror = () => {
+                                      fallbackImg.style.display = "none";
+                                      const fallbackDiv =
+                                        document.createElement("div");
+                                      fallbackDiv.className =
+                                        "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                      fallbackDiv.innerHTML =
+                                        '<p class="text-gray-500">Image failed to load</p>';
+                                      e.target.parentNode.appendChild(
+                                        fallbackDiv
+                                      );
+                                    };
+                                  } else {
+                                    // No more alternatives, show placeholder
+                                    fallbackImg.style.display = "none";
+                                    const fallbackDiv =
+                                      document.createElement("div");
+                                    fallbackDiv.className =
+                                      "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                    fallbackDiv.innerHTML =
+                                      '<p class="text-gray-500">Image failed to load</p>';
+                                    e.target.parentNode.appendChild(
+                                      fallbackDiv
+                                    );
+                                  }
+                                };
+
+                                e.target.parentNode.appendChild(fallbackImg);
+                              } else {
+                                // No alternative URLs available, show placeholder
+                                const fallback = document.createElement("div");
+                                fallback.className =
+                                  "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                fallback.innerHTML =
+                                  '<p class="text-gray-500">Image failed to load</p>';
+                                e.target.parentNode.appendChild(fallback);
+                              }
                             }}
                           />
                           <div className="mt-1 text-xs text-gray-500">
@@ -650,6 +735,8 @@ const RichTextRenderer = ({ content, references = [] }) => {
                               <p>
                                 Dimensions: {imageWidth}x{imageHeight}
                               </p>
+                              <p>Handle: {handle || "N/A"}</p>
+                              <p>MIME Type: {mimeType || "N/A"}</p>
                               <a
                                 href={debugUrl}
                                 target="_blank"
@@ -664,11 +751,11 @@ const RichTextRenderer = ({ content, references = [] }) => {
                       ) : (
                         // For production, use a more robust approach with multiple fallbacks
                         <>
-                          {/* First try with Next.js Image */}
+                          {/* First try with regular img tag for better compatibility */}
                           <div className="relative">
                             <img
                               src={src}
-                              alt={altText || "Blog image"}
+                              alt={altText || title || "Blog image"}
                               className="rounded-lg shadow-md w-full"
                               style={{
                                 maxHeight: "800px",
@@ -678,19 +765,62 @@ const RichTextRenderer = ({ content, references = [] }) => {
                                 console.error(`Failed to load image: ${src}`);
                                 e.target.style.display = "none";
 
-                                // Try with a direct img tag as fallback
-                                const fallbackImg =
-                                  document.createElement("img");
-                                fallbackImg.src = src;
-                                fallbackImg.alt = altText || "Blog image";
-                                fallbackImg.className =
-                                  "rounded-lg shadow-md w-full";
-                                fallbackImg.style =
-                                  "max-height: 800px; object-fit: contain;";
+                                // Try alternative URLs
+                                if (alternativeUrls.length > 0) {
+                                  console.log(
+                                    `Trying alternative URLs: ${alternativeUrls.join(
+                                      ", "
+                                    )}`
+                                  );
+                                  const fallbackImg =
+                                    document.createElement("img");
+                                  fallbackImg.src = alternativeUrls[0];
+                                  fallbackImg.alt =
+                                    altText || title || "Blog image";
+                                  fallbackImg.className =
+                                    "rounded-lg shadow-md w-full";
+                                  fallbackImg.style =
+                                    "max-height: 800px; object-fit: contain;";
 
-                                // If that also fails, show a placeholder
-                                fallbackImg.onerror = () => {
-                                  fallbackImg.style.display = "none";
+                                  // If first alternative fails, try the second
+                                  fallbackImg.onerror = () => {
+                                    if (alternativeUrls.length > 1) {
+                                      console.log(
+                                        `Trying second alternative URL: ${alternativeUrls[1]}`
+                                      );
+                                      fallbackImg.src = alternativeUrls[1];
+
+                                      // If second alternative fails, show placeholder
+                                      fallbackImg.onerror = () => {
+                                        fallbackImg.style.display = "none";
+                                        const fallbackDiv =
+                                          document.createElement("div");
+                                        fallbackDiv.className =
+                                          "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                        fallbackDiv.innerHTML =
+                                          '<p class="text-gray-500">Image failed to load</p>';
+                                        e.target.parentNode.appendChild(
+                                          fallbackDiv
+                                        );
+                                      };
+                                    } else {
+                                      // No more alternatives, show placeholder
+                                      fallbackImg.style.display = "none";
+                                      const fallbackDiv =
+                                        document.createElement("div");
+                                      fallbackDiv.className =
+                                        "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                      fallbackDiv.innerHTML =
+                                        '<p class="text-gray-500">Image failed to load</p>';
+                                      e.target.parentNode.appendChild(
+                                        fallbackDiv
+                                      );
+                                    }
+                                  };
+
+                                  e.target.parentNode.appendChild(fallbackImg);
+                                } else {
+                                  // No alternative URLs available, show placeholder
                                   const fallbackDiv =
                                     document.createElement("div");
                                   fallbackDiv.className =
@@ -698,9 +828,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                                   fallbackDiv.innerHTML =
                                     '<p class="text-gray-500">Image failed to load</p>';
                                   e.target.parentNode.appendChild(fallbackDiv);
-                                };
-
-                                e.target.parentNode.appendChild(fallbackImg);
+                                }
                               }}
                             />
                           </div>
@@ -745,13 +873,13 @@ const RichTextRenderer = ({ content, references = [] }) => {
               },
               // Custom embeds for Twitter and YouTube
               embeds: {
-                Twitter: ({ nodeId, url }) => {
+                Twitter: ({ url }) => {
                   if (!url) return <p>Twitter embed (URL not available)</p>;
                   // Extract tweet ID from URL
                   const tweetId = url.split("/").pop();
                   return <TwitterTweetEmbed tweetId={tweetId} />;
                 },
-                YouTube: ({ nodeId, url }) => {
+                YouTube: ({ url }) => {
                   if (!url) return <p>YouTube embed (URL not available)</p>;
                   try {
                     // Extract video ID from URL
