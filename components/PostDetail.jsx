@@ -107,7 +107,8 @@ const PostDetail = ({ post }) => {
           <HeadPostDetails post={post} />
           {/* Seo */}
 
-          <div className="relative overflow-hidden mb-6 w-full">
+          {/* Featured Image - No overlay */}
+          <div className="relative overflow-hidden w-full">
             <motion.div className="w-full aspect-video relative">
               <div className="relative w-full h-full">
                 {post.featuredImage?.url ? (
@@ -144,40 +145,39 @@ const PostDetail = ({ post }) => {
                   />
                 )}
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
-
-              {/* Title overlay on image */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-10 w-full">
-                <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-2 sm:mb-4 capitalize leading-tight tracking-tight">
-                  {post.title}
-                </h1>
-
-                <div className="flex items-center text-white">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2 text-primary"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span suppressHydrationWarning>
-                    {post.createdAt
-                      ? moment(post.createdAt).format("DD MMM, YYYY")
-                      : "No date"}
-                  </span>
-                </div>
-              </div>
             </motion.div>
           </div>
 
-          <div className="px-4 sm:px-6 lg:px-10 pb-10 w-full">
+          {/* Title and date section - Separated from image */}
+          <div className="px-4 sm:px-6 md:px-10 py-6 mb-2 w-full border-b border-gray-100">
+            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-4 capitalize leading-tight tracking-tight">
+              {post.title}
+            </h1>
+
+            <div className="flex items-center text-gray-600">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2 text-primary"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <span suppressHydrationWarning>
+                {post.createdAt
+                  ? moment(post.createdAt).format("DD MMM, YYYY")
+                  : "No date"}
+              </span>
+            </div>
+          </div>
+
+          <div className="px-4 sm:px-6 lg:px-10 pt-4 pb-10 w-full">
             {/* Wrap Testing component in ErrorBoundary to prevent it from crashing the entire page */}
             <ErrorBoundary>
               {post.slug && <Testing slug={post.slug} />}
