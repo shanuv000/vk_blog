@@ -70,29 +70,34 @@ export default async function handler(req, res) {
     // Set appropriate cache headers
     if (isQueryCacheable) {
       // Determine cache duration based on query type
-      let maxAge = 300; // Default 5 minutes
-      let sMaxAge = 300; // Default 5 minutes for CDN
-      let staleWhileRevalidate = 3600; // Default 1 hour
+      let maxAge = 600; // Default 10 minutes (increased from 5)
+      let sMaxAge = 600; // Default 10 minutes for CDN
+      let staleWhileRevalidate = 7200; // Default 2 hours (increased from 1)
 
       // Longer cache for specific query types
       if (query.includes("GetCategories")) {
-        // Categories change rarely - cache for 1 day
-        maxAge = 86400;
-        sMaxAge = 86400;
-        staleWhileRevalidate = 172800; // 2 days
+        // Categories change rarely - cache for 2 days
+        maxAge = 172800;
+        sMaxAge = 172800;
+        staleWhileRevalidate = 345600; // 4 days
       } else if (
         query.includes("GetFeaturedPosts") ||
         query.includes("GetRecentPosts")
       ) {
-        // Featured and recent posts - cache for 15 minutes
-        maxAge = 900;
-        sMaxAge = 900;
-        staleWhileRevalidate = 7200; // 2 hours
-      } else if (query.includes("GetPostDetails") && variables?.slug) {
-        // Individual post details - cache for 30 minutes
+        // Featured and recent posts - cache for 30 minutes
         maxAge = 1800;
         sMaxAge = 1800;
         staleWhileRevalidate = 14400; // 4 hours
+      } else if (query.includes("GetPostDetails") && variables?.slug) {
+        // Individual post details - cache for 1 hour
+        maxAge = 3600;
+        sMaxAge = 3600;
+        staleWhileRevalidate = 28800; // 8 hours
+      } else if (query.includes("GetPosts")) {
+        // Posts listing - cache for 15 minutes
+        maxAge = 900;
+        sMaxAge = 900;
+        staleWhileRevalidate = 7200; // 2 hours
       }
 
       // Set cache headers with appropriate durations

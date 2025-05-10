@@ -611,20 +611,23 @@ export async function getStaticProps({ params }) {
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
   try {
-    console.log("[getStaticPaths] Using minimal static generation approach");
+    console.log("[getStaticPaths] Using enhanced static generation approach");
 
-    // CONCRETE SOLUTION: Instead of trying to pre-render many posts at build time,
-    // we'll only pre-render an absolute minimum set of posts and rely completely
-    // on Next.js's ISR (Incremental Static Regeneration) for all other posts.
+    // Fetch more posts at build time to pre-render more pages
+    // This will help with initial page loads and SEO
+    const { getPosts } = require("../services");
+    const posts = await getPosts({ limit: 100, forStaticPaths: true });
 
-    // This approach has several advantages:
-    // 1. Much faster build times
-    // 2. No risk of build failures due to large number of pages
-    // 3. All pages will work, even if not explicitly included in the build
-    // 4. Pages will be generated on-demand and then cached
+    console.log(
+      `[getStaticPaths] Fetched ${posts.length} posts for pre-rendering`
+    );
 
-    // Define a list of absolutely critical posts that must be pre-rendered
-    // Keep this list very small - just the most important pages
+    // Create paths array from the fetched posts
+    const postPaths = posts.map(({ node }) => ({
+      params: { slug: node.slug },
+    }));
+
+    // Also include critical posts that must be pre-rendered
     const criticalSlugs = [
       // Known problematic slugs that must be pre-rendered
       "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
@@ -633,25 +636,38 @@ export async function getStaticPaths() {
       "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
     ];
 
-    console.log(
-      `[getStaticPaths] Pre-rendering only ${criticalSlugs.length} critical posts`
-    );
-
-    // Create paths array for Next.js with just these critical slugs
-    const paths = criticalSlugs.map((slug) => ({
+    // Create paths for critical slugs
+    const criticalPaths = criticalSlugs.map((slug) => ({
       params: { slug },
     }));
 
-    // IMPORTANT: We're returning an empty paths array and relying entirely on
-    // fallback: 'blocking' to handle all pages. This ensures that:
-    // 1. Build times are extremely fast
-    // 2. All pages will work, even if not explicitly included
-    // 3. The first request to any page will generate the static HTML
-    // 4. Subsequent requests will use the cached HTML
+    // Combine both sets of paths, removing duplicates
+    const allSlugs = new Set();
+    const combinedPaths = [];
+
+    // Add critical paths first (higher priority)
+    for (const path of criticalPaths) {
+      if (!allSlugs.has(path.params.slug)) {
+        allSlugs.add(path.params.slug);
+        combinedPaths.push(path);
+      }
+    }
+
+    // Then add regular post paths
+    for (const path of postPaths) {
+      if (!allSlugs.has(path.params.slug)) {
+        allSlugs.add(path.params.slug);
+        combinedPaths.push(path);
+      }
+    }
+
+    console.log(
+      `[getStaticPaths] Pre-rendering ${combinedPaths.length} total posts`
+    );
 
     return {
-      // Only include the critical slugs in the static build
-      paths,
+      // Include all paths in the static build
+      paths: combinedPaths,
 
       // CRITICAL: Use 'blocking' to ensure all other posts are generated on-demand
       // This means the first request to any post not in the paths array will be server-rendered

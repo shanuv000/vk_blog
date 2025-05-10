@@ -13,7 +13,7 @@ const USE_APOLLO = true;
 export const getPosts = async (options = {}) => {
   // Default options
   const {
-    limit = 20, // Default to 20 posts
+    limit = 100, // Default to 100 posts to ensure more pages are available
     fields = "full", // 'full' or 'minimal'
     forStaticPaths = false, // Special flag for getStaticPaths usage
     cacheKey = null, // Optional cache key for memoization

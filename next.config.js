@@ -225,6 +225,10 @@ const nextConfig = {
       "e7.pngegg.com",
       "ap-south-1.cdn.hygraph.com", // Add Hygraph CDN domain
       "via.placeholder.com", // Add placeholder.com for fallback images
+      "media.graphcms.com", // Add GraphCMS domain (old name for Hygraph)
+      "media.hygraph.com", // Add Hygraph media domain
+      "images.unsplash.com", // Add Unsplash for stock images
+      "res.cloudinary.com", // Add Cloudinary for image hosting
     ], // Allowed image domains
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
@@ -251,12 +255,28 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "**.graphcms.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
         hostname: "via.placeholder.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "**",
+      },
     ],
-    // Unoptimized option for problematic images
-    unoptimized: process.env.NODE_ENV === "production",
+    // Enable image optimization in production
+    // This will help with image loading and performance
+    unoptimized: false,
   },
 
   // Rewrites configuration

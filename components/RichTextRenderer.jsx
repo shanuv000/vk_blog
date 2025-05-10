@@ -614,203 +614,51 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 try {
                   return (
                     <div className="my-10 relative">
-                      {/* For development, use Next.js Image with fallback */}
-                      {process.env.NODE_ENV === "development" ? (
-                        <>
-                          <figure className="mx-auto">
-                            <Image
-                              src={src}
-                              alt={altText || title || "Blog image"}
-                              height={imageHeight}
-                              width={imageWidth}
-                              className="rounded-lg shadow-md mx-auto"
-                              onError={(e) => {
-                                console.error(`Failed to load image: ${src}`);
-                                e.target.style.display = "none";
+                      <figure className="mx-auto">
+                        <div
+                          className="relative w-full"
+                          style={{ height: imageHeight || 400 }}
+                        >
+                          <Image
+                            src={src}
+                            alt={altText || title || "Blog image"}
+                            fill
+                            className="rounded-lg shadow-md mx-auto object-contain"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+                            onError={() => {
+                              console.error(`Failed to load image: ${src}`);
+                            }}
+                          />
+                        </div>
+                        {altText && (
+                          <figcaption className="text-center text-gray-500 text-sm mt-2 italic">
+                            {altText}
+                          </figcaption>
+                        )}
+                      </figure>
 
-                                // Try alternative URLs
-                                if (alternativeUrls.length > 0) {
-                                  console.log(
-                                    `Trying alternative URLs: ${alternativeUrls.join(
-                                      ", "
-                                    )}`
-                                  );
-                                  const fallbackImg =
-                                    document.createElement("img");
-                                  fallbackImg.src = alternativeUrls[0];
-                                  fallbackImg.alt =
-                                    altText || title || "Blog image";
-                                  fallbackImg.className =
-                                    "rounded-lg shadow-md w-full";
-
-                                  // If first alternative fails, try the second
-                                  fallbackImg.onerror = () => {
-                                    if (alternativeUrls.length > 1) {
-                                      console.log(
-                                        `Trying second alternative URL: ${alternativeUrls[1]}`
-                                      );
-                                      fallbackImg.src = alternativeUrls[1];
-
-                                      // If second alternative fails, show placeholder
-                                      fallbackImg.onerror = () => {
-                                        fallbackImg.style.display = "none";
-                                        const fallbackDiv =
-                                          document.createElement("div");
-                                        fallbackDiv.className =
-                                          "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                        fallbackDiv.innerHTML =
-                                          '<p class="text-gray-500">Image failed to load</p>';
-                                        e.target.parentNode.appendChild(
-                                          fallbackDiv
-                                        );
-                                      };
-                                    } else {
-                                      // No more alternatives, show placeholder
-                                      fallbackImg.style.display = "none";
-                                      const fallbackDiv =
-                                        document.createElement("div");
-                                      fallbackDiv.className =
-                                        "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                      fallbackDiv.innerHTML =
-                                        '<p class="text-gray-500">Image failed to load</p>';
-                                      e.target.parentNode.appendChild(
-                                        fallbackDiv
-                                      );
-                                    }
-                                  };
-
-                                  e.target.parentNode.appendChild(fallbackImg);
-                                } else {
-                                  // No alternative URLs available, show placeholder
-                                  const fallback =
-                                    document.createElement("div");
-                                  fallback.className =
-                                    "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                  fallback.innerHTML =
-                                    '<p class="text-gray-500">Image failed to load</p>';
-                                  e.target.parentNode.appendChild(fallback);
-                                }
-                              }}
-                            />
-                            {altText && (
-                              <figcaption className="text-center text-gray-500 text-sm mt-2 italic">
-                                {altText}
-                              </figcaption>
-                            )}
-                          </figure>
-                          <div className="mt-1 text-xs text-gray-500">
-                            <details>
-                              <summary className="cursor-pointer">
-                                Image Debug
-                              </summary>
-                              <p>Source: {src}</p>
-                              <p>
-                                Dimensions: {imageWidth}x{imageHeight}
-                              </p>
-                              <p>Handle: {handle || "N/A"}</p>
-                              <p>MIME Type: {mimeType || "N/A"}</p>
-                              <a
-                                href={debugUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 hover:underline"
-                              >
-                                Check Image
-                              </a>
-                            </details>
-                          </div>
-                        </>
-                      ) : (
-                        // For production, use a more robust approach with multiple fallbacks
-                        <>
-                          {/* First try with regular img tag for better compatibility */}
-                          <figure className="relative mx-auto">
-                            <img
-                              src={src}
-                              alt={altText || title || "Blog image"}
-                              className="rounded-lg shadow-md w-full mx-auto"
-                              style={{
-                                maxHeight: "800px",
-                                objectFit: "contain",
-                              }}
-                              loading="lazy"
-                              onError={(e) => {
-                                console.error(`Failed to load image: ${src}`);
-                                e.target.style.display = "none";
-
-                                // Try alternative URLs
-                                if (alternativeUrls.length > 0) {
-                                  console.log(
-                                    `Trying alternative URLs: ${alternativeUrls.join(
-                                      ", "
-                                    )}`
-                                  );
-                                  const fallbackImg =
-                                    document.createElement("img");
-                                  fallbackImg.src = alternativeUrls[0];
-                                  fallbackImg.alt =
-                                    altText || title || "Blog image";
-                                  fallbackImg.className =
-                                    "rounded-lg shadow-md w-full";
-                                  fallbackImg.style =
-                                    "max-height: 800px; object-fit: contain;";
-
-                                  // If first alternative fails, try the second
-                                  fallbackImg.onerror = () => {
-                                    if (alternativeUrls.length > 1) {
-                                      console.log(
-                                        `Trying second alternative URL: ${alternativeUrls[1]}`
-                                      );
-                                      fallbackImg.src = alternativeUrls[1];
-
-                                      // If second alternative fails, show placeholder
-                                      fallbackImg.onerror = () => {
-                                        fallbackImg.style.display = "none";
-                                        const fallbackDiv =
-                                          document.createElement("div");
-                                        fallbackDiv.className =
-                                          "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                        fallbackDiv.innerHTML =
-                                          '<p class="text-gray-500">Image failed to load</p>';
-                                        e.target.parentNode.appendChild(
-                                          fallbackDiv
-                                        );
-                                      };
-                                    } else {
-                                      // No more alternatives, show placeholder
-                                      fallbackImg.style.display = "none";
-                                      const fallbackDiv =
-                                        document.createElement("div");
-                                      fallbackDiv.className =
-                                        "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                      fallbackDiv.innerHTML =
-                                        '<p class="text-gray-500">Image failed to load</p>';
-                                      e.target.parentNode.appendChild(
-                                        fallbackDiv
-                                      );
-                                    }
-                                  };
-
-                                  e.target.parentNode.appendChild(fallbackImg);
-                                } else {
-                                  // No alternative URLs available, show placeholder
-                                  const fallbackDiv =
-                                    document.createElement("div");
-                                  fallbackDiv.className =
-                                    "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                  fallbackDiv.innerHTML =
-                                    '<p class="text-gray-500">Image failed to load</p>';
-                                  e.target.parentNode.appendChild(fallbackDiv);
-                                }
-                              }}
-                            />
-                            {altText && (
-                              <figcaption className="text-center text-gray-500 text-sm mt-2 italic">
-                                {altText}
-                              </figcaption>
-                            )}
-                          </figure>
-                        </>
+                      {process.env.NODE_ENV === "development" && (
+                        <div className="mt-1 text-xs text-gray-500">
+                          <details>
+                            <summary className="cursor-pointer">
+                              Image Debug
+                            </summary>
+                            <p>Source: {src}</p>
+                            <p>
+                              Dimensions: {imageWidth}x{imageHeight}
+                            </p>
+                            <p>Handle: {handle || "N/A"}</p>
+                            <p>MIME Type: {mimeType || "N/A"}</p>
+                            <a
+                              href={debugUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 hover:underline"
+                            >
+                              Check Image
+                            </a>
+                          </details>
+                        </div>
                       )}
                     </div>
                   );
