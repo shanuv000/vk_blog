@@ -231,9 +231,9 @@ const nextConfig = {
       "res.cloudinary.com", // Add Cloudinary for image hosting
     ], // Allowed image domains
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 86400, // Increase cache time to 24 hours (from 1 hour)
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    minimumCacheTTL: 172800, // Increase cache time to 48 hours for better performance
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

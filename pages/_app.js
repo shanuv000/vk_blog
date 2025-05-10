@@ -22,11 +22,6 @@ function MyApp({ Component, pageProps }) {
 
   // Preload critical resources and prefetch data
   useEffect(() => {
-    // Dynamically import the carousel to ensure it's available
-    import("react-multi-carousel").catch((err) =>
-      console.error("Error preloading carousel:", err)
-    );
-
     // Load the carousel styles properly
     const styleLink = document.createElement("link");
     styleLink.rel = "stylesheet"; // Changed from preload to stylesheet
@@ -36,25 +31,36 @@ function MyApp({ Component, pageProps }) {
     // Prefetch common queries during idle time
     if (typeof window !== "undefined") {
       // Wait for page to load before prefetching
-      if (document.readyState === "complete") {
-        prefetchCommonQueries();
-      } else {
-        window.addEventListener("load", () => {
-          // Use requestIdleCallback or setTimeout to avoid blocking main thread
-          (window.requestIdleCallback || setTimeout)(
-            () => {
-              prefetchCommonQueries();
+      const prefetchData = () => {
+        // Use requestIdleCallback or setTimeout to avoid blocking main thread
+        const requestIdleCallback =
+          window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
 
-              // Log cache stats after prefetching (development only)
-              if (process.env.NODE_ENV === "development") {
-                setTimeout(() => {
-                  console.log("Apollo cache stats:", getApolloStats());
-                }, 2000);
-              }
-            },
-            { timeout: 2000 }
-          );
-        });
+        requestIdleCallback(
+          () => {
+            // Dynamically import the carousel only when needed
+            import("react-multi-carousel").catch((err) =>
+              console.error("Error loading carousel:", err)
+            );
+
+            // Prefetch data after critical resources are loaded
+            prefetchCommonQueries();
+
+            // Log cache stats after prefetching (development only)
+            if (process.env.NODE_ENV === "development") {
+              setTimeout(() => {
+                console.log("Apollo cache stats:", getApolloStats());
+              }, 2000);
+            }
+          },
+          { timeout: 2000 }
+        );
+      };
+
+      if (document.readyState === "complete") {
+        prefetchData();
+      } else {
+        window.addEventListener("load", prefetchData);
       }
     }
 
@@ -97,6 +103,8 @@ function MyApp({ Component, pageProps }) {
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
             rel="stylesheet"
+            media="print"
+            onLoad="this.media='all'"
           />
 
           {/* Default images - using prefetch instead of preload */}

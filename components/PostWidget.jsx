@@ -147,7 +147,9 @@ const PostWidget = ({ categories, slug }) => {
                   className="text-text-secondary text-xs"
                   suppressHydrationWarning
                 >
-                  {post.createdAt
+                  {post.publishedAt
+                    ? moment(post.publishedAt).format("MMM DD, YYYY")
+                    : post.createdAt
                     ? moment(post.createdAt).format("MMM DD, YYYY")
                     : "No date"}
                 </p>

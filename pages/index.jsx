@@ -23,12 +23,18 @@ function shuffle(array) {
 }
 
 export default function Home({ posts }) {
-  const [shuffledPosts, setShuffledPosts] = useState([]);
+  const [displayPosts, setDisplayPosts] = useState([]);
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" }); // Detect mobile
   const { isLiveScore } = useData();
+
   useEffect(() => {
-    const shuffled = shuffle(posts);
-    setShuffledPosts(shuffled);
+    // Sort posts by date (newest first) instead of shuffling
+    const sortedPosts = [...posts].sort((a, b) => {
+      const dateA = new Date(a.node.publishedAt || a.node.createdAt);
+      const dateB = new Date(b.node.publishedAt || b.node.createdAt);
+      return dateB - dateA; // Newest first
+    });
+    setDisplayPosts(sortedPosts);
   }, [posts]);
   if (!posts || posts.length === 0) {
     return (
@@ -41,14 +47,14 @@ export default function Home({ posts }) {
     <>
       {/* Add SEO optimization */}
       <HomeSeo
-        featuredPosts={shuffledPosts.slice(0, 5).map((post) => post.node)}
+        featuredPosts={displayPosts.slice(0, 5).map((post) => post.node)}
       />
 
       <Head>
         {/* Add structured data for homepage */}
         <SchemaManager
           isHomePage={true}
-          posts={shuffledPosts.map((post) => post.node)}
+          posts={displayPosts.map((post) => post.node)}
         />
       </Head>
       <div className="mb-12">
@@ -65,7 +71,7 @@ export default function Home({ posts }) {
               Latest Articles
             </h2>
             <div className="space-y-8">
-              {shuffledPosts.map((post, index) => (
+              {displayPosts.map((post, index) => (
                 <PostCard key={post.node.slug || index} post={post.node} />
               ))}
             </div>
@@ -120,8 +126,8 @@ export async function getStaticProps() {
 
     return {
       props: { posts },
-      // Add revalidation to refresh the page every 1 minute
-      revalidate: 60,
+      // Reduce revalidation time to ensure latest posts are shown
+      revalidate: 180, // 3 minutes - balance between performance and freshness
     };
   } catch (error) {
     console.error("Error fetching posts for home page:", error);
@@ -129,8 +135,8 @@ export async function getStaticProps() {
     // Return empty posts array instead of failing
     return {
       props: { posts: [] },
-      // Shorter revalidation time for error cases
-      revalidate: 60,
+      // Shorter revalidation time for error cases, but still longer than before
+      revalidate: 120,
     };
   }
 }

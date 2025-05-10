@@ -186,12 +186,13 @@ export const FEATURED_POSTS_QUERY = gql`
 
 export const RECENT_POSTS_QUERY = gql`
   query GetRecentPosts {
-    posts(orderBy: createdAt_DESC, first: 3) {
+    posts(orderBy: publishedAt_DESC, first: 3) {
       title
       featuredImage {
         url
       }
       createdAt
+      publishedAt
       slug
     }
   }

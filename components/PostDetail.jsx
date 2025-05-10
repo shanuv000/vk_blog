@@ -121,7 +121,7 @@ const PostDetail = ({ post }) => {
                     fetchPriority="high" // Use the fetchPriority attribute
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                    quality={85} // Slightly higher quality for featured images
+                    quality={75} // Reduced quality for better performance
                     onError={() => {
                       // This will be called if Next.js Image fails to load
                       console.error(
@@ -141,7 +141,7 @@ const PostDetail = ({ post }) => {
                     fetchPriority="high" // Use the fetchPriority attribute
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                    quality={85} // Slightly higher quality for featured images
+                    quality={75} // Reduced quality for better performance
                   />
                 )}
               </div>

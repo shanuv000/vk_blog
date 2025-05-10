@@ -32,10 +32,11 @@ const PREDEFINED_QUERIES = {
   `,
   featuredPosts: `
     query GetFeaturedPosts {
-      posts(first: 12, orderBy: createdAt_DESC) {
+      posts(first: 12, orderBy: publishedAt_DESC) {
         title
         slug
         createdAt
+        publishedAt
         featuredImage {
           url
           width
@@ -52,12 +53,13 @@ const PREDEFINED_QUERIES = {
   `,
   recentPosts: `
     query GetRecentPosts {
-      posts(orderBy: createdAt_DESC, first: 3) {
+      posts(orderBy: publishedAt_DESC, first: 3) {
         title
         featuredImage {
           url
         }
         createdAt
+        publishedAt
         slug
       }
     }

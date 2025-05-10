@@ -23,10 +23,10 @@ const FeaturedPostCard = ({ post = {} }) => {
   return (
     <motion.div
       className="relative h-80 sm:h-96"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.03 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ scale: 1.02 }}
     >
       <motion.div
         className="absolute rounded-lg shadow-lg inline-block w-full h-full overflow-hidden"
@@ -45,7 +45,7 @@ const FeaturedPostCard = ({ post = {} }) => {
           priority={true}
           loading="eager"
           fetchPriority="high"
-          quality={85}
+          quality={75}
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
           style={{ width: "100%", height: "100%" }}
