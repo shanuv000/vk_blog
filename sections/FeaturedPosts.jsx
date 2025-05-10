@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoplayPlugin from "embla-carousel-autoplay";
 import {
@@ -12,7 +12,7 @@ import { FeaturedPostCard } from "../components";
 import { getFeaturedPosts } from "../services";
 import { getDirectFeaturedPosts } from "../services/direct-api";
 
-// Embla styles without dot buttons
+// Updated Embla styles
 const emblaStyles = `
   .embla {
     position: relative;
@@ -47,7 +47,7 @@ const emblaStyles = `
   @media(min-width: 640px){ .embla__slide { flex-basis: 50%; } }
   @media(min-width: 1024px){ .embla__slide { flex-basis: 33.3%; } }
   @media(min-width: 1536px){ .embla__slide { flex-basis: 25%; } }
-  .embla__slide:focus-within, .embla__slide--active {
+  .embla__slide.is-selected, .embla__slide:focus-within {
     z-index: 1;
     box-shadow: 0 8px 36px -6px #e5091470;
     outline: 3px solid #E50914;
@@ -95,7 +95,7 @@ const FeaturedPosts = () => {
 
   const autoplayOptions = {
     delay: 5000,
-    stopOnInteraction: false,
+    stopOnInteraction: true,
     stopOnMouseEnter: true,
     rootNode: (emblaRoot) => emblaRoot.parentElement,
   };
@@ -106,7 +106,7 @@ const FeaturedPosts = () => {
       skipSnaps: false,
       dragFree: false,
       containScroll: "trimSnaps",
-      slidesToScroll: 1, // Ensures carousel can scroll by one card, but all cards render
+      slidesToScroll: 1,
     },
     [AutoplayPlugin(autoplayOptions)]
   );
@@ -119,7 +119,7 @@ const FeaturedPosts = () => {
     return () => emblaApi.off("select");
   }, [emblaApi]);
 
-  // Preload visible images for best perf (optional, but keeps LCP optimized)
+  // Preload visible images for best performance
   const preloadImages = (posts) => {
     if (!posts?.length) return null;
     const imagesToPreload = posts
@@ -148,7 +148,7 @@ const FeaturedPosts = () => {
     );
   };
 
-  // Fetch all posts (make sure all available posts are set!)
+  // Fetch all posts
   useEffect(() => {
     const loadPosts = async () => {
       try {
@@ -194,7 +194,6 @@ const FeaturedPosts = () => {
     loadPosts();
   }, []);
 
-  // Render nothing if no posts
   if (!dataLoaded || !featuredPosts.length) return null;
 
   return (
@@ -235,32 +234,21 @@ const FeaturedPosts = () => {
             ref={emblaRef}
           >
             <div className="embla__container">
-              <AnimatePresence mode="wait" initial={false}>
-                {featuredPosts.map((post, idx) => (
-                  <motion.div
-                    key={post.slug || idx}
-                    className="embla__slide"
-                    data-slide={idx}
-                    aria-roledescription="slide"
-                    aria-label={`Featured post ${idx + 1} of ${
-                      featuredPosts.length
-                    }`}
-                    initial={{ opacity: 0, y: 32 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -32 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 240,
-                      damping: 28,
-                      duration: 0.45,
-                    }}
-                  >
-                    <div className="px-2">
-                      <FeaturedPostCard post={post} />
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+              {featuredPosts.map((post, idx) => (
+                <div
+                  key={post.slug || idx}
+                  className="embla__slide"
+                  data-slide={idx}
+                  aria-roledescription="slide"
+                  aria-label={`Featured post ${idx + 1} of ${
+                    featuredPosts.length
+                  }`}
+                >
+                  <div className="px-2">
+                    <FeaturedPostCard post={post} />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
           <PrevButton
