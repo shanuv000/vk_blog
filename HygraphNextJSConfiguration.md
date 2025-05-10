@@ -297,7 +297,13 @@ const GET_POST_DETAILS = gql`
       content {
         json
         references {
-          __typename
+          ... on Asset {
+            id
+            url
+            mimeType
+            width
+            height
+          }
         }
       }
       categories {
@@ -439,6 +445,256 @@ export async function fetchHygraphData(query, variables = {}) {
 ```
 
 ## Advanced Features
+
+### Twitter Embeds in Rich Text
+
+Hygraph rich text content can include Twitter embeds in multiple ways. Here's a comprehensive guide on how to handle tweets in your rich text renderer:
+
+#### 1. Using Numeric Tweet IDs in Blockquotes
+
+The simplest way to embed tweets is by using numeric tweet IDs in blockquotes:
+
+```jsx
+// Add to your blockquote renderer
+blockquote: ({ children }) => {
+  // Check if children contains a numeric tweet ID
+  const childText = children?.toString() || "";
+  const isNumericTweetId = /^\d+$/.test(childText.trim());
+
+  if (isNumericTweetId) {
+    return (
+      <div className="my-16 mx-auto max-w-4xl">
+        <TwitterEmbed tweetId={childText.trim()} />
+      </div>
+    );
+  }
+
+  // Regular blockquote rendering for non-tweet content
+  return (
+    <blockquote className="border-l-4 border-red-400 bg-gray-50 pl-8 py-6 my-16 italic text-gray-700 max-w-3xl mx-auto rounded-r-lg shadow-sm">
+      {children}
+    </blockquote>
+  );
+}
+```
+
+With this approach, content editors can simply add a blockquote with only a numeric tweet ID:
+
+```markdown
+> 1790555395041472948
+```
+
+This will be automatically rendered as a Twitter embed.
+
+#### 2. Using Social Embeds
+
+For more structured embedding, use Hygraph's social embeds:
+
+```jsx
+// Add to your renderers object
+embed: {
+  SocialEmbed: ({ nodeId, children }) => {
+    // Check if children contains a numeric tweet ID
+    const childText = children?.toString() || "";
+    const isNumericTweetId = /^\d+$/.test(childText.trim());
+
+    if (isNumericTweetId) {
+      return (
+        <div className="my-16 mx-auto max-w-4xl">
+          <TwitterEmbed tweetId={childText.trim()} />
+        </div>
+      );
+    }
+
+    // Handle specific social embeds based on nodeId
+    // This is useful for mapping known embeds to specific tweet IDs
+    const knownTweetIds = {
+      'cmaa978sx201j08pkf4vzcw5u': '1780968555837366289',
+      'cmaaa22po20ch08pkims5csgc': '1780968558731964825',
+    };
+
+    if (knownTweetIds[nodeId]) {
+      return (
+        <div className="my-16 mx-auto max-w-4xl">
+          <TwitterEmbed tweetId={knownTweetIds[nodeId]} />
+        </div>
+      );
+    }
+
+    // Default fallback for unknown social embeds
+    return (
+      <div className="my-8 p-4 border border-gray-300 rounded-lg bg-gray-50 text-center">
+        <p className="text-gray-500">Social embed content (ID: {nodeId})</p>
+      </div>
+    );
+  }
+}
+```
+
+#### 3. Using a DOM Scanner Approach
+
+For more complex scenarios, you can use a DOM scanner approach with a dedicated component:
+
+```jsx
+// components/TweetEmbedder.jsx
+import React, { useEffect } from "react";
+
+const TweetEmbedder = () => {
+  useEffect(() => {
+    // Load Twitter widget script
+    const loadTwitterScript = () => {
+      if (window.twttr) return Promise.resolve();
+
+      return new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.setAttribute("src", "https://platform.twitter.com/widgets.js");
+        script.onload = resolve;
+        document.head.appendChild(script);
+      });
+    };
+
+    // Create tweet embed
+    const createTweet = (tweetId, container) => {
+      window.twttr.widgets
+        .createTweet(tweetId, container, {
+          theme: "light",
+          align: "center",
+        })
+        .catch((error) => {
+          console.error("Error embedding tweet:", error);
+          container.innerHTML = `
+            <div class="p-4 border border-red-100 rounded-lg bg-red-50 text-center">
+              <p class="text-red-500">Could not load tweet. It may have been deleted or is private.</p>
+            </div>
+          `;
+        });
+    };
+
+    // Process blockquotes with numeric content
+    const processBlockquotes = async () => {
+      document.querySelectorAll(".blog-content blockquote").forEach((blockquote) => {
+        const text = blockquote.textContent.trim();
+        if (/^\d+$/.test(text)) {
+          const tweetContainer = document.createElement("div");
+          tweetContainer.className = "my-16 mx-auto max-w-4xl tweet-container";
+          blockquote.parentNode.replaceChild(tweetContainer, blockquote);
+          createTweet(text, tweetContainer);
+        }
+      });
+    };
+
+    // Main function
+    const processPage = async () => {
+      await loadTwitterScript();
+      await processBlockquotes();
+    };
+
+    // Run with a slight delay to ensure DOM is fully rendered
+    const timeoutId = setTimeout(processPage, 100);
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  return <div className="tweet-embedder-container hidden" />;
+};
+
+export default TweetEmbedder;
+```
+
+Then include this component in your blog layout:
+
+```jsx
+// In your blog post component
+<div className="blog-content">
+  <TweetEmbedder />
+  <RichTextRenderer content={post.content.json} references={post.content.references} />
+</div>
+```
+
+#### 4. Creating a TwitterEmbed Component
+
+For all the above approaches, you'll need a TwitterEmbed component:
+
+```jsx
+// components/TwitterEmbed.jsx
+import React, { useEffect, useRef } from "react";
+
+const TwitterEmbed = ({ tweetId }) => {
+  const tweetRef = useRef(null);
+
+  useEffect(() => {
+    const currentTweetRef = tweetRef.current;
+
+    // Skip if no tweet ID
+    if (!tweetId) return;
+
+    // Load Twitter widget script if needed
+    if (!window.twttr) {
+      const script = document.createElement("script");
+      script.setAttribute("src", "https://platform.twitter.com/widgets.js");
+      script.setAttribute("async", true);
+      document.head.appendChild(script);
+      script.onload = renderTweet;
+    } else {
+      renderTweet();
+    }
+
+    function renderTweet() {
+      if (window.twttr && currentTweetRef) {
+        window.twttr.widgets.createTweet(tweetId, currentTweetRef, {
+          theme: "light",
+          dnt: true,
+          align: "center",
+        });
+      }
+    }
+
+    return () => {
+      if (currentTweetRef) {
+        currentTweetRef.innerHTML = "";
+      }
+    };
+  }, [tweetId]);
+
+  return (
+    <div className="my-6">
+      <div
+        ref={tweetRef}
+        className="twitter-tweet-container flex justify-center items-center min-h-[200px]"
+      >
+        <div className="animate-pulse flex flex-col items-center justify-center p-4 w-full">
+          <div className="h-10 bg-gray-200 rounded-full w-10 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="mt-4 text-blue-400 text-sm">Loading tweet...</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TwitterEmbed;
+```
+
+#### 5. GraphQL Query Structure
+
+When querying Hygraph for rich text content that may contain tweets, ensure you include the necessary fields:
+
+```graphql
+query GetPostWithTweets($slug: String!) {
+  post(where: { slug: $slug }) {
+    content {
+      json
+      references {
+        ... on Asset {
+          id
+          url
+          mimeType
+        }
+      }
+    }
+  }
+}
+```
 
 ### Custom Embeds
 

@@ -64,7 +64,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" }
   ],
   "redirects": [

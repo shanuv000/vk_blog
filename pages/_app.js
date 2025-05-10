@@ -7,10 +7,12 @@ import Script from "next/script";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { DEFAULT_FEATURED_IMAGE } from "../components/DefaultAvatar";
 import { ApolloProvider } from "@apollo/client";
-import { useApollo } from "../lib/apollo-client";
+import { useApollo, getApolloStats } from "../lib/apollo-client";
 import AnalyticsProvider from "../components/AnalyticsProvider";
 // Add this to fix hydration issues
 import { useRouter } from "next/router";
+// Import prefetch function
+import { prefetchCommonQueries } from "../services/hygraph";
 
 function MyApp({ Component, pageProps }) {
   // Initialize Apollo Client with the initial state
@@ -18,7 +20,7 @@ function MyApp({ Component, pageProps }) {
   // Use router to help with hydration issues
   const router = useRouter();
 
-  // Preload critical resources
+  // Preload critical resources and prefetch data
   useEffect(() => {
     // Dynamically import the carousel to ensure it's available
     import("react-multi-carousel").catch((err) =>
@@ -30,6 +32,31 @@ function MyApp({ Component, pageProps }) {
     styleLink.rel = "stylesheet"; // Changed from preload to stylesheet
     styleLink.href = "/react-multi-carousel/lib/styles.css";
     document.head.appendChild(styleLink);
+
+    // Prefetch common queries during idle time
+    if (typeof window !== "undefined") {
+      // Wait for page to load before prefetching
+      if (document.readyState === "complete") {
+        prefetchCommonQueries();
+      } else {
+        window.addEventListener("load", () => {
+          // Use requestIdleCallback or setTimeout to avoid blocking main thread
+          (window.requestIdleCallback || setTimeout)(
+            () => {
+              prefetchCommonQueries();
+
+              // Log cache stats after prefetching (development only)
+              if (process.env.NODE_ENV === "development") {
+                setTimeout(() => {
+                  console.log("Apollo cache stats:", getApolloStats());
+                }, 2000);
+              }
+            },
+            { timeout: 2000 }
+          );
+        });
+      }
+    }
 
     return () => {
       if (styleLink.parentNode) {

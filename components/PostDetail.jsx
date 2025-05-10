@@ -197,10 +197,6 @@ const PostDetail = ({ post }) => {
                   {/* Wrap RichTextRenderer in a try-catch block for additional error handling */}
                   {(() => {
                     try {
-                      // Determine which content format to use
-                      const contentToUse =
-                        post.content.json || post.content.raw || post.content;
-
                       return (
                         <div className="article-content">
                           {/* Reading time estimate */}
@@ -229,8 +225,13 @@ const PostDetail = ({ post }) => {
                           {/* First paragraph with drop cap styling */}
                           <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left">
                             <RichTextRenderer
-                              content={contentToUse}
-                              references={post.content.references || []}
+                              content={post.content}
+                              references={
+                                post.content &&
+                                Array.isArray(post.content.references)
+                                  ? post.content.references
+                                  : []
+                              }
                             />
                           </div>
 

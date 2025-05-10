@@ -1,4 +1,12 @@
 import { GraphQLClient, gql } from "graphql-request";
+import {
+  setCacheItem,
+  getCacheItem,
+  hasCacheItem,
+  clearCache as clearCacheStorage,
+  generateCacheKey,
+  getCacheTTL,
+} from "../lib/cache-manager";
 
 // API endpoints
 export const HYGRAPH_CONTENT_API = process.env.NEXT_PUBLIC_HYGRAPH_CONTENT_API;
@@ -8,12 +16,22 @@ export const HYGRAPH_AUTH_TOKEN = process.env.HYGRAPH_AUTH_TOKEN;
 // Determine if we're running in the browser
 const isBrowser = typeof window !== "undefined";
 
+// Create clients with optimized settings
+const createClient = (endpoint, options = {}) => {
+  return new GraphQLClient(endpoint, {
+    timeout: 10000, // 10 second timeout
+    retryCount: 2, // Retry failed requests twice
+    retryDelay: 1000, // Wait 1 second between retries
+    ...options,
+  });
+};
+
 // Create clients for different purposes
-export const contentClient = new GraphQLClient(HYGRAPH_CONTENT_API);
+export const contentClient = createClient(HYGRAPH_CONTENT_API);
 
 // Create an authenticated client if token is available
 export const authClient = HYGRAPH_AUTH_TOKEN
-  ? new GraphQLClient(HYGRAPH_CONTENT_API, {
+  ? createClient(HYGRAPH_CONTENT_API, {
       headers: {
         authorization: `Bearer ${HYGRAPH_AUTH_TOKEN}`,
       },
@@ -23,38 +41,18 @@ export const authClient = HYGRAPH_AUTH_TOKEN
 // For client-side requests, use our proxy API to avoid CORS issues
 // For server-side requests, use the CDN API directly
 export const cdnClient = isBrowser
-  ? new GraphQLClient("/api/hygraph-proxy") // Use relative URL for proxy
-  : new GraphQLClient(HYGRAPH_CDN_API); // Use direct CDN for server-side
-
-// Simple in-memory cache implementation
-const cache = new Map();
-const CACHE_TTL = 60 * 60 * 1000; // 60 minutes in milliseconds (increased from 15 minutes)
-const IMAGE_CACHE_TTL = 48 * 60 * 60 * 1000; // 48 hours for images (increased from 24 hours)
-const CATEGORY_CACHE_TTL = 12 * 60 * 60 * 1000; // 12 hours for categories
-
-// Helper function to generate a cache key from query and variables
-const generateCacheKey = (query, variables) => {
-  // Remove timestamp from variables for cache key
-  const { _timestamp, ...cacheVariables } = variables;
-  return `${query}:${JSON.stringify(cacheVariables)}`;
-};
-
-// Helper function to check if a query is for images
-const isImageQuery = (query) => {
-  return query.includes("featuredImage") || query.includes("photo");
-};
-
-// Helper function to check if a query is for categories
-const isCategoryQuery = (query) => {
-  return query.includes("categories") && !query.includes("post");
-};
-
-// Helper function to determine appropriate cache TTL based on query content
-const getCacheTTL = (query) => {
-  if (isImageQuery(query)) return IMAGE_CACHE_TTL;
-  if (isCategoryQuery(query)) return CATEGORY_CACHE_TTL;
-  return CACHE_TTL;
-};
+  ? createClient("/api/hygraph-proxy", {
+      headers: {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400",
+        "X-Client-Type": "browser",
+      },
+    })
+  : createClient(HYGRAPH_CDN_API, {
+      headers: {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400",
+        "X-Client-Type": "server",
+      },
+    });
 
 // Helper function to optimize image URLs
 const optimizeImageUrls = (data) => {
@@ -97,41 +95,59 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
   const cacheKey = generateCacheKey(query, variables);
 
   // Determine appropriate cache TTL based on query content
-  const isImageRelated = isImageQuery(query);
   const cacheTTL = getCacheTTL(query);
+  const isImageRelated =
+    query.includes("featuredImage") || query.includes("photo");
+
+  // Implement stale-while-revalidate pattern
+  let staleData = null;
 
   // Check cache if enabled
-  if (useCache && cache.has(cacheKey)) {
-    const cachedData = cache.get(cacheKey);
-    if (cachedData.expiry > Date.now()) {
-      // Log cache hit for debugging
-      console.log(`Cache hit for query: ${cacheKey.substring(0, 50)}...`);
-      return cachedData.data;
-    } else {
-      // Remove expired cache entry
-      console.log(`Cache expired for query: ${cacheKey.substring(0, 50)}...`);
-      cache.delete(cacheKey);
+  if (useCache && hasCacheItem(cacheKey)) {
+    const cachedItem = getCacheItem(cacheKey);
+
+    if (cachedItem && cachedItem.data) {
+      if (cachedItem.expiry > Date.now()) {
+        // Valid cache hit
+        console.log(`Cache hit for query: ${cacheKey.substring(0, 40)}...`);
+        return cachedItem.data;
+      } else {
+        // Expired but still usable as stale data
+        console.log(
+          `Using stale data for query: ${cacheKey.substring(0, 40)}...`
+        );
+        staleData = cachedItem.data;
+
+        // If this is a non-critical query (like images or categories),
+        // we can return stale data immediately and refresh in background
+        if (isImageRelated || query.includes("categories")) {
+          // Start background refresh
+          setTimeout(() => {
+            fetchFromCDN(query, variables, true).catch((e) =>
+              console.log(`Background refresh failed: ${e.message}`)
+            );
+          }, 0);
+
+          return staleData;
+        }
+      }
     }
-  } else if (useCache) {
-    console.log(`Cache miss for query: ${cacheKey.substring(0, 50)}...`);
   }
 
   try {
-    // Add timeout to prevent hanging requests
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-
-    // Only add timestamp for dynamic content that needs to be fresh
+    // Add timestamp for dynamic content that needs to be fresh
     // For static content like images and categories, don't add timestamp to leverage CDN caching
-    const shouldAddTimestamp = !isImageRelated && !isCategoryQuery(query);
+    const shouldAddTimestamp = !isImageRelated && !query.includes("categories");
 
     const timestampedVariables = shouldAddTimestamp
-      ? {
-          ...variables,
-          _timestamp: Date.now(), // Add timestamp only for dynamic content
-        }
-      : variables; // Use original variables for static content
+      ? { ...variables, _timestamp: Date.now() }
+      : variables;
 
+    // Set request timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    // Make the request
     const result = await cdnClient.request(query, timestampedVariables);
     clearTimeout(timeoutId);
 
@@ -140,77 +156,69 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
 
     // Store in cache if caching is enabled
     if (useCache) {
-      cache.set(cacheKey, {
-        data: optimizedResult,
-        expiry: Date.now() + cacheTTL,
-        timestamp: Date.now(), // Store when this was cached
-      });
+      setCacheItem(cacheKey, optimizedResult, cacheTTL);
       console.log(
         `Cached result for ${
           cacheTTL / 1000 / 60
-        } minutes: ${cacheKey.substring(0, 50)}...`
+        } minutes: ${cacheKey.substring(0, 40)}...`
       );
     }
 
     return optimizedResult;
   } catch (error) {
-    console.error("Error fetching from Hygraph CDN:", error);
+    console.error(`Error fetching from Hygraph CDN: ${error.message}`);
 
-    // Check if we have a cached version we can use as fallback, even if expired
-    if (useCache && cache.has(cacheKey)) {
-      const cachedData = cache.get(cacheKey);
-      // Use expired cache data as fallback if it's not too old (less than 2x the TTL)
-      if (cachedData.expiry > Date.now() - cacheTTL) {
-        console.log(
-          `Using slightly expired cache as fallback for: ${cacheKey.substring(
-            0,
-            50
-          )}...`
-        );
-        return cachedData.data;
-      }
+    // If we have stale data, use it as fallback
+    if (staleData) {
+      console.log(
+        `Using stale data as fallback for: ${cacheKey.substring(0, 40)}...`
+      );
+      return staleData;
     }
 
-    // If CDN fails and no usable cache, try the content API as fallback
+    // Try content API as fallback
     try {
       console.log("Falling back to Content API due to CDN failure");
 
       // Same timestamp logic as above
-      const shouldAddTimestamp = !isImageRelated && !isCategoryQuery(query);
-
+      const shouldAddTimestamp =
+        !isImageRelated && !query.includes("categories");
       const timestampedVariables = shouldAddTimestamp
-        ? {
-            ...variables,
-            _timestamp: Date.now(),
-          }
+        ? { ...variables, _timestamp: Date.now() }
         : variables;
 
       const result = await contentClient.request(query, timestampedVariables);
-
-      // Optimize image URLs in the response if needed
       const optimizedResult = isImageRelated
         ? optimizeImageUrls(result)
         : result;
 
-      // Store in cache if caching is enabled
+      // Store in cache with shorter TTL since it's from fallback
       if (useCache) {
-        cache.set(cacheKey, {
-          data: optimizedResult,
-          expiry: Date.now() + cacheTTL,
-          timestamp: Date.now(),
-          source: "content-api", // Mark this as coming from content API
-        });
+        setCacheItem(cacheKey, optimizedResult, Math.floor(cacheTTL / 2));
         console.log(
-          `Cached content API result for ${
-            cacheTTL / 1000 / 60
-          } minutes: ${cacheKey.substring(0, 50)}...`
+          `Cached content API result for ${cacheTTL / 2000 / 60} minutes`
         );
       }
 
       return optimizedResult;
     } catch (fallbackError) {
-      console.error("Fallback to Content API also failed:", fallbackError);
-      throw error; // Throw the original error
+      console.error(
+        `Fallback to Content API also failed: ${fallbackError.message}`
+      );
+
+      // Last resort: check if we have ANY cached data, even if very old
+      const lastResortData = getCacheItem(cacheKey);
+      if (lastResortData && lastResortData.data) {
+        console.log(
+          `Using very old cache as last resort for: ${cacheKey.substring(
+            0,
+            40
+          )}...`
+        );
+        return lastResortData.data;
+      }
+
+      throw error; // No fallbacks left, throw the original error
     }
   }
 };
@@ -227,95 +235,147 @@ export const fetchFromContentAPI = async (query, variables = {}) => {
     const result = await contentClient.request(query, timestampedVariables);
 
     // Clear cache after mutations to ensure fresh data
-    cache.clear();
+    clearCacheStorage();
 
     return result;
   } catch (error) {
-    console.error("Error fetching from Hygraph Content API:", error);
+    console.error(`Error fetching from Hygraph Content API: ${error.message}`);
     throw error;
   }
 };
 
-// Cache debugging and management utilities
-export const getCacheStats = () => {
-  const now = Date.now();
-  const stats = {
-    totalEntries: cache.size,
-    validEntries: 0,
-    expiredEntries: 0,
-    imageEntries: 0,
-    categoryEntries: 0,
-    otherEntries: 0,
-    averageAge: 0,
-    oldestEntry: 0,
-    newestEntry: now,
-  };
-
-  let totalAge = 0;
-  let oldestTimestamp = now;
-  let newestTimestamp = 0;
-
-  cache.forEach((value, key) => {
-    const isValid = value.expiry > now;
-    if (isValid) {
-      stats.validEntries++;
-    } else {
-      stats.expiredEntries++;
-    }
-
-    // Categorize by entry type
-    if (key.includes("featuredImage") || key.includes("photo")) {
-      stats.imageEntries++;
-    } else if (key.includes("categories") && !key.includes("post")) {
-      stats.categoryEntries++;
-    } else {
-      stats.otherEntries++;
-    }
-
-    // Track age statistics
-    if (value.timestamp) {
-      const age = now - value.timestamp;
-      totalAge += age;
-
-      if (value.timestamp < oldestTimestamp) {
-        oldestTimestamp = value.timestamp;
-      }
-
-      if (value.timestamp > newestTimestamp) {
-        newestTimestamp = value.timestamp;
-      }
-    }
-  });
-
-  if (cache.size > 0) {
-    stats.averageAge = totalAge / cache.size;
-    stats.oldestEntry = now - oldestTimestamp;
-    stats.newestEntry = now - newestTimestamp;
+// Execute multiple queries in parallel with individual caching
+export const batchQueries = async (queries = [], useCache = true) => {
+  if (!queries || queries.length === 0) {
+    return [];
   }
 
+  // If only one query, use regular fetchFromCDN
+  if (queries.length === 1) {
+    const { query, variables } = queries[0];
+    return [await fetchFromCDN(query, variables, useCache)];
+  }
+
+  // For multiple queries, execute them in parallel with individual caching
+  try {
+    console.log(`Executing ${queries.length} queries in parallel`);
+
+    // Create an array of promises, each using fetchFromCDN with its own caching
+    const queryPromises = queries.map(({ query, variables }) =>
+      fetchFromCDN(query, variables, useCache).catch((err) => {
+        console.error(`Query failed: ${err.message}`);
+        return null; // Return null for failed queries
+      })
+    );
+
+    // Execute all queries in parallel
+    const results = await Promise.all(queryPromises);
+    return results;
+  } catch (error) {
+    console.error(`Error executing parallel queries: ${error.message}`);
+    return queries.map(() => null); // Return array of nulls on complete failure
+  }
+};
+
+// Prefetch common queries during idle time
+export const prefetchCommonQueries = () => {
+  if (typeof window === "undefined") return; // Only run in browser
+
+  // Use requestIdleCallback if available, otherwise setTimeout
+  const scheduleIdle =
+    window.requestIdleCallback || ((cb) => setTimeout(cb, 1000));
+
+  scheduleIdle(() => {
+    console.log("Prefetching common queries during idle time");
+
+    // Prefetch each query individually instead of batching
+    // This is more reliable and avoids the batch query issues
+
+    // Prefetch categories
+    fetchFromCDN(
+      gql`
+        query GetGategories {
+          categories(where: { show: true }, orderBy: name_DESC) {
+            name
+            slug
+          }
+        }
+      `,
+      {},
+      true
+    ).catch((err) => console.log(`Categories prefetch failed: ${err.message}`));
+
+    // Prefetch featured posts
+    fetchFromCDN(
+      gql`
+        query GetFeaturedPosts {
+          posts(
+            where: { featuredpost: true }
+            first: 12
+            orderBy: createdAt_DESC
+          ) {
+            author {
+              name
+              photo {
+                url
+              }
+            }
+            featuredImage {
+              url
+              width
+              height
+            }
+            title
+            slug
+            createdAt
+          }
+        }
+      `,
+      {},
+      true
+    ).catch((err) =>
+      console.log(`Featured posts prefetch failed: ${err.message}`)
+    );
+
+    // Prefetch recent posts
+    fetchFromCDN(
+      gql`
+        query GetRecentPosts {
+          posts(orderBy: createdAt_DESC, first: 5) {
+            title
+            featuredImage {
+              url
+            }
+            createdAt
+            slug
+          }
+        }
+      `,
+      {},
+      true
+    ).catch((err) =>
+      console.log(`Recent posts prefetch failed: ${err.message}`)
+    );
+
+    // Log success message
+    console.log("Prefetch queries initiated");
+  });
+};
+
+// Export cache utilities with our new implementation
+export const getCacheStats = () => {
+  const stats = require("../lib/cache-manager").getCacheStats();
   return stats;
 };
 
 export const clearCache = () => {
-  const size = cache.size;
-  cache.clear();
-  console.log(`Cache cleared. ${size} entries removed.`);
-  return size;
+  return clearCacheStorage();
 };
 
 export const pruneExpiredCache = () => {
-  const now = Date.now();
-  let pruned = 0;
-
-  cache.forEach((value, key) => {
-    if (value.expiry <= now) {
-      cache.delete(key);
-      pruned++;
-    }
-  });
-
-  console.log(`Cache pruned. ${pruned} expired entries removed.`);
-  return pruned;
+  // This functionality is now handled automatically by the cache manager
+  console.log("Pruning expired cache entries");
+  return 0;
 };
 
 // Export gql for convenience
