@@ -96,7 +96,7 @@ const PostDetail = ({ post }) => {
     <ErrorBoundary>
       <>
         <motion.div
-          className="bg-white rounded-lg shadow-lg mb-8 overflow-hidden"
+          className="bg-white rounded-lg shadow-lg mb-8 overflow-hidden w-full"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -109,7 +109,7 @@ const PostDetail = ({ post }) => {
           <HeadPostDetails post={post} />
           {/* Seo */}
 
-          <div className="relative overflow-hidden mb-6">
+          <div className="relative overflow-hidden mb-6 w-full">
             <motion.div className="w-full aspect-video relative">
               <div className="relative w-full h-full">
                 {post.featuredImage?.url ? (
@@ -143,8 +143,8 @@ const PostDetail = ({ post }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
 
               {/* Title overlay on image */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
-                <h1 className="text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-4 capitalize leading-tight tracking-tight">
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-10 w-full">
+                <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-2 sm:mb-4 capitalize leading-tight tracking-tight">
                   {post.title}
                 </h1>
 
@@ -173,13 +173,13 @@ const PostDetail = ({ post }) => {
             </motion.div>
           </div>
 
-          <div className="px-6 lg:px-10 pb-10">
+          <div className="px-4 sm:px-6 lg:px-10 pb-10 w-full">
             {/* Wrap Testing component in ErrorBoundary to prevent it from crashing the entire page */}
             <ErrorBoundary>
               {post.slug && <Testing slug={post.slug} />}
             </ErrorBoundary>
 
-            <div className="prose prose-lg max-w-none mt-8 text-gray-800 mx-auto md:max-w-3xl lg:max-w-4xl">
+            <div className="prose prose-lg w-full max-w-none mt-8 text-gray-800 mx-auto sm:w-full md:w-full md:max-w-none lg:max-w-4xl">
               {post.content ? (
                 <ErrorBoundary
                   fallback={
@@ -198,7 +198,7 @@ const PostDetail = ({ post }) => {
                   {(() => {
                     try {
                       return (
-                        <div className="article-content">
+                        <div className="article-content w-full">
                           {/* Reading time estimate */}
                           <div className="text-gray-500 text-sm mb-6 flex items-center">
                             <svg
@@ -223,7 +223,7 @@ const PostDetail = ({ post }) => {
                           </div>
 
                           {/* First paragraph with drop cap styling */}
-                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left">
+                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left w-full">
                             <RichTextRenderer
                               content={post.content}
                               references={

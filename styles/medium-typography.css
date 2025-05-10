@@ -17,8 +17,8 @@
 }
 
 /* Heading styles */
-.article-content h1, 
-.article-content h2, 
+.article-content h1,
+.article-content h2,
 .article-content h3 {
   font-family: 'Poppins', Georgia, 'Times New Roman', Times, serif;
   letter-spacing: -0.015em;
@@ -116,11 +116,82 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .article-content {
+    width: 100%;
+    padding: 0;
+  }
+
   .article-content p {
     font-size: 1rem;
+    width: 100%;
   }
-  
+
   .article-content > div > p:first-of-type {
     font-size: 1.125rem;
+  }
+
+  .article-content blockquote {
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+  }
+
+  .article-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .article-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .article-content h3 {
+    font-size: 1.25rem;
+  }
+
+  .article-content table {
+    font-size: 0.8rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .article-content figure {
+    margin: 1.5rem auto;
+    width: 100% !important;
+  }
+
+  .article-content img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .article-content p {
+    font-size: 0.95rem;
+  }
+
+  .article-content > div > p:first-of-type {
+    font-size: 1.05rem;
+  }
+
+  .article-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .article-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .article-content h3 {
+    font-size: 1.15rem;
+  }
+
+  .article-content blockquote {
+    font-size: 0.95rem;
+    padding-left: 0.75rem;
+  }
+
+  .article-content code {
+    font-size: 0.8em;
   }
 }

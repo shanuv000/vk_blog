@@ -108,28 +108,30 @@ const NavbarPostDetails = ({ post }) => {
       initial={{ opacity: 0, y: -20 }}
       animate={controls}
       transition={{ duration: 0.5 }}
-      className="my-10 py-6"
+      className="my-8 sm:my-10 py-4 sm:py-6 w-full"
     >
-      <div className="max-w-3xl mx-auto">
-        <h3 className="text-gray-800 font-heading text-xl mb-5 font-semibold">
+      <div className="w-full sm:max-w-3xl mx-auto">
+        <h3 className="text-gray-800 font-heading text-lg sm:text-xl mb-3 sm:mb-5 font-semibold">
           Share this article
         </h3>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           {/* WhatsApp */}
           <motion.a
             href={`https://wa.me/?text=${encodeURIComponent(
               `${title} - ${postUrl}${imageUrl ? " 📷" : ""}`
             )}`}
             data-action="share/whatsapp/share"
-            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+            className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on WhatsApp"
             aria-label="Share on WhatsApp"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <FaWhatsapp size={18} className="text-green-500 mr-2" />
-            <span className="text-sm font-medium text-gray-700">WhatsApp</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              WhatsApp
+            </span>
           </motion.a>
 
           {/* Facebook */}
@@ -139,14 +141,16 @@ const NavbarPostDetails = ({ post }) => {
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
               postUrl
             )}&quote=${encodeURIComponent(title)}`}
-            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+            className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Facebook"
             aria-label="Share on Facebook"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <FaFacebook size={18} className="text-blue-600 mr-2" />
-            <span className="text-sm font-medium text-gray-700">Facebook</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              Facebook
+            </span>
           </motion.a>
 
           {/* Twitter */}
@@ -158,14 +162,16 @@ const NavbarPostDetails = ({ post }) => {
             )}&url=${encodeURIComponent(
               postUrl
             )}&via=Onlyblogs_&hashtags=urtechy,blog`}
-            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+            className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Twitter"
             aria-label="Share on Twitter"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <FaXTwitter size={18} className="text-black mr-2" />
-            <span className="text-sm font-medium text-gray-700">Twitter</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              Twitter
+            </span>
           </motion.a>
 
           {/* LinkedIn */}
@@ -177,14 +183,16 @@ const NavbarPostDetails = ({ post }) => {
             )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
               title
             )}&source=urTechy`}
-            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow md:inline-flex"
+            className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on LinkedIn"
             aria-label="Share on LinkedIn"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <FaLinkedin size={18} className="text-blue-700 mr-2" />
-            <span className="text-sm font-medium text-gray-700">LinkedIn</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              LinkedIn
+            </span>
           </motion.a>
 
           {/* Reddit */}
@@ -194,14 +202,16 @@ const NavbarPostDetails = ({ post }) => {
             href={`http://www.reddit.com/submit?url=${encodeURIComponent(
               postUrl
             )}&title=${encodeURIComponent(title)}`}
-            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow md:inline-flex"
+            className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Reddit"
             aria-label="Share on Reddit"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <FaReddit size={18} className="text-orange-600 mr-2" />
-            <span className="text-sm font-medium text-gray-700">Reddit</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              Reddit
+            </span>
           </motion.a>
 
           {/* Pinterest */}
@@ -213,14 +223,16 @@ const NavbarPostDetails = ({ post }) => {
             )}&description=${encodeURIComponent(
               title
             )}&media=${encodeURIComponent(getSafeImageUrl())}`}
-            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow md:inline-flex"
+            className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Pinterest"
             aria-label="Share on Pinterest"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <FaPinterest size={18} className="text-red-600 mr-2" />
-            <span className="text-sm font-medium text-gray-700">Pinterest</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              Pinterest
+            </span>
           </motion.a>
         </div>
 
@@ -230,7 +242,7 @@ const NavbarPostDetails = ({ post }) => {
             navigator.clipboard.writeText(postUrl);
             setShowToast(true);
           }}
-          className="mt-4 flex items-center px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-300"
+          className="mt-3 sm:mt-4 flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-300"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
         >
@@ -248,7 +260,9 @@ const NavbarPostDetails = ({ post }) => {
               d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
             />
           </svg>
-          <span className="text-sm font-medium text-gray-700">Copy link</span>
+          <span className="text-xs sm:text-sm font-medium text-gray-700">
+            Copy link
+          </span>
         </motion.button>
 
         {/* Toast notification */}
