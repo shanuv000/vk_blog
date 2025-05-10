@@ -198,25 +198,320 @@ const RichTextRenderer = ({ content, references = [] }) => {
           references={processedReferences}
           renderers={{
             blockquote: ({ children }) => {
-              // Check if children contains ONLY a numeric tweet ID
-              const childText = children?.toString() || "";
-              const trimmedText = childText.trim();
+              // Extract text content from children, handling different types
+              let childText = "";
+
+              try {
+                // Function to recursively extract text from React elements
+                const extractTextFromReactElement = (element) => {
+                  if (!element) return "";
+
+                  // If it's a string or number, return it directly
+                  if (typeof element === "string") return element;
+                  if (typeof element === "number") return element.toString();
+
+                  // If it's a React element
+                  if (React.isValidElement(element)) {
+                    // Get the children from props
+                    const elementChildren =
+                      element.props && element.props.children;
+
+                    // Recursively extract text from children
+                    return extractTextFromReactElement(elementChildren);
+                  }
+
+                  // If it's an array, process each item
+                  if (Array.isArray(element)) {
+                    return element
+                      .map((item) => extractTextFromReactElement(item))
+                      .join("");
+                  }
+
+                  // If it's an object with text property
+                  if (element && typeof element === "object") {
+                    if (element.text) return element.text;
+                    if (element.content) return element.content;
+
+                    // Try to extract from props.children if available
+                    if (element.props && element.props.children) {
+                      return extractTextFromReactElement(
+                        element.props.children
+                      );
+                    }
+                  }
+
+                  // Last resort: try toString()
+                  try {
+                    return String(element);
+                  } catch (e) {
+                    return "";
+                  }
+                };
+
+                // Extract text using our recursive function
+                childText = extractTextFromReactElement(children);
+
+                // Special handling for Hygraph rich text blockquotes
+                // Check if this is a paragraph inside a blockquote
+                if (
+                  !childText &&
+                  React.isValidElement(children) &&
+                  children.props &&
+                  children.props.children
+                ) {
+                  // Try to get text content from props
+                  if (children.props && children.props.content) {
+                    childText = children.props.content;
+                  } else if (children.props && children.props.children) {
+                    // If children has text as direct children
+                    if (typeof children.props.children === "string") {
+                      childText = children.props.children;
+                    } else if (Array.isArray(children.props.children)) {
+                      // Array of elements
+                      childText = children.props.children
+                        .map((child) => {
+                          if (typeof child === "string") return child;
+                          if (typeof child === "number")
+                            return child.toString();
+                          return "";
+                        })
+                        .join("");
+                    } else {
+                      // Try to stringify if it's an object
+                      try {
+                        childText = JSON.stringify(children.props.children);
+                      } catch (e) {
+                        console.log("Could not stringify children:", e);
+                      }
+                    }
+                  }
+                }
+
+                // If we still don't have text, try one more approach with toString
+                if (!childText && children) {
+                  try {
+                    const stringified = String(children);
+                    if (stringified && stringified !== "[object Object]") {
+                      childText = stringified;
+                    }
+                  } catch (e) {
+                    console.error("Error in toString fallback:", e);
+                  }
+                }
+
+                // Debug the structure in detail
+                console.log(
+                  "Blockquote children structure:",
+                  React.isValidElement(children)
+                    ? "React Element"
+                    : typeof children,
+                  React.isValidElement(children) && children.props
+                    ? "Has props"
+                    : "No props"
+                );
+
+                // More detailed debugging of the structure
+                if (React.isValidElement(children) && children.props) {
+                  console.log("Blockquote props:", Object.keys(children.props));
+
+                  if (children.props.children) {
+                    console.log(
+                      "Blockquote children type:",
+                      typeof children.props.children,
+                      "isArray:",
+                      Array.isArray(children.props.children),
+                      "isReactElement:",
+                      React.isValidElement(children.props.children)
+                    );
+
+                    // If it's a React element, log its props
+                    if (React.isValidElement(children.props.children)) {
+                      console.log(
+                        "Blockquote children props:",
+                        Object.keys(children.props.children.props || {})
+                      );
+
+                      // If it has children, log those too
+                      if (
+                        children.props.children.props &&
+                        children.props.children.props.children
+                      ) {
+                        const grandchildren =
+                          children.props.children.props.children;
+                        console.log(
+                          "Blockquote grandchildren type:",
+                          typeof grandchildren,
+                          "isArray:",
+                          Array.isArray(grandchildren),
+                          "isReactElement:",
+                          React.isValidElement(grandchildren),
+                          "value:",
+                          typeof grandchildren === "string"
+                            ? grandchildren
+                            : "non-string"
+                        );
+                      }
+                    }
+
+                    // If it's an array, log the first few items
+                    if (Array.isArray(children.props.children)) {
+                      children.props.children
+                        .slice(0, 3)
+                        .forEach((child, i) => {
+                          console.log(
+                            `Blockquote child[${i}] type:`,
+                            typeof child,
+                            "isReactElement:",
+                            React.isValidElement(child),
+                            "value:",
+                            typeof child === "string" ? child : "non-string"
+                          );
+                        });
+                    }
+                  }
+                }
+              } catch (error) {
+                console.error("Error extracting text from blockquote:", error);
+                childText = "";
+              }
+
+              // Clean up the text - ensure childText is a string before calling trim()
+              let trimmedText = "";
+              try {
+                // Convert childText to string if it's not already
+                const childTextStr =
+                  typeof childText === "string"
+                    ? childText
+                    : String(childText || "");
+                trimmedText = childTextStr.trim();
+              } catch (error) {
+                console.error("Error trimming childText:", error);
+                trimmedText = "";
+              }
 
               // Only treat as tweet ID if it's exactly a number and nothing else
-              const isExactlyTweetId =
-                /^\d+$/.test(trimmedText) && trimmedText.length > 8;
+              let isExactlyTweetId = false;
+              let tweetId = null;
+
+              try {
+                // Make sure trimmedText is a string
+                if (typeof trimmedText === "string") {
+                  // Check if it's a numeric string with sufficient length
+                  isExactlyTweetId =
+                    /^\d+$/.test(trimmedText) && trimmedText.length > 8;
+
+                  if (isExactlyTweetId) {
+                    tweetId = trimmedText;
+                  }
+                }
+
+                // If we didn't find a tweet ID yet, try a more direct approach
+                if (!tweetId) {
+                  // Try to find a numeric string that looks like a tweet ID in the props structure
+                  const findTweetId = (element) => {
+                    if (!element) return null;
+
+                    // If it's a string and looks like a tweet ID
+                    if (typeof element === "string") {
+                      const cleaned = element.trim();
+                      if (/^\d+$/.test(cleaned) && cleaned.length > 8) {
+                        return cleaned;
+                      }
+                    }
+
+                    // If it's a React element with props
+                    if (React.isValidElement(element) && element.props) {
+                      // Check children
+                      if (element.props.children) {
+                        const childResult = findTweetId(element.props.children);
+                        if (childResult) return childResult;
+                      }
+
+                      // Check other props
+                      for (const key in element.props) {
+                        if (key !== "children") {
+                          const propResult = findTweetId(element.props[key]);
+                          if (propResult) return propResult;
+                        }
+                      }
+                    }
+
+                    // If it's an array
+                    if (Array.isArray(element)) {
+                      for (const item of element) {
+                        const arrayResult = findTweetId(item);
+                        if (arrayResult) return arrayResult;
+                      }
+                    }
+
+                    // If it's an object
+                    if (element && typeof element === "object") {
+                      for (const key in element) {
+                        const objResult = findTweetId(element[key]);
+                        if (objResult) return objResult;
+                      }
+                    }
+
+                    return null;
+                  };
+
+                  // Try to find a tweet ID in the children structure
+                  const foundTweetId = findTweetId(children);
+                  if (foundTweetId) {
+                    tweetId = foundTweetId;
+                    isExactlyTweetId = true;
+                    console.log("Found tweet ID using direct search:", tweetId);
+                  }
+                }
+              } catch (error) {
+                console.error("Error checking if text is a tweet ID:", error);
+                isExactlyTweetId = false;
+              }
 
               console.log(
-                "Blockquote content:",
+                "TWEET CHECK:",
+                "Extracted text type:",
+                typeof trimmedText,
+                "Text:",
                 trimmedText,
                 "Is tweet ID:",
-                isExactlyTweetId
+                isExactlyTweetId,
+                "Length:",
+                trimmedText ? trimmedText.length : 0,
+                "Is numeric:",
+                typeof trimmedText === "string"
+                  ? /^\d+$/.test(trimmedText)
+                  : false
               );
 
-              if (isExactlyTweetId) {
+              if (isExactlyTweetId && (tweetId || trimmedText)) {
+                // Use the found tweet ID or fall back to trimmedText
+                const finalTweetId = tweetId || trimmedText;
+
+                console.log("Rendering tweet with ID:", finalTweetId);
+
+                // Create a direct Twitter embed as a fallback option
+                const directTweetEmbed = () => {
+                  return (
+                    <div className="my-8 mx-auto max-w-xl">
+                      <blockquote className="twitter-tweet" data-dnt="true">
+                        <a
+                          href={`https://twitter.com/i/status/${finalTweetId}`}
+                        ></a>
+                      </blockquote>
+                      {/* Add Twitter widget script if needed */}
+                      <script
+                        async
+                        src="https://platform.twitter.com/widgets.js"
+                      ></script>
+                    </div>
+                  );
+                };
+
+                // Try our custom component first, with the direct embed as fallback
                 return (
                   <div className="my-16 mx-auto max-w-4xl">
-                    <TwitterEmbed tweetId={trimmedText} />
+                    <TwitterEmbed tweetId={finalTweetId} />
                   </div>
                 );
               }
@@ -331,25 +626,166 @@ const RichTextRenderer = ({ content, references = [] }) => {
             // Custom embeds for Twitter, YouTube, and Social embeds
             embeds: {
               SocialEmbed: ({ nodeId, children }) => {
-                // Check if children contains ONLY a numeric tweet ID
-                const childText = children?.toString() || "";
-                const trimmedText = childText.trim();
+                // Extract text using the same robust method as blockquotes
+                let childText = "";
+
+                try {
+                  // Function to recursively extract text from React elements
+                  const extractTextFromReactElement = (element) => {
+                    if (!element) return "";
+
+                    // If it's a string or number, return it directly
+                    if (typeof element === "string") return element;
+                    if (typeof element === "number") return element.toString();
+
+                    // If it's a React element
+                    if (React.isValidElement(element)) {
+                      // Get the children from props
+                      const elementChildren =
+                        element.props && element.props.children;
+
+                      // Recursively extract text from children
+                      return extractTextFromReactElement(elementChildren);
+                    }
+
+                    // If it's an array, process each item
+                    if (Array.isArray(element)) {
+                      return element
+                        .map((item) => extractTextFromReactElement(item))
+                        .join("");
+                    }
+
+                    // If it's an object with text property
+                    if (element && typeof element === "object") {
+                      if (element.text) return element.text;
+                      if (element.content) return element.content;
+                    }
+
+                    // Last resort: try toString()
+                    try {
+                      return String(element);
+                    } catch (e) {
+                      return "";
+                    }
+                  };
+
+                  // Extract text using our recursive function
+                  childText = extractTextFromReactElement(children);
+                } catch (error) {
+                  console.error(
+                    "Error extracting text from SocialEmbed:",
+                    error
+                  );
+                  childText = children?.toString() || "";
+                }
+
+                // Clean up the text
+                let trimmedText = "";
+                try {
+                  const childTextStr =
+                    typeof childText === "string"
+                      ? childText
+                      : String(childText || "");
+                  trimmedText = childTextStr.trim();
+                } catch (error) {
+                  console.error("Error trimming SocialEmbed childText:", error);
+                  trimmedText = "";
+                }
 
                 // Only treat as tweet ID if it's exactly a number and nothing else
-                const isExactlyTweetId =
-                  /^\d+$/.test(trimmedText) && trimmedText.length > 8;
+                let isExactlyTweetId = false;
+                let tweetId = null;
+
+                try {
+                  // Check if trimmedText is a tweet ID
+                  if (typeof trimmedText === "string") {
+                    isExactlyTweetId =
+                      /^\d+$/.test(trimmedText) && trimmedText.length > 8;
+
+                    if (isExactlyTweetId) {
+                      tweetId = trimmedText;
+                    }
+                  }
+
+                  // If we didn't find a tweet ID yet, try a more direct approach
+                  if (!tweetId) {
+                    // Try to find a numeric string that looks like a tweet ID in the props structure
+                    const findTweetId = (element) => {
+                      if (!element) return null;
+
+                      // If it's a string and looks like a tweet ID
+                      if (typeof element === "string") {
+                        const cleaned = element.trim();
+                        if (/^\d+$/.test(cleaned) && cleaned.length > 8) {
+                          return cleaned;
+                        }
+                      }
+
+                      // If it's a React element with props
+                      if (React.isValidElement(element) && element.props) {
+                        // Check children
+                        if (element.props.children) {
+                          const childResult = findTweetId(
+                            element.props.children
+                          );
+                          if (childResult) return childResult;
+                        }
+                      }
+
+                      // If it's an array
+                      if (Array.isArray(element)) {
+                        for (const item of element) {
+                          const arrayResult = findTweetId(item);
+                          if (arrayResult) return arrayResult;
+                        }
+                      }
+
+                      return null;
+                    };
+
+                    // Try to find a tweet ID in the children structure
+                    const foundTweetId = findTweetId(children);
+                    if (foundTweetId) {
+                      tweetId = foundTweetId;
+                      isExactlyTweetId = true;
+                      console.log(
+                        "SocialEmbed: Found tweet ID using direct search:",
+                        tweetId
+                      );
+                    }
+                  }
+                } catch (error) {
+                  console.error(
+                    "Error checking if SocialEmbed text is a tweet ID:",
+                    error
+                  );
+                  isExactlyTweetId = false;
+                }
 
                 console.log(
                   "SocialEmbed content:",
+                  "Type:",
+                  typeof trimmedText,
+                  "Text:",
                   trimmedText,
                   "Is tweet ID:",
-                  isExactlyTweetId
+                  isExactlyTweetId,
+                  "Length:",
+                  trimmedText ? trimmedText.length : 0
                 );
 
-                if (isExactlyTweetId) {
+                if (isExactlyTweetId && (tweetId || trimmedText)) {
+                  // Use the found tweet ID or fall back to trimmedText
+                  const finalTweetId = tweetId || trimmedText;
+
+                  console.log(
+                    "SocialEmbed: Rendering tweet with ID:",
+                    finalTweetId
+                  );
+
                   return (
                     <div className="my-16 mx-auto max-w-4xl">
-                      <TwitterEmbed tweetId={trimmedText} />
+                      <TwitterEmbed tweetId={finalTweetId} />
                     </div>
                   );
                 }
