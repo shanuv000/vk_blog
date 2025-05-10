@@ -11,20 +11,11 @@ const TwitterEmbed = ({ tweetId }) => {
   const isValidTweetId =
     cleanTweetId && /^\d+$/.test(cleanTweetId) && cleanTweetId.length > 8;
 
-  console.log("TwitterEmbed: Processing tweet ID:", tweetId);
-  console.log("TwitterEmbed: Cleaned tweet ID:", cleanTweetId);
-  console.log(
-    "TwitterEmbed: Is valid tweet ID:",
-    isValidTweetId,
-    "Length:",
-    cleanTweetId.length,
-    "Is numeric:",
-    /^\d+$/.test(cleanTweetId)
-  );
+  // No debugging logs in production
 
   // Skip if no tweet ID or invalid format
   if (!isValidTweetId) {
-    console.log("Invalid tweet ID format:", tweetId);
+    // Invalid tweet ID
     return (
       <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
         <p className="text-gray-500">Invalid tweet ID: {tweetId}</p>
@@ -36,7 +27,7 @@ const TwitterEmbed = ({ tweetId }) => {
 
   // Direct embed fallback using Twitter's oEmbed API
   const directEmbedFallback = () => {
-    console.log("Using direct embed fallback for tweet:", cleanTweetId);
+    // Using direct embed fallback
 
     // Create an iframe element
     const iframe = document.createElement("iframe");
@@ -62,9 +53,7 @@ const TwitterEmbed = ({ tweetId }) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (loading) {
-        console.log(
-          `Tweet ${cleanTweetId} failed to load after timeout, trying fallback`
-        );
+        // Tweet failed to load, try fallback
         directEmbedFallback();
       }
     }, 8000); // 8 second timeout
@@ -117,7 +106,6 @@ const TwitterEmbed = ({ tweetId }) => {
               </div>
             }
             onLoad={() => {
-              console.log(`Tweet ${cleanTweetId} loaded successfully`);
               setLoading(false);
             }}
           />
@@ -125,7 +113,7 @@ const TwitterEmbed = ({ tweetId }) => {
           {/* Method 2: Direct iframe fallback */}
           <div ref={iframeRef} className={`${loading ? "hidden" : ""}`}></div>
 
-          {/* Method 3: Native Twitter embed */}
+          {/* Method 3: Native Twitter embed - only shown if primary method fails */}
           {loading && (
             <div className={`mt-4 ${loading ? "block" : "hidden"}`}>
               <blockquote

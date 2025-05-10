@@ -299,77 +299,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   }
                 }
 
-                // Debug the structure in detail
-                console.log(
-                  "Blockquote children structure:",
-                  React.isValidElement(children)
-                    ? "React Element"
-                    : typeof children,
-                  React.isValidElement(children) && children.props
-                    ? "Has props"
-                    : "No props"
-                );
+                // No debugging in production
 
-                // More detailed debugging of the structure
-                if (React.isValidElement(children) && children.props) {
-                  console.log("Blockquote props:", Object.keys(children.props));
-
-                  if (children.props.children) {
-                    console.log(
-                      "Blockquote children type:",
-                      typeof children.props.children,
-                      "isArray:",
-                      Array.isArray(children.props.children),
-                      "isReactElement:",
-                      React.isValidElement(children.props.children)
-                    );
-
-                    // If it's a React element, log its props
-                    if (React.isValidElement(children.props.children)) {
-                      console.log(
-                        "Blockquote children props:",
-                        Object.keys(children.props.children.props || {})
-                      );
-
-                      // If it has children, log those too
-                      if (
-                        children.props.children.props &&
-                        children.props.children.props.children
-                      ) {
-                        const grandchildren =
-                          children.props.children.props.children;
-                        console.log(
-                          "Blockquote grandchildren type:",
-                          typeof grandchildren,
-                          "isArray:",
-                          Array.isArray(grandchildren),
-                          "isReactElement:",
-                          React.isValidElement(grandchildren),
-                          "value:",
-                          typeof grandchildren === "string"
-                            ? grandchildren
-                            : "non-string"
-                        );
-                      }
-                    }
-
-                    // If it's an array, log the first few items
-                    if (Array.isArray(children.props.children)) {
-                      children.props.children
-                        .slice(0, 3)
-                        .forEach((child, i) => {
-                          console.log(
-                            `Blockquote child[${i}] type:`,
-                            typeof child,
-                            "isReactElement:",
-                            React.isValidElement(child),
-                            "value:",
-                            typeof child === "string" ? child : "non-string"
-                          );
-                        });
-                    }
-                  }
-                }
+                // No detailed debugging in production
               } catch (error) {
                 console.error("Error extracting text from blockquote:", error);
                 childText = "";
@@ -460,7 +392,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   if (foundTweetId) {
                     tweetId = foundTweetId;
                     isExactlyTweetId = true;
-                    console.log("Found tweet ID using direct search:", tweetId);
+                    // Tweet ID found
                   }
                 }
               } catch (error) {
@@ -468,45 +400,15 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 isExactlyTweetId = false;
               }
 
-              console.log(
-                "TWEET CHECK:",
-                "Extracted text type:",
-                typeof trimmedText,
-                "Text:",
-                trimmedText,
-                "Is tweet ID:",
-                isExactlyTweetId,
-                "Length:",
-                trimmedText ? trimmedText.length : 0,
-                "Is numeric:",
-                typeof trimmedText === "string"
-                  ? /^\d+$/.test(trimmedText)
-                  : false
-              );
+              // No debugging logs in production
 
               if (isExactlyTweetId && (tweetId || trimmedText)) {
                 // Use the found tweet ID or fall back to trimmedText
                 const finalTweetId = tweetId || trimmedText;
 
-                console.log("Rendering tweet with ID:", finalTweetId);
+                // Render tweet with the found ID
 
-                // Create a direct Twitter embed as a fallback option
-                const directTweetEmbed = () => {
-                  return (
-                    <div className="my-8 mx-auto max-w-xl">
-                      <blockquote className="twitter-tweet" data-dnt="true">
-                        <a
-                          href={`https://twitter.com/i/status/${finalTweetId}`}
-                        ></a>
-                      </blockquote>
-                      {/* Add Twitter widget script if needed */}
-                      <script
-                        async
-                        src="https://platform.twitter.com/widgets.js"
-                      ></script>
-                    </div>
-                  );
-                };
+                // Removed unused fallback function for production
 
                 // Try our custom component first, with the direct embed as fallback
                 return (
@@ -748,10 +650,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                     if (foundTweetId) {
                       tweetId = foundTweetId;
                       isExactlyTweetId = true;
-                      console.log(
-                        "SocialEmbed: Found tweet ID using direct search:",
-                        tweetId
-                      );
+                      // Tweet ID found in SocialEmbed
                     }
                   }
                 } catch (error) {
@@ -762,26 +661,13 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   isExactlyTweetId = false;
                 }
 
-                console.log(
-                  "SocialEmbed content:",
-                  "Type:",
-                  typeof trimmedText,
-                  "Text:",
-                  trimmedText,
-                  "Is tweet ID:",
-                  isExactlyTweetId,
-                  "Length:",
-                  trimmedText ? trimmedText.length : 0
-                );
+                // No debugging logs in production
 
                 if (isExactlyTweetId && (tweetId || trimmedText)) {
                   // Use the found tweet ID or fall back to trimmedText
                   const finalTweetId = tweetId || trimmedText;
 
-                  console.log(
-                    "SocialEmbed: Rendering tweet with ID:",
-                    finalTweetId
-                  );
+                  // Render tweet with the found ID
 
                   return (
                     <div className="my-16 mx-auto max-w-4xl">
