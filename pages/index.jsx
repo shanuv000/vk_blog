@@ -4,8 +4,7 @@ import { getPosts } from "../services";
 // import Footer from "../components/footer/Footer";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-
-// import electionResults from "../components/AdditionalPosts/electionResults.json";
+import HomeSeo from "../components/HomeSeo";
 
 import { ClipLoader } from "react-spinners";
 
@@ -40,6 +39,11 @@ export default function Home({ posts }) {
   }
   return (
     <>
+      {/* Add SEO optimization */}
+      <HomeSeo
+        featuredPosts={shuffledPosts.slice(0, 5).map((post) => post.node)}
+      />
+
       <Head>
         {/* Add structured data for homepage */}
         <SchemaManager

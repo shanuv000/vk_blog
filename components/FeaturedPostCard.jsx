@@ -43,7 +43,11 @@ const FeaturedPostCard = ({ post = {} }) => {
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           className="object-cover"
           priority={true}
-          quality={90}
+          loading="eager"
+          fetchPriority="high"
+          quality={85}
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
           style={{ width: "100%", height: "100%" }}
           onError={() => {
             console.log(

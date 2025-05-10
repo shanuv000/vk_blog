@@ -102,20 +102,37 @@ const FeaturedPosts = () => {
   const preloadImages = (posts) => {
     if (!posts || posts.length === 0) return null;
 
-    // Only preload the first image to improve performance
-    const imageUrl = posts[0]?.featuredImage?.url;
-    if (!imageUrl) return null;
+    // Preload the first few images for better performance
+    // Only preload visible slides based on viewport size
+    const imagesToPreload = posts
+      .slice(0, 4)
+      .filter((post) => post?.featuredImage?.url);
+    if (imagesToPreload.length === 0) return null;
 
     return (
       <Head>
+        {/* Preload critical CSS */}
+        <link rel="preload" href="/styles/medium-typography.css" as="style" />
+
+        {/* Preload first image with high priority for LCP */}
         <link
-          key="preload-featured-image"
+          key="preload-featured-image-1"
           rel="preload"
           as="image"
-          href={imageUrl}
-          // Don't use imagesrcset as it can cause warnings
-          // Just preload the main image
+          href={imagesToPreload[0].featuredImage.url}
+          fetchpriority="high"
         />
+
+        {/* Preload additional images with lower priority */}
+        {imagesToPreload.slice(1).map((post, index) => (
+          <link
+            key={`preload-featured-image-${index + 2}`}
+            rel="preload"
+            as="image"
+            href={post.featuredImage.url}
+            fetchpriority="low"
+          />
+        ))}
       </Head>
     );
   };

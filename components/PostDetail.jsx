@@ -115,9 +115,12 @@ const PostDetail = ({ post }) => {
                     src={post.featuredImage.url}
                     alt={post.title || "Post image"}
                     fill
-                    priority
+                    priority={true} // Explicitly mark as priority for LCP
+                    loading="eager" // Force eager loading for LCP image
+                    fetchPriority="high" // Use the fetchPriority attribute
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                    quality={85} // Slightly higher quality for featured images
                     onError={() => {
                       // This will be called if Next.js Image fails to load
                       console.error(
@@ -132,9 +135,12 @@ const PostDetail = ({ post }) => {
                     src={DEFAULT_FEATURED_IMAGE}
                     alt={post.title || "Post image"}
                     fill
-                    priority
+                    priority={true} // Explicitly mark as priority for LCP
+                    loading="eager" // Force eager loading for LCP image
+                    fetchPriority="high" // Use the fetchPriority attribute
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                    quality={85} // Slightly higher quality for featured images
                   />
                 )}
               </div>
