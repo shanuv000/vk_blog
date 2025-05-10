@@ -7,7 +7,6 @@ import {
   PostDetail,
   Categories,
   PostWidget,
-  Author,
   Loader,
   SchemaManager,
 } from "../../components";
@@ -224,7 +223,6 @@ const PostDetails = ({ post, error, lastFetched }) => {
                 </div>
               </div>
             </div>
-            {post.author && <Author author={post.author} />}
           </div>
           <div className="col-span-1 lg:col-span-4">
             <div className="relative lg:sticky top-8">
@@ -252,8 +250,6 @@ const PostDetails = ({ post, error, lastFetched }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 ">
           <div className="col-span-1 lg:col-span-8">
             <PostDetail post={post} />
-            {/* Only render Author component if post.author exists */}
-            {post.author && <Author author={post.author} />}
             {/* Ensure slug and createdAt exist before passing to AdjacentPosts */}
             {post.slug && post.createdAt && (
               <AdjacentPosts slug={post.slug} createdAt={post.createdAt} />
@@ -555,9 +551,12 @@ export async function getStaticProps({ params }) {
       };
     }
 
-    // Add default author if missing
+    // Author section has been removed from the UI
+    // but we'll keep the data for schema purposes
     if (!data.author) {
-      console.log(`[getStaticProps] Adding default author for: ${params.slug}`);
+      console.log(
+        `[getStaticProps] Adding default author for schema: ${params.slug}`
+      );
       data.author = {
         name: "urTechy",
         bio: "Tech enthusiast and blogger",

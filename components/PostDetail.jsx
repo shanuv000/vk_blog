@@ -10,9 +10,7 @@ import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
 import RichTextRenderer from "./RichTextRenderer";
 import {
-  DEFAULT_AVATAR,
   DEFAULT_FEATURED_IMAGE,
-  FALLBACK_AVATAR,
   FALLBACK_FEATURED_IMAGE,
 } from "./DefaultAvatar";
 
