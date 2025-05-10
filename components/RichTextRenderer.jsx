@@ -11,53 +11,7 @@ import {
 } from "../utils/imageUtils";
 
 const RichTextRenderer = ({ content, references = [] }) => {
-  // Enhanced debugging for content structure
-  console.log("RichTextRenderer content type:", typeof content);
-  console.log(
-    "RichTextRenderer references type:",
-    typeof references,
-    Array.isArray(references)
-  );
-
-  // Log detailed information about content structure
-  if (content && typeof content === "object") {
-    console.log("Content keys:", Object.keys(content));
-
-    if (content.json) {
-      console.log("Using json content format");
-      try {
-        console.log(
-          "JSON content structure:",
-          typeof content.json === "object"
-            ? `Object with keys: ${Object.keys(content.json).join(", ")}`
-            : typeof content.json
-        );
-      } catch (e) {
-        console.error("Error inspecting json content:", e);
-      }
-    }
-
-    if (content.raw) {
-      console.log("Using raw content format");
-      try {
-        console.log(
-          "Raw content structure:",
-          typeof content.raw === "object"
-            ? `Object with keys: ${Object.keys(content.raw).join(", ")}`
-            : typeof content.raw
-        );
-      } catch (e) {
-        console.error("Error inspecting raw content:", e);
-      }
-    }
-  }
-
-  // Log detailed information about references
-  if (references && references.length > 0) {
-    console.log(`References count: ${references.length}`);
-    console.log("First reference type:", references[0].__typename || "unknown");
-    console.log("Reference IDs:", references.map((ref) => ref.id).join(", "));
-  }
+  // Simplified content type checking without excessive logging
 
   // Handle case where content might be a string (JSON stringified)
   if (typeof content === "string") {
@@ -94,7 +48,6 @@ const RichTextRenderer = ({ content, references = [] }) => {
       !Array.isArray(result.children) &&
       typeof result.children === "object"
     ) {
-      console.log("Converting children object to array");
       result.children = Object.values(result.children).map((child) =>
         convertObjectsToArrays(child)
       );
@@ -112,7 +65,6 @@ const RichTextRenderer = ({ content, references = [] }) => {
           !Array.isArray(result[key]) &&
           Object.keys(result[key]).some((k) => !isNaN(parseInt(k)))
         ) {
-          console.log(`Converting ${key} from object to array`);
           result[key] = Object.values(result[key]).map((item) =>
             convertObjectsToArrays(item)
           );
@@ -127,14 +79,6 @@ const RichTextRenderer = ({ content, references = [] }) => {
 
   // Apply the conversion to the entire content object
   content = convertObjectsToArrays(content);
-  console.log(
-    "Content structure after conversion:",
-    content && content.children
-      ? `children is array: ${Array.isArray(content.children)}, length: ${
-          content.children.length
-        }`
-      : "No children property"
-  );
 
   // Handle case where content is in the old format with children
   if (content.children && Array.isArray(content.children)) {
@@ -552,23 +496,43 @@ const RichTextRenderer = ({ content, references = [] }) => {
             content={processedContent}
             references={referenceMap}
             renderers={{
+              blockquote: ({ children }) => (
+                <blockquote className="border-l-4 border-primary pl-4 py-1 my-6 text-gray-700 italic">
+                  <div className="text-lg font-serif">{children}</div>
+                </blockquote>
+              ),
+              ul: ({ children }) => (
+                <ul className="list-disc pl-6 mb-6 mt-4 text-gray-800 space-y-2">
+                  {children}
+                </ul>
+              ),
+              ol: ({ children }) => (
+                <ol className="list-decimal pl-6 mb-6 mt-4 text-gray-800 space-y-2">
+                  {children}
+                </ol>
+              ),
+              li: ({ children }) => (
+                <li className="text-gray-800 leading-relaxed mb-1">
+                  {children}
+                </li>
+              ),
               h1: ({ children }) => (
-                <h1 className="text-3xl font-bold mt-12 mb-6 text-gray-900">
+                <h1 className="text-3xl md:text-4xl font-bold mt-12 mb-6 text-gray-900 font-serif leading-tight tracking-tight">
                   {children}
                 </h1>
               ),
               h2: ({ children }) => (
-                <h2 className="text-2xl font-bold mt-10 mb-5 text-gray-900">
+                <h2 className="text-2xl md:text-3xl font-bold mt-12 mb-5 text-gray-800 font-serif leading-tight tracking-tight">
                   {children}
                 </h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-xl font-bold mt-8 mb-4 text-gray-900">
+                <h3 className="text-xl md:text-2xl font-semibold mt-10 mb-4 text-gray-800 font-serif leading-tight">
                   {children}
                 </h3>
               ),
               p: ({ children }) => (
-                <p className="text-gray-700 mb-6 mt-4 leading-relaxed">
+                <p className="text-gray-800 mb-7 mt-4 leading-relaxed text-lg font-sans tracking-normal">
                   {children}
                 </p>
               ),
@@ -576,7 +540,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 <Link
                   href={href || "#"}
                   target={openInNewTab ? "_blank" : "_self"}
-                  className="text-red-500 hover:text-red-700 underline transition-colors"
+                  className="text-primary hover:text-primary-dark underline decoration-1 underline-offset-2 transition-colors"
                   rel={openInNewTab ? "noopener noreferrer" : ""}
                 >
                   {children}
@@ -649,45 +613,59 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 // Use a try-catch block to handle any rendering errors
                 try {
                   return (
-                    <div className="my-8 relative">
+                    <div className="my-10 relative">
                       {/* For development, use Next.js Image with fallback */}
                       {process.env.NODE_ENV === "development" ? (
                         <>
-                          <Image
-                            src={src}
-                            alt={altText || title || "Blog image"}
-                            height={imageHeight}
-                            width={imageWidth}
-                            className="rounded-lg shadow-md"
-                            onError={(e) => {
-                              console.error(`Failed to load image: ${src}`);
-                              e.target.style.display = "none";
+                          <figure className="mx-auto">
+                            <Image
+                              src={src}
+                              alt={altText || title || "Blog image"}
+                              height={imageHeight}
+                              width={imageWidth}
+                              className="rounded-lg shadow-md mx-auto"
+                              onError={(e) => {
+                                console.error(`Failed to load image: ${src}`);
+                                e.target.style.display = "none";
 
-                              // Try alternative URLs
-                              if (alternativeUrls.length > 0) {
-                                console.log(
-                                  `Trying alternative URLs: ${alternativeUrls.join(
-                                    ", "
-                                  )}`
-                                );
-                                const fallbackImg =
-                                  document.createElement("img");
-                                fallbackImg.src = alternativeUrls[0];
-                                fallbackImg.alt =
-                                  altText || title || "Blog image";
-                                fallbackImg.className =
-                                  "rounded-lg shadow-md w-full";
+                                // Try alternative URLs
+                                if (alternativeUrls.length > 0) {
+                                  console.log(
+                                    `Trying alternative URLs: ${alternativeUrls.join(
+                                      ", "
+                                    )}`
+                                  );
+                                  const fallbackImg =
+                                    document.createElement("img");
+                                  fallbackImg.src = alternativeUrls[0];
+                                  fallbackImg.alt =
+                                    altText || title || "Blog image";
+                                  fallbackImg.className =
+                                    "rounded-lg shadow-md w-full";
 
-                                // If first alternative fails, try the second
-                                fallbackImg.onerror = () => {
-                                  if (alternativeUrls.length > 1) {
-                                    console.log(
-                                      `Trying second alternative URL: ${alternativeUrls[1]}`
-                                    );
-                                    fallbackImg.src = alternativeUrls[1];
+                                  // If first alternative fails, try the second
+                                  fallbackImg.onerror = () => {
+                                    if (alternativeUrls.length > 1) {
+                                      console.log(
+                                        `Trying second alternative URL: ${alternativeUrls[1]}`
+                                      );
+                                      fallbackImg.src = alternativeUrls[1];
 
-                                    // If second alternative fails, show placeholder
-                                    fallbackImg.onerror = () => {
+                                      // If second alternative fails, show placeholder
+                                      fallbackImg.onerror = () => {
+                                        fallbackImg.style.display = "none";
+                                        const fallbackDiv =
+                                          document.createElement("div");
+                                        fallbackDiv.className =
+                                          "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                        fallbackDiv.innerHTML =
+                                          '<p class="text-gray-500">Image failed to load</p>';
+                                        e.target.parentNode.appendChild(
+                                          fallbackDiv
+                                        );
+                                      };
+                                    } else {
+                                      // No more alternatives, show placeholder
                                       fallbackImg.style.display = "none";
                                       const fallbackDiv =
                                         document.createElement("div");
@@ -698,34 +676,28 @@ const RichTextRenderer = ({ content, references = [] }) => {
                                       e.target.parentNode.appendChild(
                                         fallbackDiv
                                       );
-                                    };
-                                  } else {
-                                    // No more alternatives, show placeholder
-                                    fallbackImg.style.display = "none";
-                                    const fallbackDiv =
-                                      document.createElement("div");
-                                    fallbackDiv.className =
-                                      "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                    fallbackDiv.innerHTML =
-                                      '<p class="text-gray-500">Image failed to load</p>';
-                                    e.target.parentNode.appendChild(
-                                      fallbackDiv
-                                    );
-                                  }
-                                };
+                                    }
+                                  };
 
-                                e.target.parentNode.appendChild(fallbackImg);
-                              } else {
-                                // No alternative URLs available, show placeholder
-                                const fallback = document.createElement("div");
-                                fallback.className =
-                                  "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
-                                fallback.innerHTML =
-                                  '<p class="text-gray-500">Image failed to load</p>';
-                                e.target.parentNode.appendChild(fallback);
-                              }
-                            }}
-                          />
+                                  e.target.parentNode.appendChild(fallbackImg);
+                                } else {
+                                  // No alternative URLs available, show placeholder
+                                  const fallback =
+                                    document.createElement("div");
+                                  fallback.className =
+                                    "bg-gray-200 rounded-lg shadow-md h-64 flex items-center justify-center";
+                                  fallback.innerHTML =
+                                    '<p class="text-gray-500">Image failed to load</p>';
+                                  e.target.parentNode.appendChild(fallback);
+                                }
+                              }}
+                            />
+                            {altText && (
+                              <figcaption className="text-center text-gray-500 text-sm mt-2 italic">
+                                {altText}
+                              </figcaption>
+                            )}
+                          </figure>
                           <div className="mt-1 text-xs text-gray-500">
                             <details>
                               <summary className="cursor-pointer">
@@ -752,15 +724,16 @@ const RichTextRenderer = ({ content, references = [] }) => {
                         // For production, use a more robust approach with multiple fallbacks
                         <>
                           {/* First try with regular img tag for better compatibility */}
-                          <div className="relative">
+                          <figure className="relative mx-auto">
                             <img
                               src={src}
                               alt={altText || title || "Blog image"}
-                              className="rounded-lg shadow-md w-full"
+                              className="rounded-lg shadow-md w-full mx-auto"
                               style={{
                                 maxHeight: "800px",
                                 objectFit: "contain",
                               }}
+                              loading="lazy"
                               onError={(e) => {
                                 console.error(`Failed to load image: ${src}`);
                                 e.target.style.display = "none";
@@ -831,7 +804,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
                                 }
                               }}
                             />
-                          </div>
+                            {altText && (
+                              <figcaption className="text-center text-gray-500 text-sm mt-2 italic">
+                                {altText}
+                              </figcaption>
+                            )}
+                          </figure>
                         </>
                       )}
                     </div>
@@ -858,7 +836,11 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 const code = children?.props?.children || "";
 
                 return (
-                  <div className="my-6 rounded-md overflow-hidden">
+                  <div className="my-8 rounded-md overflow-hidden shadow-lg">
+                    <div className="bg-gray-800 text-gray-300 text-xs py-2 px-4 flex justify-between items-center">
+                      <span className="font-mono uppercase">{language}</span>
+                      <span className="text-gray-400 text-xs">Code</span>
+                    </div>
                     <SyntaxHighlighter
                       language={language}
                       style={atomDark}

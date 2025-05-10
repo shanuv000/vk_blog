@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { motion, useAnimation } from "framer-motion";
 import {
@@ -14,6 +14,7 @@ import {
   DEFAULT_FEATURED_IMAGE,
   FALLBACK_FEATURED_IMAGE,
 } from "./DefaultAvatar";
+import Toast from "./Toast";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -41,6 +42,9 @@ const useInView = (options) => {
 };
 
 const NavbarPostDetails = ({ post }) => {
+  // State for toast notification
+  const [showToast, setShowToast] = useState(false);
+
   // Safely extract properties with fallbacks
   const title = post?.title || "urTechy Blog Post";
   const slug = post?.slug || "";
@@ -104,88 +108,157 @@ const NavbarPostDetails = ({ post }) => {
       initial={{ opacity: 0, y: -20 }}
       animate={controls}
       transition={{ duration: 0.5 }}
-      className="mb-8 border-y border-secondary-light py-4"
+      className="my-10 py-6"
     >
-      <h3 className="text-text-primary font-heading text-lg mb-3 text-center">
-        Share this article
-      </h3>
-      <div className="flex justify-center space-x-3 md:space-x-4">
-        <a
-          href={`https://wa.me/?text=${encodeURIComponent(
-            `${title} - ${postUrl}${imageUrl ? " 📷" : ""}`
-          )}`}
-          data-action="share/whatsapp/share"
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
-          title="Share on WhatsApp"
-          aria-label="Share on WhatsApp"
-        >
-          <FaWhatsapp size={20} className="text-white" />
-        </a>
+      <div className="max-w-3xl mx-auto">
+        <h3 className="text-gray-800 font-heading text-xl mb-5 font-semibold">
+          Share this article
+        </h3>
 
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            postUrl
-          )}&quote=${encodeURIComponent(title)}`}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
-          title="Share on Facebook"
-          aria-label="Share on Facebook"
+        <div className="flex flex-wrap gap-3">
+          {/* WhatsApp */}
+          <motion.a
+            href={`https://wa.me/?text=${encodeURIComponent(
+              `${title} - ${postUrl}${imageUrl ? " 📷" : ""}`
+            )}`}
+            data-action="share/whatsapp/share"
+            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+            title="Share on WhatsApp"
+            aria-label="Share on WhatsApp"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <FaWhatsapp size={18} className="text-green-500 mr-2" />
+            <span className="text-sm font-medium text-gray-700">WhatsApp</span>
+          </motion.a>
+
+          {/* Facebook */}
+          <motion.a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+              postUrl
+            )}&quote=${encodeURIComponent(title)}`}
+            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+            title="Share on Facebook"
+            aria-label="Share on Facebook"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <FaFacebook size={18} className="text-blue-600 mr-2" />
+            <span className="text-sm font-medium text-gray-700">Facebook</span>
+          </motion.a>
+
+          {/* Twitter */}
+          <motion.a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              title
+            )}&url=${encodeURIComponent(
+              postUrl
+            )}&via=Onlyblogs_&hashtags=urtechy,blog`}
+            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+            title="Share on Twitter"
+            aria-label="Share on Twitter"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <FaXTwitter size={18} className="text-black mr-2" />
+            <span className="text-sm font-medium text-gray-700">Twitter</span>
+          </motion.a>
+
+          {/* LinkedIn */}
+          <motion.a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+              postUrl
+            )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
+              title
+            )}&source=urTechy`}
+            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow md:inline-flex"
+            title="Share on LinkedIn"
+            aria-label="Share on LinkedIn"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <FaLinkedin size={18} className="text-blue-700 mr-2" />
+            <span className="text-sm font-medium text-gray-700">LinkedIn</span>
+          </motion.a>
+
+          {/* Reddit */}
+          <motion.a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`http://www.reddit.com/submit?url=${encodeURIComponent(
+              postUrl
+            )}&title=${encodeURIComponent(title)}`}
+            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow md:inline-flex"
+            title="Share on Reddit"
+            aria-label="Share on Reddit"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <FaReddit size={18} className="text-orange-600 mr-2" />
+            <span className="text-sm font-medium text-gray-700">Reddit</span>
+          </motion.a>
+
+          {/* Pinterest */}
+          <motion.a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+              postUrl
+            )}&description=${encodeURIComponent(
+              title
+            )}&media=${encodeURIComponent(getSafeImageUrl())}`}
+            className="flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow md:inline-flex"
+            title="Share on Pinterest"
+            aria-label="Share on Pinterest"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <FaPinterest size={18} className="text-red-600 mr-2" />
+            <span className="text-sm font-medium text-gray-700">Pinterest</span>
+          </motion.a>
+        </div>
+
+        {/* Copy link button */}
+        <motion.button
+          onClick={() => {
+            navigator.clipboard.writeText(postUrl);
+            setShowToast(true);
+          }}
+          className="mt-4 flex items-center px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-300"
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
         >
-          <FaFacebook size={20} className="text-white" />
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-            title
-          )}&url=${encodeURIComponent(
-            postUrl
-          )}&via=Onlyblogs_&hashtags=urtechy,blog`}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-gray-800 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
-          title="Share on Twitter"
-          aria-label="Share on Twitter"
-        >
-          <FaXTwitter size={20} className="text-white" />
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-            postUrl
-          )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
-            title
-          )}&source=urTechy`}
-          className="items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hidden lg:flex"
-          title="Share on LinkedIn"
-          aria-label="Share on LinkedIn"
-        >
-          <FaLinkedin size={20} className="text-white" />
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`http://www.reddit.com/submit?url=${encodeURIComponent(
-            postUrl
-          )}&title=${encodeURIComponent(title)}`}
-          className="items-center justify-center w-10 h-10 rounded-full bg-orange-600 hover:bg-orange-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hidden lg:flex"
-          title="Share on Reddit"
-          aria-label="Share on Reddit"
-        >
-          <FaReddit size={20} className="text-white" />
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
-            postUrl
-          )}&description=${encodeURIComponent(title)}`}
-          className="items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hidden lg:flex"
-          title="Share on Pinterest"
-          aria-label="Share on Pinterest"
-        >
-          <FaPinterest size={20} className="text-white" />
-        </a>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-2 text-gray-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+          <span className="text-sm font-medium text-gray-700">Copy link</span>
+        </motion.button>
+
+        {/* Toast notification */}
+        {showToast && (
+          <Toast
+            message="Link copied to clipboard!"
+            duration={2000}
+            onClose={() => setShowToast(false)}
+          />
+        )}
       </div>
     </motion.div>
   );

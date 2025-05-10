@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import "../styles/globals.scss";
+import "../styles/medium-typography.css";
 import { Layout } from "../components";
 import Head from "next/head";
 import Script from "next/script";
@@ -58,6 +59,18 @@ function MyApp({ Component, pageProps }) {
             content="Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs."
           />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+          {/* Fonts for Medium-like typography */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin="anonymous"
+          />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+            rel="stylesheet"
+          />
 
           {/* Default images - using prefetch instead of preload */}
           <link rel="prefetch" href={DEFAULT_FEATURED_IMAGE} />

@@ -29,132 +29,13 @@ const PostDetail = ({ post }) => {
   // Add error state to track rendering errors
   const [renderError, setRenderError] = useState(null);
 
-  // Enhanced error boundary for content rendering with more detailed logging
+  // Enhanced error boundary for content rendering
   useEffect(() => {
     if (post) {
-      console.log(`Post ${post.slug} received for rendering`);
-
-      // Log basic post structure
-      console.log(`Post structure: ${Object.keys(post).join(", ")}`);
-
       // Check if content exists
       if (!post.content) {
-        console.error(`Post ${post.slug} has no content`);
         setRenderError("No content available");
         return;
-      }
-
-      // Log content structure
-      console.log(`Content structure: ${Object.keys(post.content).join(", ")}`);
-
-      try {
-        // Safely log a sample of the content
-        const contentSample =
-          JSON.stringify(post.content).substring(0, 200) + "...";
-        console.log(`Content sample: ${contentSample}`);
-      } catch (e) {
-        console.error(`Error stringifying content: ${e.message}`);
-      }
-
-      // Check for json content
-      if (post.content.json) {
-        console.log(
-          `Post ${post.slug} has json content type:`,
-          typeof post.content.json
-        );
-
-        // Try to safely inspect the json content
-        try {
-          if (typeof post.content.json === "object") {
-            const keys = Object.keys(post.content.json);
-            console.log(`JSON content keys: ${keys.join(", ")}`);
-
-            // Check for children array which is required by RichText renderer
-            if (post.content.json.children) {
-              console.log(
-                `Children array: ${
-                  Array.isArray(post.content.json.children)
-                    ? `Array with ${post.content.json.children.length} items`
-                    : "Not an array"
-                }`
-              );
-            } else {
-              console.warn(`JSON content missing children array`);
-            }
-          } else {
-            console.log(
-              `JSON content is not an object but ${typeof post.content.json}`
-            );
-          }
-        } catch (e) {
-          console.error(`Error inspecting json content: ${e.message}`);
-        }
-      }
-
-      // Check for raw content
-      if (post.content.raw) {
-        console.log(
-          `Post ${post.slug} has raw content type:`,
-          typeof post.content.raw
-        );
-
-        // Try to safely inspect the raw content
-        try {
-          if (typeof post.content.raw === "object") {
-            const keys = Object.keys(post.content.raw);
-            console.log(`Raw content keys: ${keys.join(", ")}`);
-
-            // Check for children array which is required by RichText renderer
-            if (post.content.raw.children) {
-              console.log(
-                `Children array: ${
-                  Array.isArray(post.content.raw.children)
-                    ? `Array with ${post.content.raw.children.length} items`
-                    : "Not an array"
-                }`
-              );
-            } else {
-              console.warn(`Raw content missing children array`);
-            }
-          } else if (typeof post.content.raw === "string") {
-            // Try to parse string content as JSON
-            try {
-              const parsedContent = JSON.parse(post.content.raw);
-              console.log(
-                `Parsed raw content keys: ${Object.keys(parsedContent).join(
-                  ", "
-                )}`
-              );
-            } catch (parseError) {
-              console.log(`Raw content is a string but not valid JSON`);
-            }
-          } else {
-            console.log(`Raw content is ${typeof post.content.raw}`);
-          }
-        } catch (e) {
-          console.error(`Error inspecting raw content: ${e.message}`);
-        }
-      }
-
-      // Check for references
-      if (post.content.references) {
-        console.log(
-          `Post ${post.slug} has references:`,
-          typeof post.content.references,
-          Array.isArray(post.content.references),
-          post.content.references.length || 0
-        );
-
-        // Log first reference for debugging
-        if (
-          Array.isArray(post.content.references) &&
-          post.content.references.length > 0
-        ) {
-          const firstRef = post.content.references[0];
-          console.log(`First reference: ${JSON.stringify(firstRef)}`);
-        }
-      } else {
-        console.log(`Post ${post.slug} has no references`);
       }
 
       // Clear any previous render errors
@@ -198,9 +79,11 @@ const PostDetail = ({ post }) => {
   // If post is null, show a friendly error message
   if (!post) {
     return (
-      <div className="bg-secondary rounded-lg shadow-lg p-6 mb-8 text-center">
-        <h2 className="text-2xl font-bold text-primary mb-4">Post Not Found</h2>
-        <p className="mb-4 text-text-primary">
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Post Not Found
+        </h2>
+        <p className="mb-4 text-gray-600 leading-relaxed">
           Sorry, we couldn't find the post you're looking for. It may have been
           removed or is temporarily unavailable.
         </p>
@@ -212,7 +95,7 @@ const PostDetail = ({ post }) => {
     <ErrorBoundary>
       <>
         <motion.div
-          className="bg-secondary rounded-lg shadow-lg mb-8 overflow-hidden"
+          className="bg-white rounded-lg shadow-lg mb-8 overflow-hidden"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -235,7 +118,6 @@ const PostDetail = ({ post }) => {
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5 }}
                 onError={(e) => {
-                  console.log("Image load error, using local fallback");
                   // Use local fallback image instead of external placeholder
                   e.target.src = FALLBACK_FEATURED_IMAGE;
                   // If that fails too, use inline SVG as ultimate fallback
@@ -262,66 +144,46 @@ const PostDetail = ({ post }) => {
                   };
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-60"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
 
               {/* Title overlay on image */}
               <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
-                <h1 className="text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-white text-shadow mb-4 capitalize">
+                <h1 className="text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-4 capitalize leading-tight tracking-tight">
                   {post.title}
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-4 text-white">
-                  <div className="flex items-center">
-                    <img
-                      src={post.author?.photo?.url || DEFAULT_AVATAR}
-                      alt={post.author?.name || "Author"}
-                      height={40}
-                      width={40}
-                      className="rounded-full border-2 border-primary"
-                      onError={(e) => {
-                        e.target.src = FALLBACK_AVATAR;
-                      }}
+                <div className="flex items-center text-white">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 mr-2 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
-                    <span className="ml-2 font-medium">
-                      {post.author?.name || "Anonymous"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-2 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <span suppressHydrationWarning>
-                      {post.createdAt
-                        ? moment(post.createdAt).format("DD MMM, YYYY")
-                        : "No date"}
-                    </span>
-                  </div>
+                  </svg>
+                  <span suppressHydrationWarning>
+                    {post.createdAt
+                      ? moment(post.createdAt).format("DD MMM, YYYY")
+                      : "No date"}
+                  </span>
                 </div>
               </div>
             </motion.div>
           </div>
 
           <div className="px-6 lg:px-10 pb-10">
-            <Navbar_post_details post={post} />
-
             {/* Wrap Testing component in ErrorBoundary to prevent it from crashing the entire page */}
             <ErrorBoundary>
               {post.slug && <Testing slug={post.slug} />}
             </ErrorBoundary>
 
-            <div className="prose prose-lg max-w-none mt-8 text-text-primary">
+            <div className="prose prose-lg max-w-none mt-8 text-gray-800 mx-auto md:max-w-3xl lg:max-w-4xl">
               {post.content ? (
                 <ErrorBoundary
                   fallback={
@@ -339,24 +201,51 @@ const PostDetail = ({ post }) => {
                   {/* Wrap RichTextRenderer in a try-catch block for additional error handling */}
                   {(() => {
                     try {
-                      // Log content structure for debugging
-                      console.log(`Rendering content for post: ${post.slug}`);
-                      console.log(`Content type: ${typeof post.content}`);
-
                       // Determine which content format to use
                       const contentToUse =
                         post.content.json || post.content.raw || post.content;
 
                       return (
-                        <RichTextRenderer
-                          content={contentToUse}
-                          references={post.content.references || []}
-                        />
+                        <div className="article-content">
+                          {/* Reading time estimate */}
+                          <div className="text-gray-500 text-sm mb-6 flex items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            {Math.ceil(
+                              post.content.raw?.toString().split(" ").length /
+                                200
+                            ) || 5}{" "}
+                            min read
+                          </div>
+
+                          {/* First paragraph with drop cap styling */}
+                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left">
+                            <RichTextRenderer
+                              content={contentToUse}
+                              references={post.content.references || []}
+                            />
+                          </div>
+
+                          {/* Article footer - removed author section */}
+                          <div className="mt-12 pt-6 border-t border-gray-200"></div>
+
+                          {/* Share section */}
+                          <Navbar_post_details post={post} />
+                        </div>
                       );
                     } catch (error) {
-                      console.error(
-                        `Error rendering post content: ${error.message}`
-                      );
                       return (
                         <div className="bg-red-50 border border-red-200 p-4 rounded-md">
                           <h3 className="text-red-600 font-medium">
@@ -399,25 +288,13 @@ const PostDetail = ({ post }) => {
                               : "None"}
                           </p>
                           <p>Post ID: {post.slug}</p>
-                          <p>
-                            Content Structure:{" "}
-                            {post.content.json
-                              ? `JSON keys: ${Object.keys(
-                                  post.content.json
-                                ).join(", ")}`
-                              : post.content.raw
-                              ? `RAW keys: ${Object.keys(post.content.raw).join(
-                                  ", "
-                                )}`
-                              : "Unknown structure"}
-                          </p>
                         </div>
                       </details>
                     </div>
                   )}
                 </ErrorBoundary>
               ) : (
-                <p className="text-center text-lg text-text-secondary font-normal">
+                <p className="text-center text-lg text-gray-500 font-normal">
                   No content available for this post.
                 </p>
               )}
