@@ -286,13 +286,16 @@ export async function getStaticProps({ params }) {
     // IMPORTANT: We're now treating ALL posts as potentially problematic
     // This ensures maximum compatibility and resilience
     console.log(
-      `[getStaticProps] Using robust data fetching for: ${params.slug}`
+      `[getStaticProps] Using optimized data fetching for: ${params.slug}`
     );
 
     // We'll try multiple approaches to fetch the post data
     // This ensures we get the data even if one approach fails
     let data = null;
     let fetchErrors = [];
+
+    // For Vercel production, we'll use a more direct approach
+    // This helps reduce build time and avoid timeouts
 
     // Approach 1: Standard getPostDetails function
     try {
@@ -301,6 +304,22 @@ export async function getStaticProps({ params }) {
 
       if (data) {
         console.log(`[getStaticProps] Attempt 1 succeeded for: ${params.slug}`);
+
+        // Early return for successful fetch to optimize build time
+        // Process the data minimally before returning
+        data = ensureValidContent(data);
+        data = processPostContent(data, (message) => {
+          console.log(`[getStaticProps] ${message}`);
+        });
+
+        return {
+          props: {
+            post: data,
+            lastFetched: new Date().toISOString(),
+          },
+          // Use a longer revalidation time for successful fetches
+          revalidate: 60 * 60, // 1 hour
+        };
       } else {
         console.log(
           `[getStaticProps] Attempt 1 returned no data for: ${params.slug}`
@@ -357,6 +376,21 @@ export async function getStaticProps({ params }) {
             `[getStaticProps] Attempt 2 succeeded for: ${params.slug}`
           );
           data = result.post;
+
+          // Early return for successful fetch to optimize build time
+          data = ensureValidContent(data);
+          data = processPostContent(data, (message) => {
+            console.log(`[getStaticProps] ${message}`);
+          });
+
+          return {
+            props: {
+              post: data,
+              lastFetched: new Date().toISOString(),
+            },
+            // Use a longer revalidation time for successful fetches
+            revalidate: 60 * 60, // 1 hour
+          };
         } else {
           console.log(
             `[getStaticProps] Attempt 2 returned no data for: ${params.slug}`
@@ -611,23 +645,12 @@ export async function getStaticProps({ params }) {
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
   try {
-    console.log("[getStaticPaths] Using enhanced static generation approach");
-
-    // Fetch more posts at build time to pre-render more pages
-    // This will help with initial page loads and SEO
-    const { getPosts } = require("../services");
-    const posts = await getPosts({ limit: 100, forStaticPaths: true });
-
     console.log(
-      `[getStaticPaths] Fetched ${posts.length} posts for pre-rendering`
+      "[getStaticPaths] Using minimal static generation approach for Vercel"
     );
 
-    // Create paths array from the fetched posts
-    const postPaths = posts.map(({ node }) => ({
-      params: { slug: node.slug },
-    }));
-
-    // Also include critical posts that must be pre-rendered
+    // Define a list of critical posts that must be pre-rendered
+    // Keep this list very small to avoid build timeouts
     const criticalSlugs = [
       // Known problematic slugs that must be pre-rendered
       "nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
@@ -636,38 +659,25 @@ export async function getStaticPaths() {
       "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
     ];
 
-    // Create paths for critical slugs
-    const criticalPaths = criticalSlugs.map((slug) => ({
+    console.log(
+      `[getStaticPaths] Pre-rendering only ${criticalSlugs.length} critical posts`
+    );
+
+    // Create paths array for Next.js with just these critical slugs
+    const paths = criticalSlugs.map((slug) => ({
       params: { slug },
     }));
 
-    // Combine both sets of paths, removing duplicates
-    const allSlugs = new Set();
-    const combinedPaths = [];
-
-    // Add critical paths first (higher priority)
-    for (const path of criticalPaths) {
-      if (!allSlugs.has(path.params.slug)) {
-        allSlugs.add(path.params.slug);
-        combinedPaths.push(path);
-      }
-    }
-
-    // Then add regular post paths
-    for (const path of postPaths) {
-      if (!allSlugs.has(path.params.slug)) {
-        allSlugs.add(path.params.slug);
-        combinedPaths.push(path);
-      }
-    }
-
-    console.log(
-      `[getStaticPaths] Pre-rendering ${combinedPaths.length} total posts`
-    );
+    // IMPORTANT: We're returning a minimal paths array and relying entirely on
+    // fallback: 'blocking' to handle all pages. This ensures that:
+    // 1. Build times are extremely fast
+    // 2. All pages will work, even if not explicitly included
+    // 3. The first request to any page will generate the static HTML
+    // 4. Subsequent requests will use the cached HTML
 
     return {
-      // Include all paths in the static build
-      paths: combinedPaths,
+      // Only include the critical slugs in the static build
+      paths,
 
       // CRITICAL: Use 'blocking' to ensure all other posts are generated on-demand
       // This means the first request to any post not in the paths array will be server-rendered
