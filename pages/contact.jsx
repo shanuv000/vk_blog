@@ -92,6 +92,7 @@ const ContactForm = () => {
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
+  const [error, setError] = useState(null); // General form error message
 
   // Validate form on input change for touched fields
   useEffect(() => {
@@ -152,6 +153,7 @@ const ContactForm = () => {
     if (Object.keys(formErrors).length === 0) {
       setIsSubmitting(true);
 
+      let timer;
       try {
         // Submit to Firebase using REST API service
         await submitContactForm(formState);
@@ -165,7 +167,7 @@ const ContactForm = () => {
         setSubmitStatus("success");
 
         // Reset form after 3 seconds
-        const timer = setTimeout(() => {
+        timer = setTimeout(() => {
           setFormState({
             firstName: "",
             lastName: "",
@@ -178,17 +180,28 @@ const ContactForm = () => {
           setSubmitStatus(null);
           setIsSubmitting(false);
         }, 3000);
-
-        // Clean up timer if component unmounts
-        return () => clearTimeout(timer);
       } catch (error) {
         // Only log detailed error in development
         if (process.env.NODE_ENV !== "production") {
           console.error("Error submitting form:", error);
         }
+
+        // Show specific error message if available
+        if (
+          error.message &&
+          error.message !== "Failed to submit contact form"
+        ) {
+          setError(error.message);
+        }
+
         setSubmitStatus("error");
         setIsSubmitting(false);
       }
+
+      // Return cleanup function
+      return () => {
+        if (timer) clearTimeout(timer);
+      };
     }
   };
 
@@ -220,8 +233,8 @@ const ContactForm = () => {
             <>
               <FaExclamationTriangle className="mr-2 text-red-500" />
               <span>
-                There was an error saving your message to our database. Please
-                try again or contact us directly at urtechy000@gmail.com.
+                {error ||
+                  "There was an error saving your message to our database. Please try again or contact us directly at urtechy000@gmail.com."}
               </span>
             </>
           )}

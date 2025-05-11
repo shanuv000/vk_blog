@@ -1,11 +1,12 @@
 /**
  * Proxy-based implementation of contact service to avoid CORS issues
  * This uses our own API proxy instead of direct Firebase REST API calls
+ * Production optimized version
  */
 
-// Firebase project configuration
-const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'urtechy-35294';
-const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyCgdl-5bF_gj07SwmWdCwVip1jVQSlzZ2w';
+// Firebase project configuration - hardcoded for production
+const FIREBASE_PROJECT_ID = 'urtechy-35294';
+const FIREBASE_API_KEY = 'AIzaSyCgdl-5bF_gj07SwmWdCwVip1jVQSlzZ2w';
 const CONTACTS_COLLECTION = 'contacts';
 
 // Helper function to log errors only in development
@@ -22,6 +23,17 @@ const logError = (message, error) => {
  */
 export const submitContactForm = async (formData) => {
   try {
+    // Input validation
+    if (!formData?.firstName || !formData?.lastName) {
+      throw new Error("Name is required");
+    }
+    if (!formData?.email) {
+      throw new Error("Email is required");
+    }
+    if (!formData?.message) {
+      throw new Error("Message is required");
+    }
+    
     // Add timestamp and source fields
     const contactData = {
       ...formData,
@@ -37,40 +49,49 @@ export const submitContactForm = async (formData) => {
     // Prepare the request to our proxy
     const endpoint = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/${CONTACTS_COLLECTION}?key=${FIREBASE_API_KEY}`;
     
-    // Make the request to our proxy
-    const response = await fetch('/api/firebase-proxy', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        endpoint,
+    // Make the request to our proxy with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    try {
+      const response = await fetch('/api/firebase-proxy', {
         method: 'POST',
-        body: {
-          fields: convertToFirestoreFields(contactData)
-        }
-      }),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          endpoint,
+          method: 'POST',
+          body: {
+            fields: convertToFirestoreFields(contactData)
+          }
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
+      }
+      
+      const responseData = await response.json();
+      
+      // Extract the document ID from the name field
+      const pathParts = responseData.name.split('/');
+      const documentId = pathParts[pathParts.length - 1];
+      
+      return {
+        success: true,
+        id: documentId,
+        message: 'Form submitted successfully'
+      };
+    } finally {
+      clearTimeout(timeoutId);
     }
-    
-    const responseData = await response.json();
-    
-    // Extract the document ID from the name field
-    // Format: projects/{project_id}/databases/{database_id}/documents/{document_path}/{document_id}
-    const pathParts = responseData.name.split('/');
-    const documentId = pathParts[pathParts.length - 1];
-    
-    return {
-      success: true,
-      id: documentId,
-      message: 'Form submitted successfully'
-    };
   } catch (error) {
     logError("Error submitting contact form:", error);
-    throw new Error("Failed to submit contact form");
+    throw new Error(error.message || "Failed to submit contact form");
   }
 };
 
