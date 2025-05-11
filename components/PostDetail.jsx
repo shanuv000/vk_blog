@@ -1,10 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import moment from "moment";
 import { motion, useScroll, useSpring } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Social_post_details";
+
+// Lazy load Comments component to improve initial page load performance
+const Comments = dynamic(() => import("./Comments"), {
+  loading: () => (
+    <div className="bg-white rounded-lg shadow-lg p-6 mb-8 text-center">
+      <div className="animate-pulse flex flex-col items-center">
+        <div className="h-4 bg-gray-200 rounded w-1/4 mb-6"></div>
+        <div className="h-20 bg-gray-200 rounded w-full mb-4"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+    </div>
+  ),
+  ssr: false, // Don't render on server to avoid hydration issues
+});
 
 import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
@@ -300,6 +314,13 @@ const PostDetail = ({ post }) => {
                 </p>
               )}
             </div>
+
+            {/* Comments Section */}
+            {post.slug && (
+              <div className="mt-8">
+                <Comments postSlug={post.slug} />
+              </div>
+            )}
           </div>
         </motion.div>
       </>
