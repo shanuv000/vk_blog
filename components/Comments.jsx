@@ -16,10 +16,10 @@ const Comments = ({ postSlug }) => {
   // Memoize the fetch comments function to prevent unnecessary re-renders
   const fetchComments = useCallback(async () => {
     if (!postSlug) return;
-    
+
     setIsLoading(true);
     setError("");
-    
+
     try {
       const fetchedComments = await getCommentsByPostSlug(
         postSlug,
@@ -27,7 +27,6 @@ const Comments = ({ postSlug }) => {
       );
       setComments(fetchedComments);
     } catch (err) {
-      console.error("Error fetching comments:", err);
       setError("Failed to load comments. Please try again later.");
     } finally {
       setIsLoading(false);
@@ -37,7 +36,7 @@ const Comments = ({ postSlug }) => {
   // Fetch comments when component mounts or when fetchComments changes
   useEffect(() => {
     fetchComments();
-    
+
     // Don't re-fetch comments on every render
     // This component will be lazy-loaded, so it won't impact initial page load
   }, [fetchComments]);
@@ -46,62 +45,73 @@ const Comments = ({ postSlug }) => {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      
+
       // Reset messages
       setError("");
       setSuccess("");
-      
+
       // Validate inputs
       if (!content.trim()) {
         setError("Comment cannot be empty");
         return;
       }
-      
+
       setIsSubmitting(true);
-      
+
       try {
         const newComment = await addComment(postSlug, name, content);
-        
+
         // Add the new comment to the state
         setComments((prevComments) => [newComment, ...prevComments]);
-        
+
         // Reset form
         setName("");
         setContent("");
-        
+
         // Show success message
-        setSuccess("Comment added successfully!");
-        
-        // Clear success message after 3 seconds
+        setSuccess(
+          "Comment added successfully! It will appear here and be visible to others when you refresh the page."
+        );
+
+        // Clear success message after 5 seconds
         const timer = setTimeout(() => {
           setSuccess("");
-        }, 3000);
-        
+        }, 5000);
+
+        // Refresh comments after a short delay to ensure the server has processed the new comment
+        setTimeout(() => {
+          fetchComments();
+        }, 2000);
+
         // Clean up timer if component unmounts
         return () => clearTimeout(timer);
       } catch (err) {
-        console.error("Error submitting comment:", err);
         setError("Failed to submit comment. Please try again.");
       } finally {
         setIsSubmitting(false);
       }
     },
-    [postSlug, name, content]
+    [postSlug, name, content, fetchComments]
   );
 
   return (
-    <motion.div 
+    <motion.div
       className="bg-white rounded-lg shadow-lg p-6 mb-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h3 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-4 font-heading">Join the conversation</h3>
-      
+      <h3 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-4 font-heading">
+        Join the conversation
+      </h3>
+
       {/* Comment Form */}
       <form onSubmit={handleSubmit} className="mb-8">
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Name (optional)
           </label>
           <input
@@ -114,9 +124,12 @@ const Comments = ({ postSlug }) => {
             maxLength={50}
           />
         </div>
-        
+
         <div className="mb-4">
-          <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="comment"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Comment
           </label>
           <textarea
@@ -133,56 +146,103 @@ const Comments = ({ postSlug }) => {
             {content.length}/2000 characters
           </div>
         </div>
-        
+
         {error && (
-          <motion.div 
+          <motion.div
             className="mb-4 p-3 bg-red-50 text-red-600 rounded-md"
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
           >
             {error}
           </motion.div>
         )}
-        
+
         {success && (
-          <motion.div 
+          <motion.div
             className="mb-4 p-3 bg-green-50 text-green-600 rounded-md"
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
           >
             {success}
           </motion.div>
         )}
-        
+
         <motion.button
           type="submit"
           disabled={isSubmitting}
           className={`px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-all duration-300 ${
-            isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+            isSubmitting ? "opacity-70 cursor-not-allowed" : ""
           }`}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           {isSubmitting ? (
             <span className="flex items-center">
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Submitting...
             </span>
-          ) : 'Post Comment'}
+          ) : (
+            "Post Comment"
+          )}
         </motion.button>
       </form>
-      
+
       {/* Comments List */}
       <div>
-        <h4 className="text-lg font-medium text-gray-800 mb-4">
-          {comments.length > 0 ? `${comments.length} Comment${comments.length === 1 ? '' : 's'}` : 'Comments'}
-        </h4>
-        
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="text-lg font-medium text-gray-800">
+            {comments.length > 0
+              ? `${comments.length} Comment${comments.length === 1 ? "" : "s"}`
+              : "Comments"}
+          </h4>
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              fetchComments();
+            }}
+            className="text-sm text-primary flex items-center hover:text-primary-dark transition-colors"
+            disabled={isLoading}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            {isLoading ? "Refreshing..." : "Refresh"}
+          </button>
+        </div>
+
         <div className="space-y-6">
           {isLoading ? (
             <div className="text-center py-8">
@@ -202,16 +262,26 @@ const Comments = ({ postSlug }) => {
                 >
                   <div className="flex items-center mb-2">
                     <div className="bg-primary bg-opacity-10 rounded-full h-10 w-10 flex items-center justify-center text-primary font-medium mr-3">
-                      {comment.name ? comment.name.charAt(0).toUpperCase() : 'A'}
+                      {comment.name
+                        ? comment.name.charAt(0).toUpperCase()
+                        : "A"}
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-800">{comment.name || 'Anonymous'}</h4>
+                      <h4 className="font-medium text-gray-800">
+                        {comment.name || "Anonymous"}
+                      </h4>
                       <p className="text-xs text-gray-500">
-                        {comment.createdAt ? moment(comment.createdAt).format('MMM DD, YYYY • h:mm A') : 'Just now'}
+                        {comment.createdAt
+                          ? moment(comment.createdAt).format(
+                              "MMM DD, YYYY • h:mm A"
+                            )
+                          : "Just now"}
                       </p>
                     </div>
                   </div>
-                  <p className="text-gray-700 mt-2 whitespace-pre-line leading-relaxed">{comment.content}</p>
+                  <p className="text-gray-700 mt-2 whitespace-pre-line leading-relaxed">
+                    {comment.content}
+                  </p>
                 </motion.div>
               ))}
             </AnimatePresence>

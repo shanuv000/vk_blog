@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, Suspense } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { motion, useScroll, useSpring } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -137,11 +137,7 @@ const PostDetail = ({ post }) => {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                     quality={75} // Reduced quality for better performance
                     onError={() => {
-                      // This will be called if Next.js Image fails to load
-                      console.error(
-                        "Failed to load image:",
-                        post.featuredImage.url
-                      );
+                      // Silent error handling for production
                     }}
                   />
                 ) : (
@@ -270,43 +266,10 @@ const PostDetail = ({ post }) => {
                             We encountered an error while rendering this
                             content. Please try refreshing the page.
                           </p>
-                          {process.env.NODE_ENV === "development" && (
-                            <p className="text-xs text-red-500 mt-2">
-                              Error: {error.message}
-                            </p>
-                          )}
                         </div>
                       );
                     }
                   })()}
-
-                  {/* Add debug information in development */}
-                  {process.env.NODE_ENV === "development" && (
-                    <div className="mt-4 p-4 bg-gray-100 rounded-md text-xs">
-                      <details>
-                        <summary className="cursor-pointer font-medium text-gray-700">
-                          Debug Information
-                        </summary>
-                        <div className="mt-2 overflow-auto max-h-40">
-                          <p>
-                            Content Format:{" "}
-                            {post.content.json
-                              ? "JSON"
-                              : post.content.raw
-                              ? "RAW"
-                              : "Unknown"}
-                          </p>
-                          <p>
-                            References:{" "}
-                            {post.content.references
-                              ? post.content.references.length
-                              : "None"}
-                          </p>
-                          <p>Post ID: {post.slug}</p>
-                        </div>
-                      </details>
-                    </div>
-                  )}
                 </ErrorBoundary>
               ) : (
                 <p className="text-center text-lg text-gray-500 font-normal">

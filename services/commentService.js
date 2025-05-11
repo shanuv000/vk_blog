@@ -24,11 +24,15 @@ const COMMENTS_COLLECTION = "comments";
  */
 export const addComment = async (postSlug, name, content) => {
   try {
+    // Create a JavaScript Date for immediate display
+    const jsDate = new Date();
+
     const commentData = {
       postSlug,
       name: name.trim() || "Anonymous",
       content: content.trim(),
-      createdAt: serverTimestamp(),
+      createdAt: serverTimestamp(), // Server timestamp for sorting
+      createdAtString: jsDate.toISOString(), // String timestamp as backup
     };
 
     const docRef = await addDoc(
@@ -40,10 +44,10 @@ export const addComment = async (postSlug, name, content) => {
     return {
       id: docRef.id,
       ...commentData,
-      createdAt: new Date(), // Use current date for immediate display
+      createdAt: jsDate, // Use current date for immediate display
     };
   } catch (error) {
-    console.error("Error adding comment:", error);
+    console.error("Error adding comment");
     throw new Error("Failed to add comment");
   }
 };
@@ -58,34 +62,71 @@ export const getCommentsByPostSlug = async (postSlug, commentsPerPage = 10) => {
   try {
     // Validate inputs
     if (!postSlug) {
-      console.warn("getCommentsByPostSlug called without a postSlug");
       return [];
     }
 
-    // Create a query with pagination
-    const commentsQuery = query(
+    // First try with the ordered query (requires index)
+    try {
+      const commentsQuery = query(
+        collection(db, COMMENTS_COLLECTION),
+        where("postSlug", "==", postSlug),
+        orderBy("createdAt", "desc"),
+        limit(commentsPerPage)
+      );
+
+      const orderedSnapshot = await getDocs(commentsQuery);
+
+      // If ordered query worked, use it
+      if (orderedSnapshot.size > 0) {
+        return processComments(orderedSnapshot);
+      }
+    } catch (orderError) {
+      // Silently fall back to unordered query
+    }
+
+    // If ordered query failed or returned no results, try simple query
+    const postCommentsQuery = query(
       collection(db, COMMENTS_COLLECTION),
-      where("postSlug", "==", postSlug),
-      orderBy("createdAt", "desc"),
-      limit(commentsPerPage)
+      where("postSlug", "==", postSlug)
     );
 
-    const querySnapshot = await getDocs(commentsQuery);
+    const postCommentsSnapshot = await getDocs(postCommentsQuery);
 
-    // Process the results
-    return querySnapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        // Convert Firestore Timestamp to JavaScript Date if it exists
-        createdAt: data.createdAt
-          ? new Date(data.createdAt.toMillis())
-          : new Date(),
-      };
-    });
+    // If we have comments, process them with manual sorting
+    if (postCommentsSnapshot.size > 0) {
+      return processComments(postCommentsSnapshot, true);
+    }
+
+    // Define a function to process comments
+    function processComments(snapshot, manualSort = false) {
+      let comments = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JavaScript Date if it exists
+          createdAt: data.createdAt
+            ? new Date(data.createdAt.toMillis())
+            : data.createdAtString
+            ? new Date(data.createdAtString)
+            : new Date(),
+        };
+      });
+
+      // If manual sort is needed, sort by createdAt
+      if (manualSort) {
+        comments.sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      // Apply limit
+      comments = comments.slice(0, commentsPerPage);
+      return comments;
+    }
+
+    // If we got here, it means we have no comments for this post
+    return [];
   } catch (error) {
-    console.error("Error fetching comments:", error);
+    console.error("Error fetching comments");
     return [];
   }
 };
@@ -100,7 +141,7 @@ export const deleteComment = async (commentId) => {
     await deleteDoc(doc(db, COMMENTS_COLLECTION, commentId));
     return true;
   } catch (error) {
-    console.error("Error deleting comment:", error);
+    console.error("Error deleting comment");
     return false;
   }
 };
