@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  memo,
+  lazy,
+  Suspense,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import moment from "moment";
 // Import the unified service that tries multiple methods
@@ -6,6 +13,13 @@ import {
   addComment,
   getCommentsByPostSlug,
 } from "../services/commentServiceUnified";
+
+// Helper function to log errors only in development
+const logError = (message, error) => {
+  if (process.env.NODE_ENV !== "production") {
+    console.error(message, error);
+  }
+};
 
 const Comments = ({ postSlug }) => {
   const [comments, setComments] = useState([]);
@@ -31,7 +45,7 @@ const Comments = ({ postSlug }) => {
       );
       setComments(fetchedComments);
     } catch (err) {
-      console.error("Error fetching comments:", err);
+      logError("Error fetching comments:", err);
 
       // More specific error message for different types of errors
       if (err.message?.includes("CORS") || err.message?.includes("blocked")) {
@@ -109,7 +123,7 @@ const Comments = ({ postSlug }) => {
           clearTimeout(refreshTimer);
         };
       } catch (err) {
-        console.error("Comment submission error:", err);
+        logError("Comment submission error:", err);
 
         // More specific error message for different types of errors
         if (err.message?.includes("CORS") || err.message?.includes("blocked")) {

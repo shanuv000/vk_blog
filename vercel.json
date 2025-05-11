@@ -45,7 +45,32 @@
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/firebase-proxy",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://blog.urtechy.com"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "source": "/api/((?!firebase-proxy).*)",
       "headers": [
         {
           "key": "Cache-Control",

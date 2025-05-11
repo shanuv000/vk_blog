@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Head from "next/head";
 import { FaCheckCircle, FaExclamationTriangle, FaPhone } from "react-icons/fa";
 import { MdEmail, MdLocationOn, MdAccessTime, MdSend } from "react-icons/md";
-import { db } from "../lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+// Import the proxy-based contact service
+import { submitContactForm } from "../services/contactServiceProxy";
 
 // Form field validation
 const validateField = (name, value) => {
@@ -153,22 +153,19 @@ const ContactForm = () => {
       setIsSubmitting(true);
 
       try {
-        // Submit to Firebase
-        const contactsRef = collection(db, "contacts");
-        await addDoc(contactsRef, {
-          ...formState,
-          fullName: `${formState.firstName} ${formState.lastName}`,
-          timestamp: serverTimestamp(),
-          source: "contact_form",
-        });
+        // Submit to Firebase using REST API service
+        await submitContactForm(formState);
 
-        console.log("Form submitted to Firebase:", formState);
+        // Only log in development
+        if (process.env.NODE_ENV !== "production") {
+          console.log("Form submitted successfully:", formState);
+        }
 
         // Show success message
         setSubmitStatus("success");
 
         // Reset form after 3 seconds
-        setTimeout(() => {
+        const timer = setTimeout(() => {
           setFormState({
             firstName: "",
             lastName: "",
@@ -181,8 +178,14 @@ const ContactForm = () => {
           setSubmitStatus(null);
           setIsSubmitting(false);
         }, 3000);
+
+        // Clean up timer if component unmounts
+        return () => clearTimeout(timer);
       } catch (error) {
-        console.error("Error submitting form to Firebase:", error);
+        // Only log detailed error in development
+        if (process.env.NODE_ENV !== "production") {
+          console.error("Error submitting form:", error);
+        }
         setSubmitStatus("error");
         setIsSubmitting(false);
       }
