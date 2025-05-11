@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import moment from "moment";
-import { addComment, getCommentsByPostSlug } from "../services/commentService";
+// Import the unified service that tries multiple methods
+import {
+  addComment,
+  getCommentsByPostSlug,
+} from "../services/commentServiceUnified";
 
 const Comments = ({ postSlug }) => {
   const [comments, setComments] = useState([]);
@@ -27,9 +31,23 @@ const Comments = ({ postSlug }) => {
       );
       setComments(fetchedComments);
     } catch (err) {
-      // Don't show error in production to avoid alarming users
-      // The commentService already handles errors gracefully
-      setError("Failed to load comments. Please try again later.");
+      console.error("Error fetching comments:", err);
+
+      // More specific error message for different types of errors
+      if (err.message?.includes("CORS") || err.message?.includes("blocked")) {
+        setError(
+          "Unable to load comments due to browser security restrictions. We're working on a fix."
+        );
+      } else if (
+        err.code === "unavailable" ||
+        err.message?.includes("network")
+      ) {
+        setError(
+          "Network error. Please check your internet connection and try again."
+        );
+      } else {
+        setError("Failed to load comments. Please try again later.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -91,18 +109,25 @@ const Comments = ({ postSlug }) => {
           clearTimeout(refreshTimer);
         };
       } catch (err) {
-        // More specific error message for network issues
-        if (err.code === "unavailable" || err.message?.includes("network")) {
-          setError(
-            "Network error. Your comment was saved locally but may not be visible to others until connection is restored."
-          );
+        console.error("Comment submission error:", err);
 
-          // Still reset the form to avoid duplicate submissions
-          setName("");
-          setContent("");
+        // More specific error message for different types of errors
+        if (err.message?.includes("CORS") || err.message?.includes("blocked")) {
+          setError(
+            "Unable to connect to the comment service due to browser security restrictions. Please try again later."
+          );
+        } else if (
+          err.code === "unavailable" ||
+          err.message?.includes("network")
+        ) {
+          setError(
+            "Network error. Please check your internet connection and try again."
+          );
         } else {
           setError("Failed to submit comment. Please try again.");
         }
+
+        // Don't reset the form on error so the user can try again
       } finally {
         setIsSubmitting(false);
       }
@@ -282,10 +307,17 @@ const Comments = ({ postSlug }) => {
                         ? comment.name.charAt(0).toUpperCase()
                         : "A"}
                     </div>
-                    <div>
-                      <h4 className="font-medium text-gray-800">
-                        {comment.name || "Anonymous"}
-                      </h4>
+                    <div className="flex-grow">
+                      <div className="flex items-center">
+                        <h4 className="font-medium text-gray-800">
+                          {comment.name || "Anonymous"}
+                        </h4>
+                        {comment.isLocal && (
+                          <span className="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                            Local
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500">
                         {comment.createdAt
                           ? moment(comment.createdAt).format(
