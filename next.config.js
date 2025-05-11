@@ -288,7 +288,29 @@ const nextConfig = {
       },
       {
         source: "/sitemap.xml",
-        destination: "/sitemap.xml",
+        destination: "/api/sitemap",
+      },
+      {
+        source: "/blog",
+        destination: "/",
+      },
+    ];
+  },
+
+  // Redirects configuration for SEO
+  async redirects() {
+    return [
+      // Redirect trailing slashes
+      {
+        source: "/:path+/",
+        destination: "/:path+",
+        permanent: true,
+      },
+      // Redirect lowercase URLs
+      {
+        source: "/:path*/[A-Z]:rest*",
+        destination: "/:path*/:rest*",
+        permanent: true,
       },
     ];
   },

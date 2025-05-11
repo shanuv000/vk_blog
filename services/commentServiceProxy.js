@@ -1,21 +1,19 @@
 /**
  * Proxy-based implementation of comment service to avoid CORS issues
  * This uses our own API proxy instead of direct Firebase REST API calls
- * Production optimized version
  */
 
-// Firebase project configuration - hardcoded for production
-const FIREBASE_PROJECT_ID = 'urtechy-35294';
-const FIREBASE_API_KEY = 'AIzaSyCgdl-5bF_gj07SwmWdCwVip1jVQSlzZ2w';
-const COMMENTS_COLLECTION = 'comments';
-
-// Cache for comments to reduce API calls
-const commentsCache = new Map();
-const CACHE_TTL = 60000; // 1 minute in milliseconds
+// Firebase project configuration
+const FIREBASE_PROJECT_ID =
+  process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "urtechy-35294";
+const FIREBASE_API_KEY =
+  process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
+  "AIzaSyCgdl-5bF_gj07SwmWdCwVip1jVQSlzZ2w";
+const COMMENTS_COLLECTION = "comments";
 
 // Helper function to log errors only in development
 const logError = (message, error) => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     console.error(message, error);
   }
 };
@@ -29,80 +27,64 @@ const logError = (message, error) => {
  */
 export const addComment = async (postSlug, name, content) => {
   try {
-    // Input validation
-    if (!postSlug) throw new Error("Post slug is required");
-    if (!content || !content.trim()) throw new Error("Comment content is required");
-    
     // Create a JavaScript Date for immediate display
     const jsDate = new Date();
     const timestamp = jsDate.toISOString();
-    
+
     // Prepare the comment data
     const commentData = {
       postSlug,
-      name: name?.trim() || "Anonymous",
+      name: name.trim() || "Anonymous",
       content: content.trim(),
       createdAtString: timestamp,
       createdAt: {
         // Firestore server timestamp format for REST API
-        ".sv": "timestamp"
-      }
+        ".sv": "timestamp",
+      },
     };
-    
+
     // Prepare the request to our proxy
     const endpoint = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/${COMMENTS_COLLECTION}?key=${FIREBASE_API_KEY}`;
-    
-    // Make the request to our proxy with timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-    
-    try {
-      const response = await fetch('/api/firebase-proxy', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+
+    // Make the request to our proxy
+    const response = await fetch("/api/firebase-proxy", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        endpoint,
+        method: "POST",
+        body: {
+          fields: convertToFirestoreFields(commentData),
         },
-        body: JSON.stringify({
-          endpoint,
-          method: 'POST',
-          body: {
-            fields: convertToFirestoreFields(commentData)
-          }
-        }),
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to add comment: ${response.status} ${response.statusText}`);
-      }
-      
-      const responseData = await response.json();
-      
-      // Extract the document ID from the name field
-      const pathParts = responseData.name.split('/');
-      const documentId = pathParts[pathParts.length - 1];
-      
-      // Create the comment object
-      const newComment = {
-        id: documentId,
-        postSlug,
-        name: commentData.name,
-        content: commentData.content,
-        createdAt: jsDate,
-      };
-      
-      // Invalidate cache for this post
-      invalidateCache(postSlug);
-      
-      return newComment;
-    } finally {
-      clearTimeout(timeoutId);
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to add comment: ${response.status} ${response.statusText}`
+      );
     }
+
+    const responseData = await response.json();
+
+    // Extract the document ID from the name field
+    // Format: projects/{project_id}/databases/{database_id}/documents/{document_path}/{document_id}
+    const pathParts = responseData.name.split("/");
+    const documentId = pathParts[pathParts.length - 1];
+
+    // Return the comment with an ID and a JavaScript Date object
+    return {
+      id: documentId,
+      postSlug,
+      name: commentData.name,
+      content: commentData.content,
+      createdAt: jsDate,
+    };
   } catch (error) {
     logError("Error adding comment:", error);
-    throw new Error(error.message || "Failed to add comment");
+    throw new Error("Failed to add comment");
   }
 };
 
@@ -118,14 +100,7 @@ export const getCommentsByPostSlug = async (postSlug, commentsPerPage = 10) => {
     if (!postSlug) {
       return [];
     }
-    
-    // Check cache first
-    const cacheKey = `${postSlug}_${commentsPerPage}`;
-    const cachedData = commentsCache.get(cacheKey);
-    if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
-      return cachedData.comments;
-    }
-    
+
     // Create a structured query for Firestore REST API
     const structuredQuery = {
       from: [{ collectionId: COMMENTS_COLLECTION }],
@@ -133,80 +108,64 @@ export const getCommentsByPostSlug = async (postSlug, commentsPerPage = 10) => {
         fieldFilter: {
           field: { fieldPath: "postSlug" },
           op: "EQUAL",
-          value: { stringValue: postSlug }
-        }
+          value: { stringValue: postSlug },
+        },
       },
-      orderBy: [
-        { field: { fieldPath: "createdAt" }, direction: "DESCENDING" }
-      ],
-      limit: commentsPerPage
+      orderBy: [{ field: { fieldPath: "createdAt" }, direction: "DESCENDING" }],
+      limit: commentsPerPage,
     };
-    
+
     // Prepare the request to our proxy
     const endpoint = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents:runQuery?key=${FIREBASE_API_KEY}`;
-    
-    // Make the request to our proxy with timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-    
-    try {
-      const response = await fetch('/api/firebase-proxy', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          endpoint,
-          method: 'POST',
-          body: { structuredQuery }
-        }),
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch comments: ${response.status} ${response.statusText}`);
-      }
-      
-      const responseData = await response.json();
-      
-      // Process the results
-      const comments = responseData
-        .filter(item => item.document) // Filter out empty results
-        .map(item => {
-          const doc = item.document;
-          const fields = doc.fields;
-          
-          // Extract the document ID from the name field
-          const pathParts = doc.name.split('/');
-          const documentId = pathParts[pathParts.length - 1];
-          
-          // Convert Firestore fields to JavaScript object
-          const data = convertFromFirestoreFields(fields);
-          
-          return {
-            id: documentId,
-            ...data,
-            // Convert timestamp to JavaScript Date
-            createdAt: data.createdAt 
-              ? new Date(data.createdAt) 
-              : data.createdAtString 
-                ? new Date(data.createdAtString) 
-                : new Date()
-          };
-        });
-      
-      // Update cache
-      commentsCache.set(cacheKey, {
-        comments,
-        timestamp: Date.now()
-      });
-      
-      return comments;
-    } finally {
-      clearTimeout(timeoutId);
+
+    // Make the request to our proxy
+    const response = await fetch("/api/firebase-proxy", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        endpoint,
+        method: "POST",
+        body: { structuredQuery },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch comments: ${response.status} ${response.statusText}`
+      );
     }
+
+    const responseData = await response.json();
+
+    // Process the results
+    const comments = responseData
+      .filter((item) => item.document) // Filter out empty results
+      .map((item) => {
+        const doc = item.document;
+        const fields = doc.fields;
+
+        // Extract the document ID from the name field
+        const pathParts = doc.name.split("/");
+        const documentId = pathParts[pathParts.length - 1];
+
+        // Convert Firestore fields to JavaScript object
+        const data = convertFromFirestoreFields(fields);
+
+        return {
+          id: documentId,
+          ...data,
+          // Convert timestamp to JavaScript Date
+          createdAt: data.createdAt
+            ? new Date(data.createdAt)
+            : data.createdAtString
+            ? new Date(data.createdAtString)
+            : new Date(),
+        };
+      });
+
+    return comments;
   } catch (error) {
     logError("Error fetching comments:", error);
     return [];
@@ -214,96 +173,98 @@ export const getCommentsByPostSlug = async (postSlug, commentsPerPage = 10) => {
 };
 
 /**
- * Invalidate cache for a specific post
- * @param {string} postSlug - The slug of the post
- */
-function invalidateCache(postSlug) {
-  // Remove all cache entries for this post
-  for (const key of commentsCache.keys()) {
-    if (key.startsWith(postSlug + '_')) {
-      commentsCache.delete(key);
-    }
-  }
-}
-
-// The rest of the utility functions remain the same
-// These are used internally and don't need optimization
-
-/**
  * Convert a JavaScript object to Firestore fields format for REST API
+ * @param {object} data - The JavaScript object to convert
+ * @returns {object} - The Firestore fields object
  */
 function convertToFirestoreFields(data) {
   const fields = {};
-  
+
   for (const [key, value] of Object.entries(data)) {
     if (value === null || value === undefined) {
       fields[key] = { nullValue: null };
-    } else if (typeof value === 'string') {
+    } else if (typeof value === "string") {
       fields[key] = { stringValue: value };
-    } else if (typeof value === 'number') {
+    } else if (typeof value === "number") {
       fields[key] = { integerValue: value };
-    } else if (typeof value === 'boolean') {
+    } else if (typeof value === "boolean") {
       fields[key] = { booleanValue: value };
     } else if (value instanceof Date) {
       fields[key] = { timestampValue: value.toISOString() };
     } else if (Array.isArray(value)) {
-      fields[key] = { 
-        arrayValue: { 
-          values: value.map(item => convertToFirestoreValue(item)) 
-        } 
+      fields[key] = {
+        arrayValue: {
+          values: value.map((item) => convertToFirestoreValue(item)),
+        },
       };
-    } else if (typeof value === 'object') {
-      if (value['.sv'] === 'timestamp') {
+    } else if (typeof value === "object") {
+      if (value[".sv"] === "timestamp") {
+        // Handle server timestamp
         fields[key] = { timestampValue: value };
       } else {
-        fields[key] = { 
-          mapValue: { 
-            fields: convertToFirestoreFields(value) 
-          } 
+        fields[key] = {
+          mapValue: {
+            fields: convertToFirestoreFields(value),
+          },
         };
       }
     }
   }
-  
+
   return fields;
 }
 
+/**
+ * Convert a single value to Firestore value format for REST API
+ * @param {any} value - The value to convert
+ * @returns {object} - The Firestore value object
+ */
 function convertToFirestoreValue(value) {
   if (value === null || value === undefined) {
     return { nullValue: null };
-  } else if (typeof value === 'string') {
+  } else if (typeof value === "string") {
     return { stringValue: value };
-  } else if (typeof value === 'number') {
+  } else if (typeof value === "number") {
     return { integerValue: value };
-  } else if (typeof value === 'boolean') {
+  } else if (typeof value === "boolean") {
     return { booleanValue: value };
   } else if (value instanceof Date) {
     return { timestampValue: value.toISOString() };
   } else if (Array.isArray(value)) {
-    return { 
-      arrayValue: { 
-        values: value.map(item => convertToFirestoreValue(item)) 
-      } 
+    return {
+      arrayValue: {
+        values: value.map((item) => convertToFirestoreValue(item)),
+      },
     };
-  } else if (typeof value === 'object') {
-    return { 
-      mapValue: { 
-        fields: convertToFirestoreFields(value) 
-      } 
+  } else if (typeof value === "object") {
+    return {
+      mapValue: {
+        fields: convertToFirestoreFields(value),
+      },
     };
   }
 }
 
+/**
+ * Convert Firestore fields format to JavaScript object
+ * @param {object} fields - The Firestore fields object
+ * @returns {object} - The JavaScript object
+ */
 function convertFromFirestoreFields(fields) {
   const data = {};
-  
+
   for (const [key, value] of Object.entries(fields)) {
     data[key] = convertFromFirestoreValue(value);
   }
-  
+
   return data;
 }
 
+/**
+ * Convert a single Firestore value to JavaScript value
+ * @param {object} value - The Firestore value object
+ * @returns {any} - The JavaScript value
+ */
 function convertFromFirestoreValue(value) {
   if (value.nullValue !== undefined) {
     return null;
@@ -318,7 +279,9 @@ function convertFromFirestoreValue(value) {
   } else if (value.timestampValue !== undefined) {
     return new Date(value.timestampValue).toISOString();
   } else if (value.arrayValue !== undefined) {
-    return (value.arrayValue.values || []).map(item => convertFromFirestoreValue(item));
+    return (value.arrayValue.values || []).map((item) =>
+      convertFromFirestoreValue(item)
+    );
   } else if (value.mapValue !== undefined) {
     return convertFromFirestoreFields(value.mapValue.fields || {});
   } else {
