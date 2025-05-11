@@ -65,38 +65,6 @@ export const getCommentsByPostSlug = async (postSlug, commentsPerPage = 10) => {
       return [];
     }
 
-    // First try with the ordered query (requires index)
-    try {
-      const commentsQuery = query(
-        collection(db, COMMENTS_COLLECTION),
-        where("postSlug", "==", postSlug),
-        orderBy("createdAt", "desc"),
-        limit(commentsPerPage)
-      );
-
-      const orderedSnapshot = await getDocs(commentsQuery);
-
-      // If ordered query worked, use it
-      if (orderedSnapshot.size > 0) {
-        return processComments(orderedSnapshot);
-      }
-    } catch (orderError) {
-      // Silently fall back to unordered query
-    }
-
-    // If ordered query failed or returned no results, try simple query
-    const postCommentsQuery = query(
-      collection(db, COMMENTS_COLLECTION),
-      where("postSlug", "==", postSlug)
-    );
-
-    const postCommentsSnapshot = await getDocs(postCommentsQuery);
-
-    // If we have comments, process them with manual sorting
-    if (postCommentsSnapshot.size > 0) {
-      return processComments(postCommentsSnapshot, true);
-    }
-
     // Define a function to process comments
     function processComments(snapshot, manualSort = false) {
       let comments = snapshot.docs.map((doc) => {
@@ -123,10 +91,52 @@ export const getCommentsByPostSlug = async (postSlug, commentsPerPage = 10) => {
       return comments;
     }
 
+    // First try with the ordered query (requires index)
+    try {
+      const commentsQuery = query(
+        collection(db, COMMENTS_COLLECTION),
+        where("postSlug", "==", postSlug),
+        orderBy("createdAt", "desc"),
+        limit(commentsPerPage)
+      );
+
+      const orderedSnapshot = await getDocs(commentsQuery);
+
+      // If ordered query worked, use it
+      if (orderedSnapshot.size > 0) {
+        return processComments(orderedSnapshot);
+      }
+    } catch (orderError) {
+      // Silently fall back to unordered query
+    }
+
+    // If ordered query failed or returned no results, try simple query
+    try {
+      const postCommentsQuery = query(
+        collection(db, COMMENTS_COLLECTION),
+        where("postSlug", "==", postSlug)
+      );
+
+      const postCommentsSnapshot = await getDocs(postCommentsQuery);
+
+      // If we have comments, process them with manual sorting
+      if (postCommentsSnapshot.size > 0) {
+        return processComments(postCommentsSnapshot, true);
+      }
+    } catch (queryError) {
+      // If both queries fail, it's likely a CORS or network issue
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("Failed to fetch comments:", queryError);
+      }
+    }
+
     // If we got here, it means we have no comments for this post
     return [];
   } catch (error) {
-    console.error("Error fetching comments");
+    // In production, just return empty array
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Error fetching comments:", error);
+    }
     return [];
   }
 };

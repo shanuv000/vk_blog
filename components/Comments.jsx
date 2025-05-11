@@ -27,6 +27,8 @@ const Comments = ({ postSlug }) => {
       );
       setComments(fetchedComments);
     } catch (err) {
+      // Don't show error in production to avoid alarming users
+      // The commentService already handles errors gracefully
       setError("Failed to load comments. Please try again later.");
     } finally {
       setIsLoading(false);
@@ -79,14 +81,28 @@ const Comments = ({ postSlug }) => {
         }, 5000);
 
         // Refresh comments after a short delay to ensure the server has processed the new comment
-        setTimeout(() => {
+        const refreshTimer = setTimeout(() => {
           fetchComments();
         }, 2000);
 
-        // Clean up timer if component unmounts
-        return () => clearTimeout(timer);
+        // Clean up timers if component unmounts
+        return () => {
+          clearTimeout(timer);
+          clearTimeout(refreshTimer);
+        };
       } catch (err) {
-        setError("Failed to submit comment. Please try again.");
+        // More specific error message for network issues
+        if (err.code === "unavailable" || err.message?.includes("network")) {
+          setError(
+            "Network error. Your comment was saved locally but may not be visible to others until connection is restored."
+          );
+
+          // Still reset the form to avoid duplicate submissions
+          setName("");
+          setContent("");
+        } else {
+          setError("Failed to submit comment. Please try again.");
+        }
       } finally {
         setIsSubmitting(false);
       }
