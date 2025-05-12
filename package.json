@@ -49,13 +49,13 @@
     "react-multi-carousel": "^2.8.4",
     "react-player": "^2.15.1",
     "react-responsive": "^10.0.0",
+    "react-social-media-embed": "^2.5.18",
     "react-spinners": "^0.13.8",
     "react-syntax-highlighter": "^15.6.1",
     "react-twitter-embed": "^4.0.4",
     "reading-time": "^1.5.0",
     "sass": "^1.72.0",
     "sharp": "^0.34.1",
-    
     "use-sound": "^4.0.3",
     "validator": "^13.11.0"
   },

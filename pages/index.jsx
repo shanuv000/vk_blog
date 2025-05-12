@@ -8,10 +8,8 @@ import HomeSeo from "../components/HomeSeo";
 
 import { ClipLoader } from "react-spinners";
 
-import LiveMatch from "../components/Cricket/LiveMatch";
 // Fisher-Yates shuffle algorithm
 import { useMediaQuery } from "react-responsive"; // Import for media query
-import { useData } from "../store/HandleApiContext";
 import SchemaManager from "../components/SchemaManager";
 
 function shuffle(array) {
@@ -25,7 +23,6 @@ function shuffle(array) {
 export default function Home({ posts }) {
   const [displayPosts, setDisplayPosts] = useState([]);
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" }); // Detect mobile
-  const { isLiveScore } = useData();
 
   useEffect(() => {
     // Sort posts by date (newest first) instead of shuffling
@@ -80,18 +77,6 @@ export default function Home({ posts }) {
           {/* Sidebar */}
           <div className="lg:col-span-4 col-span-1">
             <div className="lg:sticky relative top-8 space-y-8">
-              {/* Live cricket widget */}
-              {isLiveScore && !isMobile && (
-                <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
-                  <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
-                    Live Cricket
-                  </h3>
-                  <div className="p-4">
-                    <LiveMatch />
-                  </div>
-                </div>
-              )}
-
               {/* Recent posts widget */}
               <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
                 <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
