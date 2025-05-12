@@ -20,6 +20,11 @@ const Comments = dynamic(() => import("./Comments"), {
   ssr: false, // Don't render on server to avoid hydration issues
 });
 
+// Lazy load SocialMediaEmbedder component
+const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
+  ssr: false, // Don't render on server to avoid hydration issues
+});
+
 import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
 import RichTextRenderer from "./RichTextRenderer";
@@ -237,7 +242,8 @@ const PostDetail = ({ post }) => {
                           </div>
 
                           {/* First paragraph with drop cap styling */}
-                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left w-full">
+                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left w-full prose-code:bg-gray-100 prose-code:text-red-600 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm article-content">
+                            {/* Render the content first */}
                             <RichTextRenderer
                               content={post.content}
                               references={
@@ -247,6 +253,11 @@ const PostDetail = ({ post }) => {
                                   : []
                               }
                             />
+                          </div>
+
+                          {/* Add SocialMediaEmbedder as a separate component outside the article-content div */}
+                          <div className="social-embeds-container mt-4">
+                            <SocialMediaEmbedder />
                           </div>
 
                           {/* Article footer - removed author section */}

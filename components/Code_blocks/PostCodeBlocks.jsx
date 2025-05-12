@@ -5,6 +5,8 @@ import ReactPlayer from "react-player/lazy";
 import React, { useEffect, useRef } from "react";
 import NestedTable from "./Nested_Table";
 import Paragraph from "./Paragraph";
+import FacebookEmbed from "../FacebookEmbed";
+import InstagramEmbed from "../InstagramEmbed";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -152,17 +154,53 @@ export const getContentFragment = (index, text, obj, type) => {
         <div key={index} className="">
           {modifiedText
             .filter((item) => item !== undefined) // Filter out undefined items
-            .map((item, i) =>
-              item.charAt(0) === "1" ? (
-                <div className="w-full my-4 overflow-hidden" key={i}>
-                  <TwitterTweetEmbed tweetId={`${item}`} className="w-full" />
-                </div>
-              ) : (
-                <blockquote className="border-l-4 border-primary pl-4 italic text-text-secondary my-3 py-2">
-                  <p>{item}</p>
-                </blockquote>
-              )
-            )}
+            .map((item, i) => {
+              // Check if it's a Twitter ID (starts with a number)
+              if (item.charAt(0) === "1") {
+                return (
+                  <div className="w-full my-4 overflow-hidden" key={i}>
+                    <TwitterTweetEmbed tweetId={`${item}`} className="w-full" />
+                  </div>
+                );
+              }
+
+              // Check if it's a Facebook URL
+              else if (
+                item.includes("facebook.com") ||
+                item.includes("fb.com") ||
+                item.includes("fb.watch")
+              ) {
+                return (
+                  <div className="w-full my-4 overflow-hidden" key={i}>
+                    <FacebookEmbed url={item} />
+                  </div>
+                );
+              }
+
+              // Check if it's an Instagram URL
+              else if (
+                item.includes("instagram.com") ||
+                item.includes("instagr.am")
+              ) {
+                return (
+                  <div className="w-full my-4 overflow-hidden" key={i}>
+                    <InstagramEmbed url={item} />
+                  </div>
+                );
+              }
+
+              // Default blockquote rendering
+              else {
+                return (
+                  <blockquote
+                    className="border-l-4 border-primary pl-4 italic text-text-secondary my-3 py-2"
+                    key={i}
+                  >
+                    <p>{item}</p>
+                  </blockquote>
+                );
+              }
+            })}
         </div>
       );
     case "table":
