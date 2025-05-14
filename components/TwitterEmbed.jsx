@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 
 const TwitterEmbed = ({ tweetId }) => {
@@ -13,6 +13,49 @@ const TwitterEmbed = ({ tweetId }) => {
 
   // No debugging logs in production
 
+  // Fix for deprecation warning
+  useEffect(() => {
+    // Check if our fix is already applied to avoid duplicate declarations
+    if (window._twitterEmbedFixApplied) {
+      return; // Fix already applied, no need to do it again
+    }
+
+    // Add a script to fix the DOMSubtreeModified deprecation warning
+    const fixScript = document.createElement("script");
+    fixScript.id = "twitter-embed-fix";
+    fixScript.textContent = `
+      // Only apply the fix if it hasn't been applied yet
+      if (!window._twitterEmbedFixApplied) {
+        // Override the deprecated DOMSubtreeModified event listener
+        window._originalAddEventListener = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+          if (type === 'DOMSubtreeModified') {
+            // Use MutationObserver instead
+            const observer = new MutationObserver((mutations) => {
+              if (mutations[0] && mutations[0].target) {
+                listener({ target: mutations[0].target });
+              }
+            });
+            observer.observe(this, { childList: true, subtree: true });
+            return observer;
+          }
+          return window._originalAddEventListener.call(this, type, listener, options);
+        };
+
+        // Mark as applied
+        window._twitterEmbedFixApplied = true;
+      }
+    `;
+
+    // Only add the script once
+    if (!document.getElementById("twitter-embed-fix")) {
+      document.head.appendChild(fixScript);
+    }
+
+    // No need to remove the script on unmount as it's a global fix
+    // that should persist for the entire session
+  }, []);
+
   // Skip if no tweet ID or invalid format
   if (!isValidTweetId) {
     // Invalid tweet ID
@@ -26,40 +69,75 @@ const TwitterEmbed = ({ tweetId }) => {
   // We already have cleanTweetId defined above
 
   // Direct embed fallback using Twitter's oEmbed API
-  const directEmbedFallback = () => {
+  const directEmbedFallback = useCallback(() => {
     // Using direct embed fallback
+    try {
+      // Create an iframe element
+      const iframe = document.createElement("iframe");
+      iframe.setAttribute(
+        "src",
+        `https://platform.twitter.com/embed/Tweet.html?id=${cleanTweetId}`
+      );
+      iframe.setAttribute("width", "100%");
+      iframe.setAttribute("height", "300px");
+      iframe.setAttribute("frameBorder", "0");
+      iframe.setAttribute("allowTransparency", "true");
+      iframe.setAttribute("allow", "encrypted-media");
 
-    // Create an iframe element
-    const iframe = document.createElement("iframe");
-    iframe.setAttribute(
-      "src",
-      `https://platform.twitter.com/embed/Tweet.html?id=${cleanTweetId}`
-    );
-    iframe.setAttribute("width", "100%");
-    iframe.setAttribute("height", "300px");
-    iframe.setAttribute("frameBorder", "0");
-    iframe.setAttribute("allowTransparency", "true");
-    iframe.setAttribute("allow", "encrypted-media");
-
-    // Clear any existing content and append the iframe
-    if (iframeRef.current) {
-      iframeRef.current.innerHTML = "";
-      iframeRef.current.appendChild(iframe);
+      // Clear any existing content and append the iframe
+      if (iframeRef.current) {
+        iframeRef.current.innerHTML = "";
+        iframeRef.current.appendChild(iframe);
+        setLoading(false);
+      }
+    } catch (err) {
+      // If fallback fails, show error state
+      setError(true);
       setLoading(false);
+      console.error("Twitter embed fallback failed:", err);
     }
-  };
+  }, [cleanTweetId, iframeRef]);
 
   // Set a timeout to handle cases where the tweet doesn't load
   useEffect(() => {
+    // Reset loading state when tweet ID changes
+    setLoading(true);
+    setError(false);
+
+    // Reference to current loading state for the closure
+    let isComponentMounted = true;
+
     const timeoutId = setTimeout(() => {
-      if (loading) {
+      // Only proceed if component is still mounted
+      if (isComponentMounted && loading) {
         // Tweet failed to load, try fallback
         directEmbedFallback();
       }
     }, 8000); // 8 second timeout
 
-    return () => clearTimeout(timeoutId);
-  }, [cleanTweetId, loading]);
+    return () => {
+      isComponentMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, [cleanTweetId, directEmbedFallback, loading]); // Include loading state in dependencies
+
+  // Handle Twitter widgets script loading
+  useEffect(() => {
+    // Check if Twitter widgets script is already loaded
+    if (typeof window !== "undefined" && window.twttr) {
+      // If Twitter widgets is already loaded, manually process any tweets
+      if (
+        window.twttr.widgets &&
+        typeof window.twttr.widgets.load === "function"
+      ) {
+        try {
+          window.twttr.widgets.load();
+        } catch (e) {
+          console.error("Error loading Twitter widgets:", e);
+        }
+      }
+    }
+  }, []);
 
   // If we've hit an error after timeout and fallback
   if (error) {
@@ -123,10 +201,14 @@ const TwitterEmbed = ({ tweetId }) => {
               >
                 <a href={`https://twitter.com/i/status/${cleanTweetId}`}></a>
               </blockquote>
-              <script
-                async
-                src="https://platform.twitter.com/widgets.js"
-              ></script>
+              {/* Load Twitter widgets script safely */}
+              {typeof window !== "undefined" && !window.twttr && (
+                <script
+                  async
+                  src="https://platform.twitter.com/widgets.js"
+                  id="twitter-widgets-js"
+                ></script>
+              )}
             </div>
           )}
 

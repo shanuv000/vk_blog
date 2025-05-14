@@ -113,7 +113,7 @@ const PostDetail = ({ post }) => {
     <ErrorBoundary>
       <>
         <motion.div
-          className="bg-white rounded-lg shadow-lg mb-8 overflow-hidden w-full"
+          className="bg-white rounded-none sm:rounded-lg shadow-none sm:shadow-lg mb-8 overflow-hidden w-full"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -164,12 +164,12 @@ const PostDetail = ({ post }) => {
           </div>
 
           {/* Title and date section - Separated from image */}
-          <div className="px-4 sm:px-6 md:px-10 py-6 mb-2 w-full border-b border-gray-100">
-            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-4 capitalize leading-tight tracking-tight">
+          <div className="px-0 md:px-10 py-4 md:py-6 mb-2 w-full border-b border-gray-100">
+            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-4 capitalize leading-tight tracking-tight px-2 md:px-0">
               {post.title}
             </h1>
 
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 px-2 md:px-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 mr-2 text-primary"
@@ -192,13 +192,13 @@ const PostDetail = ({ post }) => {
             </div>
           </div>
 
-          <div className="px-4 sm:px-6 lg:px-10 pt-4 pb-10 w-full">
+          <div className="px-0 md:px-6 lg:px-10 pt-4 pb-10 w-full">
             {/* Wrap Testing component in ErrorBoundary to prevent it from crashing the entire page */}
             <ErrorBoundary>
               {post.slug && <Testing slug={post.slug} />}
             </ErrorBoundary>
 
-            <div className="prose prose-lg w-full max-w-none mt-8 text-gray-800 mx-auto sm:w-full md:w-full md:max-w-none lg:max-w-4xl">
+            <div className="prose prose-lg w-full max-w-none mt-8 text-gray-800 mx-auto px-2 md:px-0 sm:w-full md:w-full md:max-w-none lg:max-w-4xl">
               {post.content ? (
                 <ErrorBoundary
                   fallback={
@@ -242,7 +242,7 @@ const PostDetail = ({ post }) => {
                           </div>
 
                           {/* First paragraph with drop cap styling */}
-                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left w-full prose-code:bg-gray-100 prose-code:text-red-600 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm article-content">
+                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left w-full prose-code:bg-gray-100 prose-code:text-red-600 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm article-content px-0">
                             {/* Render the content first */}
                             <RichTextRenderer
                               content={post.content}
@@ -291,7 +291,7 @@ const PostDetail = ({ post }) => {
 
             {/* Comments Section */}
             {post.slug && (
-              <div className="mt-8">
+              <div className="mt-8 px-0 sm:px-0">
                 <Comments postSlug={post.slug} />
               </div>
             )}

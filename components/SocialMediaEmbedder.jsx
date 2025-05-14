@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { FacebookEmbed, InstagramEmbed } from "react-social-media-embed";
 import TwitterEmbed from "./TwitterEmbed";
+import { log, error } from "../utils/logger";
 
 // Component to render a single embed in place of a blockquote
 const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
@@ -11,16 +12,12 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
     // Find the blockquote element
     const blockquote = document.getElementById(blockquoteId);
     if (!blockquote) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(`Could not find blockquote with ID ${blockquoteId}`);
-      }
+      error(`Could not find blockquote with ID ${blockquoteId}`);
       return;
     }
 
-    // Log blockquote details only in development mode
-    if (process.env.NODE_ENV === "development") {
-      console.log(`Processing blockquote: ${blockquoteId}`);
-    }
+    // Log blockquote details
+    log(`Processing blockquote: ${blockquoteId}`);
 
     // Create a container for the embed
     const embedContainer = document.createElement("div");
@@ -58,12 +55,10 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
           // Mark the blockquote as processed
           blockquote.setAttribute("data-embed-processed", "true");
 
-          // Log success in development mode
-          if (process.env.NODE_ENV === "development") {
-            console.log(
-              `Successfully inserted embed container after blockquote ${blockquoteId} in article container`
-            );
-          }
+          // Log success
+          log(
+            `Successfully inserted embed container after blockquote ${blockquoteId} in article container`
+          );
         } else {
           // If no article container found, insert after blockquote anyway
           blockquote.parentNode.insertBefore(
@@ -77,11 +72,9 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
           // Mark the blockquote as processed
           blockquote.setAttribute("data-embed-processed", "true");
 
-          if (process.env.NODE_ENV === "development") {
-            console.log(
-              `Inserted embed container after blockquote ${blockquoteId} (no article container found)`
-            );
-          }
+          log(
+            `Inserted embed container after blockquote ${blockquoteId} (no article container found)`
+          );
         }
       } else {
         // If the blockquote is no longer in the DOM, find a suitable parent
@@ -91,36 +84,23 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
         if (articleContent) {
           articleContent.appendChild(embedContainer);
 
-          if (process.env.NODE_ENV === "development") {
-            console.log(
-              `Blockquote not in DOM, appended embed to article content`
-            );
-          }
+          log(`Blockquote not in DOM, appended embed to article content`);
         } else {
           // Last resort: append to body
           document.body.appendChild(embedContainer);
 
-          if (process.env.NODE_ENV === "development") {
-            console.log(`Blockquote not in DOM, appended embed to body`);
-          }
+          log(`Blockquote not in DOM, appended embed to body`);
         }
       }
-    } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(`Error inserting embed container:`, error);
-      }
+    } catch (err) {
+      error(`Error inserting embed container:`, err);
 
       // Last resort: try to append to body
       try {
         document.body.appendChild(embedContainer);
-
-        if (process.env.NODE_ENV === "development") {
-          console.log(`Used last resort method for blockquote ${blockquoteId}`);
-        }
+        log(`Used last resort method for blockquote ${blockquoteId}`);
       } catch (fallbackError) {
-        if (process.env.NODE_ENV === "development") {
-          console.error(`All insertion methods failed:`, fallbackError);
-        }
+        error(`All insertion methods failed:`, fallbackError);
       }
     }
 
@@ -143,20 +123,12 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
             try {
               embedContainer.parentNode.removeChild(embedContainer);
 
-              if (process.env.NODE_ENV === "development") {
-                console.log(
-                  `Successfully removed embed container during cleanup`
-                );
-              }
+              log(`Successfully removed embed container during cleanup`);
             } catch (removeError) {
-              if (process.env.NODE_ENV === "development") {
-                console.error(`Error removing embed container:`, removeError);
-              }
+              error(`Error removing embed container:`, removeError);
             }
-          } else if (process.env.NODE_ENV === "development") {
-            console.log(
-              `Embed container not in DOM during cleanup, no need to remove`
-            );
+          } else {
+            log(`Embed container not in DOM during cleanup, no need to remove`);
           }
         }
 
@@ -180,18 +152,12 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
                 parent.appendChild(blockquoteRef);
                 blockquoteRef.style.display = ""; // Make it visible
 
-                if (process.env.NODE_ENV === "development") {
-                  console.log(
-                    `Restored blockquote ${blockquoteId} during cleanup`
-                  );
-                }
+                log(`Restored blockquote ${blockquoteId} during cleanup`);
               } catch (appendError) {
-                if (process.env.NODE_ENV === "development") {
-                  console.error(
-                    `Error appending blockquote during cleanup:`,
-                    appendError
-                  );
-                }
+                error(
+                  `Error appending blockquote during cleanup:`,
+                  appendError
+                );
               }
             }
           } else {
@@ -199,22 +165,14 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
             try {
               blockquoteRef.style.display = "";
 
-              if (process.env.NODE_ENV === "development") {
-                console.log(
-                  `Made blockquote ${blockquoteId} visible during cleanup`
-                );
-              }
+              log(`Made blockquote ${blockquoteId} visible during cleanup`);
             } catch (displayError) {
-              if (process.env.NODE_ENV === "development") {
-                console.error(`Error making blockquote visible:`, displayError);
-              }
+              error(`Error making blockquote visible:`, displayError);
             }
           }
         }
-      } catch (error) {
-        if (process.env.NODE_ENV === "development") {
-          console.error(`General error during cleanup:`, error);
-        }
+      } catch (err) {
+        error(`General error during cleanup:`, err);
       }
     };
   }, [blockquoteId]);
@@ -240,7 +198,42 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
           >
             Facebook Post
           </div>
-          <FacebookEmbed url={url} width="100%" height={550} />
+          <div
+            className="facebook-embed-container"
+            style={{ minHeight: "550px" }}
+          >
+            <FacebookEmbed
+              url={url}
+              width="100%"
+              height={550}
+              containerTagName="div"
+              protocol=""
+              injectScript
+            />
+            {/* Fallback for Facebook embed */}
+            <div
+              className="facebook-fallback"
+              style={{ marginTop: "10px", textAlign: "center" }}
+            >
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-block",
+                  color: "#1877f2",
+                  textDecoration: "none",
+                  fontWeight: "500",
+                  padding: "8px 16px",
+                  border: "1px solid #dbdbdb",
+                  borderRadius: "4px",
+                  marginTop: "10px",
+                }}
+              >
+                View on Facebook
+              </a>
+            </div>
+          </div>
         </>
       )}
       {platform === "instagram" && (
@@ -258,7 +251,42 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
           >
             Instagram Post
           </div>
-          <InstagramEmbed url={url} width="100%" captioned={true} />
+          <div
+            className="instagram-embed-container"
+            style={{ minHeight: "500px" }}
+          >
+            <InstagramEmbed
+              url={url}
+              width="100%"
+              captioned={true}
+              containerTagName="div"
+              protocol=""
+              injectScript
+            />
+            {/* Fallback for Instagram embed */}
+            <div
+              className="instagram-fallback"
+              style={{ marginTop: "10px", textAlign: "center" }}
+            >
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-block",
+                  color: "#0095f6",
+                  textDecoration: "none",
+                  fontWeight: "500",
+                  padding: "8px 16px",
+                  border: "1px solid #dbdbdb",
+                  borderRadius: "4px",
+                  marginTop: "10px",
+                }}
+              >
+                View on Instagram
+              </a>
+            </div>
+          </div>
         </>
       )}
       {platform === "twitter" && (
@@ -276,7 +304,35 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
           >
             Twitter Post
           </div>
-          <TwitterEmbed tweetId={url} />
+          <div
+            className="twitter-embed-container"
+            style={{ minHeight: "300px" }}
+          >
+            <TwitterEmbed tweetId={url} />
+            {/* Fallback for Twitter embed */}
+            <div
+              className="twitter-fallback"
+              style={{ marginTop: "10px", textAlign: "center" }}
+            >
+              <a
+                href={`https://twitter.com/i/status/${url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-block",
+                  color: "#1DA1F2",
+                  textDecoration: "none",
+                  fontWeight: "500",
+                  padding: "8px 16px",
+                  border: "1px solid #dbdbdb",
+                  borderRadius: "4px",
+                  marginTop: "10px",
+                }}
+              >
+                View on Twitter
+              </a>
+            </div>
+          </div>
         </>
       )}
       {/* No debug info in production */}
@@ -295,6 +351,25 @@ const SocialMediaEmbedder = () => {
       if (document.getElementById("social-media-embed-styles")) {
         return;
       }
+
+      // Fix for hydration mismatch
+      const fixHydrationScript = document.createElement("script");
+      fixHydrationScript.id = "social-media-hydration-fix";
+      fixHydrationScript.textContent = `
+        // Fix for React hydration mismatch
+        window.addEventListener('load', function() {
+          // Give time for React to finish hydration
+          setTimeout(function() {
+            // Force consistent width for elements that might cause hydration mismatches
+            document.querySelectorAll('[style*="width"]').forEach(function(el) {
+              if (el.style.width.includes('%')) {
+                el.style.width = '100%';
+              }
+            });
+          }, 1000);
+        });
+      `;
+      document.head.appendChild(fixHydrationScript);
 
       // Create style element
       const style = document.createElement("style");
@@ -342,6 +417,36 @@ const SocialMediaEmbedder = () => {
         .social-media-embed-wrapper iframe[src*="twitter.com"] {
           width: 100% !important;
           margin: 0 auto !important;
+        }
+
+        /* Fix for CORS issues */
+        .social-media-embed-wrapper img {
+          max-width: 100%;
+          height: auto;
+        }
+
+        /* Hide error messages from embeds */
+        .social-media-embed-wrapper .error-message {
+          display: none !important;
+        }
+
+        /* Ensure fallbacks are visible */
+        .facebook-fallback, .twitter-fallback, .instagram-fallback {
+          opacity: 0;
+          transition: opacity 3s ease;
+        }
+
+        /* Show fallbacks if embed fails to load */
+        .facebook-embed-container:not(:has(iframe)),
+        .twitter-embed-container:not(:has(iframe)),
+        .instagram-embed-container:not(:has(iframe)) {
+          min-height: auto !important;
+        }
+
+        .facebook-embed-container:not(:has(iframe)) .facebook-fallback,
+        .twitter-embed-container:not(:has(iframe)) .twitter-fallback,
+        .instagram-embed-container:not(:has(iframe)) .instagram-fallback {
+          opacity: 1;
         }
 
         @media (max-width: 768px) {
@@ -453,10 +558,8 @@ const SocialMediaEmbedder = () => {
 
             // No debug logs in production
           }
-        } catch (error) {
-          if (process.env.NODE_ENV === "development") {
-            console.error("Error processing blockquote:", error);
-          }
+        } catch (err) {
+          error("Error processing blockquote:", err);
         }
       });
 
@@ -472,20 +575,14 @@ const SocialMediaEmbedder = () => {
       const extractedEmbeds = extractSocialMediaUrls();
       setEmbeds(extractedEmbeds);
 
-      // Log the number of embeds found in the first pass (only in development)
-      if (process.env.NODE_ENV === "development") {
-        console.log(
-          `First pass found ${extractedEmbeds.length} social media embeds`
-        );
+      // Log the number of embeds found in the first pass
+      log(`First pass found ${extractedEmbeds.length} social media embeds`);
 
-        // If we found embeds, log their details
-        if (extractedEmbeds.length > 0) {
-          extractedEmbeds.forEach((embed, i) => {
-            console.log(
-              `Embed ${i}: Platform=${embed.platform}, URL=${embed.url}`
-            );
-          });
-        }
+      // If we found embeds, log their details
+      if (extractedEmbeds.length > 0) {
+        extractedEmbeds.forEach((embed, i) => {
+          log(`Embed ${i}: Platform=${embed.platform}, URL=${embed.url}`);
+        });
       }
 
       // Run again after a longer delay to catch any dynamically loaded content
