@@ -6,6 +6,9 @@
   color: #292929;
   line-height: 1.8;
   letter-spacing: -0.003em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* First paragraph styling with drop cap */
@@ -119,38 +122,54 @@
   .article-content {
     width: 100%;
     padding: 0;
+    line-height: 1.7; /* Slightly reduced line height for better mobile reading */
   }
 
   .article-content p {
-    font-size: 1rem;
+    font-size: 1.05rem; /* Slightly larger for better readability */
     width: 100%;
+    margin-bottom: 1.5rem; /* Reduced bottom margin */
+    letter-spacing: -0.01em; /* Slightly tighter letter spacing */
   }
 
   .article-content > div > p:first-of-type {
-    font-size: 1.125rem;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
   }
 
   .article-content blockquote {
     margin: 1.5rem 0;
     padding-left: 1rem;
+    font-size: 1rem;
   }
 
   .article-content h1 {
     font-size: 1.75rem;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
   }
 
   .article-content h2 {
     font-size: 1.5rem;
+    line-height: 1.3;
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .article-content h3 {
     font-size: 1.25rem;
+    line-height: 1.3;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .article-content table {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     display: block;
     overflow-x: auto;
+    margin: 1.5rem 0;
   }
 
   .article-content figure {
@@ -161,37 +180,104 @@
   .article-content img {
     width: 100%;
     height: auto;
+    border-radius: 4px; /* Slight rounding of images */
+  }
+
+  /* Improve list readability on mobile */
+  .article-content ul,
+  .article-content ol {
+    padding-left: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .article-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  /* Improve code readability */
+  .article-content pre {
+    padding: 1rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    border-radius: 4px;
   }
 }
 
 /* Small mobile devices */
 @media (max-width: 480px) {
+  .article-content {
+    line-height: 1.65; /* Further optimize line height for very small screens */
+    font-feature-settings: "kern" 1, "liga" 1; /* Enable kerning and ligatures for better readability */
+  }
+
+  /* Special class for mobile-optimized text */
+  .mobile-optimized-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    word-spacing: 0.01em;
+  }
+
   .article-content p {
-    font-size: 0.95rem;
+    font-size: 1rem; /* Slightly larger than before for better readability */
+    margin-bottom: 1.25rem; /* Further reduced spacing */
   }
 
   .article-content > div > p:first-of-type {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  /* Optimize drop cap for small screens */
+  .article-content .first-letter\:text-4xl {
+    font-size: 3.5rem !important; /* Slightly smaller drop cap */
   }
 
   .article-content h1 {
     font-size: 1.5rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .article-content h2 {
     font-size: 1.3rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .article-content h3 {
     font-size: 1.15rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
   }
 
   .article-content blockquote {
     font-size: 0.95rem;
     padding-left: 0.75rem;
+    margin: 1.25rem 0;
+    border-left: 2px solid #E50914; /* Slightly thinner border */
   }
 
   .article-content code {
-    font-size: 0.8em;
+    font-size: 0.85em;
+    padding: 0.15em 0.3em; /* Slightly reduced padding */
+  }
+
+  /* Improve spacing for lists on very small screens */
+  .article-content ul,
+  .article-content ol {
+    padding-left: 1.1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Optimize table display on very small screens */
+  .article-content table {
+    font-size: 0.8rem;
+  }
+
+  .article-content th,
+  .article-content td {
+    padding: 0.5rem;
   }
 }

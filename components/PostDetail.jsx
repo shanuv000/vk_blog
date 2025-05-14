@@ -163,16 +163,16 @@ const PostDetail = ({ post }) => {
             </motion.div>
           </div>
 
-          {/* Title and date section - Separated from image */}
+          {/* Title and date section - Separated from image - Optimized for mobile */}
           <div className="px-0 md:px-10 py-4 md:py-6 mb-2 w-full border-b border-gray-100">
-            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-4 capitalize leading-tight tracking-tight px-2 md:px-0">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-3 md:mb-4 capitalize leading-tight tracking-tight px-3 md:px-0">
               {post.title}
             </h1>
 
-            <div className="flex items-center text-gray-600 px-2 md:px-0">
+            <div className="flex items-center text-gray-600 px-3 md:px-0 pb-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2 text-primary"
+                className="h-4 w-4 mr-1.5 text-primary"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -184,7 +184,7 @@ const PostDetail = ({ post }) => {
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <span suppressHydrationWarning>
+              <span suppressHydrationWarning className="text-sm md:text-base">
                 {post.createdAt
                   ? moment(post.createdAt).format("DD MMM, YYYY")
                   : "No date"}
@@ -198,7 +198,7 @@ const PostDetail = ({ post }) => {
               {post.slug && <Testing slug={post.slug} />}
             </ErrorBoundary>
 
-            <div className="prose prose-lg w-full max-w-none mt-8 text-gray-800 mx-auto px-2 md:px-0 sm:w-full md:w-full md:max-w-none lg:max-w-4xl">
+            <div className="prose prose-lg w-full max-w-none mt-4 sm:mt-8 text-gray-800 mx-auto px-3 md:px-0 sm:w-full md:w-full md:max-w-none lg:max-w-4xl">
               {post.content ? (
                 <ErrorBoundary
                   fallback={
@@ -217,12 +217,12 @@ const PostDetail = ({ post }) => {
                   {(() => {
                     try {
                       return (
-                        <div className="article-content w-full">
-                          {/* Reading time estimate */}
-                          <div className="text-gray-500 text-sm mb-6 flex items-center">
+                        <div className="article-content w-full mobile-optimized-text sm:not-mobile-optimized-text">
+                          {/* Reading time estimate - Optimized for mobile */}
+                          <div className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-6 flex items-center px-0.5">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 mr-1"
+                              className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -234,15 +234,17 @@ const PostDetail = ({ post }) => {
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                               />
                             </svg>
-                            {Math.ceil(
-                              post.content.raw?.toString().split(" ").length /
-                                200
-                            ) || 5}{" "}
-                            min read
+                            <span>
+                              {Math.ceil(
+                                post.content.raw?.toString().split(" ").length /
+                                  200
+                              ) || 5}{" "}
+                              min read
+                            </span>
                           </div>
 
-                          {/* First paragraph with drop cap styling */}
-                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left w-full prose-code:bg-gray-100 prose-code:text-red-600 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm article-content px-0">
+                          {/* First paragraph with drop cap styling - optimized for mobile */}
+                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left first-letter:leading-[0.8] first-letter:mt-1 w-full prose-code:bg-gray-100 prose-code:text-red-600 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm article-content px-0">
                             {/* Render the content first */}
                             <RichTextRenderer
                               content={post.content}
@@ -256,7 +258,7 @@ const PostDetail = ({ post }) => {
                           </div>
 
                           {/* Add SocialMediaEmbedder as a separate component outside the article-content div */}
-                          <div className="social-embeds-container mt-4">
+                          <div className="social-embeds-container mt-4 sm:mt-6 w-full overflow-hidden">
                             <SocialMediaEmbedder />
                           </div>
 
