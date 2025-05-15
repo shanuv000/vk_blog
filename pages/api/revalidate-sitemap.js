@@ -67,18 +67,23 @@ export default async function handler(req, res) {
       await res.revalidate("/");
       console.log("Revalidated homepage");
 
-      // Revalidate the sitemap page
-      await res.revalidate("/sitemap.xml");
-      console.log("Revalidated sitemap.xml");
-
-      // Revalidate the news sitemap page
-      await res.revalidate("/sitemap-news.xml");
-      console.log("Revalidated sitemap-news.xml");
+      // Note: We can't directly revalidate static files like sitemap.xml
+      // Instead, we'll trigger a revalidation of pages that will cause
+      // the sitemap to be regenerated on the next build
 
       // If we have a slug, revalidate the specific post page
       if (data.slug) {
         await res.revalidate(`/post/${data.slug}`);
         console.log(`Revalidated post page: /post/${data.slug}`);
+      }
+
+      // Also revalidate the blog index page
+      try {
+        await res.revalidate("/blog");
+        console.log("Revalidated blog index page");
+      } catch (indexError) {
+        // If blog index doesn't exist, just log it
+        console.log("Blog index page not found, skipping revalidation");
       }
 
       return res.status(200).json({
@@ -87,6 +92,7 @@ export default async function handler(req, res) {
         operation,
         model: data.model,
         slug: data.slug,
+        note: "Static files like sitemap.xml cannot be directly revalidated, but will be updated on next build",
       });
     } catch (error) {
       console.error("Error revalidating pages:", error);
