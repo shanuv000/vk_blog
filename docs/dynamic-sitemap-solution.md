@@ -27,14 +27,14 @@ These errors occur because:
 
 We've implemented a fully dynamic sitemap solution:
 
-1. **Dynamic Sitemap Generation**: Created a dynamic API route at `pages/sitemap-news.xml.js` that generates the sitemap on-demand
+1. **API Route for Sitemap**: Created an API route at `pages/api/sitemap-news.js` that generates the sitemap on-demand
 2. **Removed Static File**: Removed the static `public/sitemap-news.xml` file to avoid conflicts
 3. **Page Revalidation**: Updated the webhook handler to revalidate only dynamic pages, not static files
 4. **Cache Control**: Added cache control headers to optimize performance
 
 ### Changes Made
 
-1. Created `pages/sitemap-news.xml.js` to:
+1. Created `pages/api/sitemap-news.js` to:
    - Generate the sitemap dynamically using the same data source
    - Set appropriate cache control headers
    - Serve the sitemap with the correct content type
@@ -47,16 +47,16 @@ We've implemented a fully dynamic sitemap solution:
 
 ## How It Works
 
-1. **Dynamic Generation**: The sitemap is now generated on-demand via the dynamic route
+1. **API Route Generation**: The sitemap is now generated on-demand via the API route
 2. **Webhook Handling**: When content changes in Hygraph, the webhook triggers revalidation of dynamic pages
-3. **Search Engine Access**: Search engines can access the dynamic version of the sitemap via the same URL
+3. **Search Engine Access**: Search engines can access the sitemap via the API route URL
 
 ## Testing
 
 To test this solution:
 
-1. **Access the dynamic sitemap**:
-   - Visit `https://blog.urtechy.com/sitemap-news.xml`
+1. **Access the sitemap API route**:
+   - Visit `https://blog.urtechy.com/api/sitemap-news`
    - Verify that it contains the latest posts
 
 2. **Test the webhook**:

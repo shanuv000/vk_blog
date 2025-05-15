@@ -23,7 +23,7 @@ module.exports = {
     ],
     additionalSitemaps: [
       "https://blog.urtechy.com/sitemap.xml",
-      "https://blog.urtechy.com/sitemap-news.xml", // This now points to our dynamic route
+      "https://blog.urtechy.com/api/sitemap-news", // Now points to our API route
     ],
   },
   extraPaths: async () => {
