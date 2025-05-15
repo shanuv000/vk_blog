@@ -1,10 +1,4 @@
 import { getNewsArticles } from "../../services/sitemap-utils";
-import fs from "fs";
-import path from "path";
-import { exec } from "child_process";
-import { promisify } from "util";
-
-const execPromise = promisify(exec);
 
 // Configure API to accept larger requests
 export const config = {
