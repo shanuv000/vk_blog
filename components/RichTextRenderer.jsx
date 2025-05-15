@@ -765,17 +765,19 @@ const RichTextRenderer = ({ content, references = [] }) => {
               );
             },
             ul: ({ children }) => (
-              <ul className="list-disc pl-6 mb-6 mt-4 text-gray-800 space-y-2">
+              <ul className="list-disc pl-6 sm:pl-6 mb-6 mt-4 text-gray-800 space-y-2 sm:space-y-2">
                 {children}
               </ul>
             ),
             ol: ({ children }) => (
-              <ol className="list-decimal pl-6 mb-6 mt-4 text-gray-800 space-y-2">
+              <ol className="list-decimal pl-6 sm:pl-6 mb-6 mt-4 text-gray-800 space-y-2 sm:space-y-2">
                 {children}
               </ol>
             ),
             li: ({ children }) => (
-              <li className="text-gray-800 leading-relaxed mb-1">{children}</li>
+              <li className="text-gray-800 leading-relaxed mb-2 sm:mb-1 pl-1 sm:pl-0">
+                {children}
+              </li>
             ),
             h1: ({ children }) => (
               <h1 className="text-3xl md:text-4xl font-bold mt-12 mb-6 text-gray-900 font-serif leading-tight tracking-tight">
