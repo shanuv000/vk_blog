@@ -2,10 +2,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/build-sitemap.js && next build",
+    "build": "next build",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
-    "start": "next start",
-    "generate-sitemap": "node scripts/build-sitemap.js"
+    "start": "next start"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",

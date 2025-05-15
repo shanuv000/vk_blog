@@ -12,12 +12,8 @@ module.exports = {
   changefreq: "daily",
   priority: 0.7,
   sitemapSize: 5000,
-  additionalSitemaps: [
-    {
-      loc: "https://blog.urtechy.com/sitemap-news.xml",
-      lastmod: new Date().toISOString(),
-    },
-  ],
+  // We're using a dynamic route for the news sitemap, so no need to list it here
+  additionalSitemaps: [],
   robotsTxtOptions: {
     policies: [
       {
@@ -27,7 +23,7 @@ module.exports = {
     ],
     additionalSitemaps: [
       "https://blog.urtechy.com/sitemap.xml",
-      "https://blog.urtechy.com/sitemap-news.xml",
+      "https://blog.urtechy.com/sitemap-news.xml", // This now points to our dynamic route
     ],
   },
   extraPaths: async () => {
