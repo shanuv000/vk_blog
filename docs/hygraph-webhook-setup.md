@@ -70,7 +70,7 @@ Due to Vercel's read-only filesystem in production, we can't directly write to t
      "data": {
        "id": "{{id}}",
        "slug": "{{slug}}",
-       "model": "{{__typename}}"
+       "__typename": "{{__typename}}"
      }
    }
    ```

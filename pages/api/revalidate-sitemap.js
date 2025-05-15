@@ -47,10 +47,14 @@ export default async function handler(req, res) {
     }
 
     // Only proceed if this is a Post model
-    if (data.model !== "Post") {
-      return res
-        .status(200)
-        .json({ message: "Model not relevant for sitemap update" });
+    // Check both data.model (from our documentation) and data.__typename (from actual Hygraph payload)
+    const modelType = data.model || data.__typename;
+    if (modelType !== "Post") {
+      return res.status(200).json({
+        message: "Model not relevant for sitemap update",
+        receivedType: modelType,
+        expectedType: "Post",
+      });
     }
 
     console.log(
