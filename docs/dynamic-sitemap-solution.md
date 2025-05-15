@@ -28,9 +28,10 @@ These errors occur because:
 We've implemented a fully dynamic sitemap solution:
 
 1. **API Route for Sitemap**: Created an API route at `pages/api/sitemap-news.js` that generates the sitemap on-demand
-2. **Removed Static File**: Removed the static `public/sitemap-news.xml` file to avoid conflicts
-3. **Page Revalidation**: Updated the webhook handler to revalidate only dynamic pages, not static files
-4. **Cache Control**: Added cache control headers to optimize performance
+2. **URL Rewrite**: Added a URL rewrite to maintain backward compatibility with the old sitemap URL
+3. **Removed Static File**: Removed the static `public/sitemap-news.xml` file to avoid conflicts
+4. **Page Revalidation**: Updated the webhook handler to revalidate only dynamic pages, not static files
+5. **Cache Control**: Added cache control headers to optimize performance
 
 ### Changes Made
 
@@ -49,15 +50,18 @@ We've implemented a fully dynamic sitemap solution:
 
 1. **API Route Generation**: The sitemap is now generated on-demand via the API route
 2. **Webhook Handling**: When content changes in Hygraph, the webhook triggers revalidation of dynamic pages
-3. **Search Engine Access**: Search engines can access the sitemap via the API route URL
+3. **Backward Compatibility**: Search engines can still access the sitemap at the original URL (`/sitemap-news.xml`) which is rewritten to the API route
+4. **Improved Reliability**: The API route approach is more reliable in serverless environments
 
 ## Testing
 
 To test this solution:
 
-1. **Access the sitemap API route**:
-   - Visit `https://blog.urtechy.com/api/sitemap-news`
-   - Verify that it contains the latest posts
+1. **Access the sitemap**:
+   - Visit both URLs to verify they work:
+     - Original URL: `https://blog.urtechy.com/sitemap-news.xml`
+     - API route: `https://blog.urtechy.com/api/sitemap-news`
+   - Verify that both contain the latest posts
 
 2. **Test the webhook**:
 

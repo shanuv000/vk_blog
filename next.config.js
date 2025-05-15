@@ -307,6 +307,10 @@ const nextConfig = {
         destination: "/api/sitemap",
       },
       {
+        source: "/sitemap-news.xml",
+        destination: "/api/sitemap-news",
+      },
+      {
         source: "/blog",
         destination: "/",
       },
