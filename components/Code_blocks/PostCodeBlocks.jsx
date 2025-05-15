@@ -1,12 +1,13 @@
 "use client";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import ReactPlayer from "react-player/lazy";
+import ReactPlayer from "react-player/youtube";
 import React, { useEffect, useRef } from "react";
 import NestedTable from "./Nested_Table";
 import Paragraph from "./Paragraph";
 import FacebookEmbed from "../FacebookEmbed";
 import InstagramEmbed from "../InstagramEmbed";
+import CustomYouTubeEmbed from "../CustomYouTubeEmbed";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -116,26 +117,18 @@ export const getContentFragment = (index, text, obj, type) => {
       return (
         <>
           {isYoutubeUrl(obj.url) ? (
-            <ReactPlayer
-              className="w-full h-full aspect-video overflow-hidden rounded-lg my-4"
-              url={obj.url}
-              height={"100%"}
-              width={"100%"}
-              allow="accelerometer; autoplay clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            />
+            <CustomYouTubeEmbed videoId={obj.url} title="YouTube Video" />
           ) : (
-            <div className="relative pt-16/9">
-              {console.log(obj.url)}
+            <div className="relative pt-[56.25%] my-4">
               <ReactPlayer
-                className="w-full h-full rounded-lg"
+                className="absolute top-0 left-0 rounded-lg overflow-hidden shadow-md"
                 url={obj.url}
                 width="100%"
                 height="100%"
                 loop={true}
                 playing={true}
                 muted={true} // Mute the video for autoplay
-                controls={false}
+                controls={true}
                 light={obj.thumbnail || false}
                 config={{
                   file: {
@@ -188,6 +181,9 @@ export const getContentFragment = (index, text, obj, type) => {
                   </div>
                 );
               }
+
+              // Note: YouTube URLs are intentionally not detected in blockquotes
+              // as they should only be handled through iframes with ReactPlayer
 
               // Default blockquote rendering
               else {

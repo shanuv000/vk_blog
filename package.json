@@ -2,10 +2,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "generate-news-sitemap": "node scripts/generate-news-sitemap.js",
-    "postbuild": "npm run generate-news-sitemap && next-sitemap --config next-sitemap.config.js",
-    "start": "next start"
+    "build": "node scripts/build-sitemap.js && next build",
+    "postbuild": "next-sitemap --config next-sitemap.config.js",
+    "start": "next start",
+    "generate-sitemap": "node scripts/build-sitemap.js"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
@@ -46,6 +46,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
     "react-lazy-load-image-component": "^1.6.0",
+    "react-lite-youtube-embed": "^2.5.1",
     "react-multi-carousel": "^2.8.4",
     "react-player": "^2.15.1",
     "react-responsive": "^10.0.0",

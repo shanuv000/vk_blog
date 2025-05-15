@@ -544,6 +544,8 @@ const SocialMediaEmbedder = () => {
                 socialUrl = igMatch[1];
                 platform = "instagram";
               }
+              // Note: YouTube URLs are intentionally not detected in blockquotes
+              // as they should only be handled through iframes
             }
           }
 

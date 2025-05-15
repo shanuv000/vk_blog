@@ -216,6 +216,22 @@ const withPWA = require("next-pwa")({
 const nextConfig = {
   reactStrictMode: true,
 
+  // Add headers to allow YouTube embeds
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value:
+              "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com;",
+          },
+        ],
+      },
+    ];
+  },
+
   // Image configuration with optimizations
   images: {
     domains: [

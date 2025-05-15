@@ -13,6 +13,7 @@ import { FiCopy, FiCheck } from "react-icons/fi";
 import TwitterEmbed from "./TwitterEmbed";
 import FacebookEmbed from "./FacebookEmbed";
 import InstagramEmbed from "./InstagramEmbed";
+import CustomYouTubeEmbed from "./CustomYouTubeEmbed";
 import {
   extractImageDimensions,
   createImageDebugUrl,
@@ -1445,21 +1446,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
               YouTube: ({ nodeId, url }) => {
                 if (!url) return <p>YouTube embed (URL not available)</p>;
                 try {
-                  // Extract video ID from URL
-                  const videoId = new URL(url).searchParams.get("v");
                   return (
-                    <div className="aspect-w-16 aspect-h-9 my-8">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${videoId}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="rounded-lg shadow-md"
-                      />
-                    </div>
+                    <CustomYouTubeEmbed videoId={url} title="YouTube Video" />
                   );
                 } catch (error) {
-                  console.error("Error parsing YouTube URL:", error);
-                  return <p>YouTube embed (invalid URL)</p>;
+                  console.error("Error rendering YouTube embed:", error);
+                  return <p>YouTube embed (invalid URL or player error)</p>;
                 }
               },
             },
