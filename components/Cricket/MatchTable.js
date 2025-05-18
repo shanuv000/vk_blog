@@ -1,409 +1,523 @@
-import React from "react";
-import { useData } from "../../store/HandleApiContext";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import ball from "../../public/cricket/ball.png";
+import React, { useState, useEffect } from "react";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaMinusCircle,
+  FaClock,
+  FaCheck,
+  FaChevronDown,
+  FaChevronUp,
+} from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
-/**
- * MatchTable component displays cricket tournament standings
- */
-const ScheduleTable = () => {
-  const { schedule, loadingSchedule, scheduleError, fetchSchedule } = useData();
-
-  // Animation variants
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+// Animation variants
+const tableVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      when: "beforeChildren",
+      staggerChildren: 0.1,
     },
+  },
+};
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3 },
+  },
+  hover: {
+    backgroundColor: "rgba(229, 9, 20, 0.05)",
+    transition: { duration: 0.2 },
+  },
+};
+
+const expandVariants = {
+  hidden: { opacity: 0, height: 0, overflow: "hidden" },
+  visible: {
+    opacity: 1,
+    height: "auto",
+    transition: { duration: 0.3 },
+  },
+  exit: {
+    opacity: 0,
+    height: 0,
+    transition: { duration: 0.2 },
+  },
+};
+
+// Animation variants only
+
+const PointsTable = () => {
+  // State variables
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  // Fetch data from API on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://api-sync.vercel.app/api/cricket/schedule"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error("API returned success: false");
+        }
+        setTeams(data.data.teams);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Function to parse team name and qualification status
+  const getTeamNameAndStatus = (teamString) => {
+    const trimmed = teamString.trim();
+    if (trimmed.endsWith("(Q)")) {
+      return {
+        name: trimmed.replace(/\s*\(Q\)$/, "").trim(),
+        isQualified: true,
+      };
+    }
+    return { name: trimmed, isQualified: false };
   };
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  };
-
-  // Handle loading state
-  if (loadingSchedule) {
-    return (
-      <div className="flex flex-col justify-center items-center h-64 bg-white rounded-xl p-6">
-        <div className="relative w-16 h-16 mb-4">
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-t-urtechy-red border-r-urtechy-orange border-b-urtechy-red border-l-urtechy-orange rounded-full animate-spin"></div>
-          <Image
-            src={ball}
-            alt="Cricket Ball"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8"
-          />
-        </div>
-        <p className="text-lg font-medium text-gray-600">
-          Loading tournament standings...
-        </p>
-      </div>
-    );
-  }
-
-  // Handle error state
-  if (scheduleError) {
+  // Render loading state
+  if (loading) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="p-6 bg-white border-l-4 border-red-500 rounded-xl shadow-md"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center py-8"
       >
-        <div className="flex items-center mb-4">
-          <svg
-            className="w-6 h-6 text-red-500 mr-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <h4 className="text-lg font-semibold text-gray-800">
-            Unable to load tournament data
-          </h4>
+        <div className="inline-block relative w-16 h-16 mb-4">
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-urtechy-red rounded-full animate-spin"></div>
         </div>
-
-        <p className="text-gray-600 mb-4">
-          We're having trouble connecting to our cricket data service. You can
-          try refreshing or check back later.
-        </p>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={fetchSchedule}
-          className="px-4 py-2 bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white rounded-md font-medium shadow-sm"
-        >
-          Try Again
-        </motion.button>
+        <p className="font-bold text-lg text-gray-700">Loading match data...</p>
       </motion.div>
     );
   }
 
-  // Handle empty data
-  if (!schedule || schedule.length === 0) {
+  // Render error state
+  if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl">
-        <Image src={ball} alt="Cricket" className="w-16 h-16 opacity-40 mb-4" />
-        <p className="text-lg font-medium text-gray-500 text-center mb-4">
-          No tournament standings available
-        </p>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={fetchSchedule}
-          className="px-6 py-2 bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white rounded-full font-medium shadow-md"
-        >
-          Refresh
-        </motion.button>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center py-8 px-4 max-w-md mx-auto"
+      >
+        <div className="bg-red-50 p-6 rounded-lg shadow-sm border border-red-100">
+          <FaTimesCircle className="text-red-500 text-4xl mx-auto mb-4" />
+          <h3 className="font-bold text-lg text-gray-800 mb-2">
+            Unable to Load Data
+          </h3>
+          <p className="text-gray-600 mb-4">{error.message}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </motion.div>
     );
   }
-  /**
-   * Mapping of team names to their flag emojis
-   * This provides a visual indicator for each team in the table
-   */
-  const flagEmojis = {
-    // Asia
-    India: "🇮🇳",
-    Pakistan: "🇵🇰",
-    Afghanistan: "🇦🇫",
-    Bangladesh: "🇧🇩",
-    "Sri Lanka": "🇱🇰",
-    Nepal: "🇳🇵",
 
-    // North America
-    "United States of America": "🇺🇸",
-    USA: "🇺🇸",
-    Canada: "🇨🇦",
-    "West Indies": "🌴",
-
-    // Europe
-    Ireland: "🇮🇪",
-    Scotland: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-    England: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    Netherlands: "🇳🇱",
-
-    // Oceania
-    Australia: "🇦🇺",
-    "New Zealand": "🇳🇿",
-    "Papua New Guinea": "🇵🇬",
-
-    // Africa
-    Namibia: "🇳🇦",
-    "South Africa": "🇿🇦",
-    Uganda: "🇺🇬",
-
-    // Middle East
-    Oman: "🇴🇲",
-
-    // Default for any missing team
-    Unknown: "🏏",
-  };
-
-  /**
-   * Get CSS class for series form indicator
-   * @param {string} form - Form indicator (W, L, T, NR)
-   * @returns {string} - CSS class string
-   */
-  const getSeriesFormClass = (form) => {
-    switch (form) {
-      case "W":
-        return "bg-green-500 text-white";
-      case "L":
-        return "bg-red-500 text-white";
-      case "NR":
-        return "bg-gray-500 text-white";
-      case "T":
-        return "bg-yellow-500 text-white"; // T for ties
-      default:
-        return "bg-gray-500 text-white";
-    }
-  };
-
-  /**
-   * Parse series form string into array of form indicators
-   * Handles special cases like "NR" (No Result) which is two characters
-   *
-   * @param {string} seriesForm - String of form indicators
-   * @returns {Array} - Array of form indicators
-   */
-  const parseSeriesForm = (seriesForm) => {
-    if (!seriesForm) return [];
-
-    const forms = [];
-    for (let i = 0; i < seriesForm.length; i++) {
-      // Handle "NR" (No Result) special case
-      if (
-        i < seriesForm.length - 1 &&
-        seriesForm[i] === "N" &&
-        seriesForm[i + 1] === "R"
-      ) {
-        forms.push("NR");
-        i++; // Skip next character as it's part of 'NR'
-      } else {
-        forms.push(seriesForm[i]);
-      }
-    }
-    return forms;
-  };
-
-  /**
-   * Define columns that should be displayed in the table
-   * These are the possible columns that might be available in the data
-   */
-  const columnsToCheck = [
-    "matches",
-    "wins",
-    "losses",
-    "ties",
-    "noResult",
-    "points",
-    "netRunRate",
-    "seriesForm",
-    "nextMatch",
-  ];
-
-  /**
-   * Determine which columns have null/empty values and should be hidden
-   * This makes the table responsive to the available data
-   *
-   * @returns {Object} - Object with column names as keys and boolean values
-   */
-  const getColumnsWithNullValues = () => {
-    return columnsToCheck.reduce((acc, column) => {
-      // Check if any team in any group has a null/empty value for this column
-      const hasNull = schedule.some((group) =>
-        group.teams.some((team) => {
-          // Special handling for nextMatch which is an object
-          if (column === "nextMatch") {
-            return !team[column] || !team[column].for || !team[column].against;
-          }
-
-          // For other columns, check if value is null, undefined, or empty string
-          return (
-            team[column] === null ||
-            team[column] === undefined ||
-            team[column] === ""
-          );
-        })
-      );
-
-      // If column has null values, mark it to be hidden
-      if (hasNull) {
-        acc[column] = true;
-      }
-      return acc;
-    }, {});
-  };
-
-  // Get columns that should be hidden
-  const columnsWithNullValues = getColumnsWithNullValues();
-
+  // Render table
   return (
     <motion.div
-      variants={container}
+      className="w-full rounded-lg shadow-md"
+      variants={tableVariants}
       initial="hidden"
-      animate="show"
-      className="p-4 md:p-6"
+      animate="visible"
     >
-      {schedule.map((group) => (
-        <motion.div
-          key={group.groupName}
-          variants={item}
-          className="mb-8 bg-white rounded-xl overflow-hidden shadow-md"
-        >
-          <div className="bg-gradient-to-r from-urtechy-red to-urtechy-orange px-4 py-3">
-            <h2 className="text-base md:text-lg font-bold text-white text-center">
-              {group.groupName}
-            </h2>
-          </div>
+      {/* Mobile View (Card Layout) */}
+      <div className="md:hidden">
+        {teams.map((team, index) => {
+          const { name, isQualified } = getTeamNameAndStatus(team.team);
+          const isEven = index % 2 === 0;
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="py-3 px-4 text-left font-semibold text-gray-700">
-                    Team
-                  </th>
-                  {!columnsWithNullValues.matches && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      M
-                    </th>
-                  )}
-                  {!columnsWithNullValues.wins && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      W
-                    </th>
-                  )}
-                  {!columnsWithNullValues.losses && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      L
-                    </th>
-                  )}
-                  {!columnsWithNullValues.ties && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      T
-                    </th>
-                  )}
-                  {!columnsWithNullValues.noResult && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      NR
-                    </th>
-                  )}
-                  {!columnsWithNullValues.points && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      Pts
-                    </th>
-                  )}
-                  {!columnsWithNullValues.netRunRate && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      NRR
-                    </th>
-                  )}
-                  {!columnsWithNullValues.seriesForm && (
-                    <th className="py-3 px-4 text-center font-semibold text-gray-700">
-                      Form
-                    </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {group.teams.map((team, index) => (
-                  <tr
-                    key={team.team}
-                    className={`hover:bg-gray-50 transition-colors ${
-                      team.team === "India" ? "bg-blue-50" : "bg-white"
+          return (
+            <motion.div
+              key={index}
+              variants={rowVariants}
+              className={`mb-4 border rounded-lg overflow-hidden ${
+                isEven ? "bg-white" : "bg-gray-50"
+              }`}
+            >
+              {/* Team Header */}
+              <div
+                className="flex items-center justify-between p-4 border-b bg-white cursor-pointer"
+                onClick={() =>
+                  setExpandedIndex(expandedIndex === index ? null : index)
+                }
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 rounded-full mr-3 flex items-center justify-center overflow-hidden bg-urtechy-red">
+                    {team.teamImage ? (
+                      <img
+                        src={team.teamImage}
+                        alt={name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-white font-bold text-xs">
+                        {name.substring(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <div className="font-bold text-gray-800">{name}</div>
+                    {isQualified && (
+                      <div className="text-xs text-green-600 flex items-center">
+                        <FaCheck className="mr-1" /> Qualified
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {expandedIndex === index ? (
+                  <FaChevronUp className="text-gray-400" />
+                ) : (
+                  <FaChevronDown className="text-gray-400" />
+                )}
+              </div>
+
+              {/* Team Stats */}
+              <div className="p-4 grid grid-cols-2 gap-3 bg-white">
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-600">Matches:</span>
+                  <span className="font-medium text-gray-800">
+                    {team.matches}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-600">Points:</span>
+                  <span className="font-bold text-urtechy-red">
+                    {team.points}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-600">Wins:</span>
+                  <span className="font-medium text-green-600">
+                    {team.wins}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-600">Losses:</span>
+                  <span className="font-medium text-red-600">
+                    {team.losses}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-600">Tied:</span>
+                  <span className="text-gray-700">{team.tied}</span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-600">No Result:</span>
+                  <span className="text-gray-700">{team.noResult}</span>
+                </div>
+                <div className="flex justify-between col-span-2">
+                  <span className="text-gray-600">Net Run Rate:</span>
+                  <span
+                    className={`font-medium ${
+                      parseFloat(team.netRunRate) >= 0
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    <td className="py-3 px-4 border-b border-gray-100">
-                      <div className="flex items-center">
-                        <span className="text-xl mr-2">
-                          {flagEmojis[team.team] || "🏏"}
-                        </span>
-                        <span className="font-medium">{team.team}</span>
-                      </div>
-                    </td>
-                    {!columnsWithNullValues.matches && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center">
-                        {team.matches}
-                      </td>
-                    )}
-                    {!columnsWithNullValues.wins && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center font-medium text-green-600">
-                        {team.wins}
-                      </td>
-                    )}
-                    {!columnsWithNullValues.losses && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center font-medium text-red-600">
-                        {team.losses}
-                      </td>
-                    )}
-                    {!columnsWithNullValues.ties && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center">
-                        {team.ties}
-                      </td>
-                    )}
-                    {!columnsWithNullValues.noResult && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center">
-                        {team.noResult}
-                      </td>
-                    )}
-                    {!columnsWithNullValues.points && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center font-bold">
-                        {team.points}
-                      </td>
-                    )}
-                    {!columnsWithNullValues.netRunRate && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center">
-                        <span
-                          className={
-                            parseFloat(team.netRunRate) >= 0
-                              ? "text-green-600"
-                              : "text-red-600"
+                    {team.netRunRate}
+                  </span>
+                </div>
+              </div>
+
+              {/* Expanded Match Details */}
+              <AnimatePresence>
+                {expandedIndex === index && (
+                  <motion.div
+                    variants={expandVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="border-t-2 border-urtechy-red"
+                  >
+                    <div className="p-4 bg-gray-50">
+                      <h3 className="text-lg font-bold mb-3 text-gray-800">
+                        Match History
+                      </h3>
+                      <div className="space-y-3">
+                        {team.matchesPlayed.map((match, idx) => {
+                          // Determine result type and styling
+                          let resultIcon, resultClass, resultBg;
+                          if (match.result.startsWith("Won")) {
+                            resultIcon = (
+                              <FaCheckCircle className="text-green-500 mr-2" />
+                            );
+                            resultClass = "text-green-700";
+                            resultBg = "bg-green-50";
+                          } else if (match.result.startsWith("Loss")) {
+                            resultIcon = (
+                              <FaTimesCircle className="text-red-500 mr-2" />
+                            );
+                            resultClass = "text-red-700";
+                            resultBg = "bg-red-50";
+                          } else if (match.result.includes("tied")) {
+                            resultIcon = (
+                              <FaMinusCircle className="text-yellow-500 mr-2" />
+                            );
+                            resultClass = "text-yellow-700";
+                            resultBg = "bg-yellow-50";
+                          } else {
+                            resultIcon = (
+                              <FaClock className="text-gray-500 mr-2" />
+                            );
+                            resultClass = "text-gray-700";
+                            resultBg = "bg-gray-100";
                           }
-                        >
-                          {team.netRunRate}
-                        </span>
-                      </td>
-                    )}
-                    {!columnsWithNullValues.seriesForm && (
-                      <td className="py-3 px-4 border-b border-gray-100 text-center">
-                        <div className="inline-flex flex-wrap justify-center gap-1">
-                          {parseSeriesForm(team.seriesForm).map(
-                            (form, index) => (
-                              <span
-                                key={index}
-                                className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${getSeriesFormClass(
-                                  form
-                                )}`}
-                              >
-                                {form}
-                              </span>
-                            )
+
+                          return (
+                            <motion.div
+                              key={idx}
+                              className={`p-3 rounded-lg ${resultBg} border border-gray-100`}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: idx * 0.05 }}
+                            >
+                              <div className="flex flex-wrap items-center gap-2 mb-1">
+                                <div className="flex items-center mr-2">
+                                  {resultIcon}
+                                  <span
+                                    className={`font-medium ${resultClass}`}
+                                  >
+                                    {match.result || "Upcoming"}
+                                  </span>
+                                </div>
+                                <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded">
+                                  {match.date}
+                                </span>
+                              </div>
+                              <div className="text-gray-700">
+                                <span className="font-medium">
+                                  {match.description}
+                                </span>{" "}
+                                vs{" "}
+                                <span className="font-medium">
+                                  {match.opponent}
+                                </span>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Desktop View (Table Layout) */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="table-auto w-full border-collapse bg-white">
+          {/* Table Header */}
+          <thead>
+            <tr className="bg-urtechy-red text-white">
+              <th className="px-4 py-3 text-left font-bold">Team</th>
+              <th className="px-4 py-3 text-center font-bold">M</th>
+              <th className="px-4 py-3 text-center font-bold">W</th>
+              <th className="px-4 py-3 text-center font-bold">L</th>
+              <th className="px-4 py-3 text-center font-bold">T</th>
+              <th className="px-4 py-3 text-center font-bold">NR</th>
+              <th className="px-4 py-3 text-center font-bold">Pts</th>
+              <th className="px-4 py-3 text-center font-bold">NRR</th>
+            </tr>
+          </thead>
+          {/* Table Body */}
+          <tbody>
+            {teams.map((team, index) => {
+              const { name, isQualified } = getTeamNameAndStatus(team.team);
+              const isEven = index % 2 === 0;
+
+              return (
+                <React.Fragment key={index}>
+                  {/* Team Row */}
+                  <motion.tr
+                    variants={rowVariants}
+                    whileHover="hover"
+                    className={`cursor-pointer border-b ${
+                      isEven ? "bg-white" : "bg-gray-50"
+                    }`}
+                    onClick={() =>
+                      setExpandedIndex(expandedIndex === index ? null : index)
+                    }
+                  >
+                    <td className="px-4 py-3 border-r">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full mr-3 flex items-center justify-center overflow-hidden bg-urtechy-red">
+                          {team.teamImage ? (
+                            <img
+                              src={team.teamImage}
+                              alt={name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-white font-bold text-xs">
+                              {name.substring(0, 2).toUpperCase()}
+                            </span>
                           )}
                         </div>
-                      </td>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-800">
+                            {name}
+                          </span>
+                          {isQualified && (
+                            <span className="text-xs text-green-600 flex items-center">
+                              <FaCheck className="mr-1" /> Qualified
+                            </span>
+                          )}
+                        </div>
+                        {expandedIndex === index ? (
+                          <FaChevronUp className="ml-auto text-gray-400" />
+                        ) : (
+                          <FaChevronDown className="ml-auto text-gray-400" />
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center border-r text-gray-700">
+                      {team.matches}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r font-medium text-green-600">
+                      {team.wins}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r font-medium text-red-600">
+                      {team.losses}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r text-gray-700">
+                      {team.tied}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r text-gray-700">
+                      {team.noResult}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r font-bold text-urtechy-red">
+                      {team.points}
+                    </td>
+                    <td
+                      className={`px-4 py-3 text-center font-medium ${
+                        parseFloat(team.netRunRate) >= 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {team.netRunRate}
+                    </td>
+                  </motion.tr>
+
+                  {/* Expanded Match Details */}
+                  <AnimatePresence>
+                    {expandedIndex === index && (
+                      <motion.tr
+                        variants={expandVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                      >
+                        <td colSpan={8} className="px-0 py-0 border-b">
+                          <div className="bg-gray-50 p-5 border-t-2 border-urtechy-red">
+                            <h3 className="text-lg font-bold mb-4 text-gray-800">
+                              Match History
+                            </h3>
+                            <div className="grid gap-3 md:grid-cols-1 lg:grid-cols-2">
+                              {team.matchesPlayed.map((match, idx) => {
+                                // Determine result type and styling
+                                let resultIcon, resultClass, resultBg;
+                                if (match.result.startsWith("Won")) {
+                                  resultIcon = (
+                                    <FaCheckCircle className="text-green-500 mr-2" />
+                                  );
+                                  resultClass = "text-green-700";
+                                  resultBg = "bg-green-50";
+                                } else if (match.result.startsWith("Loss")) {
+                                  resultIcon = (
+                                    <FaTimesCircle className="text-red-500 mr-2" />
+                                  );
+                                  resultClass = "text-red-700";
+                                  resultBg = "bg-red-50";
+                                } else if (match.result.includes("tied")) {
+                                  resultIcon = (
+                                    <FaMinusCircle className="text-yellow-500 mr-2" />
+                                  );
+                                  resultClass = "text-yellow-700";
+                                  resultBg = "bg-yellow-50";
+                                } else {
+                                  resultIcon = (
+                                    <FaClock className="text-gray-500 mr-2" />
+                                  );
+                                  resultClass = "text-gray-700";
+                                  resultBg = "bg-gray-100";
+                                }
+
+                                return (
+                                  <motion.div
+                                    key={idx}
+                                    className={`p-3 rounded-lg ${resultBg} border border-gray-100`}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                  >
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <div className="flex items-center mr-2">
+                                        {resultIcon}
+                                        <span
+                                          className={`font-medium ${resultClass}`}
+                                        >
+                                          {match.result || "Upcoming"}
+                                        </span>
+                                      </div>
+                                      <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded">
+                                        {match.date}
+                                      </span>
+                                    </div>
+                                    <div className="mt-2 text-gray-700">
+                                      <span className="font-medium">
+                                        {match.description}
+                                      </span>{" "}
+                                      vs{" "}
+                                      <span className="font-medium">
+                                        {match.opponent}
+                                      </span>
+                                    </div>
+                                  </motion.div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </td>
+                      </motion.tr>
                     )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
-      ))}
+                  </AnimatePresence>
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </motion.div>
   );
 };
 
-export default ScheduleTable;
+export default PointsTable;
