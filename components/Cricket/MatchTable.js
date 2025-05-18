@@ -50,9 +50,7 @@ const expandVariants = {
   },
 };
 
-// Animation variants only
-
-const PointsTable = () => {
+const DesktopPointsTable = () => {
   // State variables
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -118,7 +116,7 @@ const PointsTable = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center py-8 px-4 max-w-md mx-auto"
+        className="text-center py-8 px-4 mx-auto max-w-md"
       >
         <div className="bg-red-50 p-6 rounded-lg shadow-sm border border-red-100">
           <FaTimesCircle className="text-red-500 text-4xl mx-auto mb-4" />
@@ -145,194 +143,7 @@ const PointsTable = () => {
       initial="hidden"
       animate="visible"
     >
-      {/* Mobile View (Card Layout) */}
-      <div className="md:hidden">
-        {teams.map((team, index) => {
-          const { name, isQualified } = getTeamNameAndStatus(team.team);
-          const isEven = index % 2 === 0;
-
-          return (
-            <motion.div
-              key={index}
-              variants={rowVariants}
-              className={`mb-4 border rounded-lg overflow-hidden ${
-                isEven ? "bg-white" : "bg-gray-50"
-              }`}
-            >
-              {/* Team Header */}
-              <div
-                className="flex items-center justify-between p-4 border-b bg-white cursor-pointer"
-                onClick={() =>
-                  setExpandedIndex(expandedIndex === index ? null : index)
-                }
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full mr-3 flex items-center justify-center overflow-hidden bg-urtechy-red">
-                    {team.teamImage ? (
-                      <img
-                        src={team.teamImage}
-                        alt={name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-white font-bold text-xs">
-                        {name.substring(0, 2).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-bold text-gray-800">{name}</div>
-                    {isQualified && (
-                      <div className="text-xs text-green-600 flex items-center">
-                        <FaCheck className="mr-1" /> Qualified
-                      </div>
-                    )}
-                  </div>
-                </div>
-                {expandedIndex === index ? (
-                  <FaChevronUp className="text-gray-400" />
-                ) : (
-                  <FaChevronDown className="text-gray-400" />
-                )}
-              </div>
-
-              {/* Team Stats */}
-              <div className="p-4 grid grid-cols-2 gap-3 bg-white">
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-600">Matches:</span>
-                  <span className="font-medium text-gray-800">
-                    {team.matches}
-                  </span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-600">Points:</span>
-                  <span className="font-bold text-urtechy-red">
-                    {team.points}
-                  </span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-600">Wins:</span>
-                  <span className="font-medium text-green-600">
-                    {team.wins}
-                  </span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-600">Losses:</span>
-                  <span className="font-medium text-red-600">
-                    {team.losses}
-                  </span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-600">Tied:</span>
-                  <span className="text-gray-700">{team.tied}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-600">No Result:</span>
-                  <span className="text-gray-700">{team.noResult}</span>
-                </div>
-                <div className="flex justify-between col-span-2">
-                  <span className="text-gray-600">Net Run Rate:</span>
-                  <span
-                    className={`font-medium ${
-                      parseFloat(team.netRunRate) >= 0
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {team.netRunRate}
-                  </span>
-                </div>
-              </div>
-
-              {/* Expanded Match Details */}
-              <AnimatePresence>
-                {expandedIndex === index && (
-                  <motion.div
-                    variants={expandVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="border-t-2 border-urtechy-red"
-                  >
-                    <div className="p-4 bg-gray-50">
-                      <h3 className="text-lg font-bold mb-3 text-gray-800">
-                        Match History
-                      </h3>
-                      <div className="space-y-3">
-                        {team.matchesPlayed.map((match, idx) => {
-                          // Determine result type and styling
-                          let resultIcon, resultClass, resultBg;
-                          if (match.result.startsWith("Won")) {
-                            resultIcon = (
-                              <FaCheckCircle className="text-green-500 mr-2" />
-                            );
-                            resultClass = "text-green-700";
-                            resultBg = "bg-green-50";
-                          } else if (match.result.startsWith("Loss")) {
-                            resultIcon = (
-                              <FaTimesCircle className="text-red-500 mr-2" />
-                            );
-                            resultClass = "text-red-700";
-                            resultBg = "bg-red-50";
-                          } else if (match.result.includes("tied")) {
-                            resultIcon = (
-                              <FaMinusCircle className="text-yellow-500 mr-2" />
-                            );
-                            resultClass = "text-yellow-700";
-                            resultBg = "bg-yellow-50";
-                          } else {
-                            resultIcon = (
-                              <FaClock className="text-gray-500 mr-2" />
-                            );
-                            resultClass = "text-gray-700";
-                            resultBg = "bg-gray-100";
-                          }
-
-                          return (
-                            <motion.div
-                              key={idx}
-                              className={`p-3 rounded-lg ${resultBg} border border-gray-100`}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: idx * 0.05 }}
-                            >
-                              <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <div className="flex items-center mr-2">
-                                  {resultIcon}
-                                  <span
-                                    className={`font-medium ${resultClass}`}
-                                  >
-                                    {match.result || "Upcoming"}
-                                  </span>
-                                </div>
-                                <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded">
-                                  {match.date}
-                                </span>
-                              </div>
-                              <div className="text-gray-700">
-                                <span className="font-medium">
-                                  {match.description}
-                                </span>{" "}
-                                vs{" "}
-                                <span className="font-medium">
-                                  {match.opponent}
-                                </span>
-                              </div>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Desktop View (Table Layout) */}
-      <div className="hidden md:block overflow-x-auto">
+      <div className="overflow-x-auto">
         <table className="table-auto w-full border-collapse bg-white">
           {/* Table Header */}
           <thead>
@@ -520,4 +331,4 @@ const PointsTable = () => {
   );
 };
 
-export default PointsTable;
+export default DesktopPointsTable;

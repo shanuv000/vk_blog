@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MatchTable from "./MatchTable";
+import MobileMatchTable from "./MobileMatchTable";
 import LiveMatch from "./LiveMatch";
 import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";
@@ -20,25 +21,32 @@ import { IoStatsChart } from "react-icons/io5";
  * @param {string} props.ariaLabelledby - ARIA attribute for accessibility
  * @returns {React.ReactElement} - Rendered component
  */
-const TabPanel = ({ children, value, index, id, ariaLabelledby }) => (
-  <AnimatePresence mode="wait">
-    {value === index && (
-      <motion.div
-        key={index}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        role="tabpanel"
-        id={id}
-        aria-labelledby={ariaLabelledby}
-        className="focus:outline-none"
-      >
-        {children}
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
+const TabPanel = ({ children, value, index, id, ariaLabelledby, isMobile }) => {
+  // Check if this is the table tab
+  const isTableTab = index === "table";
+
+  return (
+    <AnimatePresence mode="wait">
+      {value === index && (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          role="tabpanel"
+          id={id}
+          aria-labelledby={ariaLabelledby}
+          className={`focus:outline-none ${
+            isTableTab && isMobile ? "p-0" : ""
+          }`}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 /**
  * ShowCricket component displays cricket match information in tabs
@@ -47,6 +55,23 @@ const TabPanel = ({ children, value, index, id, ariaLabelledby }) => (
  */
 const ShowCricket = () => {
   const { isLiveScore } = useData();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkIfMobile();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkIfMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
 
   // Set initial tab based on whether live matches are available
   const [selectedTab, setSelectedTab] = useState(
@@ -85,7 +110,7 @@ const ShowCricket = () => {
       label: "Tournament Table",
       icon: <IoStatsChart className="w-5 h-5" />,
       ariaId: "tab-table",
-      component: <MatchTable />,
+      component: isMobile ? <MobileMatchTable /> : <MatchTable />,
     },
   ];
 
@@ -122,7 +147,11 @@ const ShowCricket = () => {
       </div>
 
       {/* Tab content with modern styling */}
-      <div className="bg-white shadow-lg rounded-xl p-5 min-h-[400px]">
+      <div
+        className={`bg-white shadow-lg rounded-xl ${
+          selectedTab === "table" && isMobile ? "p-0" : "p-5"
+        } min-h-[400px]`}
+      >
         {tabs.map((tab) => (
           <TabPanel
             key={tab.id}
@@ -130,6 +159,7 @@ const ShowCricket = () => {
             index={tab.id}
             id={`tabpanel-${tab.id}`}
             ariaLabelledby={tab.ariaId}
+            isMobile={isMobile}
           >
             {tab.component}
           </TabPanel>
