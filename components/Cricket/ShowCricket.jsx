@@ -30,14 +30,14 @@ const TabPanel = ({ children, value, index, id, ariaLabelledby, isMobile }) => {
       {value === index && (
         <motion.div
           key={index}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
           role="tabpanel"
           id={id}
           aria-labelledby={ariaLabelledby}
-          className={`focus:outline-none ${
+          className={`focus:outline-none w-full ${
             isTableTab && isMobile ? "p-0" : ""
           }`}
         >
@@ -115,18 +115,18 @@ const ShowCricket = () => {
   ];
 
   return (
-    <div className="cricket-widget max-w-5xl mx-auto">
-      {/* Modern tab navigation */}
-      <div className="bg-white shadow-lg rounded-xl overflow-hidden mb-6">
-        <div className="flex overflow-x-auto scrollbar-hide">
+    <div className="cricket-widget w-full max-w-5xl mx-auto px-0 md:px-4">
+      {/* Mobile-friendly tab navigation */}
+      <div className="bg-white shadow-lg rounded-xl overflow-hidden mb-4">
+        <div className="grid grid-cols-4 w-full">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
-              className={`flex items-center space-x-2 px-4 py-3 whitespace-nowrap transition-all duration-300 ${
+              className={`flex flex-col items-center justify-center py-4 px-1 transition-all duration-200 relative ${
                 selectedTab === tab.id
-                  ? "bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white font-medium"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "text-urtechy-red font-medium"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
               id={tab.ariaId}
               aria-controls={`tabpanel-${tab.id}`}
@@ -134,23 +134,28 @@ const ShowCricket = () => {
               role="tab"
             >
               <span
-                className={`transition-transform duration-300 ${
-                  selectedTab === tab.id ? "scale-110" : ""
+                className={`text-xl mb-1 ${
+                  selectedTab === tab.id ? "text-urtechy-red" : "text-gray-600"
                 }`}
               >
                 {tab.icon}
               </span>
-              <span className="font-medium">{tab.label}</span>
+              <span className="text-xs font-medium whitespace-nowrap truncate max-w-full">
+                {tab.label}
+              </span>
+              {selectedTab === tab.id && (
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-urtechy-red"></div>
+              )}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Tab content with modern styling */}
+      {/* Tab content with mobile-friendly styling */}
       <div
         className={`bg-white shadow-lg rounded-xl ${
-          selectedTab === "table" && isMobile ? "p-0" : "p-5"
-        } min-h-[400px]`}
+          selectedTab === "table" && isMobile ? "p-0" : "p-3 md:p-5"
+        } min-h-[350px] md:min-h-[400px]`}
       >
         {tabs.map((tab) => (
           <TabPanel

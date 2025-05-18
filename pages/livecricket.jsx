@@ -18,11 +18,11 @@ const LiveCricket = () => {
         <title>Live Cricket Scores & Updates | urTechy Blogs</title>
         <meta
           name="description"
-          content="Get the latest cricket scores, match updates, and tournament standings in real-time."
+          content="Follow your favorite cricket teams with live scores, comprehensive match details, and up-to-the-minute tournament standings for IPL, World Cup, and all major cricket events."
         />
         <meta
           name="keywords"
-          content="cricket, live scores, cricket matches, tournament standings"
+          content="cricket, live scores, IPL, World Cup, cricket matches, tournament standings, cricket updates, real-time cricket, match details"
         />
       </Head>
 
@@ -40,15 +40,31 @@ const LiveCricket = () => {
               className="w-10 h-10 mr-3"
               priority
             />
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+            <h1 className="text-3xl md:text-4xl font-heading font-bold bg-gradient-to-r from-red-400 to-yellow-400 bg-clip-text text-transparent">
               Cricket Updates
             </h1>
           </div>
-          <div className="h-1 w-32 bg-gradient-to-r from-urtechy-red to-urtechy-orange rounded-full"></div>
-          <p className="mt-4 text-gray-600 text-center max-w-2xl">
-            Get the latest cricket scores, match updates, and tournament
-            standings in real-time. Stay updated with live matches, recent
-            results, and upcoming fixtures.
+          <div className="h-1 w-32 bg-gradient-to-r from-red-400 to-yellow-400 rounded-full"></div>
+          <p className="mt-4 text-center max-w-2xl font-medium leading-relaxed">
+            <span className="text-gray-200">
+              Follow your favorite cricket teams with{" "}
+            </span>
+            <span className="text-red-400 font-semibold">live scores</span>
+            <span className="text-gray-200">
+              , comprehensive match details, and{" "}
+            </span>
+            <span className="text-red-400 font-semibold">
+              up-to-the-minute tournament standings
+            </span>
+            <span className="text-gray-200">
+              . Never miss a moment with our real-time updates covering{" "}
+            </span>
+            <span className="text-yellow-400 font-semibold">IPL</span>
+            <span className="text-gray-200">, </span>
+            <span className="text-yellow-400 font-semibold">World Cup</span>
+            <span className="text-gray-200">
+              , and all major cricket events.
+            </span>
           </p>
         </motion.div>
 

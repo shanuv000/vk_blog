@@ -96,9 +96,9 @@ const MatchList = ({
   return (
     <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
+        <h3 className="text-xl sm:text-2xl font-heading font-bold bg-gradient-to-r from-red-400 to-yellow-400 bg-clip-text text-transparent">
           {title}
-          <div className="h-1 w-20 bg-gradient-to-r from-urtechy-red to-urtechy-orange mt-2 rounded-full"></div>
+          <div className="h-1 w-20 bg-gradient-to-r from-red-400 to-yellow-400 mt-2 rounded-full"></div>
         </h3>
         <motion.button
           whileHover={{ scale: 1.1 }}
@@ -226,8 +226,11 @@ const MatchList = ({
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8"
             />
           </div>
-          <p className="text-lg font-medium text-gray-600">
-            Loading cricket updates...
+          <p className="text-lg font-medium">
+            <span className="text-red-400">Loading</span>
+            <span className="text-gray-200"> cricket </span>
+            <span className="text-yellow-400">updates</span>
+            <span className="text-gray-200">...</span>
           </p>
         </div>
       ) : filteredMatches.length === 0 ? (
@@ -237,8 +240,11 @@ const MatchList = ({
             alt="Cricket"
             className="w-16 h-16 opacity-40 mb-4"
           />
-          <p className="text-lg font-medium text-gray-500 text-center mb-4">
-            No matches available for this tournament
+          <p className="text-lg font-medium text-center mb-4">
+            <span className="text-gray-200">No matches available for </span>
+            <span className="text-yellow-400 font-semibold">
+              this tournament
+            </span>
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
