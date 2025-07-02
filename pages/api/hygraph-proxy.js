@@ -30,19 +30,32 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  // Set CORS headers to allow requests from specific domains
+  // Enhanced CORS security - only allow specific origins
   const allowedOrigins = [
     "https://blog.urtechy.com",
+    "https://www.blog.urtechy.com",
     "https://urtechy.com",
-    "http://localhost:3000",
+    "https://www.urtechy.com",
+    ...(process.env.NODE_ENV === "development"
+      ? ["http://localhost:3000"]
+      : []),
   ];
   const origin = req.headers.origin;
 
+  // Security headers
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
-  } else {
-    // For any other origin, use a wildcard (less secure but more permissive)
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  } else if (process.env.NODE_ENV === "development") {
+    // Only allow wildcard in development
     res.setHeader("Access-Control-Allow-Origin", "*");
+  } else {
+    // In production, reject unauthorized origins
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
 
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");

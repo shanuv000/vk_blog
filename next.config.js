@@ -216,15 +216,31 @@ const withPWA = require("next-pwa")({
 const nextConfig = {
   reactStrictMode: true,
 
-  // Add headers to allow social media embeds
+  // Enhanced security headers
   async headers() {
     return [
       {
         source: "/:path*",
         headers: [
+          // Enhanced Content Security Policy
           {
             key: "Content-Security-Policy",
             value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "https://www.googletagmanager.com",
+              "https://www.google-analytics.com",
+              "https://platform.twitter.com",
+              "https://connect.facebook.net",
+              "https://www.clarity.ms",
+              "style-src 'self' 'unsafe-inline'",
+              "https://fonts.googleapis.com",
+              "img-src 'self' data: blob:",
+              "https://media.graphassets.com",
+              "https://ap-south-1.cdn.hygraph.com",
+              "https://via.placeholder.com",
+              "https://images.unsplash.com",
+              "https://res.cloudinary.com",
               "frame-src 'self'",
               "https://www.youtube-nocookie.com",
               "https://www.youtube.com",
@@ -234,25 +250,53 @@ const nextConfig = {
               "https://web.facebook.com",
               "https://www.instagram.com",
               "https://instagram.com",
-              "https://connect.facebook.net",
-              "https://staticxx.facebook.com",
-              "https://scontent.cdninstagram.com",
-              "https://scontent-*.cdninstagram.com",
-              "https://scontent.xx.fbcdn.net",
-              "https://scontent-*.xx.fbcdn.net;",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "https://platform.twitter.com",
-              "https://connect.facebook.net",
-              "https://www.instagram.com",
-              "https://instagram.com;",
               "connect-src 'self'",
+              "https://ap-south-1.cdn.hygraph.com",
+              "https://api-ap-south-1.hygraph.com",
+              "https://www.google-analytics.com",
+              "https://www.googletagmanager.com",
               "https://syndication.twitter.com",
               "https://api.twitter.com",
               "https://graph.facebook.com",
-              "https://www.instagram.com",
-              "https://instagram.com;",
+              "font-src 'self'",
+              "https://fonts.gstatic.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'none'",
             ].join(" "),
           },
+          // Additional security headers
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-XSS-Protection",
+            value: "1; mode=block",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+          // HSTS for production
+          ...(process.env.NODE_ENV === "production"
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=31536000; includeSubDomains; preload",
+                },
+              ]
+            : []),
         ],
       },
     ];
@@ -364,8 +408,8 @@ const nextConfig = {
     ];
   },
 
-  // Webpack configuration for audio files and optimizations
-  webpack(config) {
+  // Enhanced Webpack configuration for performance
+  webpack(config, { dev, isServer }) {
     // Audio file handling
     config.module.rules.push({
       test: /\.(mp3|wav)$/,
@@ -377,10 +421,48 @@ const nextConfig = {
       },
     });
 
+    // Bundle analyzer for production builds (optional)
+    if (!dev && !isServer && process.env.ANALYZE === "true") {
+      const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: "static",
+          openAnalyzer: false,
+          reportFilename: "../bundle-analyzer-report.html",
+        })
+      );
+    }
+
+    // Optimize chunks for better caching
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: "vendors",
+              chunks: "all",
+              priority: 10,
+            },
+            common: {
+              name: "common",
+              minChunks: 2,
+              chunks: "all",
+              priority: 5,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      };
+    }
+
     return config;
   },
 
-  // Performance optimizations
+  // Enhanced performance optimizations
   swcMinify: true,
   compiler: {
     removeConsole:
@@ -389,12 +471,28 @@ const nextConfig = {
             exclude: ["error", "warn"],
           }
         : false,
+    // Remove React DevTools in production
+    reactRemoveProperties: process.env.NODE_ENV === "production",
+    // Remove data-testid attributes in production
+    removeReactProperties: process.env.NODE_ENV === "production",
   },
 
   // Optimize production builds
   productionBrowserSourceMaps: false,
 
-  // Removed experimental features that were causing issues
+  // Enable experimental features for better performance
+  experimental: {
+    // Enable modern JavaScript features
+    esmExternals: true,
+    // Optimize server components
+    serverComponentsExternalPackages: ["sharp"],
+    // Enable gzip compression
+    gzipSize: true,
+  },
+
+  // Output configuration for better caching
+  generateEtags: true,
+  poweredByHeader: false,
 };
 
 module.exports = withPWA(nextConfig);

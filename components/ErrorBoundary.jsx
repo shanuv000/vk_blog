@@ -12,8 +12,27 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // You can log the error to an error reporting service here
-    console.error("Error caught by boundary:", error, errorInfo);
+    // Log error to console in development
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error caught by boundary:", error, errorInfo);
+    }
+
+    // In production, you can send errors to monitoring services
+    if (process.env.NODE_ENV === "production") {
+      // Example: Send to error monitoring service
+      // Sentry.captureException(error, { contexts: { react: errorInfo } });
+
+      // Send to Google Analytics as exception
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "exception", {
+          description: error.toString(),
+          fatal: false,
+          custom_map: {
+            component_stack: errorInfo.componentStack,
+          },
+        });
+      }
+    }
   }
 
   render() {

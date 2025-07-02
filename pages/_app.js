@@ -13,6 +13,12 @@ import AnalyticsProvider from "../components/AnalyticsProvider";
 import { useRouter } from "next/router";
 // Import prefetch function
 import { prefetchCommonQueries } from "../services/hygraph";
+// Import Web Vitals for performance monitoring
+import { initWebVitals } from "../components/WebVitals";
+// Import Accessibility Audit for development
+import AccessibilityAudit from "../components/AccessibilityAudit";
+// Import SEO Audit for development
+import SEOAudit from "../components/SEOAudit";
 
 function MyApp({ Component, pageProps }) {
   // Initialize Apollo Client with the initial state
@@ -63,6 +69,9 @@ function MyApp({ Component, pageProps }) {
         window.addEventListener("load", prefetchData);
       }
     }
+
+    // Initialize Web Vitals monitoring
+    initWebVitals();
 
     return () => {
       if (styleLink.parentNode) {
@@ -150,6 +159,9 @@ function MyApp({ Component, pageProps }) {
             <div key={pageKey}>
               <Component {...pageProps} />
             </div>
+            {/* Development audit tools */}
+            <AccessibilityAudit />
+            <SEOAudit />
           </Layout>
         </AnalyticsProvider>
       </ErrorBoundary>
