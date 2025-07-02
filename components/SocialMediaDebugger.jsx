@@ -5,7 +5,7 @@ const SocialMediaDebugger = () => {
     blockquotes: [],
     cspErrors: [],
     scriptErrors: [],
-    embedStatus: {}
+    embedStatus: {},
   });
 
   useEffect(() => {
@@ -20,8 +20,12 @@ const SocialMediaDebugger = () => {
         embedStatus: {
           twitter: window.twttr ? "loaded" : "not loaded",
           facebook: window.FB ? "loaded" : "not loaded",
-          instagram: document.querySelector('script[src*="instagram"]') ? "script found" : "no script"
-        }
+          instagram: document.querySelector('script[src*="instagram"]')
+            ? "script found"
+            : document.querySelector('iframe[src*="instagram"]')
+            ? "iframe found"
+            : "no script",
+        },
       };
 
       // Check blockquotes
@@ -34,7 +38,7 @@ const SocialMediaDebugger = () => {
           processed: bq.getAttribute("data-processed") === "true",
           embedProcessed: bq.getAttribute("data-embed-processed") === "true",
           hasLinks: bq.querySelectorAll("a").length > 0,
-          isTweetId: /^\d+$/.test(text) && text.length > 8
+          isTweetId: /^\d+$/.test(text) && text.length > 8,
         });
       });
 
@@ -42,10 +46,12 @@ const SocialMediaDebugger = () => {
       const originalError = console.error;
       console.error = (...args) => {
         const message = args.join(" ");
-        if (message.includes("Content Security Policy") || 
-            message.includes("CSP") || 
-            message.includes("frame-src") ||
-            message.includes("script-src")) {
+        if (
+          message.includes("Content Security Policy") ||
+          message.includes("CSP") ||
+          message.includes("frame-src") ||
+          message.includes("script-src")
+        ) {
           info.cspErrors.push(message);
         }
         originalError.apply(console, args);
@@ -73,7 +79,7 @@ const SocialMediaDebugger = () => {
   return (
     <div className="fixed bottom-4 right-4 bg-black text-white p-4 rounded-lg shadow-lg max-w-md text-xs z-50 max-h-96 overflow-y-auto">
       <h3 className="font-bold mb-2">Social Media Debug Info</h3>
-      
+
       <div className="mb-2">
         <strong>Embed Scripts:</strong>
         <ul className="ml-2">
@@ -87,12 +93,13 @@ const SocialMediaDebugger = () => {
         <strong>Blockquotes ({debugInfo.blockquotes.length}):</strong>
         {debugInfo.blockquotes.map((bq, i) => (
           <div key={i} className="ml-2 mb-1 p-1 bg-gray-800 rounded">
-            <div>#{i}: {bq.text}...</div>
+            <div>
+              #{i}: {bq.text}...
+            </div>
             <div className="text-xs text-gray-400">
-              Processed: {bq.processed ? "✓" : "✗"} | 
-              Embed: {bq.embedProcessed ? "✓" : "✗"} | 
-              Links: {bq.hasLinks ? "✓" : "✗"} | 
-              Tweet ID: {bq.isTweetId ? "✓" : "✗"}
+              Processed: {bq.processed ? "✓" : "✗"} | Embed:{" "}
+              {bq.embedProcessed ? "✓" : "✗"} | Links: {bq.hasLinks ? "✓" : "✗"}{" "}
+              | Tweet ID: {bq.isTweetId ? "✓" : "✗"}
             </div>
           </div>
         ))}
@@ -102,7 +109,9 @@ const SocialMediaDebugger = () => {
         <div className="mb-2">
           <strong className="text-red-400">CSP Errors:</strong>
           {debugInfo.cspErrors.map((error, i) => (
-            <div key={i} className="ml-2 text-red-300 text-xs">{error}</div>
+            <div key={i} className="ml-2 text-red-300 text-xs">
+              {error}
+            </div>
           ))}
         </div>
       )}
