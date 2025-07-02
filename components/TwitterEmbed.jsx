@@ -58,10 +58,24 @@ const TwitterEmbed = ({ tweetId }) => {
 
   // Skip if no tweet ID or invalid format
   if (!isValidTweetId) {
-    // Invalid tweet ID
+    // Invalid tweet ID - add more debugging info in development
+    if (process.env.NODE_ENV === "development") {
+      console.error("TwitterEmbed: Invalid tweet ID", {
+        original: tweetId,
+        cleaned: cleanTweetId,
+        isValid: isValidTweetId,
+        length: cleanTweetId?.length,
+      });
+    }
     return (
       <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
         <p className="text-gray-500">Invalid tweet ID: {tweetId}</p>
+        {process.env.NODE_ENV === "development" && (
+          <p className="text-xs text-gray-400 mt-2">
+            Expected: numeric string with length &gt; 8, got: "{cleanTweetId}"
+            (length: {cleanTweetId?.length})
+          </p>
+        )}
       </div>
     );
   }

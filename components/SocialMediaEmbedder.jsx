@@ -345,6 +345,33 @@ const SocialMediaEmbedder = () => {
   const [embeds, setEmbeds] = useState([]);
 
   useEffect(() => {
+    // Force load social media scripts
+    const loadSocialMediaScripts = () => {
+      // Load Twitter widgets script
+      if (!window.twttr && !document.getElementById("twitter-widgets-js")) {
+        const twitterScript = document.createElement("script");
+        twitterScript.id = "twitter-widgets-js";
+        twitterScript.src = "https://platform.twitter.com/widgets.js";
+        twitterScript.async = true;
+        document.head.appendChild(twitterScript);
+        console.log("Loading Twitter widgets script...");
+      }
+
+      // Load Facebook SDK
+      if (!window.FB && !document.getElementById("facebook-jssdk")) {
+        const facebookScript = document.createElement("script");
+        facebookScript.id = "facebook-jssdk";
+        facebookScript.src =
+          "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
+        facebookScript.async = true;
+        document.head.appendChild(facebookScript);
+        console.log("Loading Facebook SDK...");
+      }
+
+      // Instagram embeds are handled by the react-social-media-embed library
+      console.log("Social media scripts loading initiated");
+    };
+
     // Add CSS styles for social media embeds
     const addEmbedStyles = () => {
       // Check if styles already exist
@@ -579,6 +606,18 @@ const SocialMediaEmbedder = () => {
 
       // Log the number of embeds found in the first pass
       log(`First pass found ${extractedEmbeds.length} social media embeds`);
+
+      // Debug: Log all blockquotes found
+      if (process.env.NODE_ENV === "development") {
+        const allBlockquotes = document.querySelectorAll("blockquote");
+        console.log(`Total blockquotes found: ${allBlockquotes.length}`);
+        allBlockquotes.forEach((bq, i) => {
+          console.log(
+            `Blockquote ${i}:`,
+            bq.textContent.trim().substring(0, 100)
+          );
+        });
+      }
 
       // If we found embeds, log their details
       if (extractedEmbeds.length > 0) {

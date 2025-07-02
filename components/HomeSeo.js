@@ -9,7 +9,7 @@ import { NextSeo } from "next-seo";
 const HomeSeo = ({ featuredPosts = [] }) => {
   const rootUrl = "https://blog.urtechy.com";
   const title = "urTechy Blogs | Tech, Entertainment & Sports News";
-  const description = 
+  const description =
     "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics and expert analysis.";
 
   return (
@@ -40,7 +40,8 @@ const HomeSeo = ({ featuredPosts = [] }) => {
       additionalMetaTags={[
         {
           name: "keywords",
-          content: "tech, entertainment, sports, articles, news, updates, reviews, analysis, blog, blogging, diverse content, information, insights",
+          content:
+            "tech, entertainment, sports, articles, news, updates, reviews, analysis, blog, blogging, diverse content, information, insights",
         },
         {
           name: "author",

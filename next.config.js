@@ -216,7 +216,7 @@ const withPWA = require("next-pwa")({
 const nextConfig = {
   reactStrictMode: true,
 
-  // Add headers to allow YouTube embeds
+  // Add headers to allow social media embeds
   async headers() {
     return [
       {
@@ -224,8 +224,34 @@ const nextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value:
-              "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com;",
+            value: [
+              "frame-src 'self'",
+              "https://www.youtube-nocookie.com",
+              "https://www.youtube.com",
+              "https://platform.twitter.com",
+              "https://syndication.twitter.com",
+              "https://www.facebook.com",
+              "https://web.facebook.com",
+              "https://www.instagram.com",
+              "https://instagram.com",
+              "https://connect.facebook.net",
+              "https://staticxx.facebook.com",
+              "https://scontent.cdninstagram.com",
+              "https://scontent-*.cdninstagram.com",
+              "https://scontent.xx.fbcdn.net",
+              "https://scontent-*.xx.fbcdn.net;",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "https://platform.twitter.com",
+              "https://connect.facebook.net",
+              "https://www.instagram.com",
+              "https://instagram.com;",
+              "connect-src 'self'",
+              "https://syndication.twitter.com",
+              "https://api.twitter.com",
+              "https://graph.facebook.com",
+              "https://www.instagram.com",
+              "https://instagram.com;",
+            ].join(" "),
           },
         ],
       },

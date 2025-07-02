@@ -25,6 +25,11 @@ const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
   ssr: false, // Don't render on server to avoid hydration issues
 });
 
+// Lazy load debugger component for development
+const SocialMediaDebugger = dynamic(() => import("./SocialMediaDebugger"), {
+  ssr: false,
+});
+
 import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
 import RichTextRenderer from "./RichTextRenderer";
@@ -259,7 +264,7 @@ const PostDetail = ({ post }) => {
 
                           {/* Add SocialMediaEmbedder as a separate component outside the article-content div */}
                           <div className="social-embeds-container mt-4 sm:mt-6 w-full overflow-hidden">
-                            <SocialMediaEmbedder />
+                            <SocialMediaEmbedder key={post.slug} />
                           </div>
 
                           {/* Article footer - removed author section */}
@@ -299,6 +304,9 @@ const PostDetail = ({ post }) => {
             )}
           </div>
         </motion.div>
+
+        {/* Add debugger in development */}
+        <SocialMediaDebugger />
       </>
     </ErrorBoundary>
   );

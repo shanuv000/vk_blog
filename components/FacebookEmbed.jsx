@@ -56,9 +56,21 @@ const FacebookEmbed = ({ url }) => {
 
   // Skip if no URL or invalid format
   if (!isValidFacebookUrl) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("FacebookEmbed: Invalid URL", {
+        original: url,
+        cleaned: cleanUrl,
+        isValid: isValidFacebookUrl,
+      });
+    }
     return (
       <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
         <p className="text-gray-500">Invalid Facebook URL: {url}</p>
+        {process.env.NODE_ENV === "development" && (
+          <p className="text-xs text-gray-400 mt-2">
+            Expected URL containing facebook.com, fb.com, or fb.watch
+          </p>
+        )}
       </div>
     );
   }
