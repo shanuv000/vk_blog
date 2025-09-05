@@ -9,7 +9,7 @@ import { event } from "../lib/analytics";
 const webVitalsAvailable = false; // Set to true when web-vitals is installed
 
 // Track and report Core Web Vitals
-export function reportWebVitals() {
+export async function reportWebVitals() {
   if (typeof window === "undefined") return;
 
   // Only track in production or when explicitly enabled
@@ -21,10 +21,17 @@ export function reportWebVitals() {
 
   try {
     if (webVitalsAvailable) {
-      // TODO: Uncomment when web-vitals package is installed
-      // const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import('web-vitals');
-      // ... implement web vitals tracking
-      console.log("Web Vitals tracking would be enabled here");
+      // Web Vitals package is available, implement tracking
+      const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import(
+        "web-vitals"
+      );
+
+      // Track Core Web Vitals
+      getCLS(sendToAnalytics);
+      getFID(sendToAnalytics);
+      getFCP(sendToAnalytics);
+      getLCP(sendToAnalytics);
+      getTTFB(sendToAnalytics);
     } else {
       // Fallback: Basic performance tracking
       trackBasicPerformance();

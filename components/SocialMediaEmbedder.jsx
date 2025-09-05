@@ -389,7 +389,7 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
 const SocialMediaEmbedder = () => {
   const [embeds, setEmbeds] = useState([]);
 
-  console.log("SocialMediaEmbedder component rendered");
+  log("SocialMediaEmbedder component rendered");
 
   useEffect(() => {
     try {
@@ -415,7 +415,7 @@ const SocialMediaEmbedder = () => {
             "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
           facebookScript.async = true;
           facebookScript.onload = () => {
-            console.log("Facebook SDK loaded successfully");
+            log("Facebook SDK loaded successfully");
             // Initialize Facebook SDK with minimal config
             setTimeout(() => {
               if (window.FB) {
@@ -424,7 +424,7 @@ const SocialMediaEmbedder = () => {
                     xfbml: true,
                     version: "v18.0",
                   });
-                  console.log("Facebook SDK initialized");
+                  log("Facebook SDK initialized");
                 } catch (e) {
                   console.error("Facebook SDK init error:", e);
                 }
@@ -696,12 +696,9 @@ const SocialMediaEmbedder = () => {
         // Debug: Log all blockquotes found
         if (process.env.NODE_ENV === "development") {
           const allBlockquotes = document.querySelectorAll("blockquote");
-          console.log(`Total blockquotes found: ${allBlockquotes.length}`);
+          log(`Total blockquotes found: ${allBlockquotes.length}`);
           allBlockquotes.forEach((bq, i) => {
-            console.log(
-              `Blockquote ${i}:`,
-              bq.textContent.trim().substring(0, 100)
-            );
+            log(`Blockquote ${i}:`, bq.textContent.trim().substring(0, 100));
           });
         }
 
@@ -717,11 +714,9 @@ const SocialMediaEmbedder = () => {
           const newExtractedEmbeds = extractSocialMediaUrls();
 
           // Log in development mode only
-          if (process.env.NODE_ENV === "development") {
-            console.log(
-              `Second pass found ${newExtractedEmbeds.length} social media embeds`
-            );
-          }
+          log(
+            `Second pass found ${newExtractedEmbeds.length} social media embeds`
+          );
 
           setEmbeds((prev) => {
             // Only add new embeds that aren't already in the array
@@ -731,13 +726,8 @@ const SocialMediaEmbedder = () => {
             );
 
             // Log in development mode only
-            if (
-              process.env.NODE_ENV === "development" &&
-              newEmbeds.length > 0
-            ) {
-              console.log(
-                `Adding ${newEmbeds.length} new embeds from second pass`
-              );
+            if (newEmbeds.length > 0) {
+              log(`Adding ${newEmbeds.length} new embeds from second pass`);
             }
 
             return [...prev, ...newEmbeds];
@@ -748,11 +738,9 @@ const SocialMediaEmbedder = () => {
             const finalExtractedEmbeds = extractSocialMediaUrls();
 
             // Log in development mode only
-            if (process.env.NODE_ENV === "development") {
-              console.log(
-                `Final pass found ${finalExtractedEmbeds.length} social media embeds`
-              );
-            }
+            log(
+              `Final pass found ${finalExtractedEmbeds.length} social media embeds`
+            );
 
             setEmbeds((prev) => {
               const existingIds = prev.map((embed) => embed.id);
@@ -761,11 +749,8 @@ const SocialMediaEmbedder = () => {
               );
 
               // Log in development mode only
-              if (
-                process.env.NODE_ENV === "development" &&
-                finalNewEmbeds.length > 0
-              ) {
-                console.log(
+              if (finalNewEmbeds.length > 0) {
+                log(
                   `Adding ${finalNewEmbeds.length} new embeds from final pass`
                 );
               }

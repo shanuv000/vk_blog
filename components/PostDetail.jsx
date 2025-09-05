@@ -25,11 +25,6 @@ const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
   ssr: false, // Don't render on server to avoid hydration issues
 });
 
-// Lazy load debugger component for development
-const SocialMediaDebugger = dynamic(() => import("./SocialMediaDebugger"), {
-  ssr: false,
-});
-
 import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
 import RichTextRenderer from "./RichTextRenderer";
@@ -304,9 +299,6 @@ const PostDetail = ({ post }) => {
             )}
           </div>
         </motion.div>
-
-        {/* Add debugger in development */}
-        <SocialMediaDebugger />
       </>
     </ErrorBoundary>
   );
