@@ -2,7 +2,7 @@
 
 ## Overview
 
-urTechy Blogs is a modern, responsive blog application built with Next.js that provides content across various categories including technology, entertainment, sports, and more. The application fetches content from Hygraph (formerly GraphCMS) and includes special features like live cricket scores and PWA (Progressive Web App) capabilities.
+urTechy Blogs is a modern, responsive blog application built with Next.js that provides content across various categories including technology, entertainment, sports, and more. The application fetches content from Hygraph (formerly GraphCMS) and includes special features like live cricket scores.
 
 ## Architecture
 
@@ -14,7 +14,7 @@ urTechy Blogs is a modern, responsive blog application built with Next.js that p
 - **Data Fetching**: GraphQL with graphql-request
 - **Animation**: Framer Motion
 - **State Management**: React Context API
-- **PWA Support**: next-pwa
+- **Performance**: Optimized for speed without PWA overhead
 - **Analytics**: Google Analytics, Microsoft Clarity
 
 ### Directory Structure
@@ -48,7 +48,7 @@ The application uses a consistent layout structure defined in `components/Layout
 1. **Header**: Navigation bar with logo and menu items
 2. **Main Content**: Page-specific content wrapped in a container
 3. **Footer**: Links and social media icons
-4. **PWA Components**: Install prompts and service worker management
+4. **Performance Components**: Optimized loading and error handling
 
 ### Styling Approach
 
@@ -110,7 +110,7 @@ The application uses a consistent layout structure defined in `components/Layout
 - **Code Splitting**: Dynamic imports with Next.js
 - **Preloading**: Critical resources preloaded
 - **Lazy Loading**: Non-critical components loaded on demand
-- **PWA Capabilities**: Offline support and installable app
+- **Fast Loading**: Optimized performance without service worker overhead
 
 ### SEO and Metadata
 
@@ -133,12 +133,12 @@ The application uses a consistent layout structure defined in `components/Layout
 - **Cricket API**: For live scores and match data
 - **Analytics**: Google Analytics and Microsoft Clarity
 
-## Progressive Web App Features
+## Application Performance Features
 
-- **Service Worker**: For offline capabilities
-- **Manifest**: Web app manifest for installable experience
-- **Install Prompt**: Custom UI for app installation
-- **Update Notification**: Prompt for new version updates
+- **No Service Worker**: Removed for better performance and faster loading
+- **In-Memory Caching**: Efficient caching without service worker overhead
+- **Optimized Bundle**: Reduced JavaScript bundle size
+- **Faster Navigation**: Improved page transitions and loading times
 
 ## Error Handling and Resilience
 

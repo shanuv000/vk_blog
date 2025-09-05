@@ -19,8 +19,7 @@ class MyDocument extends Document {
           />
           <link rel="apple-touch-icon" href="/iconified/logo4.ico" />
 
-          {/* Web App Manifest */}
-          <link rel="manifest" href="/manifest.json" />
+          {/* Removed PWA manifest for better performance */}
           <meta name="theme-color" content="#FF4500" />
 
           {/* Preconnect to external domains */}

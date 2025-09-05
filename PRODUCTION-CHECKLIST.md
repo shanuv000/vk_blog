@@ -15,14 +15,14 @@
 ## ✅ Performance
 - [x] Image optimization enabled (Next.js Image component)
 - [x] Bundle size optimized with code splitting
-- [x] Service Worker configured for caching (PWA)
+- [x] Service Worker removed for better performance (PWA disabled)
 - [x] CDN configured for static assets
 - [x] Gzip/Brotli compression enabled
 - [x] Critical CSS inlined
 - [x] Lazy loading implemented for images and components
 - [x] Web Vitals monitoring implemented
 - [x] Database queries optimized
-- [x] Caching strategy implemented (Apollo Client + Service Worker)
+- [x] Caching strategy implemented (Apollo Client + In-memory cache)
 
 ## ✅ SEO & Accessibility
 - [x] Meta tags properly configured

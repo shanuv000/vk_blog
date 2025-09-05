@@ -4,41 +4,12 @@ import { DataProvider } from "../store/HandleApiContext";
 import Footer from "./footer/Footer";
 import dynamic from "next/dynamic";
 
-// Dynamically import the PWA components with no SSR
-const PWAInstallPrompt = dynamic(() => import("./PWAInstallPrompt"), {
-  ssr: false,
-});
+// Removed PWA components for better performance
 
-const PWAUpdatePrompt = dynamic(() => import("./PWAUpdatePrompt"), {
-  ssr: false,
-});
-
-const ServiceWorkerCleanup = dynamic(() => import("./ServiceWorkerCleanup"), {
-  ssr: false,
-});
-
-const MobileTroubleshootButton = dynamic(
-  () => import("./MobileTroubleshootButton"),
-  {
-    ssr: false,
-  }
-);
+// Removed MobileTroubleshootButton as it was PWA-related
 
 // Memoize the Layout component to prevent unnecessary re-renders
 const Layout = memo(({ children }) => {
-  const [showPWAPrompt, setShowPWAPrompt] = useState(false);
-
-  useEffect(() => {
-    // Only show PWA prompt after a delay and in production
-    if (process.env.NODE_ENV === "production") {
-      const timer = setTimeout(() => {
-        setShowPWAPrompt(true);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
   return (
     <>
       <DataProvider>
@@ -52,10 +23,6 @@ const Layout = memo(({ children }) => {
               <Footer />
             </div>
           </div>
-          {showPWAPrompt && <PWAInstallPrompt />}
-          <PWAUpdatePrompt />
-          <ServiceWorkerCleanup />
-          <MobileTroubleshootButton />
         </main>
       </DataProvider>
     </>
