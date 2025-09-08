@@ -159,6 +159,13 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
     if (embedContainer) {
       embedContainer.setAttribute("data-persistent-embed", "true");
       embedContainer.setAttribute("data-embed-stable", blockquoteId);
+
+      // Add mobile-specific attributes to prevent duplication
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        embedContainer.setAttribute("data-mobile-embed", "true");
+        embedContainer.setAttribute("data-mobile-processed", blockquoteId);
+      }
     }
 
     // Cleanup function - only run when component is actually unmounting
@@ -436,7 +443,44 @@ const SocialMediaEmbedder = () => {
         const persistentEmbeds = document.querySelectorAll(
           '[data-persistent-embed="true"]'
         );
+
+        // Mobile-specific duplicate prevention
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          // Remove duplicate embeds on mobile
+          const tweetIds = new Set();
+          const duplicateEmbeds = [];
+
+          persistentEmbeds.forEach((embed) => {
+            const tweetId =
+              embed.getAttribute("data-tweet-id") ||
+              embed
+                .querySelector("[data-tweet-id]")
+                ?.getAttribute("data-tweet-id");
+
+            if (tweetId) {
+              if (tweetIds.has(tweetId)) {
+                duplicateEmbeds.push(embed);
+                log(`Found duplicate embed for tweet ${tweetId} on mobile`);
+              } else {
+                tweetIds.add(tweetId);
+              }
+            }
+          });
+
+          // Remove duplicates
+          duplicateEmbeds.forEach((duplicate) => {
+            if (duplicate.parentNode) {
+              duplicate.parentNode.removeChild(duplicate);
+              log(`Removed duplicate embed on mobile`);
+            }
+          });
+        }
+
         persistentEmbeds.forEach((embed) => {
+          // Skip if this embed was removed as duplicate
+          if (!document.contains(embed)) return;
+
           // Mark as preserved to prevent removal during DOM changes
           embed.setAttribute("data-preserved", "true");
 
@@ -482,6 +526,43 @@ const SocialMediaEmbedder = () => {
         childList: true,
         subtree: true,
       });
+
+      // Mobile-specific duplicate cleanup interval
+      const isMobile = window.innerWidth <= 768;
+      let mobileCleanupInterval;
+
+      if (isMobile) {
+        mobileCleanupInterval = setInterval(() => {
+          const allEmbeds = document.querySelectorAll("[data-tweet-id]");
+          const tweetIds = new Set();
+          const duplicates = [];
+
+          allEmbeds.forEach((embed) => {
+            const tweetId =
+              embed.getAttribute("data-tweet-id") ||
+              embed
+                .querySelector("[data-tweet-id]")
+                ?.getAttribute("data-tweet-id");
+
+            if (tweetId) {
+              if (tweetIds.has(tweetId)) {
+                duplicates.push(embed);
+              } else {
+                tweetIds.add(tweetId);
+              }
+            }
+          });
+
+          if (duplicates.length > 0) {
+            log(`Mobile cleanup: Found ${duplicates.length} duplicate embeds`);
+            duplicates.forEach((duplicate) => {
+              if (duplicate.parentNode) {
+                duplicate.parentNode.removeChild(duplicate);
+              }
+            });
+          }
+        }, 3000); // Check every 3 seconds on mobile
+      }
 
       // Force load social media scripts
       const loadSocialMediaScripts = () => {
@@ -662,17 +743,35 @@ const SocialMediaEmbedder = () => {
         // Find all blockquotes in the article content
         document.querySelectorAll("blockquote").forEach((blockquote, index) => {
           try {
-            // Skip if already processed
-            if (blockquote.getAttribute("data-processed") === "true") {
+            // Skip if already processed by any system
+            if (
+              blockquote.getAttribute("data-processed") === "true" ||
+              blockquote.getAttribute("data-embed-processed") === "true" ||
+              blockquote.getAttribute("data-mobile-processed") === "true"
+            ) {
               console.log(`Skipping already processed blockquote ${index}`);
+              return;
+            }
+
+            // Get the text content of the blockquote
+            const text = blockquote.textContent.trim();
+
+            // Check if there's already an embed for this blockquote
+            const existingEmbed = document.querySelector(
+              `[data-tweet-id="${text}"]`
+            );
+            if (existingEmbed) {
+              console.log(
+                `Skipping blockquote ${index} - embed already exists`
+              );
+              blockquote.setAttribute("data-processed", "true");
+              blockquote.setAttribute("data-mobile-processed", "true");
               return;
             }
 
             // Mark as processed to avoid double processing
             blockquote.setAttribute("data-processed", "true");
-
-            // Get the text content of the blockquote
-            const text = blockquote.textContent.trim();
+            blockquote.setAttribute("data-mobile-processed", "true");
 
             // Enhanced debugging for unprocessed blockquotes
             const links = blockquote.querySelectorAll("a");
@@ -855,6 +954,10 @@ const SocialMediaEmbedder = () => {
         // Disconnect the mutation observer
         if (observer) {
           observer.disconnect();
+        }
+        // Clear mobile cleanup interval
+        if (mobileCleanupInterval) {
+          clearInterval(mobileCleanupInterval);
         }
       };
     } catch (error) {
