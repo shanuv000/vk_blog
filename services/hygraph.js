@@ -353,9 +353,27 @@ export const prefetchCommonQueries = () => {
       `,
       {},
       true
-    ).catch((err) =>
-      console.log(`Recent posts prefetch failed: ${err.message}`)
-    );
+    )
+      .then((data) => {
+        if (data && data.posts && data.posts.length > 0) {
+          console.log(
+            `Recent posts prefetch successful: ${data.posts.length} posts loaded`
+          );
+        } else {
+          console.log("Recent posts prefetch returned empty data");
+        }
+      })
+      .catch((err) => {
+        // Only log as failed if it's actually an error
+        if (err.response && err.response.status === 200) {
+          console.log(
+            "Recent posts prefetch completed with warnings:",
+            err.message
+          );
+        } else {
+          console.log(`Recent posts prefetch failed: ${err.message}`);
+        }
+      });
 
     // Log success message
     console.log("Prefetch queries initiated");

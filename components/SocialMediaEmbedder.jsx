@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { FacebookEmbed, InstagramEmbed } from "react-social-media-embed";
-import TwitterEmbed from "./TwitterEmbed";
+import TwitterEmbed from "./Blog/TwitterEmbed";
 import { log, error } from "../utils/logger";
 
 // Component to render a single embed in place of a blockquote
@@ -155,67 +155,103 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
     // Store blockquote reference for cleanup
     const blockquoteRef = blockquote;
 
-    // Cleanup function
+    // Mark the embed as persistent to prevent cleanup during DOM changes
+    if (embedContainer) {
+      embedContainer.setAttribute("data-persistent-embed", "true");
+      embedContainer.setAttribute("data-embed-stable", blockquoteId);
+    }
+
+    // Cleanup function - only run when component is actually unmounting
     return () => {
       try {
-        // Safely remove the embed container if it exists and is in the DOM
-        if (embedContainer) {
-          // Check if the container is actually in the DOM
-          const containerInDOM = document.contains(embedContainer);
+        // Check if this is a real unmount or just a DOM change/navigation
+        const isRealUnmount = !document.querySelector(
+          `[data-embed-stable="${blockquoteId}"]`
+        );
 
-          if (containerInDOM && embedContainer.parentNode) {
-            // Remove the embed container safely
-            try {
-              embedContainer.parentNode.removeChild(embedContainer);
-
-              log(`Successfully removed embed container during cleanup`);
-            } catch (removeError) {
-              error(`Error removing embed container:`, removeError);
-            }
-          } else {
-            log(`Embed container not in DOM during cleanup, no need to remove`);
-          }
+        if (!isRealUnmount) {
+          log(
+            `Skipping cleanup for ${blockquoteId} - DOM change detected, not unmounting`
+          );
+          return;
         }
 
-        // Try to restore the original blockquote if needed
-        if (blockquoteRef) {
-          // Check if the blockquote is still in the DOM
-          const blockquoteInDOM =
-            document.getElementById(blockquoteId) !== null;
+        // Add a longer delay to prevent cleanup during navigation/DOM changes
+        setTimeout(() => {
+          // Triple-check that we still need to clean up and it's not just a navigation
+          const embedStillExists = document.querySelector(
+            `[data-embed-stable="${blockquoteId}"]`
+          );
+          const stillNeedsCleanup =
+            embedContainer && document.contains(embedContainer);
 
-          if (!blockquoteInDOM) {
-            // The blockquote was completely removed, try to restore it
-            // Find a suitable parent - either the article content or the body as fallback
-            const articleContent = document.querySelector(
-              '.article-content, .blog-content, div[class*="first-letter"]'
-            );
-            const parent = articleContent || document.body;
-
-            if (parent) {
-              // Just append it to the parent, position doesn't matter as much during cleanup
+          if (stillNeedsCleanup && !embedStillExists) {
+            // Safely remove the embed container if it exists and is in the DOM
+            if (embedContainer && embedContainer.parentNode) {
               try {
-                parent.appendChild(blockquoteRef);
-                blockquoteRef.style.display = ""; // Make it visible
-
-                log(`Restored blockquote ${blockquoteId} during cleanup`);
-              } catch (appendError) {
-                error(
-                  `Error appending blockquote during cleanup:`,
-                  appendError
-                );
+                embedContainer.parentNode.removeChild(embedContainer);
+                log(`Successfully removed embed container during cleanup`);
+              } catch (removeError) {
+                error(`Error removing embed container:`, removeError);
               }
             }
           } else {
-            // If the blockquote is still in the DOM (was just hidden), make it visible
-            try {
-              blockquoteRef.style.display = "";
-
-              log(`Made blockquote ${blockquoteId} visible during cleanup`);
-            } catch (displayError) {
-              error(`Error making blockquote visible:`, displayError);
-            }
+            log(
+              `Embed container preserved during DOM change for ${blockquoteId}`
+            );
           }
-        }
+        }, 500); // Longer delay to prevent cleanup during navigation
+
+        // Only restore blockquote if we're actually unmounting AND the embed is gone
+        setTimeout(() => {
+          // Check if this is really an unmount situation
+          const embedStillInDOM = document.querySelector(
+            `[data-embed-stable="${blockquoteId}"]`
+          );
+          const shouldRestoreBlockquote =
+            !embedStillInDOM &&
+            blockquoteRef &&
+            !document.contains(embedContainer);
+
+          if (shouldRestoreBlockquote) {
+            // Check if the blockquote is still in the DOM
+            const blockquoteInDOM =
+              document.getElementById(blockquoteId) !== null;
+
+            if (!blockquoteInDOM) {
+              // The blockquote was completely removed, try to restore it
+              const articleContent = document.querySelector(
+                '.article-content, .blog-content, div[class*="first-letter"]'
+              );
+              const parent = articleContent || document.body;
+
+              if (parent) {
+                try {
+                  parent.appendChild(blockquoteRef);
+                  blockquoteRef.style.display = ""; // Make it visible
+                  log(`Restored blockquote ${blockquoteId} during cleanup`);
+                } catch (appendError) {
+                  error(
+                    `Error appending blockquote during cleanup:`,
+                    appendError
+                  );
+                }
+              }
+            } else {
+              // If the blockquote is still in the DOM (was just hidden), make it visible
+              try {
+                blockquoteRef.style.display = "";
+                log(`Made blockquote ${blockquoteId} visible during cleanup`);
+              } catch (displayError) {
+                error(`Error making blockquote visible:`, displayError);
+              }
+            }
+          } else {
+            log(
+              `Skipping blockquote restoration for ${blockquoteId} - embed still active or DOM change`
+            );
+          }
+        }, 1000); // Even longer delay for blockquote restoration
       } catch (err) {
         error(`General error during cleanup:`, err);
       }
@@ -394,6 +430,58 @@ const SocialMediaEmbedder = () => {
   useEffect(() => {
     try {
       console.log("SocialMediaEmbedder: Starting initialization...");
+
+      // Global embed preservation system to prevent loss during DOM changes
+      const preserveEmbeds = () => {
+        const persistentEmbeds = document.querySelectorAll(
+          '[data-persistent-embed="true"]'
+        );
+        persistentEmbeds.forEach((embed) => {
+          // Mark as preserved to prevent removal during DOM changes
+          embed.setAttribute("data-preserved", "true");
+
+          // Ensure embed stays in correct position
+          const blockquoteId = embed.getAttribute("data-embed-stable");
+          if (blockquoteId) {
+            const originalBlockquote = document.getElementById(blockquoteId);
+            if (
+              originalBlockquote &&
+              originalBlockquote.parentNode &&
+              embed.parentNode !== originalBlockquote.parentNode
+            ) {
+              // Move embed back to correct position if it got displaced
+              originalBlockquote.parentNode.insertBefore(
+                embed,
+                originalBlockquote.nextSibling
+              );
+              log(`Repositioned embed for ${blockquoteId} after DOM change`);
+            }
+          }
+        });
+      };
+
+      // Monitor DOM changes and preserve embeds
+      const observer = new MutationObserver((mutations) => {
+        let shouldPreserve = false;
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "childList" &&
+            (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)
+          ) {
+            shouldPreserve = true;
+          }
+        });
+
+        if (shouldPreserve) {
+          setTimeout(preserveEmbeds, 100);
+        }
+      });
+
+      // Start observing DOM changes
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
 
       // Force load social media scripts
       const loadSocialMediaScripts = () => {
@@ -762,7 +850,13 @@ const SocialMediaEmbedder = () => {
       }, 3000); // Increased delay to give RichTextRenderer more time
 
       // Clean up
-      return () => clearTimeout(timeoutId);
+      return () => {
+        clearTimeout(timeoutId);
+        // Disconnect the mutation observer
+        if (observer) {
+          observer.disconnect();
+        }
+      };
     } catch (error) {
       console.error("SocialMediaEmbedder: Error during initialization:", error);
     }

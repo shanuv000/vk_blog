@@ -10,7 +10,7 @@ import {
   materialDark,
 } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { FiCopy, FiCheck } from "react-icons/fi";
-import TwitterEmbed from "./TwitterEmbed";
+import TwitterEmbed from "./Blog/TwitterEmbed";
 import FacebookEmbed from "./FacebookEmbed";
 import InstagramEmbed from "./InstagramEmbed";
 import CustomYouTubeEmbed from "./CustomYouTubeEmbed";
@@ -630,23 +630,11 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 // Render tweet with the found ID
                 return (
                   <div
-                    className="my-16 mx-auto max-w-4xl"
+                    className="my-4 sm:my-6 md:my-8 mx-auto w-full flex justify-center"
                     data-embed-type="twitter"
                     data-embed-processed="true"
                   >
                     <TwitterEmbed tweetId={finalTweetId} />
-                    {/* Add a direct Twitter embed as fallback */}
-                    <div className="twitter-fallback mt-2">
-                      <blockquote className="twitter-tweet" data-dnt="true">
-                        <a
-                          href={`https://twitter.com/i/status/${finalTweetId}`}
-                        ></a>
-                      </blockquote>
-                      <script
-                        async
-                        src="https://platform.twitter.com/widgets.js"
-                      ></script>
-                    </div>
                   </div>
                 );
               }
@@ -1206,9 +1194,8 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   const finalTweetId = tweetId || trimmedText;
 
                   // Render tweet with the found ID
-
                   return (
-                    <div className="my-16 mx-auto max-w-4xl">
+                    <div className="my-4 sm:my-6 md:my-8 mx-auto w-full flex justify-center">
                       <TwitterEmbed tweetId={finalTweetId} />
                     </div>
                   );
@@ -1271,7 +1258,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 }
 
                 return (
-                  <div className="my-16 mx-auto max-w-4xl">
+                  <div className="my-4 sm:my-6 md:my-8 mx-auto w-full flex justify-center">
                     <TwitterEmbed tweetId={tweetId} />
                   </div>
                 );
