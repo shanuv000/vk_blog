@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { NextSeo } from "next-seo";
 
 import { getCategories, getCategoryPost } from "../../services";
 import { PostCard, Categories, Loader } from "../../components";
@@ -43,23 +44,61 @@ const CategoryPost = ({ posts }) => {
   // Map posts to a simpler format for structured data
   const postsForSchema = posts.map((post) => post.node);
 
+  // SEO configuration
+  const rootUrl = "https://blog.urtechy.com";
+  const categoryUrl = `${rootUrl}/category/${router.query.slug}`;
+  const title = categoryName
+    ? `${categoryName} Articles - urTechy Blogs`
+    : "Category - urTechy Blogs";
+  const description = `Browse our collection of ${
+    categoryName || "articles"
+  } on urTechy Blogs. Stay updated with the latest insights and expert analysis.`;
+
   return (
     <>
-      <Head>
-        <title>
-          {categoryName
-            ? `${categoryName} - urTechy Blogs`
-            : "Category - urTechy Blogs"}
-        </title>
-        <meta
-          name="description"
-          content={`Browse our collection of articles about ${
-            categoryName || "this topic"
-          } on urTechy Blogs.`}
-        />
-        {/* Add structured data */}
-        <SchemaManager posts={postsForSchema} categoryName={categoryName} />
-      </Head>
+      {/* Enhanced SEO with NextSeo */}
+      <NextSeo
+        title={title}
+        description={description}
+        canonical={categoryUrl}
+        openGraph={{
+          type: "website",
+          url: categoryUrl,
+          title: title,
+          description: description,
+          images: [
+            {
+              url: `${rootUrl}/logo/logo4.png`,
+              width: 573,
+              height: 600,
+              alt: `${categoryName || "Category"} - urTechy Blogs`,
+            },
+          ],
+          site_name: "urTechy Blogs",
+        }}
+        twitter={{
+          handle: "@shanuv000",
+          site: "@Onlyblogs_",
+          cardType: "summary",
+        }}
+        additionalMetaTags={[
+          {
+            name: "keywords",
+            content: `${
+              categoryName || "articles"
+            }, urTechy, blogs, technology, news, ${
+              categoryName ? categoryName.toLowerCase() : "category"
+            }`,
+          },
+          {
+            name: "author",
+            content: "urTechy Blogs",
+          },
+        ]}
+      />
+
+      {/* Add structured data */}
+      <SchemaManager posts={postsForSchema} categoryName={categoryName} />
       <div className="container mx-auto px-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="col-span-1 lg:col-span-8">

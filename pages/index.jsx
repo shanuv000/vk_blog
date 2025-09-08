@@ -47,13 +47,11 @@ export default function Home({ posts }) {
         featuredPosts={displayPosts.slice(0, 5).map((post) => post.node)}
       />
 
-      <Head>
-        {/* Add structured data for homepage */}
-        <SchemaManager
-          isHomePage={true}
-          posts={displayPosts.map((post) => post.node)}
-        />
-      </Head>
+      {/* Add structured data for homepage */}
+      <SchemaManager
+        isHomePage={true}
+        posts={displayPosts.map((post) => post.node)}
+      />
       <div className="mb-12">
         {/* Hero section with featured posts */}
         <div className="mb-12">

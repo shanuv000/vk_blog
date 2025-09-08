@@ -10,7 +10,7 @@ const HomeSeo = ({ featuredPosts = [] }) => {
   const rootUrl = "https://blog.urtechy.com";
   const title = "urTechy Blogs | Tech, Entertainment & Sports News";
   const description =
-    "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics and expert analysis.";
+    "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics.";
 
   return (
     <NextSeo
@@ -50,6 +50,18 @@ const HomeSeo = ({ featuredPosts = [] }) => {
         {
           property: "og:locale",
           content: "en_US",
+        },
+        {
+          name: "twitter:title",
+          content: title,
+        },
+        {
+          name: "twitter:description",
+          content: description,
+        },
+        {
+          name: "twitter:image",
+          content: `${rootUrl}/logo/logo4.png`,
         },
       ]}
       languageAlternates={[

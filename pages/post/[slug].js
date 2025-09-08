@@ -242,10 +242,8 @@ const PostDetails = ({ post, error, lastFetched }) => {
 
   return (
     <>
-      <Head>
-        {/* Add structured data */}
-        <SchemaManager post={post} />
-      </Head>
+      {/* Add structured data */}
+      <SchemaManager post={post} />
       <div className="sm:container mx-auto px-0 sm:px-4 lg:px-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12">
           <div className="col-span-1 lg:col-span-8">

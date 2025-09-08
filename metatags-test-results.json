@@ -1,0 +1,3762 @@
+{
+  "timestamp": "2025-09-08T11:44:57.605Z",
+  "summary": {
+    "totalPages": 3,
+    "averageScore": 100,
+    "totalPassed": 39,
+    "totalFailed": 0,
+    "totalWarnings": 1
+  },
+  "pages": [
+    {
+      "name": "Homepage",
+      "url": "/",
+      "type": "homepage",
+      "expectedElements": [
+        "title",
+        "meta[name=\"description\"]",
+        "meta[property=\"og:title\"]",
+        "meta[property=\"og:description\"]",
+        "meta[property=\"og:image\"]",
+        "meta[property=\"og:url\"]",
+        "meta[property=\"og:type\"]",
+        "meta[name=\"twitter:card\"]",
+        "meta[name=\"twitter:title\"]",
+        "meta[name=\"twitter:description\"]",
+        "meta[name=\"twitter:image\"]",
+        "link[rel=\"canonical\"]",
+        "script[type=\"application/ld+json\"]"
+      ],
+      "data": {
+        "title": "urTechy Blogs | Tech, Entertainment & Sports News",
+        "metaTags": {
+          "viewport": "width=device-width, initial-scale=1",
+          "robots": "index,follow",
+          "description": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics.",
+          "twitter:card": "summary",
+          "twitter:site": "@Onlyblogs_",
+          "twitter:creator": "@shanuv000",
+          "og:title": "urTechy Blogs | Tech, Entertainment & Sports News",
+          "og:description": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics.",
+          "og:url": "https://blog.urtechy.com",
+          "og:type": "website",
+          "og:image": "https://blog.urtechy.com/logo/logo4.png",
+          "og:image:alt": "urTechy Blogs Logo",
+          "og:image:width": "573",
+          "og:image:height": "600",
+          "og:site_name": "urTechy Blogs",
+          "keywords": "tech, entertainment, sports, articles, news, updates, reviews, analysis, blog, blogging, diverse content, information, insights",
+          "author": "urTechy Blogs",
+          "og:locale": "en_US",
+          "twitter:title": "urTechy Blogs | Tech, Entertainment & Sports News",
+          "twitter:description": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics.",
+          "twitter:image": "https://blog.urtechy.com/logo/logo4.png",
+          "next-head-count": "56",
+          "theme-color": "#FF4500"
+        },
+        "linkTags": {
+          "preconnect": [
+            {
+              "href": "https://fonts.googleapis.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://fonts.gstatic.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.googletagmanager.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.google-analytics.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.googletagmanager.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.clarity.ms",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "prefetch": [
+            {
+              "href": "/images/placeholder-featured.jpg",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "dns-prefetch": [
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "alternate": [
+            {
+              "href": "https://blog.urtechy.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "canonical": [
+            {
+              "href": "https://blog.urtechy.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "preload": [
+            {
+              "href": "/styles/medium-typography.css",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmf55tccw5yvo08pm2e7pvh4o",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmew991ja3id907pcjafqfv3v",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmck6nw7v0tnv07o69o706q2k",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmbuivalk0jvb07piygldhmwv",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "stylesheet": [
+            {
+              "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap",
+              "type": null,
+              "sizes": null,
+              "media": "all"
+            },
+            {
+              "href": "/react-multi-carousel/lib/styles.css",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "icon": [
+            {
+              "href": "/iconified/logo4.ico",
+              "type": "image/x-icon",
+              "sizes": "any",
+              "media": null
+            }
+          ],
+          "apple-touch-icon": [
+            {
+              "href": "/iconified/logo4.ico",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ]
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "urTechy Blogs",
+            "url": "https://blog.urtechy.com",
+            "description": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://blog.urtechy.com/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "url": "https://blog.urtechy.com/post/gst-2-whats-cheaper-costlier-sept-2025",
+                "name": " GST 2.0: What’s Cheaper & Costlier from Sept 22 (Full List)",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmf55tccw5yvo08pm2e7pvh4o",
+                "description": "Big changes are here! GST 2.0 slashes taxes on milk, toothpaste, ACs, and flights but hikes them on luxury cars and cigarettes. Here’s the complete list of what will impact your budget from September 22, 2025."
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "url": "https://blog.urtechy.com/post/bigg-boss-19-episode-5-recap-captaincy-betrayal-tanya-breakdown",
+                "name": "Bigg Boss 19 Episode 5 Recap: Captaincy Betrayal, Tanya's Breakdown & a Shocking Friendship Breakup!",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmew991ja3id907pcjafqfv3v",
+                "description": "Spoiler Alert! Bigg Boss 19 Episode 5 delivered its biggest betrayal yet as Gaurav and Kunickaa's friendship shatters. Plus, Tanya Mittal's emotional breakdown over her mother had everyone in tears. Get the full recap and all the celebrity reactions right here."
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "url": "https://blog.urtechy.com/post/ssc-cgl-2025-vacancies-exam-dates-eligibility-guide",
+                "name": "SSC CGL 2025: 17,727 Vacancies, Key Dates, Eligibility, Exam Pattern & My Application Journey",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmck6nw7v0tnv07o69o706q2k",
+                "description": "Crack SSC CGL 2025 with this complete guide covering 17,727 vacancies, eligibility, key dates, step-by-step form filling, exam pattern, preparation strategies, and personal tips.\n"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "url": "https://blog.urtechy.com/post/air-india-ahmedabad-plane-crash-june-12-2025",
+                "name": "Tragedy in the Skies: Inside the Deadly Air India Ahmedabad Plane Crash of June 12, 2025",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmbuivalk0jvb07piygldhmwv",
+                "description": "On June 12, 2025, Air India Flight AI171 crashed into Ahmedabad's B.J. Medical College hostel, killing 265 people in India's deadliest air disaster. This detailed report covers the crash, investigation, survivor stories, and national response."
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "url": "https://blog.urtechy.com/post/ipl-2025-playoffs-top-teams-venues-key-players",
+                "name": "IPL 2025 Playoffs: Top Four Teams, Venues, and Key Players to Watch",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmayc5pph0dsh07pn72le4dqv",
+                "description": "IPL 2025 playoffs feature Gujarat Titans, RCB, Punjab Kings, and Mumbai Indians. Get the latest on the points table, venues, and standout performers.\nThis title captures the essence of the playoffs while highlighting the top teams and key elements like venues and players. The slug is concise and SEO-friendly, and the excerpt provides a quick, engaging summary of the post’s main points."
+              },
+              {
+                "@type": "ListItem",
+                "position": 6,
+                "url": "https://blog.urtechy.com/post/csk-vs-rr-ipl-2025-head-to-head-stats-predictions-fantasy-preview",
+                "name": "🔥 CSK vs RR IPL 2025 Showdown: Stats, Predictions, Fantasy Tips & Dhoni’s Farewell?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmawgn5i936xp07o55mgxxxma",
+                "description": "The IPL 2025 match between CSK and RR may not affect the playoffs, but it’s packed with drama, stats, and legacy-defining moments. Dive into head-to-head records, pitch insights, fantasy picks, and the emotional buzz surrounding MS Dhoni’s possible farewell game."
+              },
+              {
+                "@type": "ListItem",
+                "position": 7,
+                "url": "https://blog.urtechy.com/post/will-openai-codex-replace-developers",
+                "name": "Will OpenAI’s Codex Replace Software Engineers? The Shocking Truth",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmars3b0w0i0007ps6yiqriy7",
+                "description": "OpenAI’s new Codex AI claims to automate coding tasks in minutes. But is it reliable—or a ticking time bomb for bugs? Inside the risks, rewards, and what GitHub’s CEO isn’t telling you."
+              },
+              {
+                "@type": "ListItem",
+                "position": 8,
+                "url": "https://blog.urtechy.com/post/virat-kohli-retires-from-test-cricket-legacy-inspire-generations",
+                "name": "Virat Kohli Retires from Test Cricket: A Legacy That Will Inspire Generations",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaousjds0j4i07o897b9bkda",
+                "description": "On May 12, 2025, cricket legend Virat Kohli announced his retirement from Test cricket, marking the end of an era. This article explores Kohli's remarkable Test career, the reasons behind his retirement, global reactions, and his lasting impact on Indian cricket."
+              },
+              {
+                "@type": "ListItem",
+                "position": 9,
+                "url": "https://blog.urtechy.com/post/oneplus-13s-compact-flagship-review",
+                "name": "OnePlus 13s Review: A Compact Flagship with Elite Power & Stylish Design",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmappbece1l0407o8ihikoosj",
+                "description": "Discover everything about the new OnePlus 13s – from its Snapdragon 8 Elite chip, 50MP camera, and 120Hz OLED display to price, specs, and launch details. The perfect compact flagship for 2024!"
+              },
+              {
+                "@type": "ListItem",
+                "position": 10,
+                "url": "https://blog.urtechy.com/post/from-max-to-hbo-max",
+                "name": "Back to being HBO Max: Warner Bros. Discovery reverting to its old name",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmapl8xll1gzn07pme6n40cyh",
+                "description": "From Max to HBO Max, marking the 4th rebranding in the last decade"
+              },
+              {
+                "@type": "ListItem",
+                "position": 11,
+                "url": "https://blog.urtechy.com/post/ironheart-trailer-breakdown-riri-williams-mcu-hero",
+                "name": "Ironheart Trailer Breakdown: 5 Shocking Reasons Riri Williams Is the MCU’s Next Iconic Hero",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmap69reb0wwy07o831xjcopr",
+                "description": "Ironheart Trailer Breakdown: 5 Shocking Reasons Riri Williams Is the MCU’s Next Iconic Hero. Dive into the explosive trailer, uncover hidden details, and see why Riri Williams is set to redefine Marvel’s Phase 5."
+              },
+              {
+                "@type": "ListItem",
+                "position": 12,
+                "url": "https://blog.urtechy.com/post/boycott-turkey-azerbaijan-india-economic-impact",
+                "name": "Boycott Turkey and Azerbaijan – Rising Tensions and Economic Impact on India",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmao59qj905uy07pmeymp5782",
+                "description": "The #BoycottTurkey and #BoycottAzerbaijan movement has gained significant traction in India, driven by diplomatic tensions and social media campaigns. Explore how this boycott impacts tourism, trade, and India’s diplomatic relations with these nations."
+              },
+              {
+                "@type": "ListItem",
+                "position": 13,
+                "url": "https://blog.urtechy.com/post/cbse-result-2025-class-10-12-full-analysis-done",
+                "name": "CBSE Result 2025 OUT: Full Breakdown of Class 10 & 12 Scores, Toppers, and What’s Next!",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmamxme8k0elz08po6f9kvunr",
+                "description": "The CBSE Result 2025 for Class 10 and 12 has been officially declared! Over 41.98 lakh students appeared this year. Explore pass percentages, region-wise toppers, gender-based stats, how to check your result, and what to do next—including re-evaluation, supplementary exams, and future planning."
+              },
+              {
+                "@type": "ListItem",
+                "position": 14,
+                "url": "https://blog.urtechy.com/post/google-g-logo-update-2025-gradient-ai-shift",
+                "name": "🔥 Google’s New ‘G’ Logo After 10 Years Signals a Bold Shift Toward AI",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmamw3bw40cyf07psc4kumvna",
+                "description": "Google changes its ‘G’ logo for the first time in a decade, unveiling a vibrant gradient design that aligns with its expanding focus on artificial intelligence."
+              },
+              {
+                "@type": "ListItem",
+                "position": 15,
+                "url": "https://blog.urtechy.com/post/openai-microsoft-ipo-talks-2025",
+                "name": "OpenAI and Microsoft in IPO Talks: What It Means for the Future of AI",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmam48bzh0kd707o58vx4y39o",
+                "description": "OpenAI is reportedly negotiating with Microsoft to revise their multibillion-dollar partnership, potentially paving the way for an IPO. As the AI giant eyes a public offering, the talks could reshape AI innovation, investment strategies, and regulatory oversight in 2025 and beyond."
+              },
+              {
+                "@type": "ListItem",
+                "position": 16,
+                "url": "https://blog.urtechy.com/post/us-china-trade-truce-trump-drug-price-policy-2025",
+                "name": "U.S.-China Trade Truce and Trump’s Drug Price Cuts: What It Means for Markets and Policy",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmam4rc4z0l7f07o5h7agd0dc",
+                "description": "On May 12, 2025, the U.S. and China reached a 90-day trade truce, slashing tariffs to calm global tensions. On the same day, President Trump signed a bold executive order to cut prescription drug prices by up to 80%. This blog dives into the implications of both moves, how markets responded, and what lies ahead for global trade, healthcare, and fintech sectors."
+              },
+              {
+                "@type": "ListItem",
+                "position": 17,
+                "url": "https://blog.urtechy.com/post/mothers-desires-media-sexuality-2025",
+                "name": "Mothers Have Desires Too: Why Media Strips Moms of Their Sexuality in 2025",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmak2vw1u21j407pllnnzsksi",
+                "description": "This Mother’s Day 2025, explore why society and media erase mothers’ sexuality, from subtle hints in Badhai Ho to bold exceptions like Lust Stories 2. Discover how the male gaze and outdated tropes limit representation—and why it’s time to celebrate moms as whole, desiring humans."
+              },
+              {
+                "@type": "ListItem",
+                "position": 18,
+                "url": "https://blog.urtechy.com/post/record-26632-crore-sip-inflows-april-2025",
+                "name": "Record ₹26,632 Crore SIP Inflows: India’s Mutual Fund Milestone in April 2025",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmakonq5g29ob07pladmytg66",
+                "description": "In April 2025, SIP contributions surged to a historic ₹26,632 crore, driving total mutual fund AUM to a record ₹70 lakh crore. With 46 lakh new SIP registrations and a strategic clean-up of 1.36 crore inactive accounts, India’s mutual fund industry underscores the power of disciplined investing and rising retail participation."
+              },
+              {
+                "@type": "ListItem",
+                "position": 19,
+                "url": "https://blog.urtechy.com/post/ai-in-modern-coding-education",
+                "name": "How AI is Revolutionizing Modern Coding Education for Students and Educators",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmajwiwuh1x8o07pl1lilmx36",
+                "description": "Discover how artificial intelligence is transforming classrooms, empowering teachers, and helping students learn coding faster with personalized, adaptive, and real-time tools."
+              },
+              {
+                "@type": "ListItem",
+                "position": 20,
+                "url": "https://blog.urtechy.com/post/google-ai-conquers-classic-game-milestone-ai-gaming",
+                "name": "Google's AI Conquers Classic Game: A Milestone in AI Gaming",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmabk8aju32pv07pqh9sr7s2o",
+                "description": "Google's AI model, Gemini 2.5 Pro, has conquered the classic game Pokémon Blue, marking a significant milestone in AI gaming. CEO Sundar Pichai celebrated this achievement, showcasing the progress of Google's AI technology and its potential in gaming and beyond."
+              },
+              {
+                "@type": "ListItem",
+                "position": 21,
+                "url": "https://blog.urtechy.com/post/react-19-new-features-and-updates",
+                "name": "Spark the Buzz: Skyrocketing Engagement with React 19’s Magic!",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaarev2f29tc08pkzxzajool",
+                "description": "Explore React 19’s exciting features, from the React Compiler to Server Components! Learn how it boosts performance and simplifies coding for Next and urTechy projects. Perfect for developers eager to level up. "
+              },
+              {
+                "@type": "ListItem",
+                "position": 22,
+                "url": "https://blog.urtechy.com/post/harley-keener-next-iron-man",
+                "name": "The Forgotten Marvel Hero: Is Harley Keener the Next Iron Man?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/SzdcsidtS3GxZ437Ixvq",
+                "description": "Explore why Harley Keener, a young inventor introduced in Iron Man 3, could be the perfect successor to Tony Stark. Discover his backstory, similarities to Iron Man, and why Marvel should bring him back."
+              },
+              {
+                "@type": "ListItem",
+                "position": 23,
+                "url": "https://blog.urtechy.com/post/neuzboy-carryminati-dhruv-rathee-abhi-and-beerbiceps-controversy-and-bias",
+                "name": "CarryMinati, Dhruv Rathee, Abhi and BeerBiceps - Controversy and Bias",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/r7uoVEuNTbCcrRGi9v2r",
+                "description": "This video by NeuzBoy discusses several trending topics including Dhruv Rathee vs Abhi and BeerBiceps getting caught in a controversy."
+              },
+              {
+                "@type": "ListItem",
+                "position": 24,
+                "url": "https://blog.urtechy.com/post/ironheart-release-delay-2025",
+                "name": "Ironheart Release Delayed to 2025: What This Means for the MCU",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/34aAXVIlQ2yPfGcRTLFy",
+                "description": "Marvel's Ironheart, the highly anticipated Iron Man spin-off, is now set to release on Disney+ in 2025. Find out why the series has been delayed and what to expect from Riri Williams' solo adventure."
+              },
+              {
+                "@type": "ListItem",
+                "position": 25,
+                "url": "https://blog.urtechy.com/post/india-ai-leadership-sundar-pichai",
+                "name": "AI Revolution: How India is Leading the Charge (According to Google's CEO)",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/Cbu1gbrTlK5tJdEvlUQu",
+                "description": "Google CEO Sundar Pichai believes India is uniquely positioned to become a leader in the global AI landscape. Learn why he's so optimistic about India's AI future and how Google is investing in this growing market."
+              },
+              {
+                "@type": "ListItem",
+                "position": 26,
+                "url": "https://blog.urtechy.com/post/linear-regression-coefficients-intercepts",
+                "name": "Mastering Machine Learning: A Deep Dive into Linear Regression's Building Blocks",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/imgLIayGQpyJdaZRB9tV",
+                "description": "Learn how to interpret coefficients and intercepts in both simple and multiple linear regression models. Master the fundamentals of predictive modeling and gain insights into the decision-making process of machine learning algorithms."
+              },
+              {
+                "@type": "ListItem",
+                "position": 27,
+                "url": "https://blog.urtechy.com/post/carlsen-10-win-streak-superbet-victory",
+                "name": "Carlsen's Unstoppable 10-Win Streak Dominates Superbet Rapid & Blitz 2024",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/Q6zG8CCOQ289I4ElF4T9",
+                "description": "World Chess Champion Magnus Carlsen secured a stunning victory at the Superbet Rapid & Blitz 2024, overcoming a 2.5-point deficit with an unprecedented 10-game winning streak. Witness his remarkable comeback and dominance on the chessboard."
+              },
+              {
+                "@type": "ListItem",
+                "position": 28,
+                "url": "https://blog.urtechy.com/post/getting-started-react-nextjs",
+                "name": "React + Next.js: A Beginner-Friendly Guide to Building Awesome Web Apps",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/PDRc4EfUSBqgoXRFpbb3",
+                "description": "Learn how to combine the power of React and Next.js to build fast, modern web apps. This beginner-friendly guide walks you through the basics with easy-to-understand code examples."
+              },
+              {
+                "@type": "ListItem",
+                "position": 29,
+                "url": "https://blog.urtechy.com/post/your-browsing-history-and-privacy",
+                "name": "Why Incognito Mode isn't Enough: Protecting Your Browsing History Online",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/HeEHjHddRWym9iWF70xT",
+                "description": "Incognito Mode Won't Keep Your Browsing Private: Here's What You Should Do Instead\n"
+              },
+              {
+                "@type": "ListItem",
+                "position": 30,
+                "url": "https://blog.urtechy.com/post/ipl-media-rights-cofused-about-packages",
+                "name": "For those who are confused about package system (specially package C)  in #IPLMediaRights Auction. ",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/vLWlFqOnRHCGYNl8YVCq",
+                "description": "For those who are confused about package system (specially package C)  in #IPLMediaRights Auction. "
+              },
+              {
+                "@type": "ListItem",
+                "position": 31,
+                "url": "https://blog.urtechy.com/post/thor-4-leak-spoilers-marvel-photo",
+                "name": "Thor 4 Star Apologizes to Marvel for Sharing Spoilery Photo",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/QdOAf0B1SQeHhkpuMSXS",
+                "description": "At the very beginning of this year, a set photo leaked online which spoiled..."
+              },
+              {
+                "@type": "ListItem",
+                "position": 32,
+                "url": "https://blog.urtechy.com/post/marvels-avengers-infinity-war-iron-man-game-mcu-suit",
+                "name": "Marvel's Avengers Fans Shocked by New Infinity War Surprise",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/Tn0wnplGR526cP9WY0hv",
+                "description": "Marvel's Avengers on Google Stadia, PC, PS4, PS5, Xbox One, Xbox Series S, and Xbox Series X is getting a special Infinity War surprise today, courtesy of the in-game marketplace and courtesy of Iron Man."
+              },
+              {
+                "@type": "ListItem",
+                "position": 33,
+                "url": "https://blog.urtechy.com/post/thor-love-and-thunder-trailer-broke-record-mcu-fans-will-hate",
+                "name": "Thor: Love and Thunder Trailer Just Broke a Record That MCU Fans Will Hate",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/1oq15RiERaOAJtot8Gwy",
+                "description": "Marvel fans aren't going to like the record that Thor: Love and Thunder just set. In a post by The Direct, they pointed out that the Chris Hemsworth feature will be the MCU movie with the least time from the initial trailer to the movie's premiere."
+              },
+              {
+                "@type": "ListItem",
+                "position": 34,
+                "url": "https://blog.urtechy.com/post/joe-rogan-shuts-down-donald-trump-jre-podcast-rumors-once-and-for-all",
+                "name": "Joe Rogan shuts down Donald Trump JRE podcast rumors once and for all",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/YXxovceiQZ6io0pfIXLg",
+                "description": "Joe Rogan shuts down Donald Trump JRE podcast rumors once and for all"
+              },
+              {
+                "@type": "ListItem",
+                "position": 35,
+                "url": "https://blog.urtechy.com/post/disney-marvel-netflix-watch-shows-name",
+                "name": "Watch: Disney+ Hilariously Removes Netflix Name From Marvel Show",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/n51VvOlQ2r77v7qKsxAo",
+                "description": "Fans were rattled recently when some unexpected news hit the web: Netflix was going to be losing its original programming based on some of Marvel’s famous characters, such as Daredevil, Jessica Jones, and The Punisher."
+              },
+              {
+                "@type": "ListItem",
+                "position": 36,
+                "url": "https://blog.urtechy.com/post/ant-man-3-samuel-l-jackson-spoilers",
+                "name": "Did Samuel L. Jackson Just Spoil His Ant-Man 3 Role?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/M1wgW0qnS2KJzBlg2hCM",
+                "description": "Even though Marvel Studios is continuously adding new heroes to its roster, that doesn't mean the studio doesn't have plans for its veterans."
+              },
+              {
+                "@type": "ListItem",
+                "position": 37,
+                "url": "https://blog.urtechy.com/post/marvel-studios-lgbtq-florida-law",
+                "name": "Marvel Studios Speaks Out Against Florida's LGBTQ+ Law",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/8Tuam6P7Q9ehmbw3C5Bs",
+                "description": "As Marvel Studios looks to kick off its 2022 content schedule in a couple of weeks with Moon Knight, its parent company, Disney, "
+              },
+              {
+                "@type": "ListItem",
+                "position": 38,
+                "url": "https://blog.urtechy.com/post/spider-man-blue-ray-movie-leak",
+                "name": "Spider-Man: No Way Home Hits Home Video Early Following Blu-ray Leak",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/8SapeD2pR6qmGciJjK3c",
+                "description": "Sony Pictures and Marvel Studios' Spider-Man: No Way Home arrives on digital platforms early following a high-quality leak surfacing online."
+              },
+              {
+                "@type": "ListItem",
+                "position": 39,
+                "url": "https://blog.urtechy.com/post/marvel-benedict-cumberbatch-mcu-anchor",
+                "name": "Marvel Boss Explains Why Benedict Cumberbatch Is Now the MCU’s Anchor",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/JLPHSHU0TGn0qlxw7DnQ",
+                "description": "Sure, Robert Downey Jr.’s performance and presence as Tony Stark is considered by many to be one of the most quintessential and memorable aspects of the Marvel Cinematic Universe. But he’s far from alone in that respect. Chris Evans' Captain America, Chris Hemsworth’s Thor, and.."
+              },
+              {
+                "@type": "ListItem",
+                "position": 40,
+                "url": "https://blog.urtechy.com/post/batman-movie-reviews-critics-reactions",
+                "name": "The Batman Movie Reviews: What Are Critics' First Reactions?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/i4Lom0OUTnWOL5msmQsR",
+                "description": "The anticipation for The Batman is sky-high as the film's release inches closer. Directed by Matt Reeves, the upcoming DC film will introduce a brand-new take on.."
+              },
+              {
+                "@type": "ListItem",
+                "position": 41,
+                "url": "https://blog.urtechy.com/post/spider-man-michael-keaton-morbius-spin-off",
+                "name": "Morbius Star Teases Michael Keaton's Surprising Role In Spider-Man Spin-off",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/xmH8rAvSTFeZ7EtP3R1Z",
+                "description": "It’s sometimes easy to forget how there are Marvel films outside the MCU banner. One of them..."
+              },
+              {
+                "@type": "ListItem",
+                "position": 42,
+                "url": "https://blog.urtechy.com/post/ipl-2022-all-teams-are-set-in-ipl-game",
+                "name": "IPL 2022: All teams set for the IPL games",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/EqQbMkRRP63j7hw61hhf",
+                "description": "The Gujarat Titans and Lucknow Super Giants (LSG) gear up for their maiden IPL appearance after the mega auction. Pacer Avesh Khan was bought by LSG for Rs 10 crore, the highest in IPL history for uncapped players. Mumbai Indians secured Jofra Archer and Tim David. MI also picked Ishan Kishan for Rs 15.25 crore, the highest for any player so far, while Deepak Chahar was sold to CSK for Rs 14 crore."
+              },
+              {
+                "@type": "ListItem",
+                "position": 43,
+                "url": "https://blog.urtechy.com/post/aryan-khan-and-suhana-khan-represent-dad-shah-rukh-khan-at-ipl-auction-see-pics-101644644393625",
+                "name": "Gauri Khan is proud as Aryan and Suhana represent Shah Rukh Khan, join Kolkata Knight Riders at IPL auction",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/10o3DS1JT2WxOyLflMNJ",
+                "description": "Shah Rukh Khan's kids, Aryan Khan and Suhana Khan, were seen at the IPL auction on Friday in Bengaluru.\n"
+              },
+              {
+                "@type": "ListItem",
+                "position": 44,
+                "url": "https://blog.urtechy.com/post/spider-man-no-way-home-one-billion-overseas-scream-sing-2-belfast-global-international-box-office-1234922668",
+                "name": "‘Spider-Man: No Way Home’ Swings Past $1B Overseas; Global Now $1.74B – International Box Office",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/5ddVHdwQhmHh1OX7MaLX",
+                "description": "Sony/Marvel’s Spider-Man: No Way Home scaled fresh heights this session as it reached an amazing new milestone by crossing the $1B mark at the ..."
+              },
+              {
+                "@type": "ListItem",
+                "position": 45,
+                "url": "https://blog.urtechy.com/post/doctor-strange-in-the-multiverse-of-madness-is-going-to-have-a-lot-of-horror-scenes",
+                "name": "Doctor Strange In The Multiverse Of Madness is going to have a lot of horror scenes",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/d3EIYuSST92yFNeTkstM",
+                "description": "Doctor Strange in the Multiverse of Madness is next up on Marvel Studios' theatrical slate, and anticipation is only just starting to build amongst fans."
+              },
+              {
+                "@type": "ListItem",
+                "position": 46,
+                "url": "https://blog.urtechy.com/post/thor-4-natalie-portman-marvel-plans-after",
+                "name": "Marvel Rumor Teases Big Plans for Natalie Portman After Thor 4",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/RoqDOeWRGGveq7LcDF34",
+                "description": "Chris Hemsworth's Thor will break new ground for the MCU this year as he becomes the first hero to lead a fourth solo outing."
+              },
+              {
+                "@type": "ListItem",
+                "position": 47,
+                "url": "https://blog.urtechy.com/post/ganurdiansofthegalaxyunderproduction123",
+                "name": "Gallery: Guardians of the Galaxy 3 Is Under Production. Pics Posted by Actors. ",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/yuMB4zNQ4iK1ZghbUOlT",
+                "description": "here are some pics of actors like zoe and more.."
+              },
+              {
+                "@type": "ListItem",
+                "position": 48,
+                "url": "https://blog.urtechy.com/post/anish-giri-i-have-had-it-all-in-wijk-aan-zee",
+                "name": "Anish Giri: ‘I have had it all in Wijk aan Zee’",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/OoZ7cVPBRM6xsrhtYwTD",
+                "description": "Wijk aan Zee is where most of my memorable moments in my chess career have happened."
+              },
+              {
+                "@type": "ListItem",
+                "position": 49,
+                "url": "https://blog.urtechy.com/post/ipl-to-begin-from-last-week-of-march",
+                "name": " 'IPL 2022 to begin from last week of March': confirms BCCI Secretary Jay Shah",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/THBI3lFRTGyS8byEd5n4",
+                "description": "BCCI Secretary Jay Shah on Saturday confirmed that the 15th season of the Indian Premier League will begin from the final week in March and will end will continue till May end."
+              },
+              {
+                "@type": "ListItem",
+                "position": 50,
+                "url": "https://blog.urtechy.com/post/valorant-players-can-use-sound-radius-circle-to-line-up-viper-snake-bite-ability",
+                "name": "VALORANT players can use sound radius circle to line up Viper’s Snake Bite ability",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/sctgG4sgQEih0LlDhcSU",
+                "description": "Use this to your advantage."
+              },
+              {
+                "@type": "ListItem",
+                "position": 51,
+                "url": "https://blog.urtechy.com/post/ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
+                "name": "IPL 2025: Riyan Parag Smashes 6 Consecutive Sixes, Joins Yuvraj Singh and Kieron Pollard in Elite Club",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa2bwu41xxo07pq1a1ocuoo",
+                "description": "Riyan Parag set Eden Gardens alight in IPL 2025, hitting six consecutive sixes against KKR’s Moeen Ali and Varun Chakravarthy. His explosive 95 off 48 balls revived Rajasthan Royals’ chase of 207, matching feats by Yuvraj Singh and Kieron Pollard. Relive the historic moment and explore its significance!"
+              },
+              {
+                "@type": "ListItem",
+                "position": 52,
+                "url": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
+                "name": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 and Low VRAM Are Holding It Back",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy",
+                "description": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks are to blame, impacting mainstream gamers. Learn which games are hit hardest and how to choose a better GPU for modern gaming."
+              },
+              {
+                "@type": "ListItem",
+                "position": 53,
+                "url": "https://blog.urtechy.com/post/rcb-vs-dc-ipl-2025-match-46-highlights-krunal-pandya-virat-kohli-lead-rcb-to-victory",
+                "name": "RCB vs DC Match 46, IPL 2025: Royal Challengers Bengaluru Crush Delhi Capitals by 6 Wickets | Full Match Report",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cma0tvl1a24ar07o8m6halmwl",
+                "description": "On April 27, 2025, Royal Challengers Bengaluru defeated Delhi Capitals by 6 wickets in IPL 2025 Match 46 at Arun Jaitley Stadium. Powered by Krunal Pandya’s unbeaten 73* and Virat Kohli’s steady 51, RCB successfully chased 163 in 18.3 overs. Josh Hazlewood’s key 3-wicket haul restricted DC to 162/8, helping RCB extend their away winning streak and top the points table."
+              },
+              {
+                "@type": "ListItem",
+                "position": 54,
+                "url": "https://blog.urtechy.com/post/virat-kohli-rcb-csk-ipl-2025-rivalry-match-preview",
+                "name": "Virat Kohli Reveals Why RCB vs CSK is the IPL's Fiercest Rivalry | IPL 2025 Showdown",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cma7076hm05zm07pqfphfs4w9",
+                "description": "Ahead of the highly anticipated IPL 2025 clash between RCB and CSK, Virat Kohli shares insights on the fierce rivalry, calling it the most intense matchup in IPL history. With RCB chasing a playoff spot and CSK playing for pride, Saturday’s game at M Chinnaswamy Stadium is set to be an electrifying contest. Don’t miss the action!"
+              },
+              {
+                "@type": "ListItem",
+                "position": 55,
+                "url": "https://blog.urtechy.com/post/caste-census-bjp-adapting-puncturing-opposition-politics-ready-for-numbers",
+                "name": "Why now? On sure footing, Govt changes course to take the big step, announces Caste Census",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cma46bn1i09j707phxl3chpsi",
+                "description": "In public, the BJP and its leaders often parried questions and were non-committal on the need for a caste census. They, however, regularly targeted the Congress, accusing it of using caste to divide the society.\n"
+              },
+              {
+                "@type": "ListItem",
+                "position": 56,
+                "url": "https://blog.urtechy.com/post/chatgpt-voice-real-time-translation",
+                "name": "OpenAI GPT-4o — breakthrough voice assistant, new vision features and everything you need to know",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/65aPRRm2S9qLyBIQzgVE",
+                "description": "Experience seamless communication across languages with ChatGPT Voice. Discover how this revolutionary tool empowers travelers to navigate new cultures and connect with locals effortlessly, breaking down linguistic barriers with real-time translation capabilities."
+              },
+              {
+                "@type": "ListItem",
+                "position": 57,
+                "url": "https://blog.urtechy.com/post/shark-tank-india-judge-ashneer-grover-trolled-for-wife-dress",
+                "name": "शार्क टैंक के सबसे विवादित जज हुए भयंकर ट्रोल, पत्नी की ड्रेस से जुड़ा है मामला",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/VH06fh9TTwSNKhgSNn0w",
+                "description": "रिएलिटी शो शार्क टैंक इंडिया  (Shark Tank India) में अपने निगेटिव जजमेंट के जाने जाते हैं अशनीर ग्रोवर (Ashneer Grover). इन दिनों उनकी एक फोटो वायरल हो रही है, जिसमें वो अपनी पत्नी के साथ नजर आए."
+              },
+              {
+                "@type": "ListItem",
+                "position": 58,
+                "url": "https://blog.urtechy.com/post/india-t20-world-cup-pakistan-new-york",
+                "name": "India's Quest for T20 World Cup Glory: A Thrilling Showdown with Pakistan in New York Awaits",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/EenEgL2MTS5b9IKTpTMw",
+                "description": "The ICC T20 World Cup 2024 is set to explode with India's clash against Pakistan in New York. Delve into the security preparations, team strategies, and the intense rivalry that fuels this cricketing spectacle."
+              },
+              {
+                "@type": "ListItem",
+                "position": 59,
+                "url": "https://blog.urtechy.com/post/lunar-water-discovery-exploration",
+                "name": "Lunar Water: A Journey of Discovery and Implications for Exploration",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/g9sZmtklTDqb4OGI8JrQ",
+                "description": "Discover the fascinating history of water on the Moon, from centuries-old theories to the groundbreaking confirmations that are transforming our understanding of lunar exploration."
+              },
+              {
+                "@type": "ListItem",
+                "position": 60,
+                "url": "https://blog.urtechy.com/post/indian-election-2024-key-highlights-political-shifts",
+                "name": "Indian Election 2024: Key Highlights and Political Shifts",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/anxsOTR6SkG7I67AuGRl",
+                "description": "The results of the 2024 Indian general elections, announced on June 4, have brought significant changes to the political landscape of the country. The BJP-led NDA secured 296 seats, indicating potential coalition negotiations, while the opposition INDIA bloc showed considerable strength with 230 seats. Regional insights reveal key victories and shifts, emphasizing a dynamic and competitive political environment. The fragmented parliament suggests forthcoming strategic alliances and coalition talks to form a stable government."
+              },
+              {
+                "@type": "ListItem",
+                "position": 61,
+                "url": "https://blog.urtechy.com/post/munawar-faruqui-second-marriage-mehzabeen-coatwala",
+                "name": "Munawar Faruqui's Second Marriage: A Secret Union with Mehzabeen Coatwala",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/HK5wSQsgTuGSltd4PZHw",
+                "description": "Comedian and Bigg Boss 17 winner Munawar Faruqui has reportedly married makeup artist Mehzabeen Coatwala in a private ceremony. The secret wedding, held at ITC Grand Central, has left fans curious and eager for details. This new chapter in Munawar's life follows his tumultuous first marriage and public controversies. As the comedian steps into this new relationship, the media and his followers are eagerly awaiting more information."
+              },
+              {
+                "@type": "ListItem",
+                "position": 62,
+                "url": "https://blog.urtechy.com/post/kavya-maran-emotional-speech-ipl-2024",
+                "name": " Kavya Maran's Emotional Speech After SRH's IPL Loss: A Masterclass in Leadership",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/1eKpRYTdTVC1VQeoGF6y",
+                "description": "Sunrisers Hyderabad owner Kavya Maran's tearful speech after the IPL 2024 final wasn't just about a loss. Discover how her words turned disappointment into a lesson in resilience, leadership, and the true spirit of sports."
+              },
+              {
+                "@type": "ListItem",
+                "position": 63,
+                "url": "https://blog.urtechy.com/post/kkr-wins-third-ipl-title-2024",
+                "name": "Kolkata Knight Riders Clinch Third IPL Title with Dominant Win Over Sunrisers Hyderabad",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/EEn0f5d4TGSDZDcJj8gL",
+                "description": "The Kolkata Knight Riders secured their third IPL title in stunning fashion, defeating the Sunrisers Hyderabad by eight wickets in a dominant display at the MA Chidambaram Stadium. Led by a fiery spell from Mitchell Starc and an explosive half-century from Venkatesh Iyer, KKR's comprehensive performance left SRH in disarray, capping off a memorable 2024 IPL season."
+              },
+              {
+                "@type": "ListItem",
+                "position": 64,
+                "url": "https://blog.urtechy.com/post/ai-math-education-equalizer",
+                "name": "AI: The Great Equalizer in Math Education",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/1CTt4XClRPayyEQ84upO",
+                "description": "Society often divides people based on math proficiency, creating barriers in fields like engineering and computer science. However, AI tools like ChatGPT and Copilot are dismantling these barriers, allowing those without strong math skills to excel. This transformation is democratizing access to technology and fostering inclusivity, reshaping how we think about education and career opportunities."
+              },
+              {
+                "@type": "ListItem",
+                "position": 65,
+                "url": "https://blog.urtechy.com/post/dhruv-rathee-abhijit-sawant-rcb-drama-neon-man-news",
+                "name": "Dhruv Rathee vs. Abhijit Sawant, RCB Drama, and More: Neon Man's Spicy News",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/iqflNn6DQOuf7g5NENJ1",
+                "description": "Neon Man dishes out the hottest news, including the escalating feud between YouTubers Dhruv Rathee and Abhijit Sawant, the controversy surrounding RCB and Virat Kohli, and the shocking viral video of papad cooking in the Rajasthan heatwave."
+              },
+              {
+                "@type": "ListItem",
+                "position": 66,
+                "url": "https://blog.urtechy.com/post/does-arnayak-web-series-deserve",
+                "name": "Arnayak WEB SERIES : Does Arnayak deserve IMDB 8.0 rating?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/IZcNzZNCQ42qKUUhfXi2",
+                "description": "‘Aranyak’ season one review: Raveena Tandon aces Netflix whodunit, aided by the fantastic writing"
+              },
+              {
+                "@type": "ListItem",
+                "position": 67,
+                "url": "https://blog.urtechy.com/post/ipl-rr-vs-rcb-last-ball-thriller",
+                "name": "IPL Thriller: Rajasthan Royals Edge Out Royal Challengers Bangalore in Last-Ball Drama",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/dHSMoUITSYqljhNsDQiA",
+                "description": "A rollercoaster of emotions, nail-biting finishes, and incredible individual performances defined the Rajasthan Royals vs. Royal Challengers Bangalore IPL match. Relive the drama as RCB secured a thrilling last-ball victory."
+              },
+              {
+                "@type": "ListItem",
+                "position": 68,
+                "url": "https://blog.urtechy.com/post/kkr-dominates-srh-qualifier-win",
+                "name": "KKR Dominates SRH: A Qualifier Masterclass Sends Kolkata to the Finals",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/wTicUM3VS0a5xXugJGuT",
+                "description": "Kolkata Knight Riders showcased a clinical performance in Qualifier 1, with their bowlers dismantling SRH's batting and Venkatesh Iyer leading a dominant chase to secure a spot in the IPL 2024 finals."
+              },
+              {
+                "@type": "ListItem",
+                "position": 69,
+                "url": "https://blog.urtechy.com/post/will-jacks-unforgettable-ipl-journey",
+                "name": "From Fanboy to Teammate: Will Jacks' Unforgettable IPL Season with RCB",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/vVw28kzcROenKDX29voq",
+                "description": "Get an inside look at Will Jacks' unforgettable IPL journey with RCB, including his explosive batting, admiration for Virat Kohli, and the electrifying atmosphere of Chinnaswamy Stadium."
+              },
+              {
+                "@type": "ListItem",
+                "position": 70,
+                "url": "https://blog.urtechy.com/post/abhi-niyu-vs-dhruv-rathee-social-media-feud",
+                "name": "Abhi and Niyu vs. Dhruv Rathee: Social Media Feud Heats Up!",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/kX8R9sB7TxmEA5iWij7L",
+                "description": "The internet is buzzing as Abhi and Niyu engage in a heated social media battle with Dhruv Rathee. After Rathee's critical video, the duo responded with a series of mocking tweets, sparking a fiery debate among their followers."
+              },
+              {
+                "@type": "ListItem",
+                "position": 71,
+                "url": "https://blog.urtechy.com/post/beyond-batcave-avengers-tower-preview",
+                "name": "Marvel vs. DC: The Epic Battle for Superhero Supremacy Continues",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/Eslhk30mSyebrBgjF6bG",
+                "description": "Marvel and DC are gearing up for a battle of epic proportions with new movies and TV shows. Discover what's in store for Spider-Man, Agatha Harkness, Penguin, and more in this comprehensive preview."
+              },
+              {
+                "@type": "ListItem",
+                "position": 72,
+                "url": "https://blog.urtechy.com/post/royal-enfield-hunter-350-price-guide",
+                "name": "Royal Enfield Hunter 350: A Comprehensive Price Guide Across India",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/P9jb3ib9QcyagxdxFwSt",
+                "description": "Discover the ex-showroom and on-road prices of the Royal Enfield Hunter 350 across various cities in India. Explore the pricing differences between variants and get insights into the additional costs involved in owning this modern classic motorcycle."
+              },
+              {
+                "@type": "ListItem",
+                "position": 73,
+                "url": "https://blog.urtechy.com/post/ipl-2024-qualifier-1-kkr-vs-srh-match-preview",
+                "name": "IPL 2024 Qualifier 1: Red-Hot SRH Aim to Derail KKR's Express Train to the Final",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/iMJfPEc7Qh4b2yTCjnwV",
+                "description": "The high-stakes Qualifier 1 pits a surging Sunrisers Hyderabad against a formidable Kolkata Knight Riders. Who will secure a direct ticket to theIPL 2024 final? OneCricket's analysis points towards a thrilling chase."
+              },
+              {
+                "@type": "ListItem",
+                "position": 74,
+                "url": "https://blog.urtechy.com/post/ipl-2024-latest-updates-highlights-gossips",
+                "name": "IPL 2024: Latest Updates, Highlights, and Gossips",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/SVgqEZoZTRGYg0irZprE",
+                "description": "Stay up-to-date with all the action from IPL 2024! Catch the latest match highlights, player spotlights, team analysis, controversies, and more in one convenient location."
+              },
+              {
+                "@type": "ListItem",
+                "position": 75,
+                "url": "https://blog.urtechy.com/post/top-web-development-trends-2024",
+                "name": "Web Development Trends to Watch in 2024",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/WZBpG3GKSwGecz8d1otP",
+                "description": "Stay ahead in the fast-evolving world of web development with the latest trends for 2024. From AI integration and Progressive Web Apps to voice search optimization and cybersecurity, discover how these innovations are set to transform the digital landscape. Learn about the tools and technologies driving these changes and how you can leverage them to create more engaging, efficient, and secure web experiences."
+              },
+              {
+                "@type": "ListItem",
+                "position": 76,
+                "url": "https://blog.urtechy.com/post/openai-latest-innovations-2024",
+                "name": "OpenAI's Latest Innovations and Strategic Moves in 2024",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/MpaSz1xzS5OKC6eOWV7Y",
+                "description": "OpenAI continues to lead the artificial intelligence landscape with groundbreaking updates and strategic initiatives. From enhancing their flagship AI models to safeguarding election integrity, here’s a comprehensive look at the latest news from OpenAI."
+              },
+              {
+                "@type": "ListItem",
+                "position": 77,
+                "url": "https://blog.urtechy.com/post/new-coder-mistakes-avoiding-tutorial-hell",
+                "name": "The Beginner's Guide to Escaping Tutorial Hell (and Actually Coding)",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/l5zh2LOwSpuwCankvQEB",
+                "description": "Avoid the pitfalls of early coding. Learn how to focus your learning, choose the right languages, and start building projects you're passionate about."
+              },
+              {
+                "@type": "ListItem",
+                "position": 78,
+                "url": "https://blog.urtechy.com/post/cbse-results-2024-declared",
+                "name": "CBSE Results 2024: A Triumph for Students, A New Chapter Begins",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/49dnZEQYmGvnGi4cvWHw",
+                "description": "The CBSE announces Class 10 and 12 results for 2024, highlighting key statistics, student emotions, and the road ahead."
+              },
+              {
+                "@type": "ListItem",
+                "position": 79,
+                "url": "https://blog.urtechy.com/post/rj-karan-rj-ralak-in-big-boss-house-39291",
+                "name": "Big Boss: RJ Karan aur RJ Palak Is on Big Boss House",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/1BhALcQkqB8ESsIPaCTQ",
+                "description": "RJ Karan aur RJ Palak Khurana came Big Boss for contestent to win..."
+              },
+              {
+                "@type": "ListItem",
+                "position": 80,
+                "url": "https://blog.urtechy.com/post/decoding-google-2024-io-keynote-future-ai",
+                "name": "Decoding Google's 2024 I/O Keynote: Unveiling the Future of AI",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/kZ275SOmQ6GYxtVH29Rc",
+                "description": "Dive into Google's 2024 I/O keynote as we unravel the complexities of Gemini, Gemma, and AI agents, paving the way for a transformative future driven by AI innovation."
+              },
+              {
+                "@type": "ListItem",
+                "position": 81,
+                "url": "https://blog.urtechy.com/post/narendra-modi-nomination-varanasi-symbolism-strategy",
+                "name": "Narendra Modi's Nomination from Varanasi: A Closer Look at the Symbolism and Strategy",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/nZcpT4IlQPnUTL9AgwEw",
+                "description": "Prime Minister Narendra Modi's nomination from Varanasi for the 2024 Lok Sabha elections carries profound symbolism and strategic significance, underscoring the BJP's stronghold in this historic constituency. His deeply personal connection with the city, combined with the grandeur of the nomination filing ceremony, reflects the intricate interplay between politics and spirituality in Indian culture."
+              },
+              {
+                "@type": "ListItem",
+                "position": 82,
+                "url": "https://blog.urtechy.com/post/ind-vs-sl-shami-sitting-at-home-baffles-me-ravi-shastri-after-indias-asia-cup-loss-vs-sri-lanka-3322380",
+                "name": "\"Shami Sitting At Home, Baffles Me...\": Ravi Shastri After India's Asia Cup Loss vs Sri Lanka",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/QP1KJwZBTViioY1gNqMy",
+                "description": "Asia Cup, India vs Sri Lanka: Ravi Shastri questioned Mohammed Shami's exclusion from India's squad."
+              },
+              {
+                "@type": "ListItem",
+                "position": 83,
+                "url": "https://blog.urtechy.com/post/karan-kundrra-gets-dolls-fashioned-after-girlfriend-tejasswi-prakash-and-him-thanks-fans-by-sharing-a-funny-video",
+                "name": "Karan Kundrra gets dolls fashioned after girlfriend Tejasswi Prakash and him; thanks fans by sharing a funny video",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/0pUQIXR3SraNkyUJSvT0",
+                "description": "Karan Kundrra and Tejasswi Prakash are in love and they aren't shy to flaunt it on social media."
+              },
+              {
+                "@type": "ListItem",
+                "position": 84,
+                "url": "https://blog.urtechy.com/post/jasmin-bhasin-finally-breaks-silence-on-marriage-rumours-with-aly-goni-no-we-arent-getting-married",
+                "name": "Jasmin Bhasin Breaks Her Silence On Aly Goni Marriage Rumors: 'No We Aren't Getting Married'",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/gqg6XQkSGGbDURNKHtJs",
+                "description": "Jasmin Bhasin and Aly Goni are over over heals in love, and their PDA proves it. The actress recently discussed the couple's wedding preparations; here's what she said."
+              },
+              {
+                "@type": "ListItem",
+                "position": 85,
+                "url": "https://blog.urtechy.com/post/china-says-it-may-have-detected-signals-from-alien-civilizations",
+                "name": "Chinese Scientists Suggest They May Have Found Signs of Extraterrestrial Life",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/IkJb0O3RQGUm24K8bTZM",
+                "description": "China's enormous Sky Eye observatory may have picked up signals of alien civilizations. However, the paper and posts about the discovery appear to have been removed."
+              },
+              {
+                "@type": "ListItem",
+                "position": 86,
+                "url": "https://blog.urtechy.com/post/venom-3-photo-tom-hardy-anti-hero-last",
+                "name": "Tom Hardy's antihero Venom has one more 'last dance' in him, as teased by a new photo from the third instalment.",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/41rZaMvZSeu3K0z4sq2M",
+                "description": "Despite Sony's recent blunder, Morbius, the studio will press on with its objective of establishing a cinematic universe of Spider-Man spin-offs."
+              },
+              {
+                "@type": "ListItem",
+                "position": 87,
+                "url": "https://blog.urtechy.com/post/5g-spectrum-auction-gets-cabinet-greenlight-as-services-to-roll-out-soon",
+                "name": "The auction of 5G spectrum has been approved by the Cabinet, and services will begin soon.",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/N9KxztDQbC0h7cJOJAqQ",
+                "description": "By the end of July, a total of 72 GHz of spectrum with a validity period of 20 years will be auctioned off."
+              },
+              {
+                "@type": "ListItem",
+                "position": 88,
+                "url": "https://blog.urtechy.com/post/brahmastra-trailer-ranbir-and-alia",
+                "name": "DYK: Brahmastra’s Alia Bhatt once said ‘when Ranbir Kapoor & I come together, it has to be magical’?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/NkwxKck9SJq17bGVkt6f",
+                "description": "Check out all the updates from the trailer launch of this Ranbir Kapoor and Alia Bhatt starrer in this entertainment live.&nb After a long wait, the trailer of "
+              },
+              {
+                "@type": "ListItem",
+                "position": 89,
+                "url": "https://blog.urtechy.com/post/karan-kundrra-shares-a-glimpse-of-his-romantic-getaway-with-tejasswi-prakash",
+                "name": "Karan Kundrra shares a glimpse of his romantic getaway with Tejasswi Prakash on her birthday, fans declare him ‘best boyfriend in the world’",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/PqTzdGyvRJ9ivSu0t0g7",
+                "description": "Karan Kundrra and Tejasswi Prakash were in Goa to celebrate her birthday. Karan shared photos from a yacht celebration."
+              },
+              {
+                "@type": "ListItem",
+                "position": 90,
+                "url": "https://blog.urtechy.com/post/exclusive-after-ss-rajamouli-chiranjeevi-comes-board-ranbir-kapoor-alia-bhatts-brahmastra-details-1141666",
+                "name": "EXCLUSIVE: After SS Rajamouli, Chiranjeevi comes on board Ranbir Kapoor & Alia Bhatt's Brahmastra - Details",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/Lh0LKdT2RzKDSLyIhJfH",
+                "description": "The first theatrical trailer of Ranbir Kapoor, and Alia Bhatt fronted Brahmastra will be launched on June 15. The action adventure also features Amitabh Bachchan, Dimple Kapadia, Nagarjuna and Mouni Roy in key roles."
+              },
+              {
+                "@type": "ListItem",
+                "position": 91,
+                "url": "https://blog.urtechy.com/post/thor-love-and-thunder-trailer-jane-foster-gorr",
+                "name": "‘Thor: Love and Thunder’: New Trailer Tells the Story of the One and Only Space Viking",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/TTQLnayxRCO7eVIWktyw",
+                "description": "Check out the new out-of-this-world trailer and poster now!"
+              },
+              {
+                "@type": "ListItem",
+                "position": 92,
+                "url": "https://blog.urtechy.com/post/spider-man-tobey-maguire-no-way-home-poster",
+                "name": "Tobey Maguire's Spider-Man Finally Receives His Own No Way Home Poster",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/OryWBTIUQKblalAGc95L",
+                "description": "After a plethora of rumors and reports, Spider-Man: No Way Home featured a long-awaited comeback for Tobey Maguire's version of the web-slinger."
+              },
+              {
+                "@type": "ListItem",
+                "position": 93,
+                "url": "https://blog.urtechy.com/post/are-karan-kundrra-and-tejasswi-prakash-getting-married-he-responds",
+                "name": "Are Karan Kundrra and Tejasswi Prakash getting married? He responds",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/tsw8ysqoTMebqf7kLl0B",
+                "description": "DYK Karan Kundrra was ready to get married to Tejasswi Prakash right from their Bigg Boss 15 days? Going by what the actor has to say, we won't be surprised to see an official statement coming our way!\n"
+              },
+              {
+                "@type": "ListItem",
+                "position": 94,
+                "url": "https://blog.urtechy.com/post/green-goblin-spider-man-no-way-home-deleted-scene-fight",
+                "name": "Watch: Green Goblin’s Deleted Fight Scene In Spider-Man: No Way Home Revealed",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/ciOLw9HVRiWjEOzujpju",
+                "description": "The wait leading up to Spider-Man: No Way Home was a long one for fans. The rumors about what the film might bring to the table started early once both Jamie Foxx's Electro and Alfred Molina's Doc Ock were confirmed to return"
+              },
+              {
+                "@type": "ListItem",
+                "position": 95,
+                "url": "https://blog.urtechy.com/post/bgmi-1-9-holi-update-free-rewards-download-links-storage",
+                "name": "BGMI 1.9 holi update free rewards, all download links, storage required, and more",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/dnBpUxjPSqGMAOpmJThO",
+                "description": "After the successful BGMI 1.8 update, which the players welcomed and enjoyed for the last few months, it is time for the 1.9 version. It is all set.."
+              },
+              {
+                "@type": "ListItem",
+                "position": 96,
+                "url": "https://blog.urtechy.com/post/bgmi-ban-in-india-after-pubg-ban-ngo-asks-government-to-ban-battlegrounds-mobile-india-app-check-why",
+                "name": "BGMI Ban in India: After PUBG Ban, NGO Asks Government to Ban Battlegrounds Mobile India app, Check why",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cGW2wMJR36jDDZa5GV6Q",
+                "description": "BGMI Ban in India: After PUBG Ban, NGO Asks Government to Ban Battlegrounds Mobile India app, Check why"
+              },
+              {
+                "@type": "ListItem",
+                "position": 97,
+                "url": "https://blog.urtechy.com/post/shah-rukh-khan-teases-new-ott-venture-but-salman-khan-leaks-details-fans-say-suspense-hi-khatam-kar-diya-bhai",
+                "name": "Shah Rukh Khan teases new OTT venture but Salman Khan leaks details, fans say: 'Suspense hi khatam kar diya bhai'",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/is634e0ORrmDkqsnb6Jn",
+                "description": "Shah Rukh Khan teased his new OTT venture but Salman Khan revealed the details. Fans were left in splits."
+              },
+              {
+                "@type": "ListItem",
+                "position": 98,
+                "url": "https://blog.urtechy.com/post/why-movies-so-dark-hard-to-see-batman",
+                "name": "Don’t Adjust the Brightness: Here’s Why TV and Movies Are So Dark Now",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/9WT4mU5bSqWkmidbxd2T",
+                "description": "While dark scenes are usually due to the filmmaker’s vision, there are several factors both at movie theaters and when viewing at home that will affect the viewer’s ability to see what’s going on onscreen."
+              },
+              {
+                "@type": "ListItem",
+                "position": 99,
+                "url": "https://blog.urtechy.com/post/spider-man-morbius-appear-jared-leto",
+                "name": "Will Spider-Man Appear In Morbius? Jared Leto Responds",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/odMyuKR4RsWjp3vIPSJP",
+                "description": "The next film on its slate is Morbius, which stars Jared Leto as the titular Vampiric anti-hero. The movie has seen delay after delay, but it's currently still set to hit theaters on April 1—hopefully, it's not a joke."
+              },
+              {
+                "@type": "ListItem",
+                "position": 100,
+                "url": "https://blog.urtechy.com/post/radhe-shyam-review-despite-his-tremendous-screen-presence-prabhas-is-reduced-to-sub-par-2-stars",
+                "name": "'Radhe Shyam' celeb review: Here's what they have to say about Prabhas and Pooja Hegde starrer",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/oAKnENVoQsC4VrEdcEvE",
+                "description": "Radhe Shyam Review: Prabhas and Pooja Hegde are saddled with a screenplay that allows them little room for manoeuvre. The end result is calamitous."
+              }
+            ],
+            "numberOfItems": 100,
+            "name": "Latest Articles - urTechy Blogs"
+          }
+        ],
+        "headElements": [
+          {
+            "tagName": "META",
+            "attributes": {
+              "charset": "utf-8"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "TITLE",
+            "attributes": {},
+            "textContent": "urTechy Blogs | Tech, Entertainment & Sports News"
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "viewport",
+              "content": "width=device-width, initial-scale=1"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "robots",
+              "content": "index,follow"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "description",
+              "content": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:card",
+              "content": "summary"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:site",
+              "content": "@Onlyblogs_"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:creator",
+              "content": "@shanuv000"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:title",
+              "content": "urTechy Blogs | Tech, Entertainment & Sports News"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:description",
+              "content": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:url",
+              "content": "https://blog.urtechy.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:type",
+              "content": "website"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image",
+              "content": "https://blog.urtechy.com/logo/logo4.png"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:alt",
+              "content": "urTechy Blogs Logo"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:width",
+              "content": "573"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:height",
+              "content": "600"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:site_name",
+              "content": "urTechy Blogs"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "keywords",
+              "content": "tech, entertainment, sports, articles, news, updates, reviews, analysis, blog, blogging, diverse content, information, insights"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "author",
+              "content": "urTechy Blogs"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:locale",
+              "content": "en_US"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:title",
+              "content": "urTechy Blogs | Tech, Entertainment & Sports News"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:description",
+              "content": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:image",
+              "content": "https://blog.urtechy.com/logo/logo4.png"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://fonts.googleapis.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://fonts.gstatic.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "prefetch",
+              "href": "/images/placeholder-featured.jpg"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://media.graphassets.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.graphassets.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://ap-south-1.cdn.hygraph.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://media.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://ap-south-1.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.googletagmanager.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.google-analytics.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "alternate",
+              "hreflang": "en",
+              "href": "https://blog.urtechy.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "canonical",
+              "href": "https://blog.urtechy.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "type": "application/ld+json"
+            },
+            "textContent": "{\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"name\":\"urTechy Blogs\",\"url\":\"https://blog.urtech"
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "type": "application/ld+json"
+            },
+            "textContent": "{\"@context\":\"https://schema.org\",\"@type\":\"ItemList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position"
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "href": "/styles/medium-typography.css",
+              "as": "style"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmf55tccw5yvo08pm2e7pvh4o",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmew991ja3id907pcjafqfv3v",
+              "fetchpriority": "low"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmck6nw7v0tnv07o69o706q2k",
+              "fetchpriority": "low"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "href": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmbuivalk0jvb07piygldhmwv",
+              "fetchpriority": "low"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmf55tccw5yvo08pm2e7pvh4o&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmf55tccw5yvo08pm2e7pvh4o&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmf55tccw5yvo08pm2e7pvh4o&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmf55tccw5yvo08pm2e7pvh4o&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmf55tccw5yvo08pm2e7pvh4o&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmf55tccw5yvo08pm2e7pvh4o&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmf55tccw5yvo08pm2e7pvh4o&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmew991ja3id907pcjafqfv3v&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmew991ja3id907pcjafqfv3v&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmew991ja3id907pcjafqfv3v&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmew991ja3id907pcjafqfv3v&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmew991ja3id907pcjafqfv3v&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmew991ja3id907pcjafqfv3v&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmew991ja3id907pcjafqfv3v&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmck6nw7v0tnv07o69o706q2k&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmck6nw7v0tnv07o69o706q2k&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmck6nw7v0tnv07o69o706q2k&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmck6nw7v0tnv07o69o706q2k&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmck6nw7v0tnv07o69o706q2k&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmck6nw7v0tnv07o69o706q2k&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmck6nw7v0tnv07o69o706q2k&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmbuivalk0jvb07piygldhmwv&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmbuivalk0jvb07piygldhmwv&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmbuivalk0jvb07piygldhmwv&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmbuivalk0jvb07piygldhmwv&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmbuivalk0jvb07piygldhmwv&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmbuivalk0jvb07piygldhmwv&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmbuivalk0jvb07piygldhmwv&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmayc5pph0dsh07pn72le4dqv&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmayc5pph0dsh07pn72le4dqv&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmayc5pph0dsh07pn72le4dqv&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmayc5pph0dsh07pn72le4dqv&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmayc5pph0dsh07pn72le4dqv&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmayc5pph0dsh07pn72le4dqv&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmayc5pph0dsh07pn72le4dqv&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmawgn5i936xp07o55mgxxxma&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmawgn5i936xp07o55mgxxxma&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmawgn5i936xp07o55mgxxxma&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmawgn5i936xp07o55mgxxxma&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmawgn5i936xp07o55mgxxxma&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmawgn5i936xp07o55mgxxxma&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmawgn5i936xp07o55mgxxxma&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmars3b0w0i0007ps6yiqriy7&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmars3b0w0i0007ps6yiqriy7&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmars3b0w0i0007ps6yiqriy7&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmars3b0w0i0007ps6yiqriy7&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmars3b0w0i0007ps6yiqriy7&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmars3b0w0i0007ps6yiqriy7&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmars3b0w0i0007ps6yiqriy7&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaousjds0j4i07o897b9bkda&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaousjds0j4i07o897b9bkda&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaousjds0j4i07o897b9bkda&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaousjds0j4i07o897b9bkda&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaousjds0j4i07o897b9bkda&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaousjds0j4i07o897b9bkda&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaousjds0j4i07o897b9bkda&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmappbece1l0407o8ihikoosj&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmappbece1l0407o8ihikoosj&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmappbece1l0407o8ihikoosj&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmappbece1l0407o8ihikoosj&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmappbece1l0407o8ihikoosj&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmappbece1l0407o8ihikoosj&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmappbece1l0407o8ihikoosj&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmapl8xll1gzn07pme6n40cyh&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmapl8xll1gzn07pme6n40cyh&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmapl8xll1gzn07pme6n40cyh&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmapl8xll1gzn07pme6n40cyh&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmapl8xll1gzn07pme6n40cyh&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmapl8xll1gzn07pme6n40cyh&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmapl8xll1gzn07pme6n40cyh&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmap69reb0wwy07o831xjcopr&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmap69reb0wwy07o831xjcopr&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmap69reb0wwy07o831xjcopr&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmap69reb0wwy07o831xjcopr&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmap69reb0wwy07o831xjcopr&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmap69reb0wwy07o831xjcopr&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmap69reb0wwy07o831xjcopr&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmao59qj905uy07pmeymp5782&w=256&q=75 256w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmao59qj905uy07pmeymp5782&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmao59qj905uy07pmeymp5782&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmao59qj905uy07pmeymp5782&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmao59qj905uy07pmeymp5782&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmao59qj905uy07pmeymp5782&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmao59qj905uy07pmeymp5782&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap",
+              "rel": "stylesheet",
+              "media": "all",
+              "onload": "this.media='all'"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "next-head-count",
+              "content": "56"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "icon",
+              "type": "image/x-icon",
+              "href": "/iconified/logo4.ico",
+              "sizes": "any"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "apple-touch-icon",
+              "href": "/iconified/logo4.ico"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "theme-color",
+              "content": "#FF4500"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.googletagmanager.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.clarity.ms"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.cdn.hygraph.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://media.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "NOSCRIPT",
+            "attributes": {
+              "data-n-css": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "defer": "",
+              "nomodule": "",
+              "src": "/_next/static/chunks/polyfills.js"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/webpack.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/main.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/pages/_app.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/pages/index.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/development/_buildManifest.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/development/_ssgManifest.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": "@import url(\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:"
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": "/* Medium-like typography styles */\n\n/* Article content styling */\n.article-content {\n  font-family:"
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": ".lazy-load-image-background.blur {\n  filter: blur(15px);\n}\n\n.lazy-load-image-background.blur.lazy-lo"
+          },
+          {
+            "tagName": "NOSCRIPT",
+            "attributes": {
+              "id": "__next_css__DO_NOT_USE__"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "async": "",
+              "src": "https://www.googletagmanager.com/gtag/js?id=G-VQRT44X8WH"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {},
+            "textContent": "\n      window.dataLayer = window.dataLayer || [];\n      function gtag(){dataLayer.push(arguments);}\n"
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "stylesheet",
+              "href": "/react-multi-carousel/lib/styles.css"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {
+              "type": "text/css",
+              "data-styled-jsx": ""
+            },
+            "textContent": "\n  .embla {\n    position: relative;\n    padding: 12px 0 44px 0;\n    width: 100%;\n    overflow: visib"
+          }
+        ],
+        "errors": []
+      },
+      "validation": {
+        "pageName": "Homepage",
+        "passed": [
+          "✅ Title: \"urTechy Blogs | Tech, Entertainment & Sports News\"",
+          "✅ description: \"Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics.\"",
+          "✅ og:title: \"urTechy Blogs | Tech, Entertainment & Sports News\"",
+          "✅ og:description: \"Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics.\"",
+          "✅ og:image: \"https://blog.urtechy.com/logo/logo4.png\"",
+          "✅ og:url: \"https://blog.urtechy.com\"",
+          "✅ og:type: \"website\"",
+          "✅ twitter:card: \"summary\"",
+          "✅ twitter:title: \"urTechy Blogs | Tech, Entertainment & Sports News\"",
+          "✅ twitter:description: \"Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs. Stay updated with trending topics.\"",
+          "✅ twitter:image: \"https://blog.urtechy.com/logo/logo4.png\"",
+          "✅ canonical link found",
+          "✅ Structured data found (2 schemas)"
+        ],
+        "failed": [],
+        "warnings": [],
+        "score": 100
+      },
+      "timestamp": "2025-09-08T11:44:33.295Z"
+    },
+    {
+      "name": "Post Page",
+      "url": "/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
+      "type": "post",
+      "expectedElements": [
+        "title",
+        "meta[name=\"description\"]",
+        "meta[property=\"og:title\"]",
+        "meta[property=\"og:description\"]",
+        "meta[property=\"og:image\"]",
+        "meta[property=\"og:url\"]",
+        "meta[property=\"og:type\"]",
+        "meta[property=\"article:published_time\"]",
+        "meta[property=\"article:modified_time\"]",
+        "meta[property=\"article:author\"]",
+        "meta[name=\"twitter:card\"]",
+        "meta[name=\"twitter:title\"]",
+        "meta[name=\"twitter:description\"]",
+        "meta[name=\"twitter:image\"]",
+        "link[rel=\"canonical\"]",
+        "script[type=\"application/ld+json\"]"
+      ],
+      "data": {
+        "title": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a... | urTechy Blogs",
+        "metaTags": {
+          "viewport": "width=device-width, initial-scale=1",
+          "robots": "index,follow",
+          "description": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a...",
+          "twitter:card": "summary_large_image",
+          "twitter:site": "@Onlyblogs_",
+          "twitter:creator": "@shanuv000",
+          "og:title": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a...",
+          "og:description": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a...",
+          "og:url": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
+          "og:type": "article",
+          "article:published_time": "2025-05-04T19:24:20.224346+00:00",
+          "article:modified_time": "2025-05-04T19:24:19.238885+00:00",
+          "article:section": "Tech",
+          "article:tag": "Esports",
+          "og:image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy",
+          "og:image:alt": "Featured image for Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 and Low VRAM Are Holding It Back",
+          "og:image:width": "1200",
+          "og:image:height": "630",
+          "og:locale": "en_US",
+          "og:site_name": "urTechy Blogs",
+          "twitter:title": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a...",
+          "twitter:description": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a...",
+          "twitter:image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy",
+          "fb:app_id": "360526089887305",
+          "article:author": "Shanu K.",
+          "keywords": "Tech, Esports, urTechy, blogs, technology, news",
+          "next-head-count": "48",
+          "theme-color": "#FF4500"
+        },
+        "linkTags": {
+          "preconnect": [
+            {
+              "href": "https://fonts.googleapis.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://fonts.gstatic.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.googletagmanager.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.google-analytics.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.googletagmanager.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.clarity.ms",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "prefetch": [
+            {
+              "href": "/images/placeholder-featured.jpg",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "dns-prefetch": [
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "alternate": [
+            {
+              "href": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "canonical": [
+            {
+              "href": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "preload": [
+            {
+              "href": null,
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "stylesheet": [
+            {
+              "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap",
+              "type": null,
+              "sizes": null,
+              "media": "all"
+            },
+            {
+              "href": "/react-multi-carousel/lib/styles.css",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "icon": [
+            {
+              "href": "/iconified/logo4.ico",
+              "type": "image/x-icon",
+              "sizes": "any",
+              "media": null
+            }
+          ],
+          "apple-touch-icon": [
+            {
+              "href": "/iconified/logo4.ico",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ]
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "urTechy Blogs",
+            "url": "https://blog.urtechy.com",
+            "description": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://blog.urtechy.com/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 and Low VRAM Are Holding It Back",
+            "description": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks are to blame, impacting mainstream gamers. Learn which games are hit hardest and how to choose a better GPU for modern gaming.",
+            "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy",
+            "datePublished": "2025-05-04T19:24:20.224Z",
+            "dateModified": "2025-05-04T19:24:19.238Z",
+            "author": {
+              "@type": "Person",
+              "name": "Shanu K.",
+              "url": "https://blog.urtechy.com",
+              "image": {
+                "@type": "ImageObject",
+                "url": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/lTFMmjyTiK5FKSqsUN8G"
+              }
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "urTechy Blogs",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://blog.urtechy.com/logo/logo4.png",
+                "width": 573,
+                "height": 600
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram"
+            },
+            "url": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram",
+            "keywords": "Tech, Esports"
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://blog.urtechy.com"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Tech",
+                "item": "https://blog.urtechy.com/category/tech"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 and Low VRAM Are Holding It Back",
+                "item": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram"
+              }
+            ]
+          }
+        ],
+        "headElements": [
+          {
+            "tagName": "TITLE",
+            "attributes": {},
+            "textContent": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a... | urTechy Blogs"
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "charset": "utf-8"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "viewport",
+              "content": "width=device-width, initial-scale=1"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "robots",
+              "content": "index,follow"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "description",
+              "content": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a..."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:card",
+              "content": "summary_large_image"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:site",
+              "content": "@Onlyblogs_"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:creator",
+              "content": "@shanuv000"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:title",
+              "content": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a..."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:description",
+              "content": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a..."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:url",
+              "content": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:type",
+              "content": "article"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:published_time",
+              "content": "2025-05-04T19:24:20.224346+00:00"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:modified_time",
+              "content": "2025-05-04T19:24:19.238885+00:00"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:section",
+              "content": "Tech"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:tag",
+              "content": "Tech"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:tag",
+              "content": "Esports"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image",
+              "content": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:alt",
+              "content": "Featured image for Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 and Low VRAM Are Holding It Back"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:width",
+              "content": "1200"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:height",
+              "content": "630"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:locale",
+              "content": "en_US"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:site_name",
+              "content": "urTechy Blogs"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:title",
+              "content": "Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a..."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:description",
+              "content": "Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a..."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:image",
+              "content": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "fb:app_id",
+              "content": "360526089887305"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:author",
+              "content": "Shanu K."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:published_time",
+              "content": "2025-05-04T19:24:20.224346+00:00"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "article:modified_time",
+              "content": "2025-05-04T19:24:19.238885+00:00"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "keywords",
+              "content": "Tech, Esports, urTechy, blogs, technology, news"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://fonts.googleapis.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://fonts.gstatic.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "prefetch",
+              "href": "/images/placeholder-featured.jpg"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://media.graphassets.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.graphassets.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://ap-south-1.cdn.hygraph.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://media.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://ap-south-1.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.googletagmanager.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.google-analytics.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "alternate",
+              "hreflang": "en",
+              "href": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "canonical",
+              "href": "https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preload",
+              "as": "image",
+              "imagesrcset": "/_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaa1i1iz1xan07pqy66pb1gy&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaa1i1iz1xan07pqy66pb1gy&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaa1i1iz1xan07pqy66pb1gy&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaa1i1iz1xan07pqy66pb1gy&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaa1i1iz1xan07pqy66pb1gy&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Fap-south-1.graphassets.com%2FA0wVMTJ4GQepRGqAydCKQz%2Fcmaa1i1iz1xan07pqy66pb1gy&w=1920&q=75 1920w",
+              "imagesizes": "(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px",
+              "fetchpriority": "high"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "type": "application/ld+json"
+            },
+            "textContent": "{\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"name\":\"urTechy Blogs\",\"url\":\"https://blog.urtech"
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "type": "application/ld+json"
+            },
+            "textContent": "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"Nvidia RTX 5060 Ti 8GB Performance Is"
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "type": "application/ld+json"
+            },
+            "textContent": "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"po"
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap",
+              "rel": "stylesheet",
+              "media": "all",
+              "onload": "this.media='all'"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "next-head-count",
+              "content": "48"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "icon",
+              "type": "image/x-icon",
+              "href": "/iconified/logo4.ico",
+              "sizes": "any"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "apple-touch-icon",
+              "href": "/iconified/logo4.ico"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "theme-color",
+              "content": "#FF4500"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.googletagmanager.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.clarity.ms"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.cdn.hygraph.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://media.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "NOSCRIPT",
+            "attributes": {
+              "data-n-css": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "defer": "",
+              "nomodule": "",
+              "src": "/_next/static/chunks/polyfills.js"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/webpack.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/main.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/pages/_app.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/pages/post/%5Bslug%5D.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/development/_buildManifest.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/development/_ssgManifest.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": "@import url(\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:"
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": "/* Medium-like typography styles */\n\n/* Article content styling */\n.article-content {\n  font-family:"
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": ".lazy-load-image-background.blur {\n  filter: blur(15px);\n}\n\n.lazy-load-image-background.blur.lazy-lo"
+          },
+          {
+            "tagName": "NOSCRIPT",
+            "attributes": {
+              "id": "__next_css__DO_NOT_USE__"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "async": "",
+              "src": "https://www.googletagmanager.com/gtag/js?id=G-VQRT44X8WH"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {},
+            "textContent": "\n      window.dataLayer = window.dataLayer || [];\n      function gtag(){dataLayer.push(arguments);}\n"
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "stylesheet",
+              "href": "/react-multi-carousel/lib/styles.css"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "id": "twitter-widgets-js",
+              "src": "https://platform.twitter.com/widgets.js",
+              "async": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "id": "facebook-jssdk",
+              "src": "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0",
+              "async": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "id": "social-media-hydration-fix"
+            },
+            "textContent": "\n        // Fix for React hydration mismatch\n        window.addEventListener('load', function() {\n  "
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {
+              "id": "social-media-embed-styles"
+            },
+            "textContent": "\n        .social-media-embed-container {\n          display: flex;\n          justify-content: center;"
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {
+              "type": "text/css",
+              "data-fbcssmodules": "css:fb.css.base css:fb.css.dialog css:fb.css.iframewidget"
+            },
+            "textContent": ".fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:rela"
+          }
+        ],
+        "errors": []
+      },
+      "validation": {
+        "pageName": "Post Page",
+        "passed": [
+          "✅ Title: \"Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a... | urTechy Blogs\"",
+          "✅ description: \"Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a...\"",
+          "✅ og:title: \"Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a...\"",
+          "✅ og:description: \"Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a...\"",
+          "✅ og:image: \"https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy\"",
+          "✅ og:url: \"https://blog.urtechy.com/post/nvidia-rtx-5060-ti-8gb-performance-issues-pcie-4-0-vram\"",
+          "✅ og:type: \"article\"",
+          "✅ article:published_time: \"2025-05-04T19:24:20.224346+00:00\"",
+          "✅ article:modified_time: \"2025-05-04T19:24:19.238885+00:00\"",
+          "✅ article:author: \"Shanu K.\"",
+          "✅ twitter:card: \"summary_large_image\"",
+          "✅ twitter:title: \"Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a...\"",
+          "✅ twitter:description: \"Discover why the Nvidia RTX 5060 Ti 8GB struggles with up to 10% performance loss on PCIe 4.0 motherboards. Limited 8GB VRAM and PCIe bandwidth bottlenecks a...\"",
+          "✅ twitter:image: \"https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmaa1i1iz1xan07pqy66pb1gy\"",
+          "✅ canonical link found",
+          "✅ Structured data found (3 schemas)"
+        ],
+        "failed": [],
+        "warnings": [
+          "⚠️ Title too long (76 chars): \"Nvidia RTX 5060 Ti 8GB Performance Issues: Why PCIe 4.0 a... | urTechy Blogs\""
+        ],
+        "score": 100
+      },
+      "timestamp": "2025-09-08T11:44:46.726Z"
+    },
+    {
+      "name": "Category Page",
+      "url": "/category/marvel",
+      "type": "category",
+      "expectedElements": [
+        "title",
+        "meta[name=\"description\"]",
+        "meta[property=\"og:title\"]",
+        "meta[property=\"og:description\"]",
+        "meta[property=\"og:image\"]",
+        "meta[property=\"og:url\"]",
+        "meta[property=\"og:type\"]",
+        "meta[name=\"twitter:card\"]",
+        "link[rel=\"canonical\"]",
+        "script[type=\"application/ld+json\"]"
+      ],
+      "data": {
+        "title": "Marvel Articles - urTechy Blogs",
+        "metaTags": {
+          "viewport": "width=device-width, initial-scale=1",
+          "robots": "index,follow",
+          "description": "Browse our collection of Marvel on urTechy Blogs. Stay updated with the latest insights and expert analysis.",
+          "twitter:card": "summary",
+          "twitter:site": "@Onlyblogs_",
+          "twitter:creator": "@shanuv000",
+          "og:title": "Marvel Articles - urTechy Blogs",
+          "og:description": "Browse our collection of Marvel on urTechy Blogs. Stay updated with the latest insights and expert analysis.",
+          "og:url": "https://blog.urtechy.com/category/marvel",
+          "og:type": "website",
+          "og:image": "https://blog.urtechy.com/logo/logo4.png",
+          "og:image:alt": "Marvel - urTechy Blogs",
+          "og:image:width": "573",
+          "og:image:height": "600",
+          "og:site_name": "urTechy Blogs",
+          "keywords": "Marvel, urTechy, blogs, technology, news, marvel",
+          "author": "urTechy Blogs",
+          "next-head-count": "34",
+          "theme-color": "#FF4500"
+        },
+        "linkTags": {
+          "preconnect": [
+            {
+              "href": "https://fonts.googleapis.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://fonts.gstatic.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.googletagmanager.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.google-analytics.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.googletagmanager.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://www.clarity.ms",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "prefetch": [
+            {
+              "href": "/images/placeholder-featured.jpg",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "dns-prefetch": [
+            {
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://media.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            },
+            {
+              "href": "https://ap-south-1.graphassets.com",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "canonical": [
+            {
+              "href": "https://blog.urtechy.com/category/marvel",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "stylesheet": [
+            {
+              "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap",
+              "type": null,
+              "sizes": null,
+              "media": "all"
+            },
+            {
+              "href": "/react-multi-carousel/lib/styles.css",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ],
+          "icon": [
+            {
+              "href": "/iconified/logo4.ico",
+              "type": "image/x-icon",
+              "sizes": "any",
+              "media": null
+            }
+          ],
+          "apple-touch-icon": [
+            {
+              "href": "/iconified/logo4.ico",
+              "type": null,
+              "sizes": null,
+              "media": null
+            }
+          ]
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "urTechy Blogs",
+            "url": "https://blog.urtechy.com",
+            "description": "Get the latest news, articles, and insights on technology, entertainment, sports, and more at urTechy Blogs.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://blog.urtechy.com/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "url": "https://blog.urtechy.com/post/ironheart-trailer-breakdown-riri-williams-mcu-hero",
+                "name": "Ironheart Trailer Breakdown: 5 Shocking Reasons Riri Williams Is the MCU’s Next Iconic Hero",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/cmap69reb0wwy07o831xjcopr",
+                "description": "Ironheart Trailer Breakdown: 5 Shocking Reasons Riri Williams Is the MCU’s Next Iconic Hero. Dive into the explosive trailer, uncover hidden details, and see why Riri Williams is set to redefine Marvel’s Phase 5."
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "url": "https://blog.urtechy.com/post/harley-keener-next-iron-man",
+                "name": "The Forgotten Marvel Hero: Is Harley Keener the Next Iron Man?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/SzdcsidtS3GxZ437Ixvq",
+                "description": "Explore why Harley Keener, a young inventor introduced in Iron Man 3, could be the perfect successor to Tony Stark. Discover his backstory, similarities to Iron Man, and why Marvel should bring him back."
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "url": "https://blog.urtechy.com/post/ironheart-release-delay-2025",
+                "name": "Ironheart Release Delayed to 2025: What This Means for the MCU",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/34aAXVIlQ2yPfGcRTLFy",
+                "description": "Marvel's Ironheart, the highly anticipated Iron Man spin-off, is now set to release on Disney+ in 2025. Find out why the series has been delayed and what to expect from Riri Williams' solo adventure."
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "url": "https://blog.urtechy.com/post/venom-3-photo-tom-hardy-anti-hero-last",
+                "name": "Tom Hardy's antihero Venom has one more 'last dance' in him, as teased by a new photo from the third instalment.",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/41rZaMvZSeu3K0z4sq2M",
+                "description": "Despite Sony's recent blunder, Morbius, the studio will press on with its objective of establishing a cinematic universe of Spider-Man spin-offs."
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "url": "https://blog.urtechy.com/post/thor-4-leak-spoilers-marvel-photo",
+                "name": "Thor 4 Star Apologizes to Marvel for Sharing Spoilery Photo",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/QdOAf0B1SQeHhkpuMSXS",
+                "description": "At the very beginning of this year, a set photo leaked online which spoiled..."
+              },
+              {
+                "@type": "ListItem",
+                "position": 6,
+                "url": "https://blog.urtechy.com/post/thor-love-and-thunder-trailer-jane-foster-gorr",
+                "name": "‘Thor: Love and Thunder’: New Trailer Tells the Story of the One and Only Space Viking",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/TTQLnayxRCO7eVIWktyw",
+                "description": "Check out the new out-of-this-world trailer and poster now!"
+              },
+              {
+                "@type": "ListItem",
+                "position": 7,
+                "url": "https://blog.urtechy.com/post/marvels-avengers-infinity-war-iron-man-game-mcu-suit",
+                "name": "Marvel's Avengers Fans Shocked by New Infinity War Surprise",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/Tn0wnplGR526cP9WY0hv",
+                "description": "Marvel's Avengers on Google Stadia, PC, PS4, PS5, Xbox One, Xbox Series S, and Xbox Series X is getting a special Infinity War surprise today, courtesy of the in-game marketplace and courtesy of Iron Man."
+              },
+              {
+                "@type": "ListItem",
+                "position": 8,
+                "url": "https://blog.urtechy.com/post/thor-love-and-thunder-trailer-broke-record-mcu-fans-will-hate",
+                "name": "Thor: Love and Thunder Trailer Just Broke a Record That MCU Fans Will Hate",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/1oq15RiERaOAJtot8Gwy",
+                "description": "Marvel fans aren't going to like the record that Thor: Love and Thunder just set. In a post by The Direct, they pointed out that the Chris Hemsworth feature will be the MCU movie with the least time from the initial trailer to the movie's premiere."
+              },
+              {
+                "@type": "ListItem",
+                "position": 9,
+                "url": "https://blog.urtechy.com/post/spider-man-tobey-maguire-no-way-home-poster",
+                "name": "Tobey Maguire's Spider-Man Finally Receives His Own No Way Home Poster",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/OryWBTIUQKblalAGc95L",
+                "description": "After a plethora of rumors and reports, Spider-Man: No Way Home featured a long-awaited comeback for Tobey Maguire's version of the web-slinger."
+              },
+              {
+                "@type": "ListItem",
+                "position": 10,
+                "url": "https://blog.urtechy.com/post/disney-marvel-netflix-watch-shows-name",
+                "name": "Watch: Disney+ Hilariously Removes Netflix Name From Marvel Show",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/n51VvOlQ2r77v7qKsxAo",
+                "description": "Fans were rattled recently when some unexpected news hit the web: Netflix was going to be losing its original programming based on some of Marvel’s famous characters, such as Daredevil, Jessica Jones, and The Punisher."
+              },
+              {
+                "@type": "ListItem",
+                "position": 11,
+                "url": "https://blog.urtechy.com/post/green-goblin-spider-man-no-way-home-deleted-scene-fight",
+                "name": "Watch: Green Goblin’s Deleted Fight Scene In Spider-Man: No Way Home Revealed",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/ciOLw9HVRiWjEOzujpju",
+                "description": "The wait leading up to Spider-Man: No Way Home was a long one for fans. The rumors about what the film might bring to the table started early once both Jamie Foxx's Electro and Alfred Molina's Doc Ock were confirmed to return"
+              },
+              {
+                "@type": "ListItem",
+                "position": 12,
+                "url": "https://blog.urtechy.com/post/ant-man-3-samuel-l-jackson-spoilers",
+                "name": "Did Samuel L. Jackson Just Spoil His Ant-Man 3 Role?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/M1wgW0qnS2KJzBlg2hCM",
+                "description": "Even though Marvel Studios is continuously adding new heroes to its roster, that doesn't mean the studio doesn't have plans for its veterans."
+              },
+              {
+                "@type": "ListItem",
+                "position": 13,
+                "url": "https://blog.urtechy.com/post/marvel-studios-lgbtq-florida-law",
+                "name": "Marvel Studios Speaks Out Against Florida's LGBTQ+ Law",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/8Tuam6P7Q9ehmbw3C5Bs",
+                "description": "As Marvel Studios looks to kick off its 2022 content schedule in a couple of weeks with Moon Knight, its parent company, Disney, "
+              },
+              {
+                "@type": "ListItem",
+                "position": 14,
+                "url": "https://blog.urtechy.com/post/spider-man-blue-ray-movie-leak",
+                "name": "Spider-Man: No Way Home Hits Home Video Early Following Blu-ray Leak",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/8SapeD2pR6qmGciJjK3c",
+                "description": "Sony Pictures and Marvel Studios' Spider-Man: No Way Home arrives on digital platforms early following a high-quality leak surfacing online."
+              },
+              {
+                "@type": "ListItem",
+                "position": 15,
+                "url": "https://blog.urtechy.com/post/shang-chi-deadpool-movie-cameo",
+                "name": "Shang-Chi Movie Art Reveals Deadpool's Scrapped Cameo",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/I89HoVZ2RgGXUwHDlNTi",
+                "description": "Of the names associated with the Disney acquisition of Fox, Deadpool is one at the front of many fans' minds. Along with the X-Men Fox characters, "
+              },
+              {
+                "@type": "ListItem",
+                "position": 16,
+                "url": "https://blog.urtechy.com/post/thor-4-love-and-thunder-trailer-release-date-prediction",
+                "name": "Thor 4: Love and Thunder Trailer Prediction Reveals Likely Release Date",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/qfIO5QiSo22VDDNkmWoL",
+                "description": "As announced at 2019's San Diego Comic Con, Thor 4 will follow Chris Hemsworth's God of Thunder as he forms an unlikely alliance with Natalie Portman's Jane Foster.."
+              },
+              {
+                "@type": "ListItem",
+                "position": 17,
+                "url": "https://blog.urtechy.com/post/marvel-benedict-cumberbatch-mcu-anchor",
+                "name": "Marvel Boss Explains Why Benedict Cumberbatch Is Now the MCU’s Anchor",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/JLPHSHU0TGn0qlxw7DnQ",
+                "description": "Sure, Robert Downey Jr.’s performance and presence as Tony Stark is considered by many to be one of the most quintessential and memorable aspects of the Marvel Cinematic Universe. But he’s far from alone in that respect. Chris Evans' Captain America, Chris Hemsworth’s Thor, and.."
+              },
+              {
+                "@type": "ListItem",
+                "position": 18,
+                "url": "https://blog.urtechy.com/post/avengers-endgame-robert-downey-jr-mcu-james-darcy",
+                "name": "Robert Downey Jr. Shares MCU Selfie With Avengers: Endgame's James D'Arcy",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/GiwzoXJuSXSJ4Ty8EfYS",
+                "description": "While the MCU is in the depths of its Phase 4 story complete with Eternals, vampires, the Multiverse, and even the X-Men,"
+              },
+              {
+                "@type": "ListItem",
+                "position": 19,
+                "url": "https://blog.urtechy.com/post/tobey-maguire-spider-man-kirsten-dunst-return",
+                "name": "Kirsten Dunst Teases Possible Spider-Man Return After Tobey Maguire's Comeback",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/WwxUqDa5QxvFzFj2EvZg",
+                "description": "In the year leading up to Spider-Man: No Way Home, the question was always whether Andrew Garfield and Tobey Maguire would appear alongside Tom Holland. "
+              },
+              {
+                "@type": "ListItem",
+                "position": 20,
+                "url": "https://blog.urtechy.com/post/spider-man-michael-keaton-morbius-spin-off",
+                "name": "Morbius Star Teases Michael Keaton's Surprising Role In Spider-Man Spin-off",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/xmH8rAvSTFeZ7EtP3R1Z",
+                "description": "It’s sometimes easy to forget how there are Marvel films outside the MCU banner. One of them..."
+              },
+              {
+                "@type": "ListItem",
+                "position": 21,
+                "url": "https://blog.urtechy.com/post/batman-proof-the-joker-apperars-in-robert-pattinson-dark-knight",
+                "name": "The Batman: Proof The Joker appears in Robert Pattinson’s Dark Knight debut?",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/sI7vaCYDStO6Vuu3Q3HB",
+                "description": "THE BATMAN movie, starring Robert Pattinson as The Dark Knight, could well debut a new incarnation of The Joker after fans spotted an intriguing cast listing."
+              },
+              {
+                "@type": "ListItem",
+                "position": 22,
+                "url": "https://blog.urtechy.com/post/spider-man-no-way-home-one-billion-overseas-scream-sing-2-belfast-global-international-box-office-1234922668",
+                "name": "‘Spider-Man: No Way Home’ Swings Past $1B Overseas; Global Now $1.74B – International Box Office",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/5ddVHdwQhmHh1OX7MaLX",
+                "description": "Sony/Marvel’s Spider-Man: No Way Home scaled fresh heights this session as it reached an amazing new milestone by crossing the $1B mark at the ..."
+              },
+              {
+                "@type": "ListItem",
+                "position": 23,
+                "url": "https://blog.urtechy.com/post/doctor-strange-in-the-multiverse-of-madness-is-going-to-have-a-lot-of-horror-scenes",
+                "name": "Doctor Strange In The Multiverse Of Madness is going to have a lot of horror scenes",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/d3EIYuSST92yFNeTkstM",
+                "description": "Doctor Strange in the Multiverse of Madness is next up on Marvel Studios' theatrical slate, and anticipation is only just starting to build amongst fans."
+              },
+              {
+                "@type": "ListItem",
+                "position": 24,
+                "url": "https://blog.urtechy.com/post/ganurdiansofthegalaxyunderproduction123",
+                "name": "Gallery: Guardians of the Galaxy 3 Is Under Production. Pics Posted by Actors. ",
+                "image": "https://ap-south-1.graphassets.com/A0wVMTJ4GQepRGqAydCKQz/yuMB4zNQ4iK1ZghbUOlT",
+                "description": "here are some pics of actors like zoe and more.."
+              }
+            ],
+            "numberOfItems": 24,
+            "name": "Marvel Articles - urTechy Blogs"
+          }
+        ],
+        "headElements": [
+          {
+            "tagName": "META",
+            "attributes": {
+              "charset": "utf-8"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "TITLE",
+            "attributes": {},
+            "textContent": "Marvel Articles - urTechy Blogs"
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "viewport",
+              "content": "width=device-width, initial-scale=1"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "robots",
+              "content": "index,follow"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "description",
+              "content": "Browse our collection of Marvel on urTechy Blogs. Stay updated with the latest insights and expert analysis."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:card",
+              "content": "summary"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:site",
+              "content": "@Onlyblogs_"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "twitter:creator",
+              "content": "@shanuv000"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:title",
+              "content": "Marvel Articles - urTechy Blogs"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:description",
+              "content": "Browse our collection of Marvel on urTechy Blogs. Stay updated with the latest insights and expert analysis."
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:url",
+              "content": "https://blog.urtechy.com/category/marvel"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:type",
+              "content": "website"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image",
+              "content": "https://blog.urtechy.com/logo/logo4.png"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:alt",
+              "content": "Marvel - urTechy Blogs"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:width",
+              "content": "573"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:image:height",
+              "content": "600"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "property": "og:site_name",
+              "content": "urTechy Blogs"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "keywords",
+              "content": "Marvel, urTechy, blogs, technology, news, marvel"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "author",
+              "content": "urTechy Blogs"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://fonts.googleapis.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://fonts.gstatic.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "prefetch",
+              "href": "/images/placeholder-featured.jpg"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.cdn.hygraph.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://media.graphassets.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.graphassets.com",
+              "crossorigin": "anonymous"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://ap-south-1.cdn.hygraph.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://media.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "dns-prefetch",
+              "href": "https://ap-south-1.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.googletagmanager.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.google-analytics.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "canonical",
+              "href": "https://blog.urtechy.com/category/marvel"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "type": "application/ld+json"
+            },
+            "textContent": "{\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"name\":\"urTechy Blogs\",\"url\":\"https://blog.urtech"
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "type": "application/ld+json"
+            },
+            "textContent": "{\"@context\":\"https://schema.org\",\"@type\":\"ItemList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position"
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap",
+              "rel": "stylesheet",
+              "media": "all",
+              "onload": "this.media='all'"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "next-head-count",
+              "content": "34"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "icon",
+              "type": "image/x-icon",
+              "href": "/iconified/logo4.ico",
+              "sizes": "any"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "apple-touch-icon",
+              "href": "/iconified/logo4.ico"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "META",
+            "attributes": {
+              "name": "theme-color",
+              "content": "#FF4500"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.googletagmanager.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://www.clarity.ms"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://ap-south-1.cdn.hygraph.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "preconnect",
+              "href": "https://media.graphassets.com"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "NOSCRIPT",
+            "attributes": {
+              "data-n-css": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "defer": "",
+              "nomodule": "",
+              "src": "/_next/static/chunks/polyfills.js"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/webpack.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/main.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/pages/_app.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/chunks/pages/category/%5Bslug%5D.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/development/_buildManifest.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "src": "/_next/static/development/_ssgManifest.js",
+              "defer": ""
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": "@import url(\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:"
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": "/* Medium-like typography styles */\n\n/* Article content styling */\n.article-content {\n  font-family:"
+          },
+          {
+            "tagName": "STYLE",
+            "attributes": {},
+            "textContent": ".lazy-load-image-background.blur {\n  filter: blur(15px);\n}\n\n.lazy-load-image-background.blur.lazy-lo"
+          },
+          {
+            "tagName": "NOSCRIPT",
+            "attributes": {
+              "id": "__next_css__DO_NOT_USE__"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {
+              "async": "",
+              "src": "https://www.googletagmanager.com/gtag/js?id=G-VQRT44X8WH"
+            },
+            "textContent": null
+          },
+          {
+            "tagName": "SCRIPT",
+            "attributes": {},
+            "textContent": "\n      window.dataLayer = window.dataLayer || [];\n      function gtag(){dataLayer.push(arguments);}\n"
+          },
+          {
+            "tagName": "LINK",
+            "attributes": {
+              "rel": "stylesheet",
+              "href": "/react-multi-carousel/lib/styles.css"
+            },
+            "textContent": null
+          }
+        ],
+        "errors": []
+      },
+      "validation": {
+        "pageName": "Category Page",
+        "passed": [
+          "✅ Title: \"Marvel Articles - urTechy Blogs\"",
+          "✅ description: \"Browse our collection of Marvel on urTechy Blogs. Stay updated with the latest insights and expert analysis.\"",
+          "✅ og:title: \"Marvel Articles - urTechy Blogs\"",
+          "✅ og:description: \"Browse our collection of Marvel on urTechy Blogs. Stay updated with the latest insights and expert analysis.\"",
+          "✅ og:image: \"https://blog.urtechy.com/logo/logo4.png\"",
+          "✅ og:url: \"https://blog.urtechy.com/category/marvel\"",
+          "✅ og:type: \"website\"",
+          "✅ twitter:card: \"summary\"",
+          "✅ canonical link found",
+          "✅ Structured data found (2 schemas)"
+        ],
+        "failed": [],
+        "warnings": [],
+        "score": 100
+      },
+      "timestamp": "2025-09-08T11:44:57.585Z"
+    }
+  ],
+  "recommendations": []
+}

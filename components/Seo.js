@@ -15,6 +15,14 @@ export default function Seo({ post }) {
   const coverImageUrl = featuredImage?.url || DEFAULT_FEATURED_IMAGE;
   const postUrl = `${rootUrl}/post/${slug}`;
 
+  // Truncate title and description for optimal SEO
+  const truncatedTitle =
+    title && title.length > 60 ? `${title.substring(0, 57)}...` : title;
+  const truncatedExcerpt =
+    excerpt && excerpt.length > 160
+      ? `${excerpt.substring(0, 157)}...`
+      : excerpt;
+
   // Format dates properly
   const publishedTime =
     post.publishedAt || post.createdAt || new Date().toISOString();
@@ -30,8 +38,10 @@ export default function Seo({ post }) {
 
   return (
     <NextSeo
-      title={`${title} | urTechy Blogs`}
-      description={excerpt || `Read about ${title} on urTechy Blogs`}
+      title={`${truncatedTitle} | urTechy Blogs`}
+      description={
+        truncatedExcerpt || `Read about ${truncatedTitle} on urTechy Blogs`
+      }
       canonical={postUrl}
       openGraph={{
         type: "article",
@@ -42,8 +52,9 @@ export default function Seo({ post }) {
           tags: tags,
         },
         url: postUrl,
-        title: title,
-        description: excerpt || `Read about ${title} on urTechy Blogs`,
+        title: truncatedTitle,
+        description:
+          truncatedExcerpt || `Read about ${truncatedTitle} on urTechy Blogs`,
         images: [
           {
             url: coverImageUrl,
@@ -63,11 +74,12 @@ export default function Seo({ post }) {
       additionalMetaTags={[
         {
           name: "twitter:title",
-          content: title,
+          content: truncatedTitle,
         },
         {
           name: "twitter:description",
-          content: excerpt || `Read about ${title} on urTechy Blogs`,
+          content:
+            truncatedExcerpt || `Read about ${truncatedTitle} on urTechy Blogs`,
         },
         {
           name: "twitter:image",
