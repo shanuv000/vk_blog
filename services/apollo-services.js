@@ -2,10 +2,14 @@ import { gql } from "@apollo/client";
 import apolloClient from "../lib/apollo-client";
 
 /**
- * Get all posts with Apollo Client
+ * ⚠️ DEPRECATED: Get all posts with Apollo Client
+ * INEFFICIENT: Loads 20 posts at once - Use pagination service instead
  * Uses cache-first strategy with a TTL of 30 minutes
  */
 export const getPosts = async () => {
+  console.warn(
+    "⚠️ getPosts is deprecated. Use pagination service for better performance with infinite scroll."
+  );
   const POSTS_QUERY = gql`
     query GetPosts {
       postsConnection(first: 20, orderBy: publishedAt_DESC) {
@@ -301,10 +305,14 @@ export const getFeaturedPosts = async () => {
 };
 
 /**
- * Get category post with Apollo Client
+ * ⚠️ DEPRECATED: Get category post with Apollo Client
+ * VERY INEFFICIENT: NO LIMIT - Loads ALL category posts at once!
  * Uses cache-first strategy with a TTL of 30 minutes
  */
 export const getCategoryPost = async (slug) => {
+  console.warn(
+    `⚠️ getCategoryPost for ${slug} is deprecated. Use pagination service for better performance with infinite scroll.`
+  );
   const CATEGORY_POST_QUERY = gql`
     query GetCategoryPost($slug: String!) {
       postsConnection(where: { categories_some: { slug: $slug } }) {

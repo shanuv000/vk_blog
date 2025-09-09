@@ -5,6 +5,7 @@ import { initializeApollo } from "../lib/apollo-client";
 const getApolloClient = () => initializeApollo();
 
 // GraphQL Queries
+// ⚠️ INEFFICIENT: Loads 20 posts at once - Use pagination service instead
 export const POSTS_QUERY = gql`
   query GetPosts {
     postsConnection(first: 20, orderBy: publishedAt_DESC) {
@@ -126,6 +127,7 @@ export const ADJACENT_POSTS_QUERY = gql`
   }
 `;
 
+// ⚠️ VERY INEFFICIENT: NO LIMIT - Loads ALL category posts at once!
 export const CATEGORY_POSTS_QUERY = gql`
   query GetCategoryPost($slug: String!) {
     postsConnection(
@@ -199,7 +201,11 @@ export const RECENT_POSTS_QUERY = gql`
 `;
 
 // Custom hooks for queries
+// ⚠️ DEPRECATED: Use useInfiniteScroll hook instead for better performance
 export const usePosts = () => {
+  console.warn(
+    "⚠️ usePosts is deprecated. Use useInfiniteScroll hook for better performance with pagination."
+  );
   const { data, loading, error, refetch } = useQuery(POSTS_QUERY, {
     fetchPolicy: "cache-and-network",
   });
@@ -269,7 +275,11 @@ export const useAdjacentPosts = (slug, createdAt) => {
   };
 };
 
+// ⚠️ DEPRECATED: Use useInfiniteScroll hook instead for better performance
 export const useCategoryPosts = (slug) => {
+  console.warn(
+    "⚠️ useCategoryPosts is deprecated. Use useInfiniteScroll hook with type='category' for better performance with pagination."
+  );
   const { data, loading, error, refetch } = useQuery(CATEGORY_POSTS_QUERY, {
     variables: { slug },
     fetchPolicy: "cache-and-network",

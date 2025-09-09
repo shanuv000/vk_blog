@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import modern fonts */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* Fonts are now loaded optimally in _app.js - removed duplicate import */
 
 html,
 body {
@@ -21,13 +20,13 @@ body {
   margin: 0;
   font-family: "Inter", sans-serif;
   color: #333;
-  background-color: theme('colors.secondary-dark');
+  background-color: theme("colors.secondary-dark");
 
   &:before {
     content: "";
     width: 100%;
     height: 100vh;
-    background-color: theme('colors.secondary-dark');
+    background-color: theme("colors.secondary-dark");
     position: fixed;
     left: 0;
     top: 0;
@@ -37,7 +36,12 @@ body {
 
 /* Base styles */
 @layer base {
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-heading font-semibold;
   }
 

@@ -22,11 +22,19 @@ class MyDocument extends Document {
           {/* Removed PWA manifest for better performance */}
           <meta name="theme-color" content="#FF4500" />
 
-          {/* Preconnect to external domains */}
-          <link rel="preconnect" href="https://www.googletagmanager.com" />
-          <link rel="preconnect" href="https://www.clarity.ms" />
+          {/* Critical resource preconnections for performance */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin="anonymous"
+          />
           <link rel="preconnect" href="https://ap-south-1.cdn.hygraph.com" />
           <link rel="preconnect" href="https://media.graphassets.com" />
+
+          {/* DNS prefetch for analytics (lower priority) */}
+          <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+          <link rel="dns-prefetch" href="https://www.clarity.ms" />
         </Head>
         <body>
           <Main />

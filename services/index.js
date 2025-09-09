@@ -619,7 +619,13 @@ export const getCategoryPost = async (slug) => {
     return [];
   }
 
-  // Use Apollo Client if enabled
+  // ⚠️ DEPRECATED: This Apollo query loads ALL category posts at once!
+  // Use the new pagination service instead for better performance
+  console.warn(
+    `⚠️ getCategoryPost for ${slug} should use pagination service instead of loading all posts at once`
+  );
+
+  // Use Apollo Client if enabled (but with warning)
   if (USE_APOLLO) {
     try {
       const client = getApolloClient();
@@ -631,7 +637,7 @@ export const getCategoryPost = async (slug) => {
 
       if (data && data.postsConnection && data.postsConnection.edges) {
         console.log(
-          `Found ${data.postsConnection.edges.length} posts for category ${slug} with Apollo`
+          `⚠️ Loaded ${data.postsConnection.edges.length} posts for category ${slug} with Apollo (inefficient - use pagination instead)`
         );
         return data.postsConnection.edges;
       } else {

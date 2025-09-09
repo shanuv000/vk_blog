@@ -43,20 +43,20 @@ const PostCard = ({ post = {} }) => {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
-              <LazyLoadImage
+              <Image
                 src={safePost.featuredImage.url}
                 alt={safePost.title || "Featured image"}
-                effect="blur"
-                width={800}
-                height={450}
-                className="w-full h-full object-cover"
-                wrapperClassName="w-full h-full"
-                placeholderSrc="/images/placeholder-featured.jpg"
-                onError={(e) => {
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                quality={75}
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
+                onError={() => {
                   console.log(
                     "Image load error in PostCard, using local fallback"
                   );
-                  e.target.src = "/images/placeholder-featured.jpg";
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-50"></div>

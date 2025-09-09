@@ -1,6 +1,10 @@
 // Removed PWA configuration for better performance
 
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
 const nextConfig = {
   reactStrictMode: true,
 
@@ -182,7 +186,17 @@ const nextConfig = {
   // Optimize production builds
   productionBrowserSourceMaps: false,
 
+  // Performance optimizations
+  compress: true,
+  poweredByHeader: false,
+
+  // Experimental features for better performance
+  experimental: {
+    scrollRestoration: true,
+    // optimizeCss: true, // Disabled - requires critters package
+  },
+
   // Removed experimental features that were causing issues
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

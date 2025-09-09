@@ -1,0 +1,128 @@
+/* Critical CSS for above-the-fold content */
+/* This CSS should be inlined for fastest loading */
+
+/* Base styles for immediate rendering */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #0A0A0A;
+  color: #F5F5F5;
+  overflow-x: hidden;
+}
+
+/* Header styles for immediate visibility */
+.header {
+  background-color: #141414;
+  border-bottom: 1px solid #1F1F1F;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* Navigation critical styles */
+.nav-link {
+  color: #F5F5F5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #E50914;
+}
+
+/* Hero section critical styles */
+.hero-section {
+  background: linear-gradient(135deg, #141414 0%, #0A0A0A 100%);
+  min-height: 60vh;
+}
+
+/* Post card skeleton for loading states */
+.post-card-skeleton {
+  background: #1F1F1F;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Critical button styles */
+.btn-primary {
+  background-color: #E50914;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #B81D24;
+}
+
+/* Image placeholder for faster perceived loading */
+.image-placeholder {
+  background: linear-gradient(90deg, #1F1F1F 25%, #2A2A2A 50%, #1F1F1F 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Layout containers */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Typography for immediate rendering */
+h1, h2, h3 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+/* Loading spinner for immediate feedback */
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #1F1F1F;
+  border-top: 2px solid #E50914;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

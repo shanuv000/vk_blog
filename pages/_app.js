@@ -98,19 +98,26 @@ function MyApp({ Component, pageProps }) {
           />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-          {/* Fonts for Medium-like typography */}
+          {/* Optimized font loading - preload critical fonts */}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"
             href="https://fonts.gstatic.com"
             crossOrigin="anonymous"
           />
+          {/* Preload critical font weights for faster LCP */}
           <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
-            rel="stylesheet"
-            media="print"
-            onLoad="this.media='all'"
+            rel="preload"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            as="style"
+            onLoad="this.onload=null;this.rel='stylesheet'"
           />
+          <noscript>
+            <link
+              href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+              rel="stylesheet"
+            />
+          </noscript>
 
           {/* Default images - using prefetch instead of preload */}
           <link rel="prefetch" href={DEFAULT_FEATURED_IMAGE} />
@@ -142,10 +149,10 @@ function MyApp({ Component, pageProps }) {
           <link rel="preconnect" href="https://www.google-analytics.com" />
         </Head>
 
-        {/* Microsoft Clarity - load after page interaction */}
+        {/* Microsoft Clarity - load after page interaction with delay */}
         <Script
           id="clarity-script"
-          strategy="afterInteraction" // Changed from lazyOnload to afterInteraction
+          strategy="lazyOnload" // Use lazyOnload for better performance
           src="https://www.clarity.ms/tag/o2yidwokf0"
         />
 
