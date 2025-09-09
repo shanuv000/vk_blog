@@ -146,7 +146,7 @@ const Footer = () => {
               className="text-text-secondary text-sm"
             >
               <p>© {currentYear} urTechy Blogs. All rights reserved.</p>
-              <p className="mt-2">Contact: urtechy000@gmail.com</p>
+              <p className="mt-2">Contact: info@urtechy.com</p>
             </motion.div>
           </div>
         </div>

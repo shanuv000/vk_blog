@@ -468,8 +468,8 @@ const ContactInfo = () => {
   const contactDetails = [
     {
       icon: <MdEmail className="text-urtechy-red text-xl" />,
-      text: "urtechy000@gmail.com",
-      link: "mailto:urtechy000@gmail.com",
+      text: "support@urtechy.com",
+      link: "mailto:support@urtechy.com",
     },
     {
       icon: <MdLocationOn className="text-urtechy-red text-xl" />,

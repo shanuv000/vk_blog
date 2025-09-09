@@ -141,7 +141,7 @@ const About = () => {
                   transition={{ duration: 0.2 }}
                 >
                   <motion.button
-                    onClick={() => window.open("mailto:urtechy000@gmail.com")}
+                    onClick={() => window.open("mailto:info@urtechy.com")}
                     className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-gradient-to-r from-primary to-primary-light text-white"
                     variants={buttonVariants}
                     whileHover="hover"
@@ -152,7 +152,7 @@ const About = () => {
                   <motion.button
                     className="px-4 py-2 flex items-center justify-center text-lg font-semibold rounded bg-gradient-to-r from-primary to-primary-light text-white"
                     onClick={() => {
-                      navigator.clipboard.writeText("urtechy000@gmail.com");
+                      navigator.clipboard.writeText("info@urtechy.com");
                       // Optional: Add a toast notification here
                     }}
                     variants={buttonVariants}
