@@ -1,14 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { NextSeo } from "next-seo";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import { getCategories, getCategoryPost } from "../../services";
 import { PostCard, Categories, Loader } from "../../components";
+import PostCardSkeleton from "../../components/PostCardSkeleton";
 import SchemaManager from "../../components/SchemaManager";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 
-const CategoryPost = ({ posts }) => {
+const CategoryPost = ({ initialPosts }) => {
   const router = useRouter();
+  const categorySlug = router.query.slug;
+
+  // Use infinite scroll hook for category posts
+  const {
+    posts,
+    loading,
+    hasMore,
+    error,
+    totalCount,
+    isInitialLoad,
+    loadInitialPosts,
+    loadMorePosts,
+    postsCount,
+    reset,
+  } = useInfiniteScroll({
+    type: "category",
+    categorySlug: categorySlug,
+    initialCount: 7,
+    loadMoreCount: 3,
+  });
+
+  // Initialize posts when category slug changes
+  useEffect(() => {
+    if (categorySlug && isInitialLoad) {
+      loadInitialPosts();
+    }
+  }, [categorySlug, isInitialLoad, loadInitialPosts]);
+
+  // Reset and reload when category changes
+  useEffect(() => {
+    if (categorySlug) {
+      reset();
+    }
+  }, [categorySlug, reset]);
 
   // With fallback: 'blocking', we don't need to handle isFallback
   // But keeping this for backward compatibility
@@ -16,8 +53,39 @@ const CategoryPost = ({ posts }) => {
     return <Loader />;
   }
 
-  // Handle case where posts might be null or empty
-  if (!posts || posts.length === 0) {
+  // Show loading spinner during initial load
+  if (isInitialLoad && loading) {
+    return <Loader />;
+  }
+
+  // Show error state
+  if (error && posts.length === 0) {
+    return (
+      <div className="container mx-auto px-10 mb-8 text-center py-20">
+        <h1 className="text-3xl font-bold mb-4 text-red-600">
+          Error Loading Posts
+        </h1>
+        <p className="mb-8 text-text-secondary">{error}</p>
+        <div className="space-x-4">
+          <button
+            onClick={loadInitialPosts}
+            className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark"
+          >
+            Try Again
+          </button>
+          <button
+            onClick={() => router.push("/")}
+            className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700"
+          >
+            Return to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle case where no posts found after loading
+  if (!loading && posts.length === 0) {
     return (
       <div className="container mx-auto px-10 mb-8 text-center py-20">
         <h1 className="text-3xl font-bold mb-4">No Posts Found</h1>
@@ -37,9 +105,8 @@ const CategoryPost = ({ posts }) => {
   // Get category name from the first post
   const categoryName =
     posts.length > 0 && posts[0].node.categories
-      ? posts[0].node.categories.find((cat) => cat.slug === router.query.slug)
-          ?.name
-      : router.query.slug;
+      ? posts[0].node.categories.find((cat) => cat.slug === categorySlug)?.name
+      : categorySlug;
 
   // Map posts to a simpler format for structured data
   const postsForSchema = posts.map((post) => post.node);
@@ -102,9 +169,41 @@ const CategoryPost = ({ posts }) => {
       <div className="container mx-auto px-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="col-span-1 lg:col-span-8">
-            {posts.map((post, index) => (
-              <PostCard key={post.node.slug || index} post={post.node} />
-            ))}
+            <h1 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
+              {categoryName || "Category"} Articles
+              {totalCount > 0 && (
+                <span className="text-sm font-normal text-text-secondary ml-2">
+                  ({postsCount} of {totalCount})
+                </span>
+              )}
+            </h1>
+
+            <InfiniteScroll
+              dataLength={posts.length}
+              next={loadMorePosts}
+              hasMore={hasMore}
+              loader={
+                <div className="space-y-8">
+                  {[...Array(3)].map((_, index) => (
+                    <PostCardSkeleton key={`skeleton-${index}`} />
+                  ))}
+                </div>
+              }
+              endMessage={
+                <div className="text-center py-8">
+                  <p className="text-text-secondary">
+                    🎉 You've reached the end! No more posts in this category.
+                  </p>
+                </div>
+              }
+              refreshFunction={loadInitialPosts}
+              pullDownToRefresh={false}
+              className="space-y-8"
+            >
+              {posts.map((post, index) => (
+                <PostCard key={post.node.slug || index} post={post.node} />
+              ))}
+            </InfiniteScroll>
           </div>
           <div className="col-span-1 lg:col-span-4">
             <div className="relative lg:sticky top-8">
@@ -118,22 +217,29 @@ const CategoryPost = ({ posts }) => {
 };
 export default CategoryPost;
 
-// Fetch data at build time
+// Fetch data at build time - now only used for SEO and initial page structure
 export async function getStaticProps({ params }) {
   try {
-    const posts = await getCategoryPost(params.slug);
-
+    // We don't need to fetch posts here anymore since we're using client-side infinite scroll
+    // But we keep this for SEO purposes and to maintain the page structure
     return {
-      props: { posts },
+      props: {
+        initialPosts: [], // Empty array since we load posts client-side
+      },
       // Add revalidation to refresh the page every 1 minute
       revalidate: 60,
     };
   } catch (error) {
-    console.error(`Error fetching category posts for ${params.slug}:`, error);
+    console.error(
+      `Error in getStaticProps for category ${params.slug}:`,
+      error
+    );
 
     // Return empty posts array instead of failing
     return {
-      props: { posts: [] },
+      props: {
+        initialPosts: [],
+      },
       // Shorter revalidation time for error cases
       revalidate: 60,
     };

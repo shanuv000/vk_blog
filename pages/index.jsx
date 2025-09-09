@@ -1,16 +1,19 @@
 import { FeaturedPosts } from "../sections/index";
 import { PostCard, Categories, PostWidget } from "../components";
+import PostCardSkeleton from "../components/PostCardSkeleton";
 import { getPosts } from "../services";
 // import Footer from "../components/footer/Footer";
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import HomeSeo from "../components/HomeSeo";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import { ClipLoader } from "react-spinners";
 
 // Fisher-Yates shuffle algorithm
 import { useMediaQuery } from "react-responsive"; // Import for media query
 import SchemaManager from "../components/SchemaManager";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -20,38 +23,66 @@ function shuffle(array) {
   return array;
 }
 
-export default function Home({ posts }) {
-  const [displayPosts, setDisplayPosts] = useState([]);
+export default function Home({ initialPosts }) {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" }); // Detect mobile
 
+  // Use infinite scroll hook
+  const {
+    posts,
+    loading,
+    hasMore,
+    error,
+    totalCount,
+    isInitialLoad,
+    loadInitialPosts,
+    loadMorePosts,
+    postsCount,
+  } = useInfiniteScroll({
+    type: "homepage",
+    initialCount: 7,
+    loadMoreCount: 3,
+  });
+
+  // Initialize posts on component mount
   useEffect(() => {
-    // Sort posts by date (newest first) instead of shuffling
-    const sortedPosts = [...posts].sort((a, b) => {
-      const dateA = new Date(a.node.publishedAt || a.node.createdAt);
-      const dateB = new Date(b.node.publishedAt || b.node.createdAt);
-      return dateB - dateA; // Newest first
-    });
-    setDisplayPosts(sortedPosts);
-  }, [posts]);
-  if (!posts || posts.length === 0) {
+    if (isInitialLoad) {
+      loadInitialPosts();
+    }
+  }, [isInitialLoad, loadInitialPosts]);
+
+  // Show loading spinner during initial load
+  if (isInitialLoad && loading) {
     return (
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
         <ClipLoader color="#007bff" loading={true} size={150} />
       </div>
     );
   }
+
+  // Show error state
+  if (error && posts.length === 0) {
+    return (
+      <div className="container mx-auto px-10 mb-8 text-center py-20">
+        <h1 className="text-3xl font-bold mb-4 text-red-600">
+          Error Loading Posts
+        </h1>
+        <p className="mb-8 text-text-secondary">{error}</p>
+        <button
+          onClick={loadInitialPosts}
+          className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
   return (
     <>
       {/* Add SEO optimization */}
-      <HomeSeo
-        featuredPosts={displayPosts.slice(0, 5).map((post) => post.node)}
-      />
+      <HomeSeo featuredPosts={posts.slice(0, 5).map((post) => post.node)} />
 
       {/* Add structured data for homepage */}
-      <SchemaManager
-        isHomePage={true}
-        posts={displayPosts.map((post) => post.node)}
-      />
+      <SchemaManager isHomePage={true} posts={posts.map((post) => post.node)} />
       <div className="mb-12">
         {/* Hero section with featured posts */}
         <div className="mb-12">
@@ -64,12 +95,39 @@ export default function Home({ posts }) {
           <div className="lg:col-span-8 col-span-1">
             <h2 className="text-2xl md:text-3xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
               Latest Articles
+              {totalCount > 0 && (
+                <span className="text-sm font-normal text-text-secondary ml-2">
+                  ({postsCount} of {totalCount})
+                </span>
+              )}
             </h2>
-            <div className="space-y-8">
-              {displayPosts.map((post, index) => (
+
+            <InfiniteScroll
+              dataLength={posts.length}
+              next={loadMorePosts}
+              hasMore={hasMore}
+              loader={
+                <div className="space-y-8">
+                  {[...Array(3)].map((_, index) => (
+                    <PostCardSkeleton key={`skeleton-${index}`} />
+                  ))}
+                </div>
+              }
+              endMessage={
+                <div className="text-center py-8">
+                  <p className="text-text-secondary">
+                    🎉 You've reached the end! No more posts to load.
+                  </p>
+                </div>
+              }
+              refreshFunction={loadInitialPosts}
+              pullDownToRefresh={false}
+              className="space-y-8"
+            >
+              {posts.map((post, index) => (
                 <PostCard key={post.node.slug || index} post={post.node} />
               ))}
-            </div>
+            </InfiniteScroll>
           </div>
 
           {/* Sidebar */}
@@ -102,23 +160,27 @@ export default function Home({ posts }) {
   );
 }
 
-// Fetch data at build time
+// Fetch data at build time - now only used for SEO and initial page structure
 export async function getStaticProps() {
   try {
-    const posts = (await getPosts()) || [];
-
+    // We don't need to fetch posts here anymore since we're using client-side infinite scroll
+    // But we keep this for SEO purposes and to maintain the page structure
     return {
-      props: { posts },
+      props: {
+        initialPosts: [], // Empty array since we load posts client-side
+      },
       // Reduce revalidation time to ensure latest posts are shown
       revalidate: 180, // 3 minutes - balance between performance and freshness
     };
   } catch (error) {
-    console.error("Error fetching posts for home page:", error);
+    console.error("Error in getStaticProps for home page:", error);
 
     // Return empty posts array instead of failing
     return {
-      props: { posts: [] },
-      // Shorter revalidation time for error cases, but still longer than before
+      props: {
+        initialPosts: [],
+      },
+      // Shorter revalidation time for error cases
       revalidate: 120,
     };
   }
