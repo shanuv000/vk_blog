@@ -31,6 +31,7 @@ const CategoryPost = ({ initialPosts }) => {
     error,
     totalCount,
     isInitialLoad,
+    hasAttemptedLoad,
     loadInitialPosts,
     loadMorePosts,
     postsCount,
@@ -72,8 +73,8 @@ const CategoryPost = ({ initialPosts }) => {
     return <CategorySwitchLoader categoryName={categoryName} />;
   }
 
-  // Show enhanced error state
-  if (error && posts.length === 0) {
+  // Show enhanced error state (only after we've attempted to load)
+  if (error && posts.length === 0 && hasAttemptedLoad) {
     return (
       <ApiErrorState
         error={error}
@@ -83,8 +84,8 @@ const CategoryPost = ({ initialPosts }) => {
     );
   }
 
-  // Handle case where no posts found after loading
-  if (!loading && posts.length === 0 && !error) {
+  // Handle case where no posts found after loading (only after we've attempted to load)
+  if (!loading && posts.length === 0 && !error && hasAttemptedLoad) {
     return (
       <EmptyState
         title={`No ${categoryName} Posts Found`}

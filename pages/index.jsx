@@ -41,6 +41,7 @@ export default function Home({ initialPosts }) {
     error,
     totalCount,
     isInitialLoad,
+    hasAttemptedLoad,
     loadInitialPosts,
     loadMorePosts,
     postsCount,
@@ -63,7 +64,7 @@ export default function Home({ initialPosts }) {
   }
 
   // Show enhanced error state
-  if (error && posts.length === 0) {
+  if (error && posts.length === 0 && hasAttemptedLoad) {
     return (
       <ApiErrorState
         error={error}
@@ -73,8 +74,8 @@ export default function Home({ initialPosts }) {
     );
   }
 
-  // Show empty state if no posts found
-  if (!loading && posts.length === 0 && !error) {
+  // Show empty state if no posts found (only after we've attempted to load)
+  if (!loading && posts.length === 0 && !error && hasAttemptedLoad) {
     return (
       <EmptyState
         title="No Posts Available"

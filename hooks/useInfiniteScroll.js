@@ -23,22 +23,24 @@ export const useInfiniteScroll = (options = {}) => {
 
   // State management
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading=true to prevent flash
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
   const [endCursor, setEndCursor] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false); // Separate state for infinite scroll loading
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false); // Track if we've attempted to load
 
   /**
    * Load initial posts
    */
   const loadInitialPosts = useCallback(async () => {
-    if (loading) return;
+    if (loading && hasAttemptedLoad) return; // Prevent duplicate calls after first attempt
 
     setLoading(true);
     setError(null);
+    setHasAttemptedLoad(true);
 
     try {
       let result;
@@ -78,7 +80,7 @@ export const useInfiniteScroll = (options = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [type, categorySlug, initialCount]); // Removed 'loading' dependency
+  }, [type, categorySlug, initialCount, hasAttemptedLoad]); // Include hasAttemptedLoad
 
   /**
    * Load more posts for infinite scroll
@@ -137,13 +139,14 @@ export const useInfiniteScroll = (options = {}) => {
    */
   const reset = useCallback(() => {
     setPosts([]);
-    setLoading(false);
+    setLoading(true); // Start with loading=true to prevent flash
     setLoadingMore(false);
     setHasMore(true);
     setError(null);
     setEndCursor(null);
     setTotalCount(0);
     setIsInitialLoad(true);
+    setHasAttemptedLoad(false); // Reset attempt flag
   }, []);
 
   /**
@@ -163,6 +166,7 @@ export const useInfiniteScroll = (options = {}) => {
     error,
     totalCount,
     isInitialLoad,
+    hasAttemptedLoad,
 
     // Actions
     loadInitialPosts,
