@@ -8,6 +8,7 @@ import {
   getDirectRecentPosts,
   getDirectSimilarPosts,
 } from "../services/direct-api";
+import LoadingSpinner from "./LoadingSpinner";
 
 const PostWidget = ({ categories, slug }) => {
   // Debug log to see what's being passed
@@ -104,17 +105,26 @@ const PostWidget = ({ categories, slug }) => {
   return (
     <div className="space-y-4">
       {isLoading ? (
-        // Loading state
-        <div className="animate-pulse space-y-4">
-          {[1, 2, 3].map((item) => (
-            <div className="flex items-center w-full" key={item}>
-              <div className="w-16 h-16 bg-secondary-light rounded-md flex-none"></div>
-              <div className="flex-grow ml-4">
-                <div className="h-2 bg-secondary-light rounded w-1/4 mb-2"></div>
-                <div className="h-4 bg-secondary-light rounded w-3/4"></div>
+        // Enhanced loading state
+        <div className="space-y-4">
+          <LoadingSpinner
+            size="small"
+            type="dots"
+            message={
+              slug ? "Loading similar posts..." : "Loading recent posts..."
+            }
+          />
+          <div className="animate-pulse space-y-4">
+            {[1, 2, 3].map((item) => (
+              <div className="flex items-center w-full" key={item}>
+                <div className="w-16 h-16 bg-secondary-light rounded-md flex-none"></div>
+                <div className="flex-grow ml-4">
+                  <div className="h-2 bg-secondary-light rounded w-1/4 mb-2"></div>
+                  <div className="h-4 bg-secondary-light rounded w-3/4"></div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       ) : posts && posts.length > 0 ? (
         // Posts loaded successfully

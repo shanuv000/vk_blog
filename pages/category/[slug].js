@@ -10,6 +10,15 @@ import PostCardSkeleton from "../../components/PostCardSkeleton";
 import SchemaManager from "../../components/SchemaManager";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 
+// Enhanced loading components
+import LoadingSpinner from "../../components/LoadingSpinner";
+import {
+  CategorySwitchLoader,
+  InfiniteScrollLoader,
+  ApiErrorState,
+  EmptyState,
+} from "../../components/ApiLoadingStates";
+
 const CategoryPost = ({ initialPosts }) => {
   const router = useRouter();
   const categorySlug = router.query.slug;
@@ -53,60 +62,44 @@ const CategoryPost = ({ initialPosts }) => {
     return <Loader />;
   }
 
-  // Show loading spinner during initial load
+  // Get category name for loading states
+  const categoryName = categorySlug
+    ? categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1)
+    : "Category";
+
+  // Show enhanced loading state during initial load
   if (isInitialLoad && loading) {
-    return <Loader />;
+    return <CategorySwitchLoader categoryName={categoryName} />;
   }
 
-  // Show error state
+  // Show enhanced error state
   if (error && posts.length === 0) {
     return (
-      <div className="container mx-auto px-10 mb-8 text-center py-20">
-        <h1 className="text-3xl font-bold mb-4 text-red-600">
-          Error Loading Posts
-        </h1>
-        <p className="mb-8 text-text-secondary">{error}</p>
-        <div className="space-x-4">
-          <button
-            onClick={loadInitialPosts}
-            className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark"
-          >
-            Try Again
-          </button>
-          <button
-            onClick={() => router.push("/")}
-            className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700"
-          >
-            Return to Home
-          </button>
-        </div>
-      </div>
+      <ApiErrorState
+        error={error}
+        onRetry={loadInitialPosts}
+        title={`Failed to Load ${categoryName} Posts`}
+      />
     );
   }
 
   // Handle case where no posts found after loading
-  if (!loading && posts.length === 0) {
+  if (!loading && posts.length === 0 && !error) {
     return (
-      <div className="container mx-auto px-10 mb-8 text-center py-20">
-        <h1 className="text-3xl font-bold mb-4">No Posts Found</h1>
-        <p className="mb-8">
-          There are no posts in this category or the category doesn't exist.
-        </p>
-        <button
-          onClick={() => router.push("/")}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-        >
-          Return to Home
-        </button>
-      </div>
+      <EmptyState
+        title={`No ${categoryName} Posts Found`}
+        message="There are no posts in this category or the category doesn't exist."
+        actionLabel="Return to Home"
+        onAction={() => router.push("/")}
+      />
     );
   }
 
-  // Get category name from the first post
-  const categoryName =
+  // Get actual category name from the first post (override the capitalized slug)
+  const actualCategoryName =
     posts.length > 0 && posts[0].node.categories
       ? posts[0].node.categories.find((cat) => cat.slug === categorySlug)?.name
-      : categorySlug;
+      : categoryName;
 
   // Map posts to a simpler format for structured data
   const postsForSchema = posts.map((post) => post.node);
@@ -114,11 +107,11 @@ const CategoryPost = ({ initialPosts }) => {
   // SEO configuration
   const rootUrl = "https://blog.urtechy.com";
   const categoryUrl = `${rootUrl}/category/${router.query.slug}`;
-  const title = categoryName
-    ? `${categoryName} Articles - urTechy Blogs`
+  const title = actualCategoryName
+    ? `${actualCategoryName} Articles - urTechy Blogs`
     : "Category - urTechy Blogs";
   const description = `Browse our collection of ${
-    categoryName || "articles"
+    actualCategoryName || "articles"
   } on urTechy Blogs. Stay updated with the latest insights and expert analysis.`;
 
   return (
@@ -138,7 +131,7 @@ const CategoryPost = ({ initialPosts }) => {
               url: `${rootUrl}/logo/logo4.png`,
               width: 573,
               height: 600,
-              alt: `${categoryName || "Category"} - urTechy Blogs`,
+              alt: `${actualCategoryName || "Category"} - urTechy Blogs`,
             },
           ],
           site_name: "urTechy Blogs",
@@ -152,9 +145,9 @@ const CategoryPost = ({ initialPosts }) => {
           {
             name: "keywords",
             content: `${
-              categoryName || "articles"
+              actualCategoryName || "articles"
             }, urTechy, blogs, technology, news, ${
-              categoryName ? categoryName.toLowerCase() : "category"
+              actualCategoryName ? actualCategoryName.toLowerCase() : "category"
             }`,
           },
           {
@@ -165,12 +158,12 @@ const CategoryPost = ({ initialPosts }) => {
       />
 
       {/* Add structured data */}
-      <SchemaManager posts={postsForSchema} categoryName={categoryName} />
+      <SchemaManager posts={postsForSchema} categoryName={actualCategoryName} />
       <div className="container mx-auto px-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="col-span-1 lg:col-span-8">
             <h1 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
-              {categoryName || "Category"} Articles
+              {actualCategoryName || "Category"} Articles
               {totalCount > 0 && (
                 <span className="text-sm font-normal text-text-secondary ml-2">
                   ({postsCount} of {totalCount})
@@ -182,18 +175,25 @@ const CategoryPost = ({ initialPosts }) => {
               dataLength={posts.length}
               next={loadMorePosts}
               hasMore={hasMore}
-              loader={
-                <div className="space-y-8">
-                  {[...Array(3)].map((_, index) => (
-                    <PostCardSkeleton key={`skeleton-${index}`} />
-                  ))}
-                </div>
-              }
+              loader={<InfiniteScrollLoader count={3} />}
               endMessage={
                 <div className="text-center py-8">
-                  <p className="text-text-secondary">
-                    🎉 You've reached the end! No more posts in this category.
-                  </p>
+                  <div className="inline-flex items-center space-x-2 text-text-secondary">
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>
+                      🎉 You've reached the end! No more posts in this category.
+                    </span>
+                  </div>
                 </div>
               }
               refreshFunction={loadInitialPosts}

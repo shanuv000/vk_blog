@@ -8,7 +8,14 @@ import Head from "next/head";
 import HomeSeo from "../components/HomeSeo";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { ClipLoader } from "react-spinners";
+// Enhanced loading components
+import LoadingSpinner from "../components/LoadingSpinner";
+import {
+  InitialPageLoader,
+  InfiniteScrollLoader,
+  ApiErrorState,
+  EmptyState,
+} from "../components/ApiLoadingStates";
 
 // Fisher-Yates shuffle algorithm
 import { useMediaQuery } from "react-responsive"; // Import for media query
@@ -50,30 +57,31 @@ export default function Home({ initialPosts }) {
     }
   }, [isInitialLoad, loadInitialPosts]);
 
-  // Show loading spinner during initial load
+  // Show enhanced loading state during initial load
   if (isInitialLoad && loading) {
+    return <InitialPageLoader message="Loading latest posts..." />;
+  }
+
+  // Show enhanced error state
+  if (error && posts.length === 0) {
     return (
-      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-        <ClipLoader color="#007bff" loading={true} size={150} />
-      </div>
+      <ApiErrorState
+        error={error}
+        onRetry={loadInitialPosts}
+        title="Failed to Load Posts"
+      />
     );
   }
 
-  // Show error state
-  if (error && posts.length === 0) {
+  // Show empty state if no posts found
+  if (!loading && posts.length === 0 && !error) {
     return (
-      <div className="container mx-auto px-10 mb-8 text-center py-20">
-        <h1 className="text-3xl font-bold mb-4 text-red-600">
-          Error Loading Posts
-        </h1>
-        <p className="mb-8 text-text-secondary">{error}</p>
-        <button
-          onClick={loadInitialPosts}
-          className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark"
-        >
-          Try Again
-        </button>
-      </div>
+      <EmptyState
+        title="No Posts Available"
+        message="There are no posts to display at the moment. Please check back later."
+        actionLabel="Refresh"
+        onAction={loadInitialPosts}
+      />
     );
   }
   return (
@@ -106,18 +114,25 @@ export default function Home({ initialPosts }) {
               dataLength={posts.length}
               next={loadMorePosts}
               hasMore={hasMore}
-              loader={
-                <div className="space-y-8">
-                  {[...Array(3)].map((_, index) => (
-                    <PostCardSkeleton key={`skeleton-${index}`} />
-                  ))}
-                </div>
-              }
+              loader={<InfiniteScrollLoader count={3} />}
               endMessage={
                 <div className="text-center py-8">
-                  <p className="text-text-secondary">
-                    🎉 You've reached the end! No more posts to load.
-                  </p>
+                  <div className="inline-flex items-center space-x-2 text-text-secondary">
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>
+                      🎉 You've reached the end! No more posts to load.
+                    </span>
+                  </div>
                 </div>
               }
               refreshFunction={loadInitialPosts}

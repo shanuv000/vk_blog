@@ -5,12 +5,14 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
 import { getDirectCategories } from "../services/direct-api";
-import { useData } from "../store/HandleApiContext";
+import { useIsLiveCricket } from "../hooks/useCricketData";
 
 const Header = () => {
   // Use direct API for categories
   const [categories, setCategories] = useState([]);
-  const { isLiveScore: isLive } = useData();
+
+  // Safely get live cricket status only when on cricket page
+  const isLive = useIsLiveCricket();
 
   // Fetch categories on component mount
   useEffect(() => {

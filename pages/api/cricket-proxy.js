@@ -27,11 +27,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Add cache control headers
+    // Add enhanced cache control headers for better performance
     res.setHeader(
       "Cache-Control",
-      "public, s-maxage=60, stale-while-revalidate=300"
+      "public, s-maxage=120, stale-while-revalidate=600, max-age=60"
     );
+
+    // Add performance headers
+    res.setHeader("X-Cricket-API-Optimized", "true");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
     // Forward the request to the cricket API
     const apiUrl = `https://api-sync.vercel.app/api/cricket/${endpoint}`;

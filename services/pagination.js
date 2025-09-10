@@ -12,6 +12,15 @@ import { cdnClient } from "./hygraph";
 export const getPostsPaginated = async (options = {}) => {
   const { first = 7, after = null, fields = "full" } = options;
 
+  // Production: Input validation
+  if (first < 1 || first > 50) {
+    throw new Error("Invalid pagination size: first must be between 1 and 50");
+  }
+
+  if (after && typeof after !== "string") {
+    throw new Error("Invalid cursor: after must be a string");
+  }
+
   // Determine which fields to fetch based on the 'fields' option
   let fieldsFragment = "";
 
@@ -75,11 +84,14 @@ export const getPostsPaginated = async (options = {}) => {
   `;
 
   try {
-    console.log(
-      `[getPostsPaginated] Fetching posts (first: ${first}, after: ${
-        after || "null"
-      }, fields: ${fields})`
-    );
+    // Production: Only log in development
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[getPostsPaginated] Fetching posts (first: ${first}, after: ${
+          after || "null"
+        }, fields: ${fields})`
+      );
+    }
 
     const variables = { first };
     if (after) {
@@ -88,9 +100,12 @@ export const getPostsPaginated = async (options = {}) => {
 
     const result = await cdnClient.request(query, variables);
 
-    console.log(
-      `[getPostsPaginated] Successfully fetched ${result.postsConnection.edges.length} posts`
-    );
+    // Production: Only log in development
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[getPostsPaginated] Successfully fetched ${result.postsConnection.edges.length} posts`
+      );
+    }
 
     return {
       posts: result.postsConnection.edges,
@@ -100,11 +115,14 @@ export const getPostsPaginated = async (options = {}) => {
   } catch (error) {
     // Check if the error contains the actual data (common with GraphQL proxy responses)
     if (error.response && error.response.postsConnection) {
-      console.log(
-        "[getPostsPaginated] Successfully fetched",
-        error.response.postsConnection.edges.length,
-        "posts via proxy"
-      );
+      // Production: Only log in development
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "[getPostsPaginated] Successfully fetched",
+          error.response.postsConnection.edges.length,
+          "posts via proxy"
+        );
+      }
       const data = error.response.postsConnection;
       return {
         posts: data.edges,
@@ -143,8 +161,9 @@ export const getPostsPaginated = async (options = {}) => {
 export const getCategoryPostsPaginated = async (slug, options = {}) => {
   const { first = 7, after = null } = options;
 
-  if (!slug) {
-    console.error("No slug provided to getCategoryPostsPaginated");
+  // Production: Input validation
+  if (!slug || typeof slug !== "string") {
+    console.error("Invalid slug provided to getCategoryPostsPaginated");
     return {
       posts: [],
       pageInfo: {
@@ -155,6 +174,14 @@ export const getCategoryPostsPaginated = async (slug, options = {}) => {
       },
       totalCount: 0,
     };
+  }
+
+  if (first < 1 || first > 50) {
+    throw new Error("Invalid pagination size: first must be between 1 and 50");
+  }
+
+  if (after && typeof after !== "string") {
+    throw new Error("Invalid cursor: after must be a string");
   }
 
   const query = gql`
@@ -208,11 +235,14 @@ export const getCategoryPostsPaginated = async (slug, options = {}) => {
   `;
 
   try {
-    console.log(
-      `[getCategoryPostsPaginated] Fetching category posts (slug: ${slug}, first: ${first}, after: ${
-        after || "null"
-      })`
-    );
+    // Production: Only log in development
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[getCategoryPostsPaginated] Fetching category posts (slug: ${slug}, first: ${first}, after: ${
+          after || "null"
+        })`
+      );
+    }
 
     const variables = { slug, first };
     if (after) {
@@ -221,9 +251,12 @@ export const getCategoryPostsPaginated = async (slug, options = {}) => {
 
     const result = await cdnClient.request(query, variables);
 
-    console.log(
-      `[getCategoryPostsPaginated] Successfully fetched ${result.postsConnection.edges.length} posts for category ${slug}`
-    );
+    // Production: Only log in development
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[getCategoryPostsPaginated] Successfully fetched ${result.postsConnection.edges.length} posts for category ${slug}`
+      );
+    }
 
     return {
       posts: result.postsConnection.edges,
@@ -233,9 +266,12 @@ export const getCategoryPostsPaginated = async (slug, options = {}) => {
   } catch (error) {
     // Check if the error contains the actual data (common with GraphQL proxy responses)
     if (error.response && error.response.postsConnection) {
-      console.log(
-        `[getCategoryPostsPaginated] Successfully fetched ${error.response.postsConnection.edges.length} posts for category ${slug} via proxy`
-      );
+      // Production: Only log in development
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          `[getCategoryPostsPaginated] Successfully fetched ${error.response.postsConnection.edges.length} posts for category ${slug} via proxy`
+        );
+      }
       const data = error.response.postsConnection;
       return {
         posts: data.edges,

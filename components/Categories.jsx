@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getDirectCategories } from "../services/direct-api";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -67,17 +68,24 @@ const Categories = () => {
     },
   };
 
-  // Show loading state
+  // Show enhanced loading state
   if (loading) {
     return (
-      <div className="animate-pulse w-full">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div
-            key={item}
-            className="h-4 bg-secondary-light rounded mb-3"
-            style={{ width: `${Math.floor(Math.random() * 40) + 60}%` }}
-          />
-        ))}
+      <div className="space-y-4">
+        <LoadingSpinner
+          size="small"
+          type="pulse"
+          message="Loading categories..."
+        />
+        <div className="animate-pulse w-full">
+          {[1, 2, 3, 4, 5].map((item) => (
+            <div
+              key={item}
+              className="h-4 bg-secondary-light rounded mb-3"
+              style={{ width: `${Math.floor(Math.random() * 40) + 60}%` }}
+            />
+          ))}
+        </div>
       </div>
     );
   }

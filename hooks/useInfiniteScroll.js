@@ -29,6 +29,7 @@ export const useInfiniteScroll = (options = {}) => {
   const [endCursor, setEndCursor] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false); // Separate state for infinite scroll loading
 
   /**
    * Load initial posts
@@ -55,11 +56,14 @@ export const useInfiniteScroll = (options = {}) => {
         });
       }
 
-      console.log(
-        "loadInitialPosts result:",
-        result.posts?.length,
-        "posts loaded"
-      ); // Debug log
+      // Production: Only log in development
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "loadInitialPosts result:",
+          result.posts?.length,
+          "posts loaded"
+        );
+      }
 
       setPosts(result.posts);
       setHasMore(result.pageInfo.hasNextPage);
@@ -80,9 +84,9 @@ export const useInfiniteScroll = (options = {}) => {
    * Load more posts for infinite scroll
    */
   const loadMorePosts = useCallback(async () => {
-    if (loading || !hasMore || !endCursor) return;
+    if (loading || loadingMore || !hasMore || !endCursor) return;
 
-    setLoading(true);
+    setLoadingMore(true);
     setError(null);
 
     try {
@@ -116,9 +120,17 @@ export const useInfiniteScroll = (options = {}) => {
       console.error("Error loading more posts:", err);
       setError(err.message || "Failed to load more posts");
     } finally {
-      setLoading(false);
+      setLoadingMore(false);
     }
-  }, [type, categorySlug, loadMoreCount, loading, hasMore, endCursor]);
+  }, [
+    type,
+    categorySlug,
+    loadMoreCount,
+    loading,
+    loadingMore,
+    hasMore,
+    endCursor,
+  ]);
 
   /**
    * Reset the hook state (useful for category changes)
@@ -126,6 +138,7 @@ export const useInfiniteScroll = (options = {}) => {
   const reset = useCallback(() => {
     setPosts([]);
     setLoading(false);
+    setLoadingMore(false);
     setHasMore(true);
     setError(null);
     setEndCursor(null);
@@ -145,6 +158,7 @@ export const useInfiniteScroll = (options = {}) => {
     // State
     posts,
     loading,
+    loadingMore,
     hasMore,
     error,
     totalCount,
@@ -158,6 +172,7 @@ export const useInfiniteScroll = (options = {}) => {
 
     // Computed values
     postsCount: posts.length,
-    canLoadMore: hasMore && !loading,
+    canLoadMore: hasMore && !loading && !loadingMore,
+    isLoadingAny: loading || loadingMore,
   };
 };

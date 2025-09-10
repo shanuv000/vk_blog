@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { Header } from "./";
-import { DataProvider } from "../store/HandleApiContext";
+import LazyDataProvider from "../store/LazyDataProvider";
 import Footer from "./footer/Footer";
 import dynamic from "next/dynamic";
 
@@ -11,21 +11,19 @@ import dynamic from "next/dynamic";
 // Memoize the Layout component to prevent unnecessary re-renders
 const Layout = memo(({ children }) => {
   return (
-    <>
-      <DataProvider>
-        <main className="scroll-smooth bg-secondary-dark text-text-primary min-h-screen">
-          <Header />
-          <div className="pt-24 sm:pt-28">
-            <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
-              {children}
-            </div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 lg:mb-8">
-              <Footer />
-            </div>
+    <LazyDataProvider>
+      <main className="scroll-smooth bg-secondary-dark text-text-primary min-h-screen">
+        <Header />
+        <div className="pt-24 sm:pt-28">
+          <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
+            {children}
           </div>
-        </main>
-      </DataProvider>
-    </>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 lg:mb-8">
+            <Footer />
+          </div>
+        </div>
+      </main>
+    </LazyDataProvider>
   );
 });
 

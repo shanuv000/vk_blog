@@ -131,13 +131,14 @@ const useFetchData = (url, extractData = (data) => data, initialState = []) => {
   };
 
   useEffect(() => {
-    if (!hasFetched.current) {
+    // Only fetch data if we're on the client side and haven't fetched yet
+    if (typeof window !== "undefined" && !hasFetched.current) {
       hasFetched.current = true;
       fetchDataAsync();
     }
 
-    // Set up periodic refresh for live data
-    if (url.includes("live-scores")) {
+    // Set up periodic refresh for live data only on client side
+    if (typeof window !== "undefined" && url.includes("live-scores")) {
       const refreshInterval = setInterval(() => {
         fetchDataAsync();
       }, 60000); // Refresh live scores every minute
