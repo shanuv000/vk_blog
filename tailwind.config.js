@@ -64,8 +64,8 @@ module.exports = {
           "50%": { transform: "rotate(3deg)" },
         },
         fadeIn: {
-          "0%": { opacity: 0 },
-          "100%": { opacity: 1 },
+          "0%": { opacity: 0, transform: "translateY(10px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
         },
         slideUp: {
           "0%": { transform: "translateY(20px)", opacity: 0 },
@@ -75,11 +75,54 @@ module.exports = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        modernBounce: {
+          "0%, 80%, 100%": {
+            transform: "scale(0.8)",
+            opacity: 0.5,
+          },
+          "40%": {
+            transform: "scale(1.2)",
+            opacity: 1,
+          },
+        },
+        modernPulse: {
+          "0%, 100%": {
+            opacity: 0.4,
+            transform: "scale(0.95)",
+          },
+          "50%": {
+            opacity: 1,
+            transform: "scale(1.05)",
+          },
+        },
+        ripple: {
+          "0%": {
+            transform: "scale(0)",
+            opacity: 1,
+          },
+          "100%": {
+            transform: "scale(4)",
+            opacity: 0,
+          },
+        },
+        smoothSpin: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
-        fadeIn: "fadeIn 0.5s ease-in-out",
-        slideUp: "slideUp 0.5s ease-in-out",
-        shimmer: "shimmer 2s infinite linear",
+        fadeIn: "fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+        slideUp: "slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+        shimmer: "shimmer 2.5s infinite linear",
+        modernBounce:
+          "modernBounce 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite",
+        modernPulse: "modernPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        ripple: "ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite",
+        smoothSpin:
+          "smoothSpin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite",
+      },
+      borderWidth: {
+        3: "3px",
       },
       typography: {
         DEFAULT: {
