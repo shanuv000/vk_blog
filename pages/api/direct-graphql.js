@@ -32,7 +32,7 @@ const PREDEFINED_QUERIES = {
   `,
   featuredPosts: `
     query GetFeaturedPosts {
-      posts(first: 12, orderBy: publishedAt_DESC) {
+      posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
         title
         slug
         createdAt

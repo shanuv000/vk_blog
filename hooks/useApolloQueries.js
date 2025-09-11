@@ -302,15 +302,22 @@ export const useFeaturedPosts = () => {
 
   const posts = data?.posts || [];
 
-  // Process image dimensions with null safety
+  // Process image dimensions with null safety and fix invalid dimensions
   const processedPosts = posts.map((post) => ({
     ...post,
     featuredImage: post.featuredImage
       ? {
           ...post.featuredImage,
           url: post.featuredImage.url || "/default-image.jpg",
-          width: parseInt(post.featuredImage?.width, 10) || 800,
-          height: parseInt(post.featuredImage?.height, 10) || 600,
+          // Fix invalid dimensions (0x0) with proper defaults
+          width:
+            parseInt(post.featuredImage?.width, 10) > 0
+              ? parseInt(post.featuredImage?.width, 10)
+              : 800,
+          height:
+            parseInt(post.featuredImage?.height, 10) > 0
+              ? parseInt(post.featuredImage?.height, 10)
+              : 600,
         }
       : {
           url: "/default-image.jpg",

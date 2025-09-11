@@ -1,123 +1,133 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import useEmblaCarousel from "embla-carousel-react";
-import AutoplayPlugin from "embla-carousel-autoplay";
-import {
-  PrevButton,
-  NextButton,
-  usePrevNextButtons,
-} from "../components/CarouselButtons";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { FeaturedPostCard } from "../components";
 import { getFeaturedPosts } from "../services";
 import { getDirectFeaturedPosts } from "../services/direct-api";
 
-// Updated Embla styles
-const emblaStyles = `
-  .embla {
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+// Modern Swiper carousel styles
+const swiperStyles = `
+  .featured-posts-swiper {
     position: relative;
-    padding: 12px 0 44px 0;
+    padding: 16px 0 48px 0;
     width: 100%;
     overflow: visible;
   }
-  .embla__viewport {
-    overflow: hidden;
-    border-radius: 20px;
-    outline: none;
-    transition: box-shadow .25s;
-    width: 100%;
-    background: transparent;
+
+  .featured-posts-swiper .swiper-wrapper {
+    align-items: stretch;
   }
-  .embla__container {
+
+  .featured-posts-swiper .swiper-slide {
+    height: auto;
     display: flex;
-    flex-wrap: nowrap;
-    user-select: none;
-    will-change: transform;
-    -webkit-touch-callout: none;
-    touch-action: pan-y pinch-zoom;
-    gap: 1.5rem;
-    padding-bottom: 8px;
+    align-items: stretch;
   }
-  .embla__slide {
-    min-width: 0;
-    flex: 0 0 100%;
-    transition: transform .4s cubic-bezier(.23,1,.32,1), box-shadow .2s;
-    outline: none;
+
+  .featured-posts-swiper .swiper-button-next,
+  .featured-posts-swiper .swiper-button-prev {
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
+    border-radius: 12px;
+    background: rgba(229, 9, 20, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
   }
-  @media(min-width: 640px){ .embla__slide { flex-basis: 50%; } }
-  @media(min-width: 1024px){ .embla__slide { flex-basis: 33.3%; } }
-  @media(min-width: 1536px){ .embla__slide { flex-basis: 25%; } }
-  .embla__slide.is-selected, .embla__slide:focus-within {
-    z-index: 1;
-    box-shadow: 0 8px 36px -6px #e5091470;
-    outline: 3px solid #E50914;
+
+  .featured-posts-swiper .swiper-button-next:hover,
+  .featured-posts-swiper .swiper-button-prev:hover {
+    background: rgba(229, 9, 20, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
-  /* Hide embla dots completely */
-  .embla__dots, .embla__dot { display: none !important; }
+
+  .featured-posts-swiper .swiper-button-next::after,
+  .featured-posts-swiper .swiper-button-prev::after {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .featured-posts-swiper .swiper-button-next {
+    right: 16px;
+  }
+
+  .featured-posts-swiper .swiper-button-prev {
+    left: 16px;
+  }
+
+  .featured-posts-swiper .swiper-pagination {
+    bottom: 10px;
+  }
+
+  .featured-posts-swiper .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background: rgba(229, 9, 20, 0.3);
+    opacity: 0.5;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .featured-posts-swiper .swiper-pagination-bullet-active {
+    background: rgba(229, 9, 20, 1);
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
   @media (max-width: 640px) {
-    .embla__button {
-      transform: scale(0.88);
+    .featured-posts-swiper .swiper-button-next,
+    .featured-posts-swiper .swiper-button-prev {
+      width: 40px;
+      height: 40px;
+      margin-top: -20px;
+    }
+
+    .featured-posts-swiper .swiper-button-next::after,
+    .featured-posts-swiper .swiper-button-prev::after {
+      font-size: 14px;
     }
   }
 `;
 
-// Keyboard navigation handler for carousel area focus
-function useCarouselKeyboardControls(emblaApi) {
+// Keyboard navigation handler for Swiper carousel
+function useCarouselKeyboardControls(swiperRef) {
   useEffect(() => {
-    if (!emblaApi) return;
+    if (!swiperRef.current) return;
     const handler = (e) => {
       if (
         document.activeElement &&
         document.activeElement.closest &&
-        document.activeElement.closest(".embla__viewport")
+        document.activeElement.closest(".featured-posts-swiper")
       ) {
-        if (
-          (e.key === "ArrowLeft" || e.key === "ArrowUp") &&
-          emblaApi.canScrollPrev()
-        ) {
-          emblaApi.scrollPrev();
-        } else if (
-          (e.key === "ArrowRight" || e.key === "ArrowDown") &&
-          emblaApi.canScrollNext()
-        ) {
-          emblaApi.scrollNext();
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          swiperRef.current.swiper.slidePrev();
+        } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          swiperRef.current.swiper.slideNext();
         }
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [emblaApi]);
+  }, [swiperRef]);
 }
 
 const FeaturedPosts = () => {
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const swiperRef = useRef(null);
 
-  const autoplayOptions = {
-    delay: 5000,
-    stopOnInteraction: true,
-    stopOnMouseEnter: true,
-    rootNode: (emblaRoot) => emblaRoot.parentElement,
-  };
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: "center",
-      skipSnaps: false,
-      dragFree: false,
-      containScroll: "trimSnaps",
-      slidesToScroll: 1,
-    },
-    [AutoplayPlugin(autoplayOptions)]
-  );
-  const { prevBtnDisabled, nextBtnDisabled } = usePrevNextButtons(emblaApi);
-  useCarouselKeyboardControls(emblaApi);
+  useCarouselKeyboardControls(swiperRef);
 
-  useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.on("select", () => {});
-    return () => emblaApi.off("select");
-  }, [emblaApi]);
+  // Simple data loading - no complex initialization needed with Swiper
 
   // Preload visible images for best performance
   const preloadImages = (posts) => {
@@ -163,16 +173,28 @@ const FeaturedPosts = () => {
           setDataLoaded(true);
           return;
         }
-        const processedPosts = result.map((post) => ({
+        // Filter out posts without valid slugs and titles
+        const validPosts = result.filter(
+          (post) => post && post.slug && post.title
+        );
+
+        const processedPosts = validPosts.map((post) => ({
           ...post,
-          slug: post.slug || `post-${Math.random().toString(36).slice(2, 9)}`,
+          slug: post.slug,
           featuredImage: post.featuredImage
             ? {
                 ...post.featuredImage,
                 url:
                   post.featuredImage.url || "/api/default-image?type=featured",
-                width: parseInt(post.featuredImage.width, 10) || 800,
-                height: parseInt(post.featuredImage.height, 10) || 600,
+                // Fix invalid dimensions (0x0) with proper defaults
+                width:
+                  parseInt(post.featuredImage.width, 10) > 0
+                    ? parseInt(post.featuredImage.width, 10)
+                    : 800,
+                height:
+                  parseInt(post.featuredImage.height, 10) > 0
+                    ? parseInt(post.featuredImage.height, 10)
+                    : 600,
               }
             : {
                 url: "/api/default-image?type=featured",
@@ -184,6 +206,7 @@ const FeaturedPosts = () => {
             photo: { url: "/api/default-image?type=avatar" },
           },
         }));
+
         setFeaturedPosts(processedPosts);
         setDataLoaded(true);
       } catch {
@@ -194,74 +217,116 @@ const FeaturedPosts = () => {
     loadPosts();
   }, []);
 
+  // Don't render until data is loaded and we have posts
   if (!dataLoaded || !featuredPosts.length) return null;
 
   return (
     <motion.section
-      className="mb-12 relative"
-      initial={{ opacity: 0, y: 20 }}
+      className="mb-16 relative"
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
       aria-labelledby="featured-content-header"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/5 to-secondary-light/10 -z-10 rounded-xl blur-xl"></div>
+      {/* Modern background with glass morphism */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 -z-10 rounded-3xl blur-3xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/3 to-secondary-light/8 -z-10 rounded-2xl"></div>
+
       <motion.header
-        className="mb-6 text-center"
-        initial={{ opacity: 0, y: 10 }}
+        className="mb-10 text-center"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.6, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
         id="featured-content-header"
       >
-        <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-primary inline-block relative">
-          <span className="bg-gradient-to-r from-primary to-urtechy-orange bg-clip-text text-transparent">
-            Featured Content
-          </span>
-          <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-urtechy-orange rounded-full"></span>
-        </h2>
+        <div className="relative inline-block">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-text-primary relative z-10">
+            <span className="bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent">
+              Featured Content
+            </span>
+          </h2>
+          {/* Modern underline with glow effect */}
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full shadow-lg"></div>
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full blur-sm opacity-60"></div>
+        </div>
+        <p className="mt-4 text-text-secondary/80 text-lg font-medium max-w-2xl mx-auto">
+          Discover our most popular and engaging articles
+        </p>
       </motion.header>
       {preloadImages(featuredPosts)}
       <style jsx global>
-        {emblaStyles}
+        {swiperStyles}
       </style>
       <div className="relative">
-        <div
-          className="embla group"
-          tabIndex={0}
-          aria-label="Featured articles carousel"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
         >
-          <div
-            className="embla__viewport outline-none focus-visible:ring-4 focus-visible:ring-primary"
-            ref={emblaRef}
+          <Swiper
+            ref={swiperRef}
+            modules={[Navigation, Pagination, Autoplay]}
+            className="featured-posts-swiper"
+            spaceBetween={32}
+            slidesPerView={1}
+            centeredSlides={true}
+            loop={featuredPosts.length > 1}
+            autoplay={
+              featuredPosts.length > 1
+                ? {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                  }
+                : false
+            }
+            navigation={true}
+            pagination={{
+              clickable: true,
+              dynamicBullets: true,
+            }}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+                centeredSlides: false,
+              },
+              1024: {
+                slidesPerView: 3,
+                centeredSlides: false,
+              },
+              1536: {
+                slidesPerView: 4,
+                centeredSlides: false,
+              },
+            }}
+            onSwiper={(swiper) => {
+              // Ensure first slide is active on initialization
+              setTimeout(() => {
+                swiper.slideTo(0, 0);
+              }, 100);
+            }}
+            aria-label="Featured articles carousel"
           >
-            <div className="embla__container">
-              {featuredPosts.map((post, idx) => (
-                <div
-                  key={post.slug || idx}
-                  className="embla__slide"
-                  data-slide={idx}
-                  aria-roledescription="slide"
-                  aria-label={`Featured post ${idx + 1} of ${
-                    featuredPosts.length
-                  }`}
+            {featuredPosts.map((post, idx) => (
+              <SwiperSlide key={post.slug || idx}>
+                <motion.div
+                  className="h-full"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.1 + idx * 0.05,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
                 >
-                  <div className="px-2">
+                  <div className="px-2 h-full">
                     <FeaturedPostCard post={post} />
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <PrevButton
-            onClick={() => emblaApi?.scrollPrev()}
-            disabled={prevBtnDisabled}
-            aria-label="Previous featured article"
-          />
-          <NextButton
-            onClick={() => emblaApi?.scrollNext()}
-            disabled={nextBtnDisabled}
-            aria-label="Next featured article"
-          />
-        </div>
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </motion.div>
       </div>
     </motion.section>
   );

@@ -274,7 +274,7 @@ export const getAdjacentPosts = async (createdAt, slug) => {
 export const getFeaturedPosts = async () => {
   const FEATURED_POSTS_QUERY = gql`
     query GetFeaturedPosts {
-      posts(where: { featuredPost: true }) {
+      posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
         author {
           name
           photo {
@@ -283,6 +283,8 @@ export const getFeaturedPosts = async () => {
         }
         featuredImage {
           url
+          width
+          height
         }
         title
         slug

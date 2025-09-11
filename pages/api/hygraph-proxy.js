@@ -154,16 +154,20 @@ export default async function handler(req, res) {
 
       // Handle different query types
       if (isFeaturedPostsQuery) {
-        console.log("Using simplified query for featured posts");
-        // Use a simpler query for featured posts
+        console.log(
+          "Using corrected query for featured posts with proper filtering"
+        );
+        // Use a corrected query that actually filters for featured posts
         const simplifiedQuery = `
           query GetFeaturedPosts {
-            posts(first: 12, orderBy: createdAt_DESC) {
+            posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
               title
               slug
               createdAt
               featuredImage {
                 url
+                width
+                height
               }
               author {
                 name
