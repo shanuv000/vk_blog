@@ -1,130 +1,186 @@
 import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { FeaturedPostCard } from "../components";
 import { getFeaturedPosts } from "../services";
 import { getDirectFeaturedPosts } from "../services/direct-api";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
-// Modern Swiper carousel styles
-const swiperStyles = `
-  .featured-posts-swiper {
+// Simple CSS-based carousel styles
+const carouselStyles = `
+  .featured-posts-carousel {
     position: relative;
     padding: 16px 0 48px 0;
     width: 100%;
-    overflow: visible;
+    overflow: hidden;
   }
 
-  .featured-posts-swiper .swiper-wrapper {
-    align-items: stretch;
-  }
-
-  .featured-posts-swiper .swiper-slide {
-    height: auto;
+  .carousel-container {
     display: flex;
-    align-items: stretch;
+    transition: transform 0.5s ease;
+    gap: 2rem;
   }
 
-  .featured-posts-swiper .swiper-button-next,
-  .featured-posts-swiper .swiper-button-prev {
+  .carousel-slide {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-slide {
+      width: calc(50% - 1rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .carousel-slide {
+      width: calc(33.333% - 1.333rem);
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .carousel-slide {
+      width: calc(25% - 1.5rem);
+    }
+  }
+
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 44px;
     height: 44px;
-    margin-top: -22px;
     border-radius: 12px;
     background: rgba(229, 9, 20, 0.9);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s ease;
+    z-index: 10;
   }
 
-  .featured-posts-swiper .swiper-button-next:hover,
-  .featured-posts-swiper .swiper-button-prev:hover {
+  .carousel-button:hover {
     background: rgba(229, 9, 20, 1);
-    transform: translateY(-1px);
+    transform: translateY(-51px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
 
-  .featured-posts-swiper .swiper-button-next::after,
-  .featured-posts-swiper .swiper-button-prev::after {
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  }
-
-  .featured-posts-swiper .swiper-button-next {
-    right: 16px;
-  }
-
-  .featured-posts-swiper .swiper-button-prev {
+  .carousel-button-prev {
     left: 16px;
   }
 
-  .featured-posts-swiper .swiper-pagination {
-    bottom: 10px;
+  .carousel-button-next {
+    right: 16px;
   }
 
-  .featured-posts-swiper .swiper-pagination-bullet {
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .carousel-dot {
     width: 12px;
     height: 12px;
+    border-radius: 50%;
+    border: none;
     background: rgba(229, 9, 20, 0.3);
-    opacity: 0.5;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
 
-  .featured-posts-swiper .swiper-pagination-bullet-active {
+  .carousel-dot.active {
     background: rgba(229, 9, 20, 1);
-    opacity: 1;
     transform: scale(1.2);
   }
 
   @media (max-width: 640px) {
-    .featured-posts-swiper .swiper-button-next,
-    .featured-posts-swiper .swiper-button-prev {
+    .carousel-button {
       width: 40px;
       height: 40px;
-      margin-top: -20px;
-    }
-
-    .featured-posts-swiper .swiper-button-next::after,
-    .featured-posts-swiper .swiper-button-prev::after {
-      font-size: 14px;
     }
   }
 `;
 
-// Keyboard navigation handler for Swiper carousel
-function useCarouselKeyboardControls(swiperRef) {
+// Simple carousel navigation hook
+function useSimpleCarousel(itemsLength, autoplayDelay = 6000) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoplay, setIsAutoplay] = useState(true);
+  const intervalRef = useRef(null);
+
+  const getVisibleItems = () => {
+    if (typeof window === "undefined") return 1;
+    if (window.innerWidth >= 1536) return 4;
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 640) return 2;
+    return 1;
+  };
+
+  const [visibleItems, setVisibleItems] = useState(1);
+
   useEffect(() => {
-    if (!swiperRef.current) return;
-    const handler = (e) => {
-      if (
-        document.activeElement &&
-        document.activeElement.closest &&
-        document.activeElement.closest(".featured-posts-swiper")
-      ) {
-        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-          swiperRef.current.swiper.slidePrev();
-        } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-          swiperRef.current.swiper.slideNext();
-        }
-      }
+    const handleResize = () => {
+      setVisibleItems(getVisibleItems());
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [swiperRef]);
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const maxIndex = Math.max(0, itemsLength - visibleItems);
+
+  const goToSlide = (index) => {
+    setCurrentIndex(Math.max(0, Math.min(index, maxIndex)));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  };
+
+  useEffect(() => {
+    if (isAutoplay && itemsLength > visibleItems) {
+      intervalRef.current = setInterval(nextSlide, autoplayDelay);
+      return () => clearInterval(intervalRef.current);
+    }
+  }, [isAutoplay, itemsLength, visibleItems, autoplayDelay]);
+
+  const pauseAutoplay = () => setIsAutoplay(false);
+  const resumeAutoplay = () => setIsAutoplay(true);
+
+  return {
+    currentIndex,
+    visibleItems,
+    maxIndex,
+    goToSlide,
+    nextSlide,
+    prevSlide,
+    pauseAutoplay,
+    resumeAutoplay,
+  };
 }
 
 const FeaturedPosts = () => {
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
-  const swiperRef = useRef(null);
+  const containerRef = useRef(null);
 
-  useCarouselKeyboardControls(swiperRef);
+  const {
+    currentIndex,
+    visibleItems,
+    maxIndex,
+    goToSlide,
+    nextSlide,
+    prevSlide,
+    pauseAutoplay,
+    resumeAutoplay,
+  } = useSimpleCarousel(featuredPosts.length, 6000);
 
   // Simple data loading - no complex initialization needed with Swiper
 
@@ -248,63 +304,55 @@ const FeaturedPosts = () => {
       </header>
       {preloadImages(featuredPosts)}
       <style jsx global>
-        {swiperStyles}
+        {carouselStyles}
       </style>
       <div className="relative">
         <div
           className="opacity-0 animate-fadeIn"
           style={{ animationDelay: "0.3s", animationFillMode: "forwards" }}
         >
-          <Swiper
-            ref={swiperRef}
-            modules={[Navigation, Pagination, Autoplay]}
-            className="featured-posts-swiper"
-            spaceBetween={32}
-            slidesPerView={1}
-            centeredSlides={true}
-            loop={featuredPosts.length > 1}
-            autoplay={
-              featuredPosts.length > 1
-                ? {
-                    delay: 6000, // Increased delay for better performance
-                    disableOnInteraction: false,
-                    pauseOnMouseEnter: true,
-                  }
-                : false
-            }
-            navigation={true}
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
-            breakpoints={{
-              640: {
-                slidesPerView: 2,
-                centeredSlides: false,
-              },
-              1024: {
-                slidesPerView: 3,
-                centeredSlides: false,
-              },
-              1536: {
-                slidesPerView: 4,
-                centeredSlides: false,
-              },
-            }}
-            onSwiper={(swiper) => {
-              // Ensure first slide is active on initialization
-              setTimeout(() => {
-                swiper.slideTo(0, 0);
-              }, 100);
-            }}
+          <div
+            className="featured-posts-carousel"
+            onMouseEnter={pauseAutoplay}
+            onMouseLeave={resumeAutoplay}
             aria-label="Featured articles carousel"
           >
-            {featuredPosts.map((post, idx) => (
-              <SwiperSlide key={post.slug || idx}>
+            {/* Navigation buttons */}
+            {featuredPosts.length > visibleItems && (
+              <>
+                <button
+                  className="carousel-button carousel-button-prev"
+                  onClick={prevSlide}
+                  aria-label="Previous slides"
+                >
+                  ←
+                </button>
+                <button
+                  className="carousel-button carousel-button-next"
+                  onClick={nextSlide}
+                  aria-label="Next slides"
+                >
+                  →
+                </button>
+              </>
+            )}
+
+            {/* Carousel container */}
+            <div
+              ref={containerRef}
+              className="carousel-container"
+              style={{
+                transform: `translateX(-${
+                  (currentIndex * 100) / visibleItems
+                }%)`,
+              }}
+            >
+              {featuredPosts.map((post, idx) => (
                 <div
-                  className="h-full opacity-0 animate-fadeIn"
+                  key={post.slug || idx}
+                  className="carousel-slide opacity-0 animate-fadeIn"
                   style={{
-                    animationDelay: `${0.4 + idx * 0.1}s`,
+                    animationDelay: `${0.4 + (idx % visibleItems) * 0.1}s`,
                     animationFillMode: "forwards",
                   }}
                 >
@@ -312,9 +360,25 @@ const FeaturedPosts = () => {
                     <FeaturedPostCard post={post} />
                   </div>
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+              ))}
+            </div>
+
+            {/* Dots pagination */}
+            {featuredPosts.length > visibleItems && maxIndex > 0 && (
+              <div className="carousel-dots">
+                {Array.from({ length: maxIndex + 1 }, (_, index) => (
+                  <button
+                    key={index}
+                    className={`carousel-dot ${
+                      currentIndex === index ? "active" : ""
+                    }`}
+                    onClick={() => goToSlide(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
