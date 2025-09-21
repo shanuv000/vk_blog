@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
-import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { FeaturedPostCard } from "../components";
@@ -221,22 +220,17 @@ const FeaturedPosts = () => {
   if (!dataLoaded || !featuredPosts.length) return null;
 
   return (
-    <motion.section
-      className="mb-16 relative"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+    <section
+      className="mb-16 relative opacity-0 animate-fadeIn"
       aria-labelledby="featured-content-header"
+      style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}
     >
-      {/* Modern background with glass morphism */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 -z-10 rounded-3xl blur-3xl"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/3 to-secondary-light/8 -z-10 rounded-2xl"></div>
+      {/* Simplified background - removed blur effects for better performance */}
+      <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/5 to-secondary-light/10 -z-10 rounded-2xl"></div>
 
-      <motion.header
-        className="mb-10 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+      <header
+        className="mb-10 text-center opacity-0 animate-fadeIn"
+        style={{ animationDelay: "0.2s", animationFillMode: "forwards" }}
         id="featured-content-header"
       >
         <div className="relative inline-block">
@@ -245,23 +239,21 @@ const FeaturedPosts = () => {
               Featured Content
             </span>
           </h2>
-          {/* Modern underline with glow effect */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full shadow-lg"></div>
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full blur-sm opacity-60"></div>
+          {/* Simplified underline without glow effects */}
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full"></div>
         </div>
         <p className="mt-4 text-text-secondary/80 text-lg font-medium max-w-2xl mx-auto">
           Discover our most popular and engaging articles
         </p>
-      </motion.header>
+      </header>
       {preloadImages(featuredPosts)}
       <style jsx global>
         {swiperStyles}
       </style>
       <div className="relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        <div
+          className="opacity-0 animate-fadeIn"
+          style={{ animationDelay: "0.3s", animationFillMode: "forwards" }}
         >
           <Swiper
             ref={swiperRef}
@@ -274,7 +266,7 @@ const FeaturedPosts = () => {
             autoplay={
               featuredPosts.length > 1
                 ? {
-                    delay: 5000,
+                    delay: 6000, // Increased delay for better performance
                     disableOnInteraction: false,
                     pauseOnMouseEnter: true,
                   }
@@ -309,26 +301,23 @@ const FeaturedPosts = () => {
           >
             {featuredPosts.map((post, idx) => (
               <SwiperSlide key={post.slug || idx}>
-                <motion.div
-                  className="h-full"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.1 + idx * 0.05,
-                    ease: [0.4, 0, 0.2, 1],
+                <div
+                  className="h-full opacity-0 animate-fadeIn"
+                  style={{
+                    animationDelay: `${0.4 + idx * 0.1}s`,
+                    animationFillMode: "forwards",
                   }}
                 >
                   <div className="px-2 h-full">
                     <FeaturedPostCard post={post} />
                   </div>
-                </motion.div>
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 

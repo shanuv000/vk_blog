@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { motion, useScroll, useSpring } from "framer-motion";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Social_post_details";
+import OptimizedImage from "./OptimizedImage";
+import { HeroImageSkeleton } from "./ImageSkeletons";
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
@@ -126,40 +127,40 @@ const PostDetail = ({ post }) => {
           <HeadPostDetails post={post} />
           {/* Seo */}
 
-          {/* Featured Image - No overlay */}
+          {/* Enhanced Featured Image with OptimizedImage */}
           <div className="relative overflow-hidden w-full">
-            <motion.div className="w-full aspect-video relative">
-              <div className="relative w-full h-full">
-                {post.featuredImage?.url ? (
-                  <Image
-                    src={post.featuredImage.url}
-                    alt={post.title || "Post image"}
-                    fill
-                    priority={true} // Explicitly mark as priority for LCP
-                    loading="eager" // Force eager loading for LCP image
-                    fetchPriority="high" // Use the fetchPriority attribute
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                    quality={75} // Reduced quality for better performance
-                    onError={() => {
-                      // Silent error handling for production
-                    }}
-                  />
-                ) : (
-                  // Fallback for when no image URL is available
-                  <Image
-                    src={DEFAULT_FEATURED_IMAGE}
-                    alt={post.title || "Post image"}
-                    fill
-                    priority={true} // Explicitly mark as priority for LCP
-                    loading="eager" // Force eager loading for LCP image
-                    fetchPriority="high" // Use the fetchPriority attribute
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                    quality={75} // Reduced quality for better performance
-                  />
-                )}
-              </div>
+            <motion.div
+              className="w-full aspect-video relative"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <OptimizedImage
+                src={post.featuredImage?.url || DEFAULT_FEATURED_IMAGE}
+                alt={post.title || "Post hero image"}
+                fill
+                priority={true} // Critical for LCP optimization
+                quality={90} // Higher quality for hero images
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+                fallbackSrc={DEFAULT_FEATURED_IMAGE}
+                showSkeleton={true}
+                aspectRatio="16/9"
+                containerClassName="w-full h-full"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2NzUiIHZpZXdCb3g9IjAgMCAxMjAwIDY3NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjc1IiBmaWxsPSJyZ2JhKDE1NiwgMTYzLCAxNzUsIDAuMSkiLz4KPHN2Zz4K"
+                onLoad={() => {
+                  // Optional: Track hero image load performance
+                  if (typeof window !== "undefined" && window.gtag) {
+                    window.gtag("event", "hero_image_loaded", {
+                      event_category: "performance",
+                      event_label: post.slug,
+                    });
+                  }
+                }}
+                onError={(error) => {
+                  console.warn("Hero image failed to load:", error);
+                }}
+              />
             </motion.div>
           </div>
 

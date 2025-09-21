@@ -9,3 +9,8 @@ export { default as FeaturedPostCard } from "./FeaturedPostCard";
 export { default as Loader } from "./Loader";
 export { default as AdjacentPostCard } from "./AdjacentPostCard";
 export { default as SchemaManager } from "./SchemaManager";
+
+// Enhanced image components
+export { default as OptimizedImage } from "./OptimizedImage";
+export * from "./ImageSkeletons";
+export * from "./ImageLoadingStates";

@@ -13,38 +13,31 @@ export const InitialPageLoader = ({ message = "Loading latest posts..." }) => (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Main content area */}
       <div className="lg:col-span-8 col-span-1">
-        {/* Modern header skeleton */}
+        {/* Simplified header skeleton */}
         <div className="mb-8">
-          <div
-            className="h-8 rounded-lg w-64 bg-[length:200%_100%] animate-shimmer mb-4"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(75, 85, 99, 0.15) 25%, rgba(156, 163, 175, 0.25) 50%, rgba(75, 85, 99, 0.15) 75%)",
-              backgroundSize: "200% 100%",
-            }}
-          />
+          <div className="h-8 rounded-lg w-64 bg-gray-300/20 animate-pulse mb-4" />
           <div className="h-px bg-gradient-to-r from-transparent via-gray-600/30 to-transparent"></div>
         </div>
 
-        {/* Modern loading message with enhanced spinner */}
+        {/* Simplified loading message */}
         <div className="text-center py-12">
           <div className="mb-8">
-            <LoadingSpinner size="large" type="ripple" message={message} />
+            <LoadingSpinner size="large" type="spinner" message={message} />
           </div>
           <div className="text-text-secondary/60 text-sm font-medium">
             Preparing your content experience...
           </div>
         </div>
 
-        {/* Enhanced skeleton posts with staggered animation */}
+        {/* Simplified skeleton posts */}
         <div className="space-y-8">
           {[...Array(3)].map((_, index) => (
             <div
               key={`initial-skeleton-${index}`}
+              className="opacity-0 animate-fadeIn"
               style={{
-                animation: `fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) ${
-                  index * 0.1
-                }s both`,
+                animationDelay: `${index * 0.1}s`,
+                animationFillMode: "forwards",
               }}
             >
               <PostCardSkeleton />
@@ -56,32 +49,20 @@ export const InitialPageLoader = ({ message = "Loading latest posts..." }) => (
       {/* Modern sidebar skeleton */}
       <div className="lg:col-span-4 col-span-1">
         <div className="space-y-8">
-          {/* Enhanced widget skeleton */}
+          {/* Simplified widget skeleton */}
           <div
-            className="bg-secondary rounded-xl shadow-lg overflow-hidden border border-gray-700/20"
+            className="bg-secondary rounded-xl shadow-lg overflow-hidden border border-gray-700/20 opacity-0 animate-fadeIn"
             style={{
-              animation: "fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both",
+              animationDelay: "0.2s",
+              animationFillMode: "forwards",
             }}
           >
-            <div
-              className="h-12 bg-[length:200%_100%] animate-shimmer"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(75, 85, 99, 0.1) 25%, rgba(156, 163, 175, 0.2) 50%, rgba(75, 85, 99, 0.1) 75%)",
-                backgroundSize: "200% 100%",
-              }}
-            />
+            <div className="h-12 bg-gray-300/20" />
             <div className="p-4 space-y-4">
               {[...Array(3)].map((_, index) => (
                 <div
                   key={index}
-                  className="h-4 rounded-md bg-[length:200%_100%] animate-shimmer"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, rgba(75, 85, 99, 0.08) 25%, rgba(156, 163, 175, 0.15) 50%, rgba(75, 85, 99, 0.08) 75%)",
-                    backgroundSize: "200% 100%",
-                    animationDelay: `${index * 0.1}s`,
-                  }}
+                  className="h-4 rounded-md bg-gray-300/15 animate-pulse"
                 />
               ))}
             </div>
@@ -92,14 +73,14 @@ export const InitialPageLoader = ({ message = "Loading latest posts..." }) => (
   </div>
 );
 
-// Modern Infinite scroll loader with enhanced UX
+// Simplified Infinite scroll loader
 export const InfiniteScrollLoader = ({ count = 3 }) => (
   <div className="space-y-8 py-6">
     <div className="text-center py-6">
       <div className="mb-4">
         <LoadingSpinner
           size="medium"
-          type="dots"
+          type="spinner"
           message="Loading more posts..."
         />
       </div>
@@ -111,10 +92,10 @@ export const InfiniteScrollLoader = ({ count = 3 }) => (
       {[...Array(count)].map((_, index) => (
         <div
           key={`scroll-skeleton-${index}`}
+          className="opacity-0 animate-fadeIn"
           style={{
-            animation: `fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${
-              index * 0.1
-            }s both`,
+            animationDelay: `${index * 0.1}s`,
+            animationFillMode: "forwards",
           }}
         >
           <PostCardSkeleton />

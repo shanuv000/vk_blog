@@ -1,12 +1,11 @@
 import React from "react";
-import Image from "next/image";
 import moment from "moment";
 import Link from "next/link";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+import Image from "next/image";
 import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { FaUser, FaCalendarAlt } from "react-icons/fa";
-import { motion } from "framer-motion";
+import OptimizedImage from "./OptimizedImage";
+import { PostCardImageSkeleton } from "./ImageSkeletons";
 
 const PostCard = ({ post = {} }) => {
   // Ensure post has all required properties with defaults
@@ -24,43 +23,33 @@ const PostCard = ({ post = {} }) => {
   };
 
   return (
-    <motion.div
-      className="bg-secondary rounded-lg overflow-hidden shadow-lg mb-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{
-        y: -5,
-        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-        transition: { duration: 0.3 },
-      }}
-    >
+    <div className="bg-secondary rounded-lg overflow-hidden shadow-lg mb-8 transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-1">
       <div className="relative overflow-hidden">
         {safePost.featuredImage?.url ? (
           <Link href={`/post/${safePost.slug}`}>
-            <motion.div
-              className="w-full aspect-[16/9]"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Image
+            <div className="w-full aspect-[16/9] group">
+              <OptimizedImage
                 src={safePost.featuredImage.url}
                 alt={safePost.title || "Featured image"}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                quality={75}
-                loading="lazy"
-                placeholder="blur"
-                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
-                onError={() => {
-                  console.log(
-                    "Image load error in PostCard, using local fallback"
-                  );
+                quality={80}
+                priority={false}
+                fallbackSrc={DEFAULT_FEATURED_IMAGE}
+                showSkeleton={true}
+                aspectRatio="16/9"
+                containerClassName="w-full h-full"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiBmaWxsPSJyZ2JhKDE1NiwgMTYzLCAxNzUsIDAuMSkiLz48L3N2Zz4="
+                onLoad={() => {
+                  // Optional: Add performance tracking
+                }}
+                onError={(error) => {
+                  console.warn("Post card image failed to load:", error);
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-50"></div>
-            </motion.div>
+            </div>
           </Link>
         ) : (
           <div className="w-full aspect-[16/9] bg-secondary-light flex items-center justify-center">
@@ -83,13 +72,9 @@ const PostCard = ({ post = {} }) => {
 
       <div className="p-6">
         <Link href={`/post/${safePost.slug}`}>
-          <motion.h2
-            className="text-xl md:text-2xl font-heading font-semibold mb-4 text-text-primary hover:text-primary transition-colors duration-200"
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
+          <h2 className="text-xl md:text-2xl font-heading font-semibold mb-4 text-text-primary hover:text-primary transition-colors duration-200">
             {safePost.title}
-          </motion.h2>
+          </h2>
         </Link>
 
         <p className="text-text-secondary mb-6 line-clamp-3">
@@ -123,22 +108,13 @@ const PostCard = ({ post = {} }) => {
           </div>
 
           <Link href={`/post/${safePost.slug}`}>
-            <motion.span
-              className="inline-block bg-primary text-white px-4 py-2 rounded-md font-medium text-sm"
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "#B81D24",
-                boxShadow: "0 10px 15px -3px rgba(229, 9, 20, 0.3)",
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
+            <span className="inline-block bg-primary text-white px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 hover:bg-primary-dark hover:scale-105 hover:shadow-lg">
               Read More
-            </motion.span>
+            </span>
           </Link>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

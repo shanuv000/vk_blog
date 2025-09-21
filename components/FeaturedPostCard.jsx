@@ -1,10 +1,10 @@
 import React from "react";
 import moment from "moment";
-import Image from "next/image";
 import Link from "next/link";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { FaCalendarAlt, FaBookmark, FaArrowRight } from "react-icons/fa";
-import { motion } from "framer-motion";
+import OptimizedImage from "./OptimizedImage";
+import { FeaturedImageSkeleton } from "./ImageSkeletons";
 
 const FeaturedPostCard = ({ post = {} }) => {
   // Ensure post has all required properties with defaults
@@ -18,37 +18,27 @@ const FeaturedPostCard = ({ post = {} }) => {
 
   return (
     <Link href={`/post/${safePost.slug}`}>
-      <motion.article
-        className="group relative h-80 sm:h-96 rounded-xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.4,
-          ease: [0.4, 0, 0.2, 1],
-        }}
-        whileHover={{
-          y: -4,
-          transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
-        }}
-      >
-        {/* Image Container */}
+      <article className="group relative h-80 sm:h-96 rounded-xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:transform hover:-translate-y-1">
+        {/* Enhanced Image Container with OptimizedImage */}
         <div className="relative w-full h-2/3 overflow-hidden">
-          <Image
+          <OptimizedImage
             src={safePost.featuredImage.url || DEFAULT_FEATURED_IMAGE}
             alt={safePost.title || "Featured post"}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-all duration-500 ease-out group-hover:scale-105"
             priority={true}
-            loading="eager"
-            fetchPriority="high"
-            quality={85}
-            placeholder="blur"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
-            onError={() => {
-              console.log(
-                "Image load error in FeaturedPostCard, using local fallback"
-              );
+            quality={90}
+            fallbackSrc={DEFAULT_FEATURED_IMAGE}
+            showSkeleton={true}
+            aspectRatio="16/9"
+            containerClassName="w-full h-full"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI3MDAiIGhlaWdodD0iNDc1IiBmaWxsPSJyZ2JhKDE1NiwgMTYzLCAxNzUsIDAuMSkiLz48L3N2Zz4="
+            onLoad={() => {
+              // Optional: Add analytics or performance tracking
+            }}
+            onError={(error) => {
+              console.warn("Featured image failed to load:", error);
             }}
           />
 
@@ -98,7 +88,7 @@ const FeaturedPostCard = ({ post = {} }) => {
             </div>
           </div>
         </div>
-      </motion.article>
+      </article>
     </Link>
   );
 };

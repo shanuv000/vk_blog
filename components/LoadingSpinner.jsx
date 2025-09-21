@@ -29,22 +29,20 @@ const LoadingSpinner = ({
     xlarge: "text-xl",
   };
 
-  // Modern Spinner with smooth animation
+  // Modern Spinner with simplified animation
   const Spinner = ({ className }) => (
     <div className={`${className} relative`} role="status" aria-label="Loading">
-      {/* Outer ring */}
-      <div className="absolute inset-0 border-3 border-gray-200/30 rounded-full"></div>
-      {/* Animated ring */}
+      {/* Simplified spinner - single ring only */}
       <div
-        className="border-3 border-transparent border-t-primary rounded-full animate-spin"
+        className="border-3 border-gray-200/30 border-t-primary rounded-full animate-spin"
         style={{
-          animation: "spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite",
+          animation: "spin 1s linear infinite",
         }}
       ></div>
     </div>
   );
 
-  // Modern Dots loader with staggered animation
+  // Simplified Dots loader with reduced complexity
   const DotsLoader = () => (
     <div
       className="flex items-center space-x-1.5"
@@ -54,49 +52,33 @@ const LoadingSpinner = ({
       {[0, 1, 2].map((index) => (
         <div
           key={index}
-          className="w-2.5 h-2.5 bg-primary rounded-full"
+          className="w-2.5 h-2.5 bg-primary rounded-full animate-pulse"
           style={{
-            animation: `modernBounce 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite`,
-            animationDelay: `${index * 0.16}s`,
+            animation: `pulse 1.5s ease-in-out infinite`,
+            animationDelay: `${index * 0.2}s`,
           }}
         />
       ))}
     </div>
   );
 
-  // Modern Pulse loader with breathing effect
+  // Simplified Pulse loader
   const PulseLoader = ({ className }) => (
     <div
-      className={`${className} bg-primary rounded-full relative overflow-hidden`}
+      className={`${className} bg-primary rounded-full animate-pulse`}
       role="status"
       aria-label="Loading"
-    >
-      <div
-        className="absolute inset-0 bg-primary rounded-full"
-        style={{
-          animation: "modernPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        }}
-      />
-    </div>
+    />
   );
 
-  // Ripple loader for modern effect
+  // Simplified Ripple loader
   const RippleLoader = ({ className }) => (
     <div
       className={`${className} relative flex items-center justify-center`}
       role="status"
       aria-label="Loading"
     >
-      {[0, 1].map((index) => (
-        <div
-          key={index}
-          className="absolute border-2 border-primary rounded-full opacity-75"
-          style={{
-            animation: `ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite`,
-            animationDelay: `${index * 1}s`,
-          }}
-        />
-      ))}
+      <div className="border-2 border-primary rounded-full animate-ping" />
     </div>
   );
 

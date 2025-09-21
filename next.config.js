@@ -50,33 +50,70 @@ const nextConfig = {
     ];
   },
 
-  // Image configuration with optimizations
+  // Enhanced image configuration with advanced optimizations
   images: {
+    // Legacy domains support (will be deprecated in favor of remotePatterns)
     domains: [
       "media.graphassets.com",
       "ap-south-1.graphassets.com",
       "png.pngtree.com",
       "e7.pngegg.com",
-      "ap-south-1.cdn.hygraph.com", // Add Hygraph CDN domain
-      "via.placeholder.com", // Add placeholder.com for fallback images
-      "media.graphcms.com", // Add GraphCMS domain (old name for Hygraph)
-      "media.hygraph.com", // Add Hygraph media domain
-      "images.unsplash.com", // Add Unsplash for stock images
-      "res.cloudinary.com", // Add Cloudinary for image hosting
-    ], // Allowed image domains
+      "ap-south-1.cdn.hygraph.com",
+      "via.placeholder.com",
+      "media.graphcms.com",
+      "media.hygraph.com",
+      "images.unsplash.com",
+      "res.cloudinary.com",
+      "picsum.photos", // For placeholder images
+      "source.unsplash.com", // Alternative Unsplash source
+    ],
+
+    // Modern image formats with priority order (AVIF first for best compression)
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    minimumCacheTTL: 172800, // Increase cache time to 48 hours for better performance
+
+    // Optimized device sizes for responsive images
+    deviceSizes: [
+      640, // Mobile portrait
+      750, // Mobile landscape / small tablet
+      828, // iPhone X/11/12/13 Pro Max
+      1080, // Small desktop / large tablet
+      1200, // Medium desktop
+      1440, // Large desktop
+      1920, // Full HD
+      2048, // 2K displays
+      3840, // 4K displays
+    ],
+
+    // Optimized image sizes for different use cases
+    imageSizes: [
+      16, // Small icons
+      32, // Medium icons
+      48, // Large icons
+      64, // Avatar small
+      96, // Avatar medium
+      128, // Avatar large
+      256, // Thumbnails
+      384, // Small images
+      512, // Medium images
+      768, // Large images
+    ],
+
+    // Extended cache time for better performance (7 days)
+    minimumCacheTTL: 604800,
+
+    // Security settings for SVG handling
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Optimize image loading
+
+    // Image optimization settings
     loader: "default",
     path: "/_next/image",
     disableStaticImages: false,
-    // Enable remote patterns for more flexible image sources
+
+    // Enhanced remote patterns for flexible image sources
     remotePatterns: [
+      // Hygraph/GraphCMS patterns
       {
         protocol: "https",
         hostname: "**.hygraph.com",
@@ -92,11 +129,20 @@ const nextConfig = {
         hostname: "**.graphcms.com",
         pathname: "**",
       },
+
+      // CDN and image service patterns
       {
         protocol: "https",
-        hostname: "via.placeholder.com",
+        hostname: "**.cdn.hygraph.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "ap-south-1.cdn.hygraph.com",
+        pathname: "**",
+      },
+
+      // External image services
       {
         protocol: "https",
         hostname: "images.unsplash.com",
@@ -104,12 +150,51 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "source.unsplash.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+        pathname: "**",
+      },
+
+      // Cloud storage services
+      {
+        protocol: "https",
         hostname: "res.cloudinary.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "**.amazonaws.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+        pathname: "**",
+      },
+
+      // Additional image sources
+      {
+        protocol: "https",
+        hostname: "png.pngtree.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "e7.pngegg.com",
+        pathname: "**",
+      },
     ],
+
     // Enable image optimization in production
-    // This will help with image loading and performance
     unoptimized: false,
   },
 
