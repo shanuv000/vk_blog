@@ -144,7 +144,7 @@ const PostWidget = ({ categories, slug }) => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     src={post.featuredImage.url}
                     effect="blur"
-                    placeholderSrc="/placeholder-image.jpg"
+                    placeholderSrc={DEFAULT_FEATURED_IMAGE}
                   />
                 ) : (
                   <div className="flex items-center justify-center bg-secondary-light h-full w-full">

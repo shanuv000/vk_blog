@@ -16,17 +16,21 @@ The Twitter integration provides:
 
 ### 1. Environment Variables
 
-The following environment variables are configured in `.env.local`:
+Create a `.env.local` file with your credentials (do not commit real secrets):
 
 ```bash
 # Twitter API v2 Configuration
-TWITTER_API_KEY=VIqQO4PilU8pOuCNzCnbUCK0t
-TWITTER_API_SECRET=eg4wEWZZuc6BVngHFxQEyehIt00E1UdhyO7ULg8bnyD9t3BP5y
-TWITTER_ACCESS_TOKEN=1792802562090913792-eDtaL7RbMSp4tbJutw9B01bLjz9X1I
-TWITTER_ACCESS_TOKEN_SECRET=ksYHvUvzu3Skdqsc1C7NhbveZ8e4Bn7amHUdwkkDBLNpP
-TWITTER_CLIENT_ID=WUJwUEtwWnlwVHNnb3ZPOVc3cjU6MTpjaQ
-TWITTER_CLIENT_SECRET=9BoW4neM5MG76MbZNem4_WWE2FGaL3WLhMHoyIVLqraSf1GiAk
+TWITTER_API_KEY=your_api_key
+TWITTER_API_SECRET=your_api_secret
+TWITTER_ACCESS_TOKEN=your_access_token
+TWITTER_ACCESS_TOKEN_SECRET=your_access_token_secret
+
+# Optional OAuth2 client (unused in current integration)
+TWITTER_CLIENT_ID=your_client_id
+TWITTER_CLIENT_SECRET=your_client_secret
 ```
+
+Security note: Never store real secrets in documentation or commit them to version control.
 
 ### 2. Dependencies
 
@@ -47,16 +51,18 @@ import { TwitterPost } from '../components';
 ```
 
 **Props:**
+
 - `tweetId` (string): The Twitter tweet ID
 - `className` (string): Additional CSS classes
 
 **Features:**
+
 - Author information with profile image and verification badge
 - Tweet text with formatted links, mentions, and hashtags
 - Media attachments (images/videos)
 - Engagement metrics (likes, retweets, replies)
 - Responsive design
-- Error handling with fallback links
+- Robust error handling with automatic fallback to native embed when rate-limited
 
 ### TwitterUserFeed
 
@@ -69,11 +75,13 @@ import { TwitterUserFeed } from '../components';
 ```
 
 **Props:**
+
 - `username` (string): Twitter username (without @)
 - `count` (number): Number of tweets to display (default: 5, max: 100)
 - `className` (string): Additional CSS classes
 
 **Features:**
+
 - User profile header with bio and verification
 - Timeline of recent tweets
 - "View more" link to Twitter profile
@@ -94,8 +102,15 @@ import { TwitterEmbed } from '../components';
 ```
 
 **Props:**
+
 - `tweetId` (string): The Twitter tweet ID  
 - `useApiVersion` (boolean): Use new API version (default: true)
+
+Behavior:
+
+- When `useApiVersion=true`, it renders `TwitterPost` (rich card via API when available).
+- On API 429 (rate limit), it gracefully falls back to a single native embed (no bulky error card).
+- Per-page deduplication prevents the same tweet from rendering multiple times.
 
 ## API Endpoints
 
@@ -109,6 +124,7 @@ const data = await response.json();
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -134,11 +150,17 @@ const data = await response.json();
 }
 ```
 
+Notes:
+
+- Server-side in-memory caching with in-flight request deduplication is applied.
+- On 429, if a stale cache entry exists, the API serves it with `stale: true`.
+
 ### GET /api/twitter/user/[username]
 
 Fetch recent tweets from a user.
 
 **Parameters:**
+
 - `count` (query): Number of tweets (default: 10, max: 100)
 
 ```javascript
@@ -147,6 +169,7 @@ const data = await response.json();
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -166,11 +189,17 @@ const data = await response.json();
 }
 ```
 
+Notes:
+
+- In-memory caching and in-flight request dedupe mirror the single-tweet endpoint.
+- Returns `stale: true` when serving expired cache due to rate limit.
+
 ### GET /api/twitter/search
 
 Search for tweets by query.
 
 **Parameters:**
+
 - `q` (query): Search query
 - `count` (query): Number of results (default: 10, max: 100)
 
@@ -178,6 +207,10 @@ Search for tweets by query.
 const response = await fetch('/api/twitter/search?q=nextjs&count=10');
 const data = await response.json();
 ```
+
+Notes:
+
+- Shorter cache TTL (default 5 minutes) to keep results reasonably fresh.
 
 ## Hooks
 
@@ -289,7 +322,7 @@ const SocialDashboard = () => {
 
 The integration includes comprehensive error handling:
 
-- **Rate Limiting**: Automatic handling of Twitter API rate limits
+- **Rate Limiting**: Automatic handling of 429s with stale-on-429 on the server, and native embed fallback on the client
 - **Network Errors**: Graceful fallbacks for connectivity issues  
 - **Invalid IDs**: User-friendly error messages
 - **Private/Deleted Tweets**: Fallback links to Twitter
@@ -298,6 +331,7 @@ The integration includes comprehensive error handling:
 ## Styling
 
 All components use Tailwind CSS and are fully responsive:
+
 - Mobile-first design
 - Dark/light theme support ready
 - Consistent with blog design system
@@ -306,12 +340,18 @@ All components use Tailwind CSS and are fully responsive:
 
 ## Rate Limits
 
-Twitter API v2 rate limits (per 15-minute window):
-- User timeline: 75 requests
-- Single tweet: 75 requests  
-- Search: 180 requests
+Twitter API rate limits are plan-dependent and may be very strict on free/basic tiers. In testing, we observed responses like `x-rate-limit-limit: 1` leading to frequent 429s.
 
-The integration handles rate limiting automatically and provides appropriate error messages.
+Mitigations implemented:
+
+- Server cache per endpoint (Map) with in-flight dedupe to reduce upstream calls
+- Stale-on-429 serving when possible
+- Client-side graceful fallback to native embed with responsive styling
+
+Recommended for production:
+
+- Add a persistent cache (e.g., Redis) to survive deploys/cold starts
+- Optionally pre-warm commonly viewed tweets/feeds
 
 ## Demo
 
@@ -347,7 +387,7 @@ To migrate existing TwitterEmbed usage:
 ### Common Issues
 
 1. **"User not found" error**: Check username spelling
-2. **"Rate limit exceeded"**: Wait 15 minutes or implement caching
+2. **"Rate limit exceeded"**: Wait for the reset window, rely on fallback embed, and implement/persist caching
 3. **"Tweet not found"**: Tweet may be deleted or private
 4. **API connection issues**: Check environment variables
 
@@ -358,6 +398,7 @@ Set `NODE_ENV=development` to enable detailed error logging.
 ### Support
 
 For issues or questions about the Twitter integration, check:
+
 1. Twitter API v2 documentation
 2. Component props and usage examples above
-3. Browser console for detailed error messages
+3. Browser console and API route responses (`stale` flag, `rateLimit` details) for diagnostics

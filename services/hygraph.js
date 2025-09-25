@@ -135,20 +135,19 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
   }
 
   try {
-    // Add timestamp for dynamic content that needs to be fresh
-    // For static content like images and categories, don't add timestamp to leverage CDN caching
-    const shouldAddTimestamp = !isImageRelated && !query.includes("categories");
-
-    const timestampedVariables = shouldAddTimestamp
-      ? { ...variables, _timestamp: Date.now() }
-      : variables;
+    // Respect explicit caller intent: only bypass cache if variables.bypassCache is set
+    const sanitizedVariables = { ...variables };
+    if (sanitizedVariables && sanitizedVariables.bypassCache) {
+      sanitizedVariables._timestamp = Date.now();
+      delete sanitizedVariables.bypassCache;
+    }
 
     // Set request timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     // Make the request
-    const result = await cdnClient.request(query, timestampedVariables);
+  const result = await cdnClient.request(query, sanitizedVariables);
     clearTimeout(timeoutId);
 
     // Optimize image URLs in the response if needed
@@ -180,14 +179,14 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
     try {
       console.log("Falling back to Content API due to CDN failure");
 
-      // Same timestamp logic as above
-      const shouldAddTimestamp =
-        !isImageRelated && !query.includes("categories");
-      const timestampedVariables = shouldAddTimestamp
-        ? { ...variables, _timestamp: Date.now() }
-        : variables;
+      // Respect explicit caller intent for bypassing cache
+      const sanitizedVariables = { ...variables };
+      if (sanitizedVariables && sanitizedVariables.bypassCache) {
+        sanitizedVariables._timestamp = Date.now();
+        delete sanitizedVariables.bypassCache;
+      }
 
-      const result = await contentClient.request(query, timestampedVariables);
+      const result = await contentClient.request(query, sanitizedVariables);
       const optimizedResult = isImageRelated
         ? optimizeImageUrls(result)
         : result;

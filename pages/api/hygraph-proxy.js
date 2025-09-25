@@ -3,6 +3,16 @@
 
 import { GraphQLClient } from "graphql-request";
 
+// Simple in-memory cache and in-flight dedupe
+const responseCache = new Map(); // key -> { data, expiry }
+const inflight = new Map(); // key -> Promise
+
+const makeCacheKey = (query, variables = {}) => {
+  // Remove dynamic timestamp to improve hit rate
+  const { _timestamp, ...rest } = variables || {};
+  return `${query}::${JSON.stringify(rest)}`;
+};
+
 // Configure API to accept larger requests
 export const config = {
   api: {
@@ -78,6 +88,26 @@ export default async function handler(req, res) {
     const isQueryCacheable =
       !query.includes("mutation") && !variables?._timestamp;
 
+    // Determine cache duration for server cache (in ms)
+    let ttlMs = 10 * 60 * 1000; // default 10 min
+    if (query.includes("GetCategories")) ttlMs = 2 * 24 * 60 * 60 * 1000;
+    else if (query.includes("GetFeaturedPosts") || query.includes("GetRecentPosts")) ttlMs = 30 * 60 * 1000;
+    else if (query.includes("GetPostDetails") && variables?.slug)
+      ttlMs = 60 * 60 * 1000;
+    else if (query.includes("GetPosts")) ttlMs = 15 * 60 * 1000;
+
+    const cacheKey = isQueryCacheable ? makeCacheKey(query, variables) : null;
+
+    // Serve from cache if available
+    if (isQueryCacheable && cacheKey && responseCache.has(cacheKey)) {
+      const entry = responseCache.get(cacheKey);
+      if (entry.expiry > Date.now()) {
+        res.setHeader("X-Cache", "HIT");
+        res.setHeader("X-Cache-Source", "MEMORY");
+        return res.status(200).json(entry.data);
+      }
+    }
+
     // Set cache headers for HTTP caching
 
     // Set appropriate cache headers
@@ -137,8 +167,15 @@ export default async function handler(req, res) {
     const isCategoriesQuery = query.includes("GetCategories");
     const isRecentPostsQuery = query.includes("GetRecentPosts");
 
-    // Try CDN endpoint first
+    // Try CDN endpoint first with in-flight dedupe
     try {
+      if (isQueryCacheable && cacheKey && inflight.has(cacheKey)) {
+        const data = await inflight.get(cacheKey);
+        res.setHeader("X-Cache", "HIT");
+        res.setHeader("X-Cache-Source", "INFLIGHT");
+        return res.status(200).json(data);
+      }
+
       // Create GraphQL client with timeout
       const cdnClient = new GraphQLClient(HYGRAPH_CDN_API, {
         timeout: 15000, // 15 second timeout
@@ -179,7 +216,13 @@ export default async function handler(req, res) {
           }
         `;
         try {
-          const data = await cdnClient.request(simplifiedQuery);
+          const promise = cdnClient.request(simplifiedQuery);
+          if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+          const data = await promise;
+          if (isQueryCacheable && cacheKey) {
+            responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
+            inflight.delete(cacheKey);
+          }
 
           // Set cache miss header
           res.setHeader("X-Cache", "MISS");
@@ -187,6 +230,7 @@ export default async function handler(req, res) {
 
           return res.status(200).json(data);
         } catch (error) {
+          inflight.delete(cacheKey);
           console.log(
             "Simplified featured posts query failed, returning empty array"
           );
@@ -206,7 +250,13 @@ export default async function handler(req, res) {
           }
         `;
         try {
-          const data = await cdnClient.request(simplifiedQuery);
+          const promise = cdnClient.request(simplifiedQuery);
+          if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+          const data = await promise;
+          if (isQueryCacheable && cacheKey) {
+            responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
+            inflight.delete(cacheKey);
+          }
 
           // Set cache miss header
           res.setHeader("X-Cache", "MISS");
@@ -214,6 +264,7 @@ export default async function handler(req, res) {
 
           return res.status(200).json(data);
         } catch (error) {
+          inflight.delete(cacheKey);
           console.log(
             "Simplified categories query failed, returning empty array"
           );
@@ -237,7 +288,13 @@ export default async function handler(req, res) {
           }
         `;
         try {
-          const data = await cdnClient.request(simplifiedQuery);
+          const promise = cdnClient.request(simplifiedQuery);
+          if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+          const data = await promise;
+          if (isQueryCacheable && cacheKey) {
+            responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
+            inflight.delete(cacheKey);
+          }
 
           // Set cache miss header
           res.setHeader("X-Cache", "MISS");
@@ -245,6 +302,7 @@ export default async function handler(req, res) {
 
           return res.status(200).json(data);
         } catch (error) {
+          inflight.delete(cacheKey);
           console.log(
             "Simplified recent posts query failed, returning empty array"
           );
@@ -254,7 +312,13 @@ export default async function handler(req, res) {
 
       // For other queries, use the original query
       try {
-        const data = await cdnClient.request(query, variables);
+        const promise = cdnClient.request(query, variables);
+        if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+        const data = await promise;
+        if (isQueryCacheable && cacheKey) {
+          responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
+          inflight.delete(cacheKey);
+        }
 
         // Set cache miss header
         res.setHeader("X-Cache", "MISS");
@@ -262,6 +326,7 @@ export default async function handler(req, res) {
 
         return res.status(200).json(data);
       } catch (error) {
+        inflight.delete(cacheKey);
         console.warn("Original query failed with CDN, trying Content API");
         throw error; // Throw to be caught by the outer catch
       }
@@ -368,7 +433,21 @@ export default async function handler(req, res) {
         }
 
         // For other queries, try the original query with Content API
-        const data = await contentClient.request(query, variables);
+        // Try the original query with Content API with dedupe
+        if (isQueryCacheable && cacheKey && inflight.has(cacheKey)) {
+          const data = await inflight.get(cacheKey);
+          res.setHeader("X-Cache", "HIT");
+          res.setHeader("X-Cache-Source", "INFLIGHT");
+          return res.status(200).json(data);
+        }
+
+        const promise = contentClient.request(query, variables);
+        if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+        const data = await promise;
+        if (isQueryCacheable && cacheKey) {
+          responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
+          inflight.delete(cacheKey);
+        }
         return res.status(200).json(data);
       } catch (contentApiError) {
         console.error("Content API also failed:", contentApiError.message);

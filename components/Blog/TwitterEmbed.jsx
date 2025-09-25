@@ -14,48 +14,9 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
 
   // No debugging logs in production
 
-  // Fix for deprecation warning
-  useEffect(() => {
-    // Check if our fix is already applied to avoid duplicate declarations
-    if (window._twitterEmbedFixApplied) {
-      return; // Fix already applied, no need to do it again
-    }
-
-    // Add a script to fix the DOMSubtreeModified deprecation warning
-    const fixScript = document.createElement("script");
-    fixScript.id = "twitter-embed-fix";
-    fixScript.textContent = `
-      // Only apply the fix if it hasn't been applied yet
-      if (!window._twitterEmbedFixApplied) {
-        // Override the deprecated DOMSubtreeModified event listener
-        window._originalAddEventListener = EventTarget.prototype.addEventListener;
-        EventTarget.prototype.addEventListener = function(type, listener, options) {
-          if (type === 'DOMSubtreeModified') {
-            // Use MutationObserver instead
-            const observer = new MutationObserver((mutations) => {
-              if (mutations[0] && mutations[0].target) {
-                listener({ target: mutations[0].target });
-              }
-            });
-            observer.observe(this, { childList: true, subtree: true });
-            return observer;
-          }
-          return window._originalAddEventListener.call(this, type, listener, options);
-        };
-
-        // Mark as applied
-        window._twitterEmbedFixApplied = true;
-      }
-    `;
-
-    // Only add the script once
-    if (!document.getElementById("twitter-embed-fix")) {
-      document.head.appendChild(fixScript);
-    }
-
-    // No need to remove the script on unmount as it's a global fix
-    // that should persist for the entire session
-  }, []);
+  // No DOM monkey-patching. Follow official widget init guidance:
+  // - react-twitter-embed injects widgets.js and initializes embeds
+  // - For dynamically inserted content, call twttr.widgets.load() if needed
 
   // Use new API version if enabled and tweet ID is valid
   if (useApiVersion && isValidTweetId) {

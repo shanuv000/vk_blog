@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }) {
     styleLink.href = "/react-multi-carousel/lib/styles.css";
     document.head.appendChild(styleLink);
 
-    // Prefetch common queries during idle time
+    // Prefetch common queries during idle time (guarded to avoid over-fetching)
     if (typeof window !== "undefined") {
       // Wait for page to load before prefetching
       const prefetchData = () => {
@@ -46,7 +46,12 @@ function MyApp({ Component, pageProps }) {
             );
 
             // Prefetch data after critical resources are loaded
-            prefetchCommonQueries();
+            // Only prefetch on good network and when tab is visible
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            const isSlow = connection && (connection.saveData || ["slow-2g","2g"].includes(connection.effectiveType));
+            if (!document.hidden && !isSlow) {
+              prefetchCommonQueries();
+            }
 
             // Log cache stats after prefetching (development only)
             if (process.env.NODE_ENV === "development") {

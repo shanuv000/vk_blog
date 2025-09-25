@@ -6,11 +6,13 @@ import { gql } from "graphql-request";
 // Helper function to fetch data via the proxy API
 export const fetchViaProxy = async (query, variables = {}) => {
   try {
-    // Add a timestamp to bypass caching
-    const timestampedVariables = {
-      ...variables,
-      _timestamp: new Date().getTime(),
-    };
+    // Do not bypass caching by default; allow server/CDN caching to work
+    const sanitizedVariables = { ...variables };
+    // Explicit opt-out: if caller passes { bypassCache: true }, add a timestamp
+    if (sanitizedVariables && sanitizedVariables.bypassCache) {
+      sanitizedVariables._timestamp = Date.now();
+      delete sanitizedVariables.bypassCache;
+    }
 
     // Make a POST request to our proxy API with absolute URL
     // Using window.location to get the base URL
@@ -25,7 +27,7 @@ export const fetchViaProxy = async (query, variables = {}) => {
       },
       body: JSON.stringify({
         query,
-        variables: timestampedVariables,
+        variables: sanitizedVariables,
       }),
     });
 

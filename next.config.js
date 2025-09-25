@@ -17,32 +17,12 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: [
-              "frame-src 'self'",
-              "https://www.youtube-nocookie.com",
-              "https://www.youtube.com",
-              "https://platform.twitter.com",
-              "https://syndication.twitter.com",
-              "https://www.facebook.com",
-              "https://web.facebook.com",
-              "https://www.instagram.com",
-              "https://instagram.com",
-              "https://connect.facebook.net",
-              "https://staticxx.facebook.com",
-              "https://scontent.cdninstagram.com",
-              "https://scontent-*.cdninstagram.com",
-              "https://scontent.xx.fbcdn.net",
-              "https://scontent-*.xx.fbcdn.net;",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "https://platform.twitter.com",
-              "https://connect.facebook.net",
-              "https://www.instagram.com",
-              "https://instagram.com;",
-              "connect-src 'self'",
-              "https://syndication.twitter.com",
-              "https://api.twitter.com",
-              "https://graph.facebook.com",
-              "https://www.instagram.com",
-              "https://instagram.com;",
+              // Frame/embed sources
+              "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://www.facebook.com https://web.facebook.com https://www.instagram.com https://instagram.com;",
+              // Scripts
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://platform.twitter.com https://connect.facebook.net https://www.instagram.com https://instagram.com;",
+              // XHR/fetch targets
+              "connect-src 'self' https://syndication.twitter.com https://api.twitter.com https://graph.facebook.com https://www.instagram.com https://instagram.com;",
             ].join(" "),
           },
         ],
@@ -52,24 +32,6 @@ const nextConfig = {
 
   // Enhanced image configuration with advanced optimizations
   images: {
-    // Legacy domains support (will be deprecated in favor of remotePatterns)
-    domains: [
-      "media.graphassets.com",
-      "ap-south-1.graphassets.com",
-      "png.pngtree.com",
-      "e7.pngegg.com",
-      "ap-south-1.cdn.hygraph.com",
-      "via.placeholder.com",
-      "media.graphcms.com",
-      "media.hygraph.com",
-      "images.unsplash.com",
-      "res.cloudinary.com",
-      "picsum.photos", // For placeholder images
-      "source.unsplash.com", // Alternative Unsplash source
-      "pbs.twimg.com", // Twitter images (avatars, photos, thumbnails)
-      "video.twimg.com", // Twitter videos (in case of direct video thumbnails)
-    ],
-
     // Modern image formats with priority order (AVIF first for best compression)
     formats: ["image/avif", "image/webp"],
 

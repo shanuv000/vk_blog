@@ -7,8 +7,8 @@ const getApolloClient = () => initializeApollo();
 // GraphQL Queries
 // ⚠️ INEFFICIENT: Loads 20 posts at once - Use pagination service instead
 export const POSTS_QUERY = gql`
-  query GetPosts {
-    postsConnection(first: 20, orderBy: publishedAt_DESC) {
+  query GetPosts($limit: Int = 12) {
+    postsConnection(first: $limit, orderBy: publishedAt_DESC) {
       edges {
         cursor
         node {
@@ -129,10 +129,11 @@ export const ADJACENT_POSTS_QUERY = gql`
 
 // ⚠️ VERY INEFFICIENT: NO LIMIT - Loads ALL category posts at once!
 export const CATEGORY_POSTS_QUERY = gql`
-  query GetCategoryPost($slug: String!) {
+  query GetCategoryPost($slug: String!, $limit: Int = 12) {
     postsConnection(
       where: { categories_some: { slug: $slug } }
       orderBy: createdAt_DESC
+      first: $limit
     ) {
       edges {
         cursor
@@ -281,7 +282,7 @@ export const useCategoryPosts = (slug) => {
     "⚠️ useCategoryPosts is deprecated. Use useInfiniteScroll hook with type='category' for better performance with pagination."
   );
   const { data, loading, error, refetch } = useQuery(CATEGORY_POSTS_QUERY, {
-    variables: { slug },
+    variables: { slug, limit: 12 },
     fetchPolicy: "cache-and-network",
     skip: !slug,
   });
@@ -386,7 +387,7 @@ export const fetchPosts = async (limit = 20) => {
 
     const { data } = await client.query({
       query: DYNAMIC_POSTS_QUERY,
-      variables: { limit },
+      variables: { limit: Math.min(limit, 24) },
       fetchPolicy: "network-only", // For SSR, always fetch fresh data
     });
 

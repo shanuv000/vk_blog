@@ -13,7 +13,7 @@ const USE_APOLLO = true;
 export const getPosts = async (options = {}) => {
   // Default options
   const {
-    limit = 100, // Default to 100 posts to ensure more pages are available
+    limit = 12, // Lower default to reduce payload and Hygraph usage
     fields = "full", // 'full' or 'minimal'
     forStaticPaths = false, // Special flag for getStaticPaths usage
     cacheKey = null, // Optional cache key for memoization
@@ -639,7 +639,8 @@ export const getCategoryPost = async (slug) => {
         console.log(
           `⚠️ Loaded ${data.postsConnection.edges.length} posts for category ${slug} with Apollo (inefficient - use pagination instead)`
         );
-        return data.postsConnection.edges;
+        // Cap the number of edges returned to reduce overfetching
+        return data.postsConnection.edges.slice(0, 12);
       } else {
         console.warn(
           `No posts found for category ${slug} with Apollo, trying fallback`
@@ -731,7 +732,8 @@ export const getCategoryPost = async (slug) => {
       console.log(
         `Found ${result.postsConnection.edges.length} posts for category ${slug} with direct CDN`
       );
-      return result.postsConnection.edges;
+      // Cap results to prevent loading too many at once
+      return result.postsConnection.edges.slice(0, 12);
     }
 
     // Try alternative query as a last resort
