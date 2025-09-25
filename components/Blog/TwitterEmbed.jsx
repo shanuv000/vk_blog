@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
+import TwitterPost from "../TwitterPost";
 
-const TwitterEmbed = ({ tweetId }) => {
+const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const iframeRef = useRef(null);
@@ -55,6 +56,15 @@ const TwitterEmbed = ({ tweetId }) => {
     // No need to remove the script on unmount as it's a global fix
     // that should persist for the entire session
   }, []);
+
+  // Use new API version if enabled and tweet ID is valid
+  if (useApiVersion && isValidTweetId) {
+    return (
+      <div className="my-3 sm:my-4 md:my-6 mx-2 sm:mx-auto max-w-[550px]">
+        <TwitterPost tweetId={cleanTweetId} />
+      </div>
+    );
+  }
 
   // Skip if no tweet ID or invalid format
   if (!isValidTweetId) {
