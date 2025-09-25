@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import dynamic from "next/dynamic";
@@ -9,12 +9,19 @@ const LegacyTwitterEmbed = dynamic(() => import("./Blog/TwitterEmbed"), {
   ssr: false,
 });
 
-const TwitterPost = ({ tweetId, className = "" }) => {
+const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
   const [tweet, setTweet] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Start not loading; we'll show a light placeholder until visible
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isRateLimit, setIsRateLimit] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const isInline = variant === "inline";
+
+  // Refs for intersection observer and fetch aborting
+  const containerRef = useRef(null);
+  const controllerRef = useRef(null);
 
   const fetchTweet = async () => {
     if (!tweetId) {
@@ -24,11 +31,22 @@ const TwitterPost = ({ tweetId, className = "" }) => {
     }
 
     try {
+      // cancel any in-flight request before starting a new one
+      if (controllerRef.current) {
+        try {
+          controllerRef.current.abort();
+        } catch (_) {}
+      }
+      const controller = new AbortController();
+      controllerRef.current = controller;
+
       setLoading(true);
       setError(null);
       setIsRateLimit(false);
 
-      const response = await fetch(`/api/twitter/tweet/${tweetId}`);
+      const response = await fetch(`/api/twitter/tweet/${tweetId}`, {
+        signal: controller.signal,
+      });
       const data = await response.json();
 
       if (!response.ok) {
@@ -49,14 +67,36 @@ const TwitterPost = ({ tweetId, className = "" }) => {
         markRendered(tweetId);
       }
     } catch (err) {
+      if (err?.name === "AbortError") return; // ignore aborts
       console.error("Error fetching tweet:", err);
       setError(err.message);
     } finally {
       setLoading(false);
+      controllerRef.current = null;
     }
   };
 
+  // Observe visibility and fetch only when near viewport
   useEffect(() => {
+    if (!containerRef.current || isVisible) return;
+    const el = containerRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { rootMargin: "200px", threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isVisible]);
+
+  // Trigger fetch when visible, with same-page dedupe
+  useEffect(() => {
+    if (!isVisible) return;
     // Avoid duplicate widgets for same tweet within a page render
     if (hasRendered(tweetId)) {
       setLoading(false);
@@ -66,7 +106,18 @@ const TwitterPost = ({ tweetId, className = "" }) => {
       return;
     }
     fetchTweet();
-  }, [tweetId]);
+  }, [tweetId, isVisible]);
+
+  // Cleanup on unmount: abort in-flight fetch
+  useEffect(() => {
+    return () => {
+      if (controllerRef.current) {
+        try {
+          controllerRef.current.abort();
+        } catch (_) {}
+      }
+    };
+  }, []);
 
   const handleRetry = () => {
     setRetryCount((prev) => prev + 1);
@@ -112,10 +163,30 @@ const TwitterPost = ({ tweetId, className = "" }) => {
     return formattedText;
   };
 
+  // Before visible, render a lightweight placeholder to avoid layout shift
+  if (!isVisible) {
+    return (
+      <div ref={containerRef} className={className}>
+        {isInline ? (
+          <div className="h-24 w-full animate-pulse bg-gray-50 rounded" />
+        ) : (
+          <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
+            <div className="h-28 w-full animate-pulse bg-gray-50 rounded" />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div
-        className={`border border-gray-200 rounded-lg p-4 bg-white shadow-sm ${className}`}
+        ref={containerRef}
+        className={`${
+          isInline
+            ? ""
+            : "border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
+        } ${className}`}
       >
         <div className="animate-pulse">
           <div className="flex items-center space-x-3 mb-3">
@@ -141,10 +212,14 @@ const TwitterPost = ({ tweetId, className = "" }) => {
       // Ensure dedupe even when using fallback embed
       markRendered(tweetId);
       return (
-        <div className={className}>
-          <div className="border border-gray-200 rounded-lg bg-white p-2">
+        <div ref={containerRef} className={className}>
+          {isInline ? (
             <LegacyTwitterEmbed tweetId={tweetId} useApiVersion={false} />
-          </div>
+          ) : (
+            <div className="border border-gray-200 rounded-lg bg-white p-2">
+              <LegacyTwitterEmbed tweetId={tweetId} useApiVersion={false} />
+            </div>
+          )}
         </div>
       );
     }
@@ -152,7 +227,12 @@ const TwitterPost = ({ tweetId, className = "" }) => {
     // Enhanced fallback for other errors
     return (
       <div
-        className={`border border-gray-200 rounded-lg p-4 bg-white shadow-sm ${className}`}
+        ref={containerRef}
+        className={`${
+          isInline
+            ? ""
+            : "border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
+        } ${className}`}
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
@@ -178,7 +258,11 @@ const TwitterPost = ({ tweetId, className = "" }) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+        <div
+          className={`flex items-center justify-between ${
+            isInline ? "pt-2" : "pt-3 border-t border-gray-100"
+          }`}
+        >
           <a
             href={`https://twitter.com/i/status/${tweetId}`}
             target="_blank"
@@ -202,7 +286,7 @@ const TwitterPost = ({ tweetId, className = "" }) => {
   }
 
   if (!tweet) {
-    return null;
+    return <div ref={containerRef} className={className} />;
   }
 
   const timeAgo = tweet.createdAt
@@ -211,10 +295,17 @@ const TwitterPost = ({ tweetId, className = "" }) => {
 
   return (
     <div
-      className={`border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow ${className}`}
+      ref={containerRef}
+      className={`${
+        isInline
+          ? ""
+          : "border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+      } ${className}`}
     >
       {/* Header */}
-      <div className="flex items-center space-x-3 mb-3">
+      <div
+        className={`flex items-center space-x-3 ${isInline ? "mb-2" : "mb-3"}`}
+      >
         {tweet.author?.profileImageUrl && (
           <div className="relative w-12 h-12 flex-shrink-0">
             <Image
@@ -250,7 +341,7 @@ const TwitterPost = ({ tweetId, className = "" }) => {
       </div>
 
       {/* Tweet Content */}
-      <div className="mb-3">
+      <div className={isInline ? "mb-2" : "mb-3"}>
         <div
           className="text-gray-900 leading-relaxed whitespace-pre-wrap"
           dangerouslySetInnerHTML={{
@@ -261,7 +352,7 @@ const TwitterPost = ({ tweetId, className = "" }) => {
 
       {/* Media */}
       {tweet.media && tweet.media.length > 0 && (
-        <div className="mb-3">
+        <div className={isInline ? "mb-2" : "mb-3"}>
           {tweet.media.map((media, index) => (
             <div key={index} className="mt-2">
               {media.type === "photo" && media.url && (
@@ -307,7 +398,11 @@ const TwitterPost = ({ tweetId, className = "" }) => {
       )}
 
       {/* Metrics */}
-      <div className="flex items-center space-x-4 text-sm text-gray-500 border-t border-gray-100 pt-3">
+      <div
+        className={`flex items-center space-x-4 text-sm text-gray-500 ${
+          isInline ? "pt-2" : "border-t border-gray-100 pt-3"
+        }`}
+      >
         <div className="flex items-center space-x-1">
           <svg
             className="w-4 h-4"

@@ -270,7 +270,10 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
 
   // Render the appropriate embed component in the portal
   return createPortal(
-    <div className="social-media-embed-wrapper" style={{ width: "100%" }}>
+    <div
+      className={`social-media-embed-wrapper ${platform}`}
+      style={{ width: "100%" }}
+    >
       {platform === "facebook" && (
         <>
           <div
@@ -379,43 +382,16 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
       )}
       {platform === "twitter" && (
         <>
-          <div
-            className="embed-title"
-            style={{
-              fontSize: "14px",
-              color: "#444",
-              textAlign: "center",
-              padding: "8px 0",
-              backgroundColor: "#f8f9fa",
-              borderBottom: "1px solid #eaeaea",
-            }}
-          >
-            Twitter Post
-          </div>
-          <div
-            className="twitter-embed-container"
-            style={{ minHeight: "300px" }}
-          >
+          {/* No title for Twitter embeds to avoid extra bar */}
+          <div className="twitter-embed-container">
             <TwitterEmbed tweetId={url} />
             {/* Fallback for Twitter embed */}
-            <div
-              className="twitter-fallback"
-              style={{ marginTop: "10px", textAlign: "center" }}
-            >
+            <div className="twitter-fallback">
               <a
                 href={`https://twitter.com/i/status/${url}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: "inline-block",
-                  color: "#1DA1F2",
-                  textDecoration: "none",
-                  fontWeight: "500",
-                  padding: "8px 16px",
-                  border: "1px solid #dbdbdb",
-                  borderRadius: "4px",
-                  marginTop: "10px",
-                }}
+                className="twitter-fallback-link"
               >
                 View on Twitter
               </a>
@@ -653,9 +629,9 @@ const SocialMediaEmbedder = () => {
 
         .social-media-embed-wrapper {
           width: 100%;
-          overflow: hidden;
-          border-radius: 8px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          overflow: visible;
+          border-radius: 0;
+          box-shadow: none;
         }
 
         /* Specific styling for Facebook embeds */
@@ -685,6 +661,17 @@ const SocialMediaEmbedder = () => {
           margin: 0 auto !important;
         }
 
+        /* Make Twitter wrapper ultra-minimal */
+        .social-media-embed-wrapper.twitter {
+          border: 0 !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+          background: transparent !important;
+        }
+
+        .social-media-embed-wrapper.twitter .embed-title { display: none !important; }
+        .social-media-embed-wrapper.twitter .twitter-embed-container { min-height: 0 !important; }
+
         /* Fix for CORS issues */
         .social-media-embed-wrapper img {
           max-width: 100%;
@@ -696,10 +683,15 @@ const SocialMediaEmbedder = () => {
           display: none !important;
         }
 
-        /* Ensure fallbacks are visible */
+        /* Fallbacks: hidden by default to avoid layout shift/extra space */
         .facebook-fallback, .twitter-fallback, .instagram-fallback {
+          display: none !important;
           opacity: 0;
-          transition: opacity 3s ease;
+          margin: 0 !important;
+          padding: 0 !important;
+          height: 0 !important;
+          transition: opacity 0.3s ease;
+          text-align: center;
         }
 
         /* Show fallbacks if embed fails to load */
@@ -712,7 +704,17 @@ const SocialMediaEmbedder = () => {
         .facebook-embed-container:not(:has(iframe)) .facebook-fallback,
         .twitter-embed-container:not(:has(iframe)) .twitter-fallback,
         .instagram-embed-container:not(:has(iframe)) .instagram-fallback {
+          display: block !important;
           opacity: 1;
+          height: auto !important;
+          margin-top: 8px !important;
+        }
+
+        /* Minimal fallback link styling */
+        .twitter-fallback-link {
+          color: #1DA1F2;
+          text-decoration: underline;
+          font-weight: 500;
         }
 
         @media (max-width: 768px) {
