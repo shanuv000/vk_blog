@@ -47,8 +47,14 @@ function MyApp({ Component, pageProps }) {
 
             // Prefetch data after critical resources are loaded
             // Only prefetch on good network and when tab is visible
-            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            const isSlow = connection && (connection.saveData || ["slow-2g","2g"].includes(connection.effectiveType));
+            const connection =
+              navigator.connection ||
+              navigator.mozConnection ||
+              navigator.webkitConnection;
+            const isSlow =
+              connection &&
+              (connection.saveData ||
+                ["slow-2g", "2g"].includes(connection.effectiveType));
             if (!document.hidden && !isSlow) {
               prefetchCommonQueries();
             }

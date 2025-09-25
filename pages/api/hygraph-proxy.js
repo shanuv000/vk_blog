@@ -91,7 +91,11 @@ export default async function handler(req, res) {
     // Determine cache duration for server cache (in ms)
     let ttlMs = 10 * 60 * 1000; // default 10 min
     if (query.includes("GetCategories")) ttlMs = 2 * 24 * 60 * 60 * 1000;
-    else if (query.includes("GetFeaturedPosts") || query.includes("GetRecentPosts")) ttlMs = 30 * 60 * 1000;
+    else if (
+      query.includes("GetFeaturedPosts") ||
+      query.includes("GetRecentPosts")
+    )
+      ttlMs = 30 * 60 * 1000;
     else if (query.includes("GetPostDetails") && variables?.slug)
       ttlMs = 60 * 60 * 1000;
     else if (query.includes("GetPosts")) ttlMs = 15 * 60 * 1000;

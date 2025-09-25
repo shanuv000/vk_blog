@@ -147,7 +147,7 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
     const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     // Make the request
-  const result = await cdnClient.request(query, sanitizedVariables);
+    const result = await cdnClient.request(query, sanitizedVariables);
     clearTimeout(timeoutId);
 
     // Optimize image URLs in the response if needed
