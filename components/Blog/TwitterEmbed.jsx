@@ -357,6 +357,46 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
     );
   }
 
+  // If we're explicitly asked NOT to use API version, render a single, stable method
+  if (!useApiVersion) {
+    return (
+      <div className="twitter-embed-root my-3 sm:my-4 md:my-6 w-full">
+        <div className="twitter-tweet-container flex justify-center items-center px-1 sm:px-3 md:px-4">
+          <div
+            className="w-full max-w-[550px] min-w-0 mx-auto"
+            style={{ maxWidth: "550px", width: "100%" }}
+          >
+            <TwitterTweetEmbed
+              tweetId={cleanTweetId}
+              options={{
+                theme: "light",
+                align: "center",
+                dnt: true,
+                conversation: "none",
+                cards: "visible",
+              }}
+              placeholder={
+                <div className="animate-pulse flex flex-col items-center justify-center p-2 sm:p-3 md:p-4 w-full min-h-[140px] sm:min-h-[180px] md:min-h-[200px] max-w-full">
+                  <div className="h-5 sm:h-6 md:h-8 bg-gray-200 rounded-full w-5 sm:w-6 md:w-8 mb-2"></div>
+                  <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-3/4 max-w-xs mb-2"></div>
+                  <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-1/2 max-w-48"></div>
+                  <div className="mt-2 sm:mt-3 text-blue-400 text-xs sm:text-sm text-center px-1 sm:px-2">
+                    Loading tweet {cleanTweetId}...
+                  </div>
+                </div>
+              }
+              onLoad={() => setLoading(false)}
+              onError={() => {
+                setError(true);
+                setLoading(false);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Try both embedding methods for better chances of success
   return (
     <div className="twitter-embed-root my-3 sm:my-4 md:my-6 w-full">

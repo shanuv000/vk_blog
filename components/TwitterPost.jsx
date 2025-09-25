@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
-import RateLimitInfo from "./RateLimitInfo";
+import dynamic from "next/dynamic";
+import { hasRendered, markRendered } from "../utils/renderedTweets";
+
+// Use dynamic import to avoid SSR issues with the legacy embed library
+const LegacyTwitterEmbed = dynamic(() => import("./Blog/TwitterEmbed"), {
+  ssr: false,
+});
 
 const TwitterPost = ({ tweetId, className = "" }) => {
   const [tweet, setTweet] = useState(null);
@@ -34,6 +40,13 @@ const TwitterPost = ({ tweetId, className = "" }) => {
         }
       } else {
         setTweet(data.data);
+        if (data.stale) {
+          console.info(
+            `Tweet ${tweetId} served from stale cache due to rate limit`
+          );
+        }
+        // mark render success to dedupe further occurrences on this page
+        markRendered(tweetId);
       }
     } catch (err) {
       console.error("Error fetching tweet:", err);
@@ -44,6 +57,14 @@ const TwitterPost = ({ tweetId, className = "" }) => {
   };
 
   useEffect(() => {
+    // Avoid duplicate widgets for same tweet within a page render
+    if (hasRendered(tweetId)) {
+      setLoading(false);
+      setTweet(null);
+      setError(null);
+      setIsRateLimit(false);
+      return;
+    }
     fetchTweet();
   }, [tweetId]);
 
@@ -115,15 +136,15 @@ const TwitterPost = ({ tweetId, className = "" }) => {
   }
 
   if (error) {
-    // Show rate limit component for rate limit errors
+    // If rate limited, switch to legacy client embed without showing the large card
     if (isRateLimit) {
+      // Ensure dedupe even when using fallback embed
+      markRendered(tweetId);
       return (
         <div className={className}>
-          <RateLimitInfo
-            error={error}
-            tweetId={tweetId}
-            onRetry={handleRetry}
-          />
+          <div className="border border-gray-200 rounded-lg bg-white p-2">
+            <LegacyTwitterEmbed tweetId={tweetId} useApiVersion={false} />
+          </div>
         </div>
       );
     }

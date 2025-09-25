@@ -66,6 +66,8 @@ const nextConfig = {
       "res.cloudinary.com",
       "picsum.photos", // For placeholder images
       "source.unsplash.com", // Alternative Unsplash source
+      "pbs.twimg.com", // Twitter images (avatars, photos, thumbnails)
+      "video.twimg.com", // Twitter videos (in case of direct video thumbnails)
     ],
 
     // Modern image formats with priority order (AVIF first for best compression)
@@ -190,6 +192,17 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "e7.pngegg.com",
+        pathname: "**",
+      },
+      // Twitter media CDNs
+      {
+        protocol: "https",
+        hostname: "pbs.twimg.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "video.twimg.com",
         pathname: "**",
       },
     ],
