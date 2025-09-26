@@ -1,7 +1,10 @@
 // Direct API service for more reliable data fetching
 // This bypasses Apollo Client for critical data
 
-import { requestDeduplicator, generateRequestKey } from '../lib/requestDeduplicator';
+import {
+  requestDeduplicator,
+  generateRequestKey,
+} from "../lib/requestDeduplicator";
 
 /**
  * Fetch data from the direct GraphQL API with request deduplication
@@ -12,64 +15,64 @@ import { requestDeduplicator, generateRequestKey } from '../lib/requestDeduplica
 export const fetchDirectApi = async (type, variables = {}) => {
   // Generate unique request key for deduplication
   const requestKey = generateRequestKey(type, variables);
-  
+
   return requestDeduplicator.execute(requestKey, async () => {
     try {
       // For client-side requests, use the API route
       if (typeof window !== "undefined") {
-      // Use GET for simple requests without variables
-      if (Object.keys(variables).length === 0) {
-        const response = await fetch(`/api/direct-graphql?type=${type}`);
+        // Use GET for simple requests without variables
+        if (Object.keys(variables).length === 0) {
+          const response = await fetch(`/api/direct-graphql?type=${type}`);
+          if (!response.ok) {
+            throw new Error(`API responded with status: ${response.status}`);
+          }
+          return await response.json();
+        }
+
+        // Use POST for requests with variables
+        const response = await fetch("/api/direct-graphql", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ type, variables }),
+        });
+
         if (!response.ok) {
           throw new Error(`API responded with status: ${response.status}`);
         }
+
         return await response.json();
       }
 
-      // Use POST for requests with variables
-      const response = await fetch("/api/direct-graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ type, variables }),
-      });
+      // For server-side requests, import the handler directly
+      // This is a bit of a hack, but it works for SSR
+      else {
+        const handler = require("../pages/api/direct-graphql").default;
 
-      if (!response.ok) {
-        throw new Error(`API responded with status: ${response.status}`);
-      }
+        // Mock the request and response objects
+        const req = {
+          method: "POST",
+          body: { type, variables },
+        };
 
-      return await response.json();
-    }
-
-    // For server-side requests, import the handler directly
-    // This is a bit of a hack, but it works for SSR
-    else {
-      const handler = require("../pages/api/direct-graphql").default;
-
-      // Mock the request and response objects
-      const req = {
-        method: "POST",
-        body: { type, variables },
-      };
-
-      let responseData = null;
-      const res = {
-        status: () => ({
+        let responseData = null;
+        const res = {
+          status: () => ({
+            json: (data) => {
+              responseData = data;
+              return res;
+            },
+            end: () => res,
+          }),
+          setHeader: () => {},
           json: (data) => {
             responseData = data;
             return res;
           },
-          end: () => res,
-        }),
-        setHeader: () => {},
-        json: (data) => {
-          responseData = data;
-          return res;
-        },
-      };
+        };
 
-      await handler(req, res);
+        await handler(req, res);
         return responseData;
       }
     } catch (error) {

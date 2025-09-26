@@ -3,7 +3,7 @@
  * This prevents multiple Hygraph API calls by consolidating data loading
  */
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext } from "react";
 import { PostCard, Categories, PostWidget } from "../components";
 import InfiniteScroll from "react-infinite-scroll-component";
 import HomeSeo from "../components/HomeSeo";
@@ -25,14 +25,14 @@ const HomepageDataContext = createContext(null);
  */
 const OptimizedFeaturedPosts = () => {
   const { data, loading } = useContext(HomepageDataContext);
-  
+
   if (loading.featuredPosts) {
     return (
       <div className="mb-12 bg-secondary-light/10 rounded-2xl p-8">
         <div className="animate-pulse">
           <div className="h-8 bg-secondary-light rounded w-64 mx-auto mb-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="h-64 bg-secondary-light rounded-lg"></div>
             ))}
           </div>
@@ -95,13 +95,17 @@ const OptimizedFeaturedPosts = () => {
  */
 const OptimizedPostWidget = () => {
   const { data, loading } = useContext(HomepageDataContext);
-  
+
   if (loading.recentPosts) {
     return (
       <div className="space-y-4">
-        <LoadingSpinner size="small" type="dots" message="Loading recent posts..." />
+        <LoadingSpinner
+          size="small"
+          type="dots"
+          message="Loading recent posts..."
+        />
         <div className="animate-pulse space-y-4">
-          {[1, 2, 3].map(item => (
+          {[1, 2, 3].map((item) => (
             <div className="flex items-center w-full" key={item}>
               <div className="w-16 h-16 bg-secondary-light rounded-md flex-none"></div>
               <div className="flex-grow ml-4">
@@ -152,13 +156,17 @@ const OptimizedPostWidget = () => {
  */
 const OptimizedCategories = () => {
   const { data, loading } = useContext(HomepageDataContext);
-  
+
   if (loading.categories) {
     return (
       <div className="space-y-4">
-        <LoadingSpinner size="small" type="pulse" message="Loading categories..." />
+        <LoadingSpinner
+          size="small"
+          type="pulse"
+          message="Loading categories..."
+        />
         <div className="animate-pulse w-full">
-          {[1, 2, 3, 4, 5].map(item => (
+          {[1, 2, 3, 4, 5].map((item) => (
             <div
               key={item}
               className="h-4 bg-secondary-light rounded mb-3"
@@ -172,14 +180,16 @@ const OptimizedCategories = () => {
 
   return (
     <div className="space-y-2">
-      {data.categories.map(category => (
+      {data.categories.map((category) => (
         <div key={category.slug} className="group">
           <a
             href={`/category/${category.slug}`}
             className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-secondary-light transition-colors duration-200 group-hover:text-primary"
           >
             <span className="font-medium">{category.name}</span>
-            <span className="text-text-secondary group-hover:text-primary">→</span>
+            <span className="text-text-secondary group-hover:text-primary">
+              →
+            </span>
           </a>
         </div>
       ))}
@@ -192,7 +202,7 @@ const OptimizedCategories = () => {
  */
 export default function OptimizedHomepage({ initialPosts }) {
   const homepageData = useHomepageData();
-  
+
   const {
     data,
     loading,
@@ -228,7 +238,10 @@ export default function OptimizedHomepage({ initialPosts }) {
       <>
         {/* SEO and Schema */}
         <HomeSeo featuredPosts={data.featuredPosts.slice(0, 5)} />
-        <SchemaManager isHomePage={true} posts={data.mainPosts.map(post => post.node)} />
+        <SchemaManager
+          isHomePage={true}
+          posts={data.mainPosts.map((post) => post.node)}
+        />
 
         <div className="mb-12">
           {/* Hero section with optimized featured posts */}
@@ -255,7 +268,9 @@ export default function OptimizedHomepage({ initialPosts }) {
                 endMessage={
                   <div className="text-center py-8">
                     <div className="inline-flex items-center space-x-2 text-text-secondary">
-                      <span>🎉 You've reached the end! No more posts to load.</span>
+                      <span>
+                        🎉 You've reached the end! No more posts to load.
+                      </span>
                     </div>
                   </div>
                 }

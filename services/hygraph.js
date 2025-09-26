@@ -222,6 +222,21 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
     // End performance monitoring
     performanceMonitor.endRequest(cacheKey, true, false);
 
+    // Update health metrics in production (server-side only)
+    if (typeof window === "undefined") {
+      try {
+        const { updateHealthMetrics } = require("../pages/api/health");
+        const startTime = performanceMonitor.requests.get(cacheKey)?.startTime;
+        if (startTime) {
+          updateHealthMetrics("request_success", {
+            responseTime: Date.now() - startTime,
+          });
+        }
+      } catch (e) {
+        // Ignore if health metrics not available
+      }
+    }
+
     return optimizedResult;
   } catch (error) {
     console.error(`Error fetching from Hygraph CDN: ${error.message}`);

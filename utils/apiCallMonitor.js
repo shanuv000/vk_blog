@@ -14,40 +14,40 @@ class ApiCallMonitor {
     this.calls = [];
     this.startTime = Date.now();
     this.isMonitoring = true;
-    
+
     // Intercept fetch calls
     this.originalFetch = window.fetch;
     window.fetch = this.interceptFetch.bind(this);
-    
-    console.log('🔍 [API Monitor] Started monitoring API calls...');
+
+    console.log("🔍 [API Monitor] Started monitoring API calls...");
   }
 
   stop() {
     if (!this.isMonitoring) return;
-    
+
     // Restore original fetch
     window.fetch = this.originalFetch;
     this.isMonitoring = false;
-    
+
     const totalTime = Date.now() - this.startTime;
-    console.log('⏹️ [API Monitor] Stopped monitoring after', totalTime + 'ms');
-    
+    console.log("⏹️ [API Monitor] Stopped monitoring after", totalTime + "ms");
+
     return this.generateReport();
   }
 
   interceptFetch(url, options = {}) {
     const startTime = Date.now();
-    
+
     // Check if this is a Hygraph-related call
-    const isHygraphCall = 
-      url.includes('hygraph') || 
-      url.includes('/api/direct-graphql') || 
-      url.includes('/api/hygraph-proxy');
-    
+    const isHygraphCall =
+      url.includes("hygraph") ||
+      url.includes("/api/direct-graphql") ||
+      url.includes("/api/hygraph-proxy");
+
     if (isHygraphCall) {
       const callInfo = {
         url,
-        method: options.method || 'GET',
+        method: options.method || "GET",
         timestamp: startTime - this.startTime,
         startTime,
       };
@@ -68,54 +68,56 @@ class ApiCallMonitor {
       }
 
       // For GET requests, extract from URL
-      if (url.includes('type=')) {
+      if (url.includes("type=")) {
         const urlObj = new URL(url, window.location.origin);
-        callInfo.queryType = urlObj.searchParams.get('type');
+        callInfo.queryType = urlObj.searchParams.get("type");
       }
 
       this.calls.push(callInfo);
-      
-      console.log('📡 [API Monitor] Hygraph call detected:', {
-        type: callInfo.queryType || 'unknown',
-        url: url.substring(url.lastIndexOf('/') + 1),
-        timestamp: callInfo.timestamp + 'ms'
+
+      console.log("📡 [API Monitor] Hygraph call detected:", {
+        type: callInfo.queryType || "unknown",
+        url: url.substring(url.lastIndexOf("/") + 1),
+        timestamp: callInfo.timestamp + "ms",
       });
     }
 
     // Make the actual request and track completion
-    return this.originalFetch(url, options).then(response => {
-      if (isHygraphCall) {
-        const endTime = Date.now();
-        const call = this.calls.find(c => c.startTime === startTime);
-        if (call) {
-          call.endTime = endTime;
-          call.duration = endTime - startTime;
-          call.success = response.ok;
-          call.status = response.status;
+    return this.originalFetch(url, options)
+      .then((response) => {
+        if (isHygraphCall) {
+          const endTime = Date.now();
+          const call = this.calls.find((c) => c.startTime === startTime);
+          if (call) {
+            call.endTime = endTime;
+            call.duration = endTime - startTime;
+            call.success = response.ok;
+            call.status = response.status;
+          }
         }
-      }
-      return response;
-    }).catch(error => {
-      if (isHygraphCall) {
-        const call = this.calls.find(c => c.startTime === startTime);
-        if (call) {
-          call.endTime = Date.now();
-          call.duration = call.endTime - startTime;
-          call.success = false;
-          call.error = error.message;
+        return response;
+      })
+      .catch((error) => {
+        if (isHygraphCall) {
+          const call = this.calls.find((c) => c.startTime === startTime);
+          if (call) {
+            call.endTime = Date.now();
+            call.duration = call.endTime - startTime;
+            call.success = false;
+            call.error = error.message;
+          }
         }
-      }
-      throw error;
-    });
+        throw error;
+      });
   }
 
   extractQueryType(query) {
-    if (query.includes('GetFeaturedPosts')) return 'featuredPosts';
-    if (query.includes('GetRecentPosts')) return 'recentPosts';
-    if (query.includes('GetCategories')) return 'categories';
-    if (query.includes('GetPosts')) return 'posts';
-    if (query.includes('GetSimilarPosts')) return 'similarPosts';
-    return 'unknown';
+    if (query.includes("GetFeaturedPosts")) return "featuredPosts";
+    if (query.includes("GetRecentPosts")) return "recentPosts";
+    if (query.includes("GetCategories")) return "categories";
+    if (query.includes("GetPosts")) return "posts";
+    if (query.includes("GetSimilarPosts")) return "similarPosts";
+    return "unknown";
   }
 
   generateReport() {
@@ -129,12 +131,12 @@ class ApiCallMonitor {
         fastest: null,
         slowest: null,
         average: 0,
-      }
+      },
     };
 
     // Analyze calls by type
-    this.calls.forEach(call => {
-      const type = call.queryType || 'unknown';
+    this.calls.forEach((call) => {
+      const type = call.queryType || "unknown";
       if (!report.callsByType[type]) {
         report.callsByType[type] = [];
       }
@@ -143,8 +145,8 @@ class ApiCallMonitor {
 
     // Find duplicate calls (same type within short time window)
     const typeTimestamps = {};
-    this.calls.forEach(call => {
-      const type = call.queryType || 'unknown';
+    this.calls.forEach((call) => {
+      const type = call.queryType || "unknown";
       if (!typeTimestamps[type]) {
         typeTimestamps[type] = [];
       }
@@ -155,11 +157,11 @@ class ApiCallMonitor {
       if (timestamps.length > 1) {
         // Check if calls are within 1 second of each other
         for (let i = 1; i < timestamps.length; i++) {
-          if (timestamps[i] - timestamps[i-1] < 1000) {
+          if (timestamps[i] - timestamps[i - 1] < 1000) {
             report.duplicateCalls.push({
               type,
-              timestamps: [timestamps[i-1], timestamps[i]],
-              timeDiff: timestamps[i] - timestamps[i-1]
+              timestamps: [timestamps[i - 1], timestamps[i]],
+              timeDiff: timestamps[i] - timestamps[i - 1],
             });
           }
         }
@@ -168,13 +170,14 @@ class ApiCallMonitor {
 
     // Performance analysis
     const durations = this.calls
-      .filter(call => call.duration)
-      .map(call => call.duration);
-    
+      .filter((call) => call.duration)
+      .map((call) => call.duration);
+
     if (durations.length > 0) {
       report.performance.fastest = Math.min(...durations);
       report.performance.slowest = Math.max(...durations);
-      report.performance.average = durations.reduce((a, b) => a + b) / durations.length;
+      report.performance.average =
+        durations.reduce((a, b) => a + b) / durations.length;
     }
 
     this.printReport(report);
@@ -182,31 +185,37 @@ class ApiCallMonitor {
   }
 
   printReport(report) {
-    console.group('📊 [API Monitor] Homepage Loading Analysis');
-    
-    console.log('📈 Summary:');
+    console.group("📊 [API Monitor] Homepage Loading Analysis");
+
+    console.log("📈 Summary:");
     console.log(`  • Total API calls: ${report.totalCalls}`);
     console.log(`  • Total loading time: ${report.totalDuration}ms`);
-    console.log(`  • Unique call types: ${Object.keys(report.callsByType).length}`);
-    
+    console.log(
+      `  • Unique call types: ${Object.keys(report.callsByType).length}`
+    );
+
     if (report.duplicateCalls.length > 0) {
-      console.warn('⚠️ Potential Issues:');
-      console.log(`  • Duplicate calls detected: ${report.duplicateCalls.length}`);
-      report.duplicateCalls.forEach(dup => {
+      console.warn("⚠️ Potential Issues:");
+      console.log(
+        `  • Duplicate calls detected: ${report.duplicateCalls.length}`
+      );
+      report.duplicateCalls.forEach((dup) => {
         console.log(`    - ${dup.type}: ${dup.timeDiff}ms apart`);
       });
     }
 
-    console.log('🎯 Call Breakdown:');
+    console.log("🎯 Call Breakdown:");
     Object.entries(report.callsByType).forEach(([type, calls]) => {
       console.log(`  • ${type}: ${calls.length} calls`);
       if (calls.length > 1) {
-        console.warn(`    ⚠️ Multiple calls for ${type} - consider deduplication`);
+        console.warn(
+          `    ⚠️ Multiple calls for ${type} - consider deduplication`
+        );
       }
     });
 
     if (report.performance.average) {
-      console.log('⚡ Performance:');
+      console.log("⚡ Performance:");
       console.log(`  • Fastest: ${report.performance.fastest}ms`);
       console.log(`  • Slowest: ${report.performance.slowest}ms`);
       console.log(`  • Average: ${Math.round(report.performance.average)}ms`);
@@ -220,10 +229,10 @@ class ApiCallMonitor {
 window.apiMonitor = new ApiCallMonitor();
 
 // Auto-start monitoring when page loads
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
     window.apiMonitor.start();
-    
+
     // Stop monitoring after 10 seconds or when page is fully loaded
     setTimeout(() => {
       window.apiMonitor.stop();
