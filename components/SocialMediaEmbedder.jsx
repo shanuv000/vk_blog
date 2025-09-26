@@ -620,7 +620,7 @@ const SocialMediaEmbedder = () => {
         .social-media-embed-container {
           display: flex;
           justify-content: center;
-          margin: 2.5rem auto;
+          margin: 2rem auto;
           max-width: 550px;
           width: 100%;
           position: relative;
@@ -720,14 +720,27 @@ const SocialMediaEmbedder = () => {
         @media (max-width: 768px) {
           .social-media-embed-container {
             width: 100%;
-            padding: 0;
-            margin: 2rem auto;
+            padding: 0 6px;
+            margin: 1.25rem auto;
           }
 
           /* Adjust heights for mobile */
           .social-media-embed-wrapper iframe[src*="facebook.com"],
           .social-media-embed-wrapper iframe[src*="instagram.com"] {
             min-height: 480px !important;
+          }
+
+          /* Twitter-specific mobile tweaks */
+          .social-media-embed-wrapper.twitter .twitter-embed-root {
+            margin: 0.5rem 0 !important;
+          }
+          .social-media-embed-wrapper.twitter .twitter-tweet-container {
+            padding-left: 2px !important;
+            padding-right: 2px !important;
+          }
+          .social-media-embed-wrapper.twitter iframe[src*="twitter.com"] {
+            width: 100% !important;
+            max-width: 100% !important;
           }
         }
       `;

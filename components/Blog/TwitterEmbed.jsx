@@ -21,7 +21,7 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
   // Use new API version if enabled and tweet ID is valid
   if (useApiVersion && isValidTweetId) {
     return (
-      <div className="twitter-embed-root my-3 sm:my-4 md:my-6 w-full">
+      <div className="twitter-embed-root my-2 sm:my-3 md:my-5 w-full">
         <div className="twitter-tweet-container flex justify-center items-center px-1 sm:px-2 md:px-3">
           <div className="w-full max-w-[550px] min-w-0 mx-auto">
             <TwitterPost tweetId={cleanTweetId} variant="inline" />
