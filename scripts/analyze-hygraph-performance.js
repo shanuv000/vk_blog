@@ -5,18 +5,18 @@
  * Run this to analyze and optimize your Hygraph API usage
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 const ANALYSIS_CONFIG = {
   // Performance thresholds (in milliseconds)
   SLOW_QUERY_THRESHOLD: 2000,
   WARNING_THRESHOLD: 1000,
-  
+
   // Cache hit rate targets
   MIN_CACHE_HIT_RATE: 60, // 60% minimum
   GOOD_CACHE_HIT_RATE: 80, // 80% good performance
-  
+
   // Query complexity limits
   MAX_QUERY_DEPTH: 5,
   MAX_FIELDS_PER_QUERY: 20,
@@ -35,22 +35,22 @@ class HygraphAnalyzer {
   }
 
   analyzeServiceFiles() {
-    console.log('🔍 Analyzing Hygraph service files...\n');
-    
+    console.log("🔍 Analyzing Hygraph service files...\n");
+
     const serviceFiles = [
-      'services/hygraph.js',
-      'services/index.js', 
-      'hooks/useApolloQueries.js',
-      'services/pagination.js',
+      "services/hygraph.js",
+      "services/index.js",
+      "hooks/useApolloQueries.js",
+      "services/pagination.js",
     ];
 
     const issues = [];
     const recommendations = [];
 
-    serviceFiles.forEach(file => {
+    serviceFiles.forEach((file) => {
       const filePath = path.join(process.cwd(), file);
       if (fs.existsSync(filePath)) {
-        const content = fs.readFileSync(filePath, 'utf8');
+        const content = fs.readFileSync(filePath, "utf8");
         this.analyzeFileContent(content, file, issues, recommendations);
       }
     });
@@ -64,37 +64,38 @@ class HygraphAnalyzer {
       {
         pattern: /first:\s*\$?\{?\w*\}?(?:\s*,|\s*\))/g,
         message: `${filename}: Dynamic limits without validation detected`,
-        severity: 'HIGH',
-        recommendation: 'Add limit validation with Math.min(limit, MAX_SAFE_LIMIT)'
+        severity: "HIGH",
+        recommendation:
+          "Add limit validation with Math.min(limit, MAX_SAFE_LIMIT)",
       },
       {
         pattern: /orderBy:\s*createdAt_DESC.*first:\s*[2-9]\d+/g,
         message: `${filename}: Large result sets (>20) detected`,
-        severity: 'HIGH', 
-        recommendation: 'Use pagination instead of large single queries'
+        severity: "HIGH",
+        recommendation: "Use pagination instead of large single queries",
       },
       {
         pattern: /console\.log.*query/gi,
         message: `${filename}: Debug logging in production code`,
-        severity: 'LOW',
-        recommendation: 'Wrap debug logs with NODE_ENV checks'
+        severity: "LOW",
+        recommendation: "Wrap debug logs with NODE_ENV checks",
       },
       {
         pattern: /\.request\(query.*without.*cache/gi,
         message: `${filename}: Queries without caching detected`,
-        severity: 'MEDIUM',
-        recommendation: 'Implement caching for all read queries'
-      }
+        severity: "MEDIUM",
+        recommendation: "Implement caching for all read queries",
+      },
     ];
 
-    antiPatterns.forEach(antiPattern => {
+    antiPatterns.forEach((antiPattern) => {
       const matches = content.match(antiPattern.pattern);
       if (matches) {
         issues.push({
           file: filename,
           issue: antiPattern.message,
           severity: antiPattern.severity,
-          count: matches.length
+          count: matches.length,
         });
         recommendations.push(antiPattern.recommendation);
       }
@@ -105,16 +106,17 @@ class HygraphAnalyzer {
       {
         pattern: /featuredImage\s*\{\s*url\s*\}/g,
         message: `${filename}: Unoptimized image queries`,
-        recommendation: 'Add image transformations: url(transformation: { image: { resize: { width: 800 } } })'
+        recommendation:
+          "Add image transformations: url(transformation: { image: { resize: { width: 800 } } })",
       },
       {
         pattern: /gql`[^`]*query[^`]*\{[^}]*author[^}]*photo[^}]*url[^}]*\}/gs,
         message: `${filename}: Author photos without size optimization`,
-        recommendation: 'Optimize author photo sizes to 150x150px'
-      }
+        recommendation: "Optimize author photo sizes to 150x150px",
+      },
     ];
 
-    optimizations.forEach(optimization => {
+    optimizations.forEach((optimization) => {
       const matches = content.match(optimization.pattern);
       if (matches) {
         recommendations.push(`${filename}: ${optimization.recommendation}`);
@@ -123,25 +125,35 @@ class HygraphAnalyzer {
   }
 
   generateReport(issues, recommendations) {
-    console.log('📊 HYGRAPH API OPTIMIZATION REPORT');
-    console.log('=' .repeat(50));
+    console.log("📊 HYGRAPH API OPTIMIZATION REPORT");
+    console.log("=".repeat(50));
     console.log();
 
     // Summary
-    console.log('📋 SUMMARY');
+    console.log("📋 SUMMARY");
     console.log(`Total issues found: ${issues.length}`);
-    console.log(`High priority: ${issues.filter(i => i.severity === 'HIGH').length}`);
-    console.log(`Medium priority: ${issues.filter(i => i.severity === 'MEDIUM').length}`);
-    console.log(`Low priority: ${issues.filter(i => i.severity === 'LOW').length}`);
+    console.log(
+      `High priority: ${issues.filter((i) => i.severity === "HIGH").length}`
+    );
+    console.log(
+      `Medium priority: ${issues.filter((i) => i.severity === "MEDIUM").length}`
+    );
+    console.log(
+      `Low priority: ${issues.filter((i) => i.severity === "LOW").length}`
+    );
     console.log();
 
     // Issues by priority
-    ['HIGH', 'MEDIUM', 'LOW'].forEach(severity => {
-      const severityIssues = issues.filter(i => i.severity === severity);
+    ["HIGH", "MEDIUM", "LOW"].forEach((severity) => {
+      const severityIssues = issues.filter((i) => i.severity === severity);
       if (severityIssues.length > 0) {
         console.log(`🚨 ${severity} PRIORITY ISSUES`);
-        severityIssues.forEach(issue => {
-          console.log(`  • ${issue.issue} ${issue.count ? `(${issue.count} occurrences)` : ''}`);
+        severityIssues.forEach((issue) => {
+          console.log(
+            `  • ${issue.issue} ${
+              issue.count ? `(${issue.count} occurrences)` : ""
+            }`
+          );
         });
         console.log();
       }
@@ -149,7 +161,7 @@ class HygraphAnalyzer {
 
     // Recommendations
     if (recommendations.length > 0) {
-      console.log('💡 OPTIMIZATION RECOMMENDATIONS');
+      console.log("💡 OPTIMIZATION RECOMMENDATIONS");
       [...new Set(recommendations)].forEach((rec, index) => {
         console.log(`  ${index + 1}. ${rec}`);
       });
@@ -157,14 +169,14 @@ class HygraphAnalyzer {
     }
 
     // Performance tips
-    console.log('🚀 PERFORMANCE OPTIMIZATION TIPS');
-    console.log('  1. Use cursor-based pagination for large datasets');
-    console.log('  2. Implement image transformations in GraphQL queries');
-    console.log('  3. Add query result caching with appropriate TTLs');
-    console.log('  4. Validate and cap query limits (max 50 items per query)');
-    console.log('  5. Use CDN endpoints for read-only operations');
-    console.log('  6. Implement connection pooling for high-traffic apps');
-    console.log('  7. Monitor query performance and cache hit rates');
+    console.log("🚀 PERFORMANCE OPTIMIZATION TIPS");
+    console.log("  1. Use cursor-based pagination for large datasets");
+    console.log("  2. Implement image transformations in GraphQL queries");
+    console.log("  3. Add query result caching with appropriate TTLs");
+    console.log("  4. Validate and cap query limits (max 50 items per query)");
+    console.log("  5. Use CDN endpoints for read-only operations");
+    console.log("  6. Implement connection pooling for high-traffic apps");
+    console.log("  7. Monitor query performance and cache hit rates");
     console.log();
 
     // Generate optimization checklist
@@ -207,8 +219,10 @@ class HygraphAnalyzer {
 Generated on: ${new Date().toISOString()}
     `.trim();
 
-    fs.writeFileSync('HYGRAPH_OPTIMIZATION_CHECKLIST.md', checklist);
-    console.log('📝 Optimization checklist saved to: HYGRAPH_OPTIMIZATION_CHECKLIST.md');
+    fs.writeFileSync("HYGRAPH_OPTIMIZATION_CHECKLIST.md", checklist);
+    console.log(
+      "📝 Optimization checklist saved to: HYGRAPH_OPTIMIZATION_CHECKLIST.md"
+    );
   }
 }
 

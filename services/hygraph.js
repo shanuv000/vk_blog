@@ -73,22 +73,22 @@ const optimizeImageUrls = (data) => {
     if (key === "featuredImage" || key === "photo") {
       if (result[key] && result[key].url) {
         const url = new URL(result[key].url);
-        
+
         // Enhanced optimization parameters
         if (!url.searchParams.has("q")) {
           url.searchParams.set("q", "85"); // Increased quality for better visual results
         }
-        
+
         // Add format optimization for better compression
         if (!url.searchParams.has("format")) {
           url.searchParams.set("format", "webp"); // Use WebP for better compression
         }
-        
+
         // Add auto optimization
         if (!url.searchParams.has("auto")) {
           url.searchParams.set("auto", "compress,format");
         }
-        
+
         result[key].url = url.toString();
       }
     }
@@ -104,39 +104,48 @@ const optimizeImageUrls = (data) => {
 // Enhanced performance monitoring and optimization
 const performanceMonitor = {
   requests: new Map(),
-  
+
   startRequest: (queryId) => {
     performanceMonitor.requests.set(queryId, {
       startTime: Date.now(),
-      type: queryId.includes('GetPost') ? 'post' : 
-            queryId.includes('GetCategories') ? 'category' : 'other'
+      type: queryId.includes("GetPost")
+        ? "post"
+        : queryId.includes("GetCategories")
+        ? "category"
+        : "other",
     });
   },
-  
+
   endRequest: (queryId, success = true, fromCache = false) => {
     const request = performanceMonitor.requests.get(queryId);
     if (request) {
       const duration = Date.now() - request.startTime;
-      
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[Performance] ${queryId.substring(0, 30)}... - ${duration}ms ${fromCache ? '(cached)' : '(fresh)'} ${success ? '✓' : '✗'}`);
+
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          `[Performance] ${queryId.substring(0, 30)}... - ${duration}ms ${
+            fromCache ? "(cached)" : "(fresh)"
+          } ${success ? "✓" : "✗"}`
+        );
       }
-      
+
       // Track slow queries (>2s)
       if (duration > 2000 && !fromCache) {
-        console.warn(`[SlowQuery] ${queryId.substring(0, 50)}... took ${duration}ms`);
+        console.warn(
+          `[SlowQuery] ${queryId.substring(0, 50)}... took ${duration}ms`
+        );
       }
-      
+
       performanceMonitor.requests.delete(queryId);
     }
-  }
+  },
 };
 
 // Helper function for read-only operations with caching (uses CDN for better performance)
 export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
   // Generate cache key
   const cacheKey = generateCacheKey(query, variables);
-  
+
   // Start performance monitoring
   performanceMonitor.startRequest(cacheKey);
 
@@ -212,7 +221,7 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
 
     // End performance monitoring
     performanceMonitor.endRequest(cacheKey, true, false);
-    
+
     return optimizedResult;
   } catch (error) {
     console.error(`Error fetching from Hygraph CDN: ${error.message}`);

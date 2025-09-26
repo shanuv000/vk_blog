@@ -172,11 +172,19 @@ export const FEATURED_POSTS_QUERY = gql`
         # Include id if available, but it's optional
         id
         photo {
-          url(transformation: { image: { resize: { width: 150, height: 150, fit: cover } } })
+          url(
+            transformation: {
+              image: { resize: { width: 150, height: 150, fit: cover } }
+            }
+          )
         }
       }
       featuredImage {
-        url(transformation: { image: { resize: { width: 800, height: 600, fit: cover } } })
+        url(
+          transformation: {
+            image: { resize: { width: 800, height: 600, fit: cover } }
+          }
+        )
         width
         height
       }
@@ -352,9 +360,11 @@ export const fetchPosts = async (limit = 12) => {
   try {
     // ✅ Validate and cap the limit to prevent excessive API calls
     const validatedLimit = Math.min(Math.max(limit, 1), 50);
-    
+
     if (limit !== validatedLimit) {
-      console.warn(`[fetchPosts] Limit ${limit} adjusted to ${validatedLimit} for performance`);
+      console.warn(
+        `[fetchPosts] Limit ${limit} adjusted to ${validatedLimit} for performance`
+      );
     }
 
     const client = getApolloClient();

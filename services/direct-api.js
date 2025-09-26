@@ -1,16 +1,22 @@
 // Direct API service for more reliable data fetching
 // This bypasses Apollo Client for critical data
 
+import { requestDeduplicator, generateRequestKey } from '../lib/requestDeduplicator';
+
 /**
- * Fetch data from the direct GraphQL API
+ * Fetch data from the direct GraphQL API with request deduplication
  * @param {string} type - The type of query to execute (categories, featuredPosts, recentPosts)
  * @param {Object} variables - Variables to pass to the query
  * @returns {Promise<Object>} - The query result
  */
 export const fetchDirectApi = async (type, variables = {}) => {
-  try {
-    // For client-side requests, use the API route
-    if (typeof window !== "undefined") {
+  // Generate unique request key for deduplication
+  const requestKey = generateRequestKey(type, variables);
+  
+  return requestDeduplicator.execute(requestKey, async () => {
+    try {
+      // For client-side requests, use the API route
+      if (typeof window !== "undefined") {
       // Use GET for simple requests without variables
       if (Object.keys(variables).length === 0) {
         const response = await fetch(`/api/direct-graphql?type=${type}`);
@@ -64,25 +70,26 @@ export const fetchDirectApi = async (type, variables = {}) => {
       };
 
       await handler(req, res);
-      return responseData;
-    }
-  } catch (error) {
-    console.error(`Error fetching from direct API (${type}):`, error);
+        return responseData;
+      }
+    } catch (error) {
+      console.error(`Error fetching from direct API (${type}):`, error);
 
-    // Return default empty data based on query type
-    switch (type) {
-      case "categories":
-        return { categories: [] };
-      case "featuredPosts":
-      case "recentPosts":
-      case "similarPosts":
-        return { posts: [] };
-      case "adjacentPosts":
-        return { next: [], previous: [] };
-      default:
-        return { data: null };
+      // Return default empty data based on query type
+      switch (type) {
+        case "categories":
+          return { categories: [] };
+        case "featuredPosts":
+        case "recentPosts":
+        case "similarPosts":
+          return { posts: [] };
+        case "adjacentPosts":
+          return { next: [], previous: [] };
+        default:
+          return { data: null };
+      }
     }
-  }
+  });
 };
 
 /**

@@ -3,24 +3,32 @@
  * Reduces duplication and ensures consistent performance patterns
  */
 
-import { gql } from 'graphql-request';
+import { gql } from "graphql-request";
 
 // Query validation and optimization helpers
 export const validateLimit = (limit, min = 1, max = 50, defaultValue = 12) => {
-  const validated = Math.min(Math.max(parseInt(limit) || defaultValue, min), max);
-  
+  const validated = Math.min(
+    Math.max(parseInt(limit) || defaultValue, min),
+    max
+  );
+
   if (limit !== validated) {
-    console.warn(`[QueryValidation] Limit ${limit} adjusted to ${validated} for performance`);
+    console.warn(
+      `[QueryValidation] Limit ${limit} adjusted to ${validated} for performance`
+    );
   }
-  
+
   return validated;
 };
 
 // Optimized image transformation parameters
 const IMAGE_TRANSFORMS = {
-  featuredImage: 'transformation: { image: { resize: { width: 800, height: 600, fit: cover } } }',
-  authorPhoto: 'transformation: { image: { resize: { width: 150, height: 150, fit: cover } } }',
-  thumbnail: 'transformation: { image: { resize: { width: 400, height: 300, fit: cover } } }',
+  featuredImage:
+    "transformation: { image: { resize: { width: 800, height: 600, fit: cover } } }",
+  authorPhoto:
+    "transformation: { image: { resize: { width: 150, height: 150, fit: cover } } }",
+  thumbnail:
+    "transformation: { image: { resize: { width: 400, height: 300, fit: cover } } }",
 };
 
 // Base query fragments for reusability
@@ -34,7 +42,7 @@ export const QUERY_FRAGMENTS = {
       }
     }
   `,
-  
+
   authorFull: `
     author {
       name
@@ -45,7 +53,7 @@ export const QUERY_FRAGMENTS = {
       }
     }
   `,
-  
+
   featuredImageOptimized: `
     featuredImage {
       url(${IMAGE_TRANSFORMS.featuredImage})
@@ -53,20 +61,20 @@ export const QUERY_FRAGMENTS = {
       height
     }
   `,
-  
+
   thumbnailImage: `
     featuredImage {
       url(${IMAGE_TRANSFORMS.thumbnail})
     }
   `,
-  
+
   categoriesBasic: `
     categories {
       name
       slug
     }
   `,
-  
+
   contentFull: `
     content {
       raw
@@ -82,7 +90,7 @@ export const QUERY_FRAGMENTS = {
       }
     }
   `,
-  
+
   postBasicFields: `
     slug
     title
@@ -114,7 +122,7 @@ export const OPTIMIZED_QUERIES = {
       }
     }
   `,
-  
+
   POSTS_STANDARD: gql`
     query GetPostsStandard($limit: Int!, $after: String) {
       postsConnection(first: $limit, after: $after, orderBy: publishedAt_DESC) {
@@ -138,7 +146,7 @@ export const OPTIMIZED_QUERIES = {
       }
     }
   `,
-  
+
   // Category posts with enforced limits
   CATEGORY_POSTS: gql`
     query GetCategoryPosts($slug: String!, $limit: Int!, $after: String) {
@@ -168,7 +176,7 @@ export const OPTIMIZED_QUERIES = {
       }
     }
   `,
-  
+
   // Post details with optimized content loading
   POST_DETAILS: gql`
     query GetPostDetails($slug: String!) {
@@ -182,7 +190,7 @@ export const OPTIMIZED_QUERIES = {
       }
     }
   `,
-  
+
   // Lightweight queries for widgets
   FEATURED_POSTS_WIDGET: gql`
     query GetFeaturedPostsWidget {
@@ -193,7 +201,7 @@ export const OPTIMIZED_QUERIES = {
       }
     }
   `,
-  
+
   RECENT_POSTS_WIDGET: gql`
     query GetRecentPostsWidget {
       posts(orderBy: publishedAt_DESC, first: 5) {
@@ -202,7 +210,7 @@ export const OPTIMIZED_QUERIES = {
       }
     }
   `,
-  
+
   // Categories (cached for long periods)
   CATEGORIES_ALL: gql`
     query GetAllCategories {
@@ -212,7 +220,7 @@ export const OPTIMIZED_QUERIES = {
       }
     }
   `,
-  
+
   // Similar posts with better performance
   SIMILAR_POSTS: gql`
     query GetSimilarPosts($slug: String!, $categories: [String!]) {
@@ -231,28 +239,32 @@ export const OPTIMIZED_QUERIES = {
 };
 
 // Query execution helpers with built-in optimization
-export const executeOptimizedQuery = async (client, queryName, variables = {}) => {
+export const executeOptimizedQuery = async (
+  client,
+  queryName,
+  variables = {}
+) => {
   // Validate variables
   if (variables.limit) {
     variables.limit = validateLimit(variables.limit);
   }
-  
+
   const query = OPTIMIZED_QUERIES[queryName];
   if (!query) {
     throw new Error(`Optimized query '${queryName}' not found`);
   }
-  
+
   // Add performance timing
   const startTime = Date.now();
-  
+
   try {
     const result = await client.request(query, variables);
     const duration = Date.now() - startTime;
-    
-    if (process.env.NODE_ENV === 'development') {
+
+    if (process.env.NODE_ENV === "development") {
       console.log(`[OptimizedQuery] ${queryName} completed in ${duration}ms`);
     }
-    
+
     return result;
   } catch (error) {
     console.error(`[OptimizedQuery] ${queryName} failed:`, error.message);
