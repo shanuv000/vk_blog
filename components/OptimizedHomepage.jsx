@@ -4,7 +4,13 @@
  */
 
 import React, { createContext, useContext } from "react";
-import { PostCard, Categories, PostWidget } from "../components";
+import {
+  PostCard,
+  Categories,
+  PostWidget,
+  HeroSpotlight,
+  EnhancedFeaturedPostCard,
+} from "../components";
 import InfiniteScroll from "react-infinite-scroll-component";
 import HomeSeo from "../components/HomeSeo";
 import SchemaManager from "../components/SchemaManager";
@@ -57,33 +63,14 @@ const OptimizedFeaturedPosts = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {data.featuredPosts.slice(0, 6).map((post, index) => (
-          <div
+          <EnhancedFeaturedPostCard
             key={post.slug || index}
-            className="bg-secondary rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-          >
-            <div className="aspect-video bg-secondary-light relative overflow-hidden">
-              {post.featuredImage?.url && (
-                <img
-                  src={post.featuredImage.url}
-                  alt={post.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  loading={index < 3 ? "eager" : "lazy"}
-                />
-              )}
-            </div>
-            <div className="p-4">
-              <h3 className="font-heading font-semibold text-lg text-text-primary line-clamp-2 mb-2">
-                {post.title}
-              </h3>
-              {post.author && (
-                <div className="flex items-center text-sm text-text-secondary">
-                  <span>By {post.author.name}</span>
-                </div>
-              )}
-            </div>
-          </div>
+            post={post}
+            index={index}
+            variant={index === 0 ? "large" : index < 3 ? "default" : "compact"}
+          />
         ))}
       </div>
     </section>
@@ -243,67 +230,73 @@ export default function OptimizedHomepage({ initialPosts }) {
           posts={data.mainPosts.map((post) => post.node)}
         />
 
-        <div className="mb-12">
-          {/* Hero section with optimized featured posts */}
-          <OptimizedFeaturedPosts />
+        <div>
+          {/* Hero Spotlight Section */}
+          <HeroSpotlight
+            featuredPosts={data.featuredPosts}
+            isLoading={loading.featuredPosts}
+            error={errors.featuredPosts}
+          />
 
           {/* Main content */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Posts column */}
-            <div className="lg:col-span-8 col-span-1">
-              <h2 className="text-2xl md:text-3xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
-                Latest Articles
-                {pagination.totalCount > 0 && (
-                  <span className="text-sm font-normal text-text-secondary ml-2">
-                    ({mainPostsCount} of {pagination.totalCount})
-                  </span>
-                )}
-              </h2>
+          <div className="mb-12 mt-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              {/* Posts column */}
+              <div className="lg:col-span-8 col-span-1">
+                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
+                  Latest Articles
+                  {pagination.totalCount > 0 && (
+                    <span className="text-sm font-normal text-text-secondary ml-2">
+                      ({mainPostsCount} of {pagination.totalCount})
+                    </span>
+                  )}
+                </h2>
 
-              <InfiniteScroll
-                dataLength={data.mainPosts.length}
-                next={loadMoreMainPosts}
-                hasMore={canLoadMore}
-                loader={<InfiniteScrollLoader count={3} />}
-                endMessage={
-                  <div className="text-center py-8">
-                    <div className="inline-flex items-center space-x-2 text-text-secondary">
-                      <span>
-                        🎉 You've reached the end! No more posts to load.
-                      </span>
+                <InfiniteScroll
+                  dataLength={data.mainPosts.length}
+                  next={loadMoreMainPosts}
+                  hasMore={canLoadMore}
+                  loader={<InfiniteScrollLoader count={3} />}
+                  endMessage={
+                    <div className="text-center py-8">
+                      <div className="inline-flex items-center space-x-2 text-text-secondary">
+                        <span>
+                          🎉 You've reached the end! No more posts to load.
+                        </span>
+                      </div>
+                    </div>
+                  }
+                  refreshFunction={refresh}
+                  pullDownToRefresh={false}
+                  className="space-y-8"
+                >
+                  {data.mainPosts.map((post, index) => (
+                    <PostCard key={post.node.slug || index} post={post.node} />
+                  ))}
+                </InfiniteScroll>
+              </div>
+
+              {/* Sidebar */}
+              <div className="lg:col-span-4 col-span-1">
+                <div className="lg:sticky relative top-8 space-y-8">
+                  {/* Recent posts widget */}
+                  <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
+                    <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
+                      Recent Posts
+                    </h3>
+                    <div className="p-4">
+                      <OptimizedPostWidget />
                     </div>
                   </div>
-                }
-                refreshFunction={refresh}
-                pullDownToRefresh={false}
-                className="space-y-8"
-              >
-                {data.mainPosts.map((post, index) => (
-                  <PostCard key={post.node.slug || index} post={post.node} />
-                ))}
-              </InfiniteScroll>
-            </div>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-4 col-span-1">
-              <div className="lg:sticky relative top-8 space-y-8">
-                {/* Recent posts widget */}
-                <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
-                  <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
-                    Recent Posts
-                  </h3>
-                  <div className="p-4">
-                    <OptimizedPostWidget />
-                  </div>
-                </div>
-
-                {/* Categories widget */}
-                <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
-                  <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
-                    Categories
-                  </h3>
-                  <div className="p-4">
-                    <OptimizedCategories />
+                  {/* Categories widget */}
+                  <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
+                    <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
+                      Categories
+                    </h3>
+                    <div className="p-4">
+                      <OptimizedCategories />
+                    </div>
                   </div>
                 </div>
               </div>
