@@ -54,7 +54,7 @@ export const cdnClient = isBrowser
       },
     });
 
-// Helper function to optimize image URLs
+// Enhanced image optimization with better compression
 const optimizeImageUrls = (data) => {
   // Skip if data is null or not an object
   if (!data || typeof data !== "object") return data;
@@ -72,11 +72,23 @@ const optimizeImageUrls = (data) => {
     // If this is an image object with a URL
     if (key === "featuredImage" || key === "photo") {
       if (result[key] && result[key].url) {
-        // Add quality parameter to URL if not already present
         const url = new URL(result[key].url);
+        
+        // Enhanced optimization parameters
         if (!url.searchParams.has("q")) {
-          url.searchParams.set("q", "80"); // Set quality to 80%
+          url.searchParams.set("q", "85"); // Increased quality for better visual results
         }
+        
+        // Add format optimization for better compression
+        if (!url.searchParams.has("format")) {
+          url.searchParams.set("format", "webp"); // Use WebP for better compression
+        }
+        
+        // Add auto optimization
+        if (!url.searchParams.has("auto")) {
+          url.searchParams.set("auto", "compress,format");
+        }
+        
         result[key].url = url.toString();
       }
     }
@@ -89,10 +101,44 @@ const optimizeImageUrls = (data) => {
   return result;
 };
 
+// Enhanced performance monitoring and optimization
+const performanceMonitor = {
+  requests: new Map(),
+  
+  startRequest: (queryId) => {
+    performanceMonitor.requests.set(queryId, {
+      startTime: Date.now(),
+      type: queryId.includes('GetPost') ? 'post' : 
+            queryId.includes('GetCategories') ? 'category' : 'other'
+    });
+  },
+  
+  endRequest: (queryId, success = true, fromCache = false) => {
+    const request = performanceMonitor.requests.get(queryId);
+    if (request) {
+      const duration = Date.now() - request.startTime;
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Performance] ${queryId.substring(0, 30)}... - ${duration}ms ${fromCache ? '(cached)' : '(fresh)'} ${success ? '✓' : '✗'}`);
+      }
+      
+      // Track slow queries (>2s)
+      if (duration > 2000 && !fromCache) {
+        console.warn(`[SlowQuery] ${queryId.substring(0, 50)}... took ${duration}ms`);
+      }
+      
+      performanceMonitor.requests.delete(queryId);
+    }
+  }
+};
+
 // Helper function for read-only operations with caching (uses CDN for better performance)
 export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
   // Generate cache key
   const cacheKey = generateCacheKey(query, variables);
+  
+  // Start performance monitoring
+  performanceMonitor.startRequest(cacheKey);
 
   // Determine appropriate cache TTL based on query content
   const cacheTTL = getCacheTTL(query);
@@ -110,6 +156,7 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
       if (cachedItem.expiry > Date.now()) {
         // Valid cache hit
         console.log(`Cache hit for query: ${cacheKey.substring(0, 40)}...`);
+        performanceMonitor.endRequest(cacheKey, true, true);
         return cachedItem.data;
       } else {
         // Expired but still usable as stale data
@@ -163,6 +210,9 @@ export const fetchFromCDN = async (query, variables = {}, useCache = true) => {
       );
     }
 
+    // End performance monitoring
+    performanceMonitor.endRequest(cacheKey, true, false);
+    
     return optimizedResult;
   } catch (error) {
     console.error(`Error fetching from Hygraph CDN: ${error.message}`);

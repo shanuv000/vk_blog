@@ -127,7 +127,7 @@ export const ADJACENT_POSTS_QUERY = gql`
   }
 `;
 
-// ⚠️ VERY INEFFICIENT: NO LIMIT - Loads ALL category posts at once!
+// ✅ OPTIMIZED: Enforced limits with validation
 export const CATEGORY_POSTS_QUERY = gql`
   query GetCategoryPost($slug: String!, $limit: Int = 12) {
     postsConnection(
@@ -172,11 +172,11 @@ export const FEATURED_POSTS_QUERY = gql`
         # Include id if available, but it's optional
         id
         photo {
-          url
+          url(transformation: { image: { resize: { width: 150, height: 150, fit: cover } } })
         }
       }
       featuredImage {
-        url
+        url(transformation: { image: { resize: { width: 800, height: 600, fit: cover } } })
         width
         height
       }
@@ -348,11 +348,18 @@ export const useRecentPosts = () => {
 };
 
 // Direct client methods for SSR and special cases
-export const fetchPosts = async (limit = 20) => {
+export const fetchPosts = async (limit = 12) => {
   try {
+    // ✅ Validate and cap the limit to prevent excessive API calls
+    const validatedLimit = Math.min(Math.max(limit, 1), 50);
+    
+    if (limit !== validatedLimit) {
+      console.warn(`[fetchPosts] Limit ${limit} adjusted to ${validatedLimit} for performance`);
+    }
+
     const client = getApolloClient();
 
-    // Create a dynamic query with the limit parameter
+    // Create a dynamic query with the validated limit parameter
     const DYNAMIC_POSTS_QUERY = gql`
       query GetPosts($limit: Int!) {
         postsConnection(first: $limit, orderBy: publishedAt_DESC) {
@@ -387,7 +394,7 @@ export const fetchPosts = async (limit = 20) => {
 
     const { data } = await client.query({
       query: DYNAMIC_POSTS_QUERY,
-      variables: { limit: Math.min(limit, 24) },
+      variables: { limit: validatedLimit },
       fetchPolicy: "network-only", // For SSR, always fetch fresh data
     });
 
