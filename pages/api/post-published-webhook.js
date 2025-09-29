@@ -67,7 +67,7 @@ export default async function handler(req, res) {
     ) {
       try {
         console.log(`Creating short URL for post: ${data.slug}`);
-        
+
         const post = {
           slug: data.slug,
           title: data.title || `Blog Post - ${data.slug}`,
@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       // 2. Handle sitemap revalidation
       try {
         console.log("🔄 Revalidating sitemap...");
-        
+
         // Call your existing sitemap revalidation endpoint
         const sitemapResponse = await fetch(
           `https://blog.urtechy.com/api/revalidate-sitemap?secret=${secret}`,

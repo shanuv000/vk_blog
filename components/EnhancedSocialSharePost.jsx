@@ -9,6 +9,9 @@ import {
   FaWhatsapp,
   FaLinkedin,
   FaPinterest,
+  FaInfoCircle,
+  FaClock,
+  FaCheckCircle,
 } from "react-icons/fa6";
 import {
   DEFAULT_FEATURED_IMAGE,
@@ -42,9 +45,10 @@ const useInView = (options) => {
   return [ref, inView];
 };
 
-const NavbarPostDetails = ({ post }) => {
+const EnhancedSocialSharePost = ({ post }) => {
   // State for toast notification
   const [showToast, setShowToast] = useState(false);
+  const [showValidationInfo, setShowValidationInfo] = useState(false);
 
   // Safely extract properties with fallbacks
   const title = post?.title || "urTechy Blog Post";
@@ -52,7 +56,7 @@ const NavbarPostDetails = ({ post }) => {
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${slug}`;
 
-  // Enhanced TinyURL hook for shortened URLs with validation
+  // Enhanced TinyURL hook with validation
   const {
     shortUrl,
     longUrl,
@@ -68,48 +72,36 @@ const NavbarPostDetails = ({ post }) => {
   } = useTinyUrl(post, {
     autoShorten: true,
     baseUrl: rootUrl,
-    enableAnalytics: false, // Disable analytics for performance
+    enableAnalytics: true,
   });
 
   // Use shortened URL for sharing if available, otherwise use original
   const shareUrl = shortUrl || postUrl;
   const sharingUrls = getSharingUrls();
 
-  // Ensure we're using the featured image and not accidentally using author image
-  // First check if featuredImage exists and has a url property
+  // Image handling (same as before)
   const hasFeaturedImage = post?.featuredImage && post.featuredImage.url;
-
-  // Use the same default image as in PostDetail component if no featured image
-  // For social sharing, use the absolute URL with fallbacks
   const imageUrl = hasFeaturedImage
     ? post.featuredImage.url
     : `${rootUrl}${DEFAULT_FEATURED_IMAGE}`;
 
-  // Function to handle image URL errors in social sharing
-  // Use a static URL without dynamic timestamps to avoid hydration errors
   const getSafeImageUrl = () => {
-    // If the original URL fails, use the local fallback
     if (!hasFeaturedImage) {
       return `${rootUrl}${DEFAULT_FEATURED_IMAGE}`;
     }
 
-    // Check if the URL is from Hygraph/GraphCMS
     if (
       post.featuredImage.url.includes("graphassets.com") ||
       post.featuredImage.url.includes("hygraph.com")
     ) {
       try {
-        // Don't add timestamp to avoid hydration errors
         return post.featuredImage.url;
       } catch (e) {
-        // Keep console.error for production error tracking
         console.error("Error parsing image URL:", e);
-        // Use absolute URL to local fallback image
         return `${rootUrl}${FALLBACK_FEATURED_IMAGE}`;
       }
     }
 
-    // For external URLs that might fail, ensure we have a local fallback
     try {
       return post.featuredImage.url;
     } catch (e) {
@@ -117,6 +109,7 @@ const NavbarPostDetails = ({ post }) => {
       return `${rootUrl}${FALLBACK_FEATURED_IMAGE}`;
     }
   };
+
   const [ref, inView] = useInView({ threshold: 0.1 });
   const controls = useAnimation();
 
@@ -125,6 +118,20 @@ const NavbarPostDetails = ({ post }) => {
       controls.start({ opacity: 1, y: 0 });
     }
   }, [controls, inView]);
+
+  // Format validation dates for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "Unknown";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch {
+      return "Invalid date";
+    }
+  };
 
   return (
     <motion.div
@@ -135,37 +142,87 @@ const NavbarPostDetails = ({ post }) => {
       className="my-8 sm:my-10 py-4 sm:py-6 w-full"
     >
       <div className="w-full sm:max-w-3xl mx-auto">
+        {/* Header with validation info */}
         <div className="flex items-center justify-between mb-3 sm:mb-5">
           <h3 className="text-gray-800 font-heading text-lg sm:text-xl font-semibold">
             Share this article
           </h3>
 
-          {/* TinyURL Status Indicator */}
-          {isNewPost ? (
-            <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>TinyURL</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>Legacy</span>
-            </div>
-          )}
+          {/* Validation status indicator */}
+          <div className="flex items-center gap-2">
+            {isNewPost ? (
+              <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                <FaCheckCircle size={12} />
+                <span>Short URL</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                <FaClock size={12} />
+                <span>Legacy post</span>
+              </div>
+            )}
+
+            <button
+              onClick={() => setShowValidationInfo(!showValidationInfo)}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              title="URL shortening info"
+            >
+              <FaInfoCircle size={14} />
+            </button>
+          </div>
         </div>
 
+        {/* Validation info panel */}
+        {showValidationInfo && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-4 p-3 bg-gray-50 rounded-lg border text-sm"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <span className="font-medium text-gray-700">Post Status:</span>
+                <span
+                  className={`ml-2 ${
+                    isNewPost ? "text-green-600" : "text-gray-500"
+                  }`}
+                >
+                  {isNewPost ? "New (has TinyURL)" : "Legacy (original URL)"}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">Published:</span>
+                <span className="ml-2 text-gray-600">
+                  {formatDate(validationStatus.publishDate)}
+                </span>
+              </div>
+              <div className="sm:col-span-2">
+                <span className="font-medium text-gray-700">
+                  TinyURL Integration:
+                </span>
+                <span className="ml-2 text-gray-600">
+                  Started {formatDate(validationStatus.integrationDate)}
+                </span>
+              </div>
+              {!isNewPost && (
+                <div className="sm:col-span-2">
+                  <button
+                    onClick={forceCreateShortUrl}
+                    disabled={urlLoading}
+                    className="text-blue-600 hover:text-blue-700 text-xs underline disabled:opacity-50"
+                  >
+                    {urlLoading
+                      ? "Creating..."
+                      : "Create TinyURL for this post"}
+                  </button>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Social sharing buttons */}
         <div className="flex flex-wrap gap-2 sm:gap-3">
           {/* WhatsApp */}
           <motion.a
@@ -305,30 +362,28 @@ const NavbarPostDetails = ({ post }) => {
           </motion.a>
         </div>
 
-        {/* URL Display and Copy Button */}
+        {/* URL Display and Copy Section */}
         <div className="mt-4 space-y-2">
-          {/* URL Status */}
+          {/* Loading State */}
           {urlLoading && (
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <div className="animate-spin w-3 h-3 border border-gray-300 border-t-gray-600 rounded-full" />
               <span>
-                {isNewPost ? "Loading short URL..." : "Creating TinyURL..."}
+                {isNewPost ? "Creating short URL..." : "Generating TinyURL..."}
               </span>
             </div>
           )}
 
           {/* Error State */}
           {error && (
-            <div className="flex items-center justify-between gap-2 text-xs text-red-500 bg-red-50 p-2 rounded">
-              <span>⚠️ {error}</span>
-              {!isNewPost && (
-                <button
-                  onClick={forceCreateShortUrl}
-                  className="text-red-600 underline hover:text-red-700"
-                >
-                  Retry
-                </button>
-              )}
+            <div className="flex items-center gap-2 text-xs text-red-500 bg-red-50 p-2 rounded">
+              <span>❌ {error}</span>
+              <button
+                onClick={forceCreateShortUrl}
+                className="text-red-600 underline hover:text-red-700"
+              >
+                Retry
+              </button>
             </div>
           )}
 
@@ -351,23 +406,7 @@ const NavbarPostDetails = ({ post }) => {
             </div>
           </div>
 
-          {/* Legacy Post Notice */}
-          {!isNewPost && !error && (
-            <div className="text-xs text-gray-500 bg-blue-50 p-2 rounded flex items-center justify-between">
-              <span>
-                💡 This is a legacy post. TinyURL available on request.
-              </span>
-              <button
-                onClick={forceCreateShortUrl}
-                disabled={urlLoading}
-                className="text-blue-600 underline hover:text-blue-700 disabled:opacity-50"
-              >
-                {urlLoading ? "Creating..." : "Create TinyURL"}
-              </button>
-            </div>
-          )}
-
-          {/* Copy link button */}
+          {/* Copy Button */}
           <motion.button
             onClick={async () => {
               const success = await copyToClipboard();
@@ -395,7 +434,7 @@ const NavbarPostDetails = ({ post }) => {
               />
             </svg>
             <span className="text-xs sm:text-sm font-medium text-gray-700">
-              Copy {isShortened ? "short" : "link"}
+              Copy {isShortened ? "short" : ""} link
             </span>
           </motion.button>
         </div>
@@ -415,14 +454,16 @@ const NavbarPostDetails = ({ post }) => {
   );
 };
 
-NavbarPostDetails.propTypes = {
+EnhancedSocialSharePost.propTypes = {
   post: PropTypes.shape({
     title: PropTypes.string,
     slug: PropTypes.string,
+    publishedAt: PropTypes.string,
+    createdAt: PropTypes.string,
     featuredImage: PropTypes.shape({
       url: PropTypes.string,
     }),
   }).isRequired,
 };
 
-export default NavbarPostDetails;
+export default EnhancedSocialSharePost;
