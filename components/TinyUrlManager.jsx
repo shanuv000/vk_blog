@@ -3,8 +3,8 @@
  * Provides administrative interface for managing shortened URLs
  */
 "use client";
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   FaLink,
   FaChartLine,
@@ -14,15 +14,15 @@ import {
   FaRefresh,
   FaDownload,
   FaTrash,
-} from 'react-icons/fa';
-import { useBulkTinyUrl } from '../hooks/useTinyUrl';
-import tinyUrlService from '../services/tinyurl';
+} from "react-icons/fa";
+import { useBulkTinyUrl } from "../hooks/useTinyUrl";
+import tinyUrlService from "../services/tinyurl";
 
-const TinyUrlManager = ({ 
-  posts = [], 
+const TinyUrlManager = ({
+  posts = [],
   showBulkActions = true,
   showAnalytics = true,
-  className = "" 
+  className = "",
 }) => {
   const [selectedPosts, setSelectedPosts] = useState([]);
   const [analytics, setAnalytics] = useState({});
@@ -44,9 +44,9 @@ const TinyUrlManager = ({
   // Handle post selection
   const handlePostSelection = (post, isSelected) => {
     if (isSelected) {
-      setSelectedPosts(prev => [...prev, post]);
+      setSelectedPosts((prev) => [...prev, post]);
     } else {
-      setSelectedPosts(prev => prev.filter(p => p.slug !== post.slug));
+      setSelectedPosts((prev) => prev.filter((p) => p.slug !== post.slug));
     }
   };
 
@@ -59,13 +59,13 @@ const TinyUrlManager = ({
   const copyToClipboard = async (slug, url) => {
     try {
       await navigator.clipboard.writeText(url);
-      setCopySuccess(prev => ({ ...prev, [slug]: true }));
+      setCopySuccess((prev) => ({ ...prev, [slug]: true }));
       setTimeout(() => {
-        setCopySuccess(prev => ({ ...prev, [slug]: false }));
+        setCopySuccess((prev) => ({ ...prev, [slug]: false }));
       }, 2000);
       return true;
     } catch (error) {
-      console.error('Failed to copy URL:', error);
+      console.error("Failed to copy URL:", error);
       return false;
     }
   };
@@ -73,14 +73,14 @@ const TinyUrlManager = ({
   // Fetch analytics for all shortened URLs
   const fetchAllAnalytics = async () => {
     if (!showAnalytics) return;
-    
+
     setIsLoadingAnalytics(true);
     const analyticsData = {};
-    
+
     for (const post of posts) {
       const shortUrl = shortUrls[post.slug];
-      if (shortUrl && shortUrl.includes('tinyurl.com')) {
-        const alias = shortUrl.split('tinyurl.com/')[1];
+      if (shortUrl && shortUrl.includes("tinyurl.com")) {
+        const alias = shortUrl.split("tinyurl.com/")[1];
         if (alias) {
           try {
             const data = await tinyUrlService.getAnalytics(alias);
@@ -93,7 +93,7 @@ const TinyUrlManager = ({
         }
       }
     }
-    
+
     setAnalytics(analyticsData);
     setIsLoadingAnalytics(false);
   };
@@ -101,22 +101,24 @@ const TinyUrlManager = ({
   // Export URLs as CSV
   const exportUrlsAsCSV = () => {
     const csvContent = [
-      ['Title', 'Slug', 'Long URL', 'Short URL', 'Clicks', 'Status'],
-      ...posts.map(post => [
-        post.title || 'Untitled',
+      ["Title", "Slug", "Long URL", "Short URL", "Clicks", "Status"],
+      ...posts.map((post) => [
+        post.title || "Untitled",
         post.slug,
         `https://blog.urtechy.com/post/${post.slug}`,
         getShortUrl(post.slug),
         analytics[post.slug]?.clicks || 0,
-        errors[post.slug] ? 'Error' : 'Success'
-      ])
-    ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        errors[post.slug] ? "Error" : "Success",
+      ]),
+    ]
+      .map((row) => row.map((cell) => `"${cell}"`).join(","))
+      .join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `tinyurl-export-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `tinyurl-export-${new Date().toISOString().split("T")[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -148,7 +150,7 @@ const TinyUrlManager = ({
             Manage shortened URLs for your blog posts
           </p>
         </div>
-        
+
         {showBulkActions && (
           <div className="flex items-center gap-2">
             <button
@@ -156,10 +158,12 @@ const TinyUrlManager = ({
               disabled={isLoadingAnalytics}
               className="flex items-center px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50"
             >
-              <FaRefresh className={`mr-1 ${isLoadingAnalytics ? 'animate-spin' : ''}`} />
+              <FaRefresh
+                className={`mr-1 ${isLoadingAnalytics ? "animate-spin" : ""}`}
+              />
               Refresh Analytics
             </button>
-            
+
             <button
               onClick={exportUrlsAsCSV}
               disabled={Object.keys(shortUrls).length === 0}
@@ -185,7 +189,9 @@ const TinyUrlManager = ({
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={selectedPosts.length === posts.length && posts.length > 0}
+                  checked={
+                    selectedPosts.length === posts.length && posts.length > 0
+                  }
                   onChange={(e) => handleSelectAll(e.target.checked)}
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
@@ -193,7 +199,7 @@ const TinyUrlManager = ({
                   Select All ({posts.length} posts)
                 </span>
               </label>
-              
+
               {selectedPosts.length > 0 && (
                 <span className="text-sm text-blue-600">
                   {selectedPosts.length} selected
@@ -225,7 +231,9 @@ const TinyUrlManager = ({
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(progress.completed / progress.total) * 100}%` }}
+                style={{
+                  width: `${(progress.completed / progress.total) * 100}%`,
+                }}
               />
             </div>
           )}
@@ -267,17 +275,19 @@ const TinyUrlManager = ({
                   {showBulkActions && (
                     <input
                       type="checkbox"
-                      checked={selectedPosts.some(p => p.slug === post.slug)}
-                      onChange={(e) => handlePostSelection(post, e.target.checked)}
+                      checked={selectedPosts.some((p) => p.slug === post.slug)}
+                      onChange={(e) =>
+                        handlePostSelection(post, e.target.checked)
+                      }
                       className="mt-1 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                   )}
-                  
+
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-800 mb-1 line-clamp-1">
-                      {post.title || 'Untitled Post'}
+                      {post.title || "Untitled Post"}
                     </h3>
-                    
+
                     {/* URLs */}
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center gap-2">
@@ -286,7 +296,7 @@ const TinyUrlManager = ({
                           https://blog.urtechy.com/post/{post.slug}
                         </code>
                       </div>
-                      
+
                       <div className="flex items-center gap-2">
                         <span className="text-gray-500 w-12">Short:</span>
                         {shortUrls[post.slug] ? (
@@ -295,7 +305,9 @@ const TinyUrlManager = ({
                               {shortUrls[post.slug]}
                             </code>
                             <button
-                              onClick={() => copyToClipboard(post.slug, shortUrls[post.slug])}
+                              onClick={() =>
+                                copyToClipboard(post.slug, shortUrls[post.slug])
+                              }
                               className="p-1 hover:bg-gray-100 rounded"
                               title="Copy short URL"
                             >
@@ -332,7 +344,9 @@ const TinyUrlManager = ({
                       <div className="mt-2 flex items-center gap-4 text-xs text-gray-600">
                         <div className="flex items-center gap-1">
                           <FaChartLine />
-                          <span>Clicks: {analytics[post.slug].clicks || 0}</span>
+                          <span>
+                            Clicks: {analytics[post.slug].clicks || 0}
+                          </span>
                         </div>
                         <div>
                           Last 7 days: {analytics[post.slug].recent_clicks || 0}
@@ -355,16 +369,20 @@ const TinyUrlManager = ({
         transition={{ delay: 0.5 }}
       >
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-          <div className={`w-2 h-2 rounded-full ${
-            tinyUrlService.isConfigured() ? 'bg-green-500' : 'bg-orange-500'
-          }`} />
+          <div
+            className={`w-2 h-2 rounded-full ${
+              tinyUrlService.isConfigured() ? "bg-green-500" : "bg-orange-500"
+            }`}
+          />
           <span>
-            TinyURL Service: {tinyUrlService.isConfigured() ? 'Active' : 'Not Configured'}
+            TinyURL Service:{" "}
+            {tinyUrlService.isConfigured() ? "Active" : "Not Configured"}
           </span>
         </div>
         {!tinyUrlService.isConfigured() && (
           <p className="text-xs text-orange-600 mt-1">
-            Add TINYURL_API_KEY to environment variables to enable URL shortening
+            Add TINYURL_API_KEY to environment variables to enable URL
+            shortening
           </p>
         )}
       </motion.div>

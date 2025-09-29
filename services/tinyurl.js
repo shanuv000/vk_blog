@@ -4,7 +4,7 @@
  */
 
 // TinyURL API Configuration
-const TINYURL_API_BASE = 'https://api.tinyurl.com';
+const TINYURL_API_BASE = "https://api.tinyurl.com";
 const TINYURL_API_KEY = process.env.TINYURL_API_KEY;
 
 /**
@@ -15,7 +15,7 @@ class TinyURLService {
     this.apiKey = TINYURL_API_KEY;
     this.cache = new Map(); // In-memory cache for development
     this.defaultOptions = {
-      domain: 'tinyurl.com', // Use default TinyURL domain
+      domain: "tinyurl.com", // Use default TinyURL domain
       alias: null, // Auto-generated alias
       tags: [], // Empty tags by default (some plans don't support tags)
       expires_at: null, // Never expires by default
@@ -43,12 +43,12 @@ class TinyURLService {
   async createShortUrl(longUrl, options = {}) {
     try {
       // Input validation
-      if (!longUrl || typeof longUrl !== 'string') {
-        throw new Error('Invalid URL provided');
+      if (!longUrl || typeof longUrl !== "string") {
+        throw new Error("Invalid URL provided");
       }
 
       if (!this.isConfigured()) {
-        console.warn('TinyURL API key not configured, returning original URL');
+        console.warn("TinyURL API key not configured, returning original URL");
         return {
           data: {
             tiny_url: longUrl,
@@ -64,7 +64,7 @@ class TinyURLService {
       // Check cache first (for development)
       const cacheKey = this.generateCacheKey(longUrl, options);
       if (this.cache.has(cacheKey)) {
-        console.log('Returning cached short URL for:', longUrl);
+        console.log("Returning cached short URL for:", longUrl);
         return this.cache.get(cacheKey);
       }
 
@@ -82,14 +82,17 @@ class TinyURLService {
         payload.description = options.description.substring(0, 500); // TinyURL limit
       }
 
-      console.log('Creating short URL with TinyURL API:', { longUrl, alias: payload.alias });
+      console.log("Creating short URL with TinyURL API:", {
+        longUrl,
+        alias: payload.alias,
+      });
 
       // Make API request
       const response = await fetch(`${TINYURL_API_BASE}/create`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
@@ -98,8 +101,8 @@ class TinyURLService {
 
       // Handle API errors
       if (!response.ok || result.code !== 0) {
-        console.error('TinyURL API error:', result);
-        
+        console.error("TinyURL API error:", result);
+
         // Return original URL on error
         return {
           data: {
@@ -109,19 +112,18 @@ class TinyURLService {
             deleted: false,
           },
           code: result.code || response.status,
-          errors: result.errors || ['API request failed'],
+          errors: result.errors || ["API request failed"],
         };
       }
 
       // Cache the result
       this.cache.set(cacheKey, result);
 
-      console.log('Successfully created short URL:', result.data.tiny_url);
+      console.log("Successfully created short URL:", result.data.tiny_url);
       return result;
-
     } catch (error) {
-      console.error('Error creating short URL:', error);
-      
+      console.error("Error creating short URL:", error);
+
       // Graceful fallback - return original URL
       return {
         data: {
@@ -149,7 +151,7 @@ class TinyURLService {
 
       const response = await fetch(`${TINYURL_API_BASE}/analytics/${alias}`, {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
         },
       });
 
@@ -159,7 +161,7 @@ class TinyURLService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      console.error("Error fetching analytics:", error);
       return null;
     }
   }
@@ -177,10 +179,10 @@ class TinyURLService {
       }
 
       const response = await fetch(`${TINYURL_API_BASE}/alias/${alias}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updates),
       });
@@ -191,7 +193,7 @@ class TinyURLService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error updating short URL:', error);
+      console.error("Error updating short URL:", error);
       return null;
     }
   }
@@ -202,7 +204,7 @@ class TinyURLService {
    */
   generateCacheKey(url, options) {
     const key = `${url}-${JSON.stringify(options)}`;
-    return btoa(key).replace(/[+/=]/g, ''); // Base64 encode and clean
+    return btoa(key).replace(/[+/=]/g, ""); // Base64 encode and clean
   }
 
   /**
@@ -216,14 +218,16 @@ class TinyURLService {
       if (match) {
         const slug = match[1];
         // Create a meaningful alias from slug (max 30 chars for TinyURL)
-        const alias = `urtechy-${slug}`.substring(0, 30).replace(/[^a-zA-Z0-9-]/g, '');
+        const alias = `urtechy-${slug}`
+          .substring(0, 30)
+          .replace(/[^a-zA-Z0-9-]/g, "");
         return alias;
       }
-      
+
       // Fallback: generate random alias
       return `urtechy-${Date.now().toString(36)}`;
     } catch (error) {
-      console.error('Error generating alias:', error);
+      console.error("Error generating alias:", error);
       return `urtechy-${Date.now().toString(36)}`;
     }
   }
@@ -234,10 +238,10 @@ class TinyURLService {
    * @param {string} baseUrl - Base URL for the site
    * @returns {Promise<string>} - Shortened URL
    */
-  async shortenPostUrl(post, baseUrl = 'https://blog.urtechy.com') {
+  async shortenPostUrl(post, baseUrl = "https://blog.urtechy.com") {
     try {
       if (!post || !post.slug) {
-        throw new Error('Invalid post object provided');
+        throw new Error("Invalid post object provided");
       }
 
       const longUrl = `${baseUrl}/post/${post.slug}`;
@@ -245,13 +249,15 @@ class TinyURLService {
         alias: this.generateAlias(longUrl),
         // Only add tags if the API plan supports it
         tags: [], // Removed tags to avoid API errors
-        description: post.title ? post.title.substring(0, 500) : 'urTechy Blog Post',
+        description: post.title
+          ? post.title.substring(0, 500)
+          : "urTechy Blog Post",
       };
 
       const result = await this.createShortUrl(longUrl, options);
       return result.data.tiny_url;
     } catch (error) {
-      console.error('Error shortening post URL:', error);
+      console.error("Error shortening post URL:", error);
       return `${baseUrl}/post/${post.slug}`; // Return original URL on error
     }
   }
@@ -261,7 +267,7 @@ class TinyURLService {
    */
   clearCache() {
     this.cache.clear();
-    console.log('TinyURL cache cleared');
+    console.log("TinyURL cache cleared");
   }
 
   /**
@@ -283,6 +289,8 @@ export default tinyUrlService;
 export { TinyURLService };
 
 // Export utility functions for direct use
-export const createShortUrl = (url, options) => tinyUrlService.createShortUrl(url, options);
-export const shortenPostUrl = (post, baseUrl) => tinyUrlService.shortenPostUrl(post, baseUrl);
+export const createShortUrl = (url, options) =>
+  tinyUrlService.createShortUrl(url, options);
+export const shortenPostUrl = (post, baseUrl) =>
+  tinyUrlService.shortenPostUrl(post, baseUrl);
 export const getUrlAnalytics = (alias) => tinyUrlService.getAnalytics(alias);

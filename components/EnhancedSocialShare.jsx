@@ -21,13 +21,13 @@ import {
 import { useTinyUrl } from "../hooks/useTinyUrl";
 import Toast from "./Toast";
 
-const EnhancedSocialShare = ({ 
-  post, 
+const EnhancedSocialShare = ({
+  post,
   enableTinyUrl = true,
   showAnalytics = false,
   baseUrl = "https://blog.urtechy.com",
   className = "",
-  variant = "default" // 'default', 'compact', 'minimal'
+  variant = "default", // 'default', 'compact', 'minimal'
 }) => {
   // State for UI feedback
   const [showToast, setShowToast] = useState(false);
@@ -53,22 +53,25 @@ const EnhancedSocialShare = ({
 
   // Get sharing URLs (will use shortened URLs if available)
   const sharingUrls = getSharingUrls();
-  
+
   // Display URL (prefer short URL, fallback to long URL)
   const displayUrl = shortUrl || longUrl;
-  
+
   // Safe post data extraction
   const title = post?.title || "urTechy Blog Post";
-  const imageUrl = post?.featuredImage?.url || `${baseUrl}/default-og-image.jpg`;
+  const imageUrl =
+    post?.featuredImage?.url || `${baseUrl}/default-og-image.jpg`;
 
   // Handle copy to clipboard
   const handleCopyUrl = async () => {
     const success = await copyToClipboard();
     if (success) {
       setCopySuccess(true);
-      setToastMessage(`${isShortened ? 'Short' : 'Long'} URL copied to clipboard!`);
+      setToastMessage(
+        `${isShortened ? "Short" : "Long"} URL copied to clipboard!`
+      );
       setShowToast(true);
-      
+
       // Reset copy success state after animation
       setTimeout(() => setCopySuccess(false), 2000);
     } else {
@@ -79,19 +82,19 @@ const EnhancedSocialShare = ({
 
   // Track sharing events (can be extended with analytics)
   const trackShare = (platform) => {
-    console.log(`Shared on ${platform}:`, { 
-      post: post?.slug, 
+    console.log(`Shared on ${platform}:`, {
+      post: post?.slug,
       url: displayUrl,
-      isShortened 
+      isShortened,
     });
-    
+
     // You can add more sophisticated tracking here
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'share', {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "share", {
         method: platform,
-        content_type: 'blog_post',
+        content_type: "blog_post",
         item_id: post?.slug,
-        custom_parameter_1: isShortened ? 'short_url' : 'long_url',
+        custom_parameter_1: isShortened ? "short_url" : "long_url",
       });
     }
   };
@@ -104,7 +107,7 @@ const EnhancedSocialShare = ({
       color: "text-blue-600",
       bgColor: "hover:bg-blue-50",
       url: sharingUrls.facebook,
-      platform: "facebook"
+      platform: "facebook",
     },
     {
       name: "Twitter",
@@ -112,7 +115,7 @@ const EnhancedSocialShare = ({
       color: "text-black",
       bgColor: "hover:bg-gray-50",
       url: sharingUrls.twitter,
-      platform: "twitter"
+      platform: "twitter",
     },
     {
       name: "LinkedIn",
@@ -120,7 +123,7 @@ const EnhancedSocialShare = ({
       color: "text-blue-700",
       bgColor: "hover:bg-blue-50",
       url: sharingUrls.linkedin,
-      platform: "linkedin"
+      platform: "linkedin",
     },
     {
       name: "WhatsApp",
@@ -128,7 +131,7 @@ const EnhancedSocialShare = ({
       color: "text-green-500",
       bgColor: "hover:bg-green-50",
       url: sharingUrls.whatsapp,
-      platform: "whatsapp"
+      platform: "whatsapp",
     },
     {
       name: "Reddit",
@@ -136,7 +139,7 @@ const EnhancedSocialShare = ({
       color: "text-orange-600",
       bgColor: "hover:bg-orange-50",
       url: sharingUrls.reddit,
-      platform: "reddit"
+      platform: "reddit",
     },
     {
       name: "Pinterest",
@@ -144,7 +147,7 @@ const EnhancedSocialShare = ({
       color: "text-red-600",
       bgColor: "hover:bg-red-50",
       url: sharingUrls.pinterest,
-      platform: "pinterest"
+      platform: "pinterest",
     },
     {
       name: "Email",
@@ -152,8 +155,8 @@ const EnhancedSocialShare = ({
       color: "text-gray-600",
       bgColor: "hover:bg-gray-50",
       url: sharingUrls.email,
-      platform: "email"
-    }
+      platform: "email",
+    },
   ];
 
   // Animation variants
@@ -164,29 +167,29 @@ const EnhancedSocialShare = ({
       y: 0,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.1
-      }
-    }
+        delayChildren: 0.1,
+      },
+    },
   };
 
   const buttonVariants = {
     hidden: { scale: 0.8, opacity: 0 },
-    visible: { 
-      scale: 1, 
+    visible: {
+      scale: 1,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 300 }
+      transition: { type: "spring", stiffness: 300 },
     },
-    hover: { 
+    hover: {
       scale: 1.05,
-      transition: { type: 'spring', stiffness: 500 }
+      transition: { type: "spring", stiffness: 500 },
     },
-    tap: { scale: 0.95 }
+    tap: { scale: 0.95 },
   };
 
   // Render different variants
   const renderButtons = () => {
     switch (variant) {
-      case 'compact':
+      case "compact":
         return (
           <div className="flex flex-wrap gap-2">
             {shareButtons.slice(0, 4).map((button) => (
@@ -208,7 +211,7 @@ const EnhancedSocialShare = ({
           </div>
         );
 
-      case 'minimal':
+      case "minimal":
         return (
           <div className="flex gap-3">
             {shareButtons.slice(0, 3).map((button) => (
@@ -270,7 +273,7 @@ const EnhancedSocialShare = ({
           <h3 className="text-gray-800 font-heading text-lg sm:text-xl font-semibold">
             Share this article
           </h3>
-          
+
           {/* URL Status Indicator */}
           {enableTinyUrl && (
             <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -304,13 +307,13 @@ const EnhancedSocialShare = ({
           <div className="flex-1 text-sm text-gray-600 font-mono truncate">
             {displayUrl}
           </div>
-          
+
           <motion.button
             onClick={handleCopyUrl}
             className={`flex items-center px-3 py-1.5 rounded-md transition-all duration-200 ${
-              copySuccess 
-                ? 'bg-green-100 text-green-700' 
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              copySuccess
+                ? "bg-green-100 text-green-700"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -338,11 +341,13 @@ const EnhancedSocialShare = ({
           >
             <div className="flex items-center gap-2 mb-2">
               <FaChartLine className="text-blue-600" />
-              <span className="text-sm font-medium text-blue-800">Share Analytics</span>
+              <span className="text-sm font-medium text-blue-800">
+                Share Analytics
+              </span>
             </div>
             <div className="text-xs text-blue-700">
-              Clicks: {analytics.clicks || 0} • 
-              Last 7 days: {analytics.recent_clicks || 0}
+              Clicks: {analytics.clicks || 0} • Last 7 days:{" "}
+              {analytics.recent_clicks || 0}
             </div>
           </motion.div>
         )}
@@ -372,7 +377,7 @@ EnhancedSocialShare.propTypes = {
   showAnalytics: PropTypes.bool,
   baseUrl: PropTypes.string,
   className: PropTypes.string,
-  variant: PropTypes.oneOf(['default', 'compact', 'minimal']),
+  variant: PropTypes.oneOf(["default", "compact", "minimal"]),
 };
 
 export default EnhancedSocialShare;

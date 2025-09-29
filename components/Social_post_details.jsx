@@ -136,9 +136,12 @@ const NavbarPostDetails = ({ post }) => {
         <div className="flex flex-wrap gap-2 sm:gap-3">
           {/* WhatsApp */}
           <motion.a
-            href={sharingUrls.whatsapp || `https://wa.me/?text=${encodeURIComponent(
-              `${title} - ${shareUrl}${imageUrl ? " 📷" : ""}`
-            )}`}
+            href={
+              sharingUrls.whatsapp ||
+              `https://wa.me/?text=${encodeURIComponent(
+                `${title} - ${shareUrl}${imageUrl ? " 📷" : ""}`
+              )}`
+            }
             data-action="share/whatsapp/share"
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on WhatsApp"
@@ -156,9 +159,12 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={sharingUrls.facebook || `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-              shareUrl
-            )}&quote=${encodeURIComponent(title)}`}
+            href={
+              sharingUrls.facebook ||
+              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                shareUrl
+              )}&quote=${encodeURIComponent(title)}`
+            }
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Facebook"
             aria-label="Share on Facebook"
@@ -175,11 +181,14 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={sharingUrls.twitter || `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-              title
-            )}&url=${encodeURIComponent(
-              shareUrl
-            )}&via=Onlyblogs_&hashtags=urtechy,blog`}
+            href={
+              sharingUrls.twitter ||
+              `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                title
+              )}&url=${encodeURIComponent(
+                shareUrl
+              )}&via=Onlyblogs_&hashtags=urtechy,blog`
+            }
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Twitter"
             aria-label="Share on Twitter"
@@ -196,11 +205,14 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={sharingUrls.linkedin || `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-              shareUrl
-            )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
-              title
-            )}&source=urTechy`}
+            href={
+              sharingUrls.linkedin ||
+              `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                shareUrl
+              )}&title=${encodeURIComponent(
+                title
+              )}&summary=${encodeURIComponent(title)}&source=urTechy`
+            }
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on LinkedIn"
             aria-label="Share on LinkedIn"
@@ -217,9 +229,12 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={sharingUrls.reddit || `http://www.reddit.com/submit?url=${encodeURIComponent(
-              shareUrl
-            )}&title=${encodeURIComponent(title)}`}
+            href={
+              sharingUrls.reddit ||
+              `http://www.reddit.com/submit?url=${encodeURIComponent(
+                shareUrl
+              )}&title=${encodeURIComponent(title)}`
+            }
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Reddit"
             aria-label="Share on Reddit"
@@ -236,11 +251,14 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={sharingUrls.pinterest || `http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
-              shareUrl
-            )}&description=${encodeURIComponent(
-              title
-            )}&media=${encodeURIComponent(getSafeImageUrl())}`}
+            href={
+              sharingUrls.pinterest ||
+              `http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+                shareUrl
+              )}&description=${encodeURIComponent(
+                title
+              )}&media=${encodeURIComponent(getSafeImageUrl())}`
+            }
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Pinterest"
             aria-label="Share on Pinterest"
@@ -263,7 +281,7 @@ const NavbarPostDetails = ({ post }) => {
               <span>Creating short URL...</span>
             </div>
           )}
-          
+
           {/* URL Display */}
           <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
             <code className="flex-1 text-xs font-mono text-gray-600 truncate">
@@ -302,7 +320,7 @@ const NavbarPostDetails = ({ post }) => {
               />
             </svg>
             <span className="text-xs sm:text-sm font-medium text-gray-700">
-              Copy {isShortened ? 'short' : 'link'}
+              Copy {isShortened ? "short" : "link"}
             </span>
           </motion.button>
         </div>
@@ -310,7 +328,9 @@ const NavbarPostDetails = ({ post }) => {
         {/* Toast notification */}
         {showToast && (
           <Toast
-            message={`${isShortened ? 'Short URL' : 'Link'} copied to clipboard!`}
+            message={`${
+              isShortened ? "Short URL" : "Link"
+            } copied to clipboard!`}
             duration={2000}
             onClose={() => setShowToast(false)}
           />
