@@ -2,60 +2,64 @@
  * Hygraph Webhook Handler for TinyURL Integration
  * Automatically shortens URLs when posts are published or updated in Hygraph
  */
-import tinyUrlService from '../../services/tinyurl';
+import tinyUrlService from "../../services/tinyurl";
 
 // Configure API to accept larger requests
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '2mb',
+      sizeLimit: "2mb",
     },
   },
 };
 
 export default async function handler(req, res) {
   // Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ 
+  if (req.method !== "POST") {
+    return res.status(405).json({
       success: false,
-      message: 'Method not allowed. Only POST requests are accepted.' 
+      message: "Method not allowed. Only POST requests are accepted.",
     });
   }
 
   try {
     // Check for secret to confirm this is a valid request
     const { secret } = req.query;
-    
+
     if (secret !== process.env.HYGRAPH_WEBHOOK_SECRET) {
-      console.warn('Invalid webhook secret attempted');
-      return res.status(401).json({ 
+      console.warn("Invalid webhook secret attempted");
+      return res.status(401).json({
         success: false,
-        message: 'Invalid token' 
+        message: "Invalid token",
       });
     }
 
     // Get the webhook payload
     const { operation, data } = req.body;
 
-    console.log(`TinyURL Webhook received: ${operation} for ${data?.__typename || 'unknown'} with slug: ${data?.slug}`);
+    console.log(
+      `TinyURL Webhook received: ${operation} for ${
+        data?.__typename || "unknown"
+      } with slug: ${data?.slug}`
+    );
 
     // Only proceed if this is a relevant operation
-    const relevantOperations = ['create', 'update', 'publish'];
+    const relevantOperations = ["create", "update", "publish"];
     if (!relevantOperations.includes(operation)) {
-      return res.status(200).json({ 
+      return res.status(200).json({
         success: true,
         message: `Operation "${operation}" not relevant for URL shortening`,
-        skipped: true
+        skipped: true,
       });
     }
 
     // Only proceed if this is a Post model
     const modelType = data.__typename || data.model;
-    if (modelType !== 'Post') {
+    if (modelType !== "Post") {
       return res.status(200).json({
         success: true,
         message: `Model "${modelType}" not relevant for URL shortening`,
-        skipped: true
+        skipped: true,
       });
     }
 
@@ -63,16 +67,19 @@ export default async function handler(req, res) {
     if (!data.slug) {
       return res.status(400).json({
         success: false,
-        message: 'Post slug is required for URL shortening',
-        error: 'Missing slug'
+        message: "Post slug is required for URL shortening",
+        error: "Missing slug",
       });
     }
 
     // Only shorten URLs for published posts
-    if (operation === 'publish' || (operation === 'update' && data.stage === 'PUBLISHED')) {
+    if (
+      operation === "publish" ||
+      (operation === "update" && data.stage === "PUBLISHED")
+    ) {
       try {
         console.log(`Creating short URL for post: ${data.slug}`);
-        
+
         // Create the post object for TinyURL service
         const post = {
           slug: data.slug,
@@ -80,39 +87,43 @@ export default async function handler(req, res) {
         };
 
         // Create shortened URL
-        const shortUrl = await tinyUrlService.shortenPostUrl(post, 'https://blog.urtechy.com');
-        
+        const shortUrl = await tinyUrlService.shortenPostUrl(
+          post,
+          "https://blog.urtechy.com"
+        );
+
         // Log success
-        console.log(`Successfully created short URL: ${shortUrl} for post: ${data.slug}`);
+        console.log(
+          `Successfully created short URL: ${shortUrl} for post: ${data.slug}`
+        );
 
         // Optionally, you could store the short URL back to Hygraph here
         // using the Management API if you want to save it as a field
 
         return res.status(200).json({
           success: true,
-          message: 'Short URL created successfully',
+          message: "Short URL created successfully",
           data: {
             slug: data.slug,
             operation,
             shortUrl,
             longUrl: `https://blog.urtechy.com/post/${data.slug}`,
-          }
+          },
         });
-
       } catch (error) {
-        console.error('Error creating short URL:', error);
-        
+        console.error("Error creating short URL:", error);
+
         // Don't fail the webhook if URL shortening fails
         // This ensures other processes can continue
         return res.status(200).json({
           success: false,
-          message: 'Failed to create short URL, but webhook processed',
+          message: "Failed to create short URL, but webhook processed",
           error: error.message,
           data: {
             slug: data.slug,
             operation,
             fallbackUrl: `https://blog.urtechy.com/post/${data.slug}`,
-          }
+          },
         });
       }
     } else {
@@ -123,16 +134,15 @@ export default async function handler(req, res) {
         data: {
           slug: data.slug,
           operation,
-        }
+        },
       });
     }
-
   } catch (error) {
-    console.error('Error in TinyURL webhook handler:', error);
-    return res.status(500).json({ 
+    console.error("Error in TinyURL webhook handler:", error);
+    return res.status(500).json({
       success: false,
-      message: 'Internal server error processing webhook',
-      error: error.message 
+      message: "Internal server error processing webhook",
+      error: error.message,
     });
   }
 }
@@ -145,7 +155,6 @@ export default async function handler(req, res) {
 async function saveShortUrlToHygraph(postId, shortUrl) {
   // This requires Hygraph Management API integration
   // Example implementation:
-  
   /*
   const { GraphQLClient, gql } = require('graphql-request');
   
