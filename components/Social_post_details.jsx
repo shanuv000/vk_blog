@@ -15,6 +15,7 @@ import {
   FALLBACK_FEATURED_IMAGE,
 } from "./DefaultAvatar";
 import Toast from "./Toast";
+import { useTinyUrl } from "../hooks/useTinyUrl";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -50,6 +51,23 @@ const NavbarPostDetails = ({ post }) => {
   const slug = post?.slug || "";
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${slug}`;
+
+  // TinyURL hook for shortened URLs
+  const {
+    shortUrl,
+    longUrl,
+    isLoading: urlLoading,
+    getSharingUrls,
+    copyToClipboard,
+    isShortened,
+  } = useTinyUrl(post, {
+    autoShorten: true,
+    baseUrl: rootUrl,
+  });
+
+  // Use shortened URL for sharing if available, otherwise use original
+  const shareUrl = shortUrl || postUrl;
+  const sharingUrls = getSharingUrls();
 
   // Ensure we're using the featured image and not accidentally using author image
   // First check if featuredImage exists and has a url property
@@ -118,8 +136,8 @@ const NavbarPostDetails = ({ post }) => {
         <div className="flex flex-wrap gap-2 sm:gap-3">
           {/* WhatsApp */}
           <motion.a
-            href={`https://wa.me/?text=${encodeURIComponent(
-              `${title} - ${postUrl}${imageUrl ? " 📷" : ""}`
+            href={sharingUrls.whatsapp || `https://wa.me/?text=${encodeURIComponent(
+              `${title} - ${shareUrl}${imageUrl ? " 📷" : ""}`
             )}`}
             data-action="share/whatsapp/share"
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
@@ -138,8 +156,8 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-              postUrl
+            href={sharingUrls.facebook || `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+              shareUrl
             )}&quote=${encodeURIComponent(title)}`}
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Facebook"
@@ -157,10 +175,10 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+            href={sharingUrls.twitter || `https://twitter.com/intent/tweet?text=${encodeURIComponent(
               title
             )}&url=${encodeURIComponent(
-              postUrl
+              shareUrl
             )}&via=Onlyblogs_&hashtags=urtechy,blog`}
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Twitter"
@@ -178,8 +196,8 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-              postUrl
+            href={sharingUrls.linkedin || `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+              shareUrl
             )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
               title
             )}&source=urTechy`}
@@ -199,8 +217,8 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={`http://www.reddit.com/submit?url=${encodeURIComponent(
-              postUrl
+            href={sharingUrls.reddit || `http://www.reddit.com/submit?url=${encodeURIComponent(
+              shareUrl
             )}&title=${encodeURIComponent(title)}`}
             className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
             title="Share on Reddit"
@@ -218,8 +236,8 @@ const NavbarPostDetails = ({ post }) => {
           <motion.a
             target="_blank"
             rel="noopener noreferrer"
-            href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
-              postUrl
+            href={sharingUrls.pinterest || `http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+              shareUrl
             )}&description=${encodeURIComponent(
               title
             )}&media=${encodeURIComponent(getSafeImageUrl())}`}
@@ -236,39 +254,63 @@ const NavbarPostDetails = ({ post }) => {
           </motion.a>
         </div>
 
-        {/* Copy link button */}
-        <motion.button
-          onClick={() => {
-            navigator.clipboard.writeText(postUrl);
-            setShowToast(true);
-          }}
-          className="mt-3 sm:mt-4 flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-300"
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-2 text-gray-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        {/* URL Display and Copy Button */}
+        <div className="mt-4 space-y-2">
+          {/* URL Status */}
+          {urlLoading && (
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <div className="animate-spin w-3 h-3 border border-gray-300 border-t-gray-600 rounded-full" />
+              <span>Creating short URL...</span>
+            </div>
+          )}
+          
+          {/* URL Display */}
+          <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+            <code className="flex-1 text-xs font-mono text-gray-600 truncate">
+              {shareUrl}
+            </code>
+            {isShortened && (
+              <span className="text-xs text-green-600 font-medium">Short</span>
+            )}
+          </div>
+
+          {/* Copy link button */}
+          <motion.button
+            onClick={async () => {
+              const success = await copyToClipboard();
+              if (success) {
+                setShowToast(true);
+              }
+            }}
+            className="w-full flex items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-300"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            disabled={urlLoading}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-            />
-          </svg>
-          <span className="text-xs sm:text-sm font-medium text-gray-700">
-            Copy link
-          </span>
-        </motion.button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              Copy {isShortened ? 'short' : 'link'}
+            </span>
+          </motion.button>
+        </div>
 
         {/* Toast notification */}
         {showToast && (
           <Toast
-            message="Link copied to clipboard!"
+            message={`${isShortened ? 'Short URL' : 'Link'} copied to clipboard!`}
             duration={2000}
             onClose={() => setShowToast(false)}
           />
