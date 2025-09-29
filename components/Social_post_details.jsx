@@ -351,6 +351,80 @@ const NavbarPostDetails = ({ post }) => {
             </div>
           </div>
 
+          {/* Debug Info (remove in production) */}
+          {process.env.NODE_ENV === "development" && (
+            <div className="text-xs text-gray-400 bg-gray-100 p-2 rounded mt-2">
+              <div>Debug Info:</div>
+              <div>
+                • shortUrl: {shortUrl ? "YES" : "NO"} ({shortUrl})
+              </div>
+              <div>• isShortened: {isShortened ? "YES" : "NO"}</div>
+              <div>• isNewPost: {isNewPost ? "YES" : "NO"}</div>
+              <div>• shareUrl: {shareUrl}</div>
+              <div>• postUrl: {postUrl}</div>
+              <div>
+                • Post Date: {post?.publishedAt || post?.createdAt || "N/A"}
+              </div>
+              <div className="mt-2 space-x-2">
+                <button
+                  onClick={async () => {
+                    console.log("🧪 Hook Test Starting...");
+                    console.log("🧪 Testing current post:", post?.slug);
+                    forceCreateShortUrl();
+                  }}
+                  className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+                >
+                  🧪 Hook Test
+                </button>
+                <button
+                  onClick={async () => {
+                    console.log("🔧 Server API Test Starting...");
+                    try {
+                      const response = await fetch("/api/create-tinyurl", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          post: {
+                            slug: post?.slug,
+                            title: post?.title,
+                            publishedAt: post?.publishedAt,
+                            createdAt: post?.createdAt,
+                          },
+                          baseUrl: "https://blog.urtechy.com",
+                          force: true,
+                        }),
+                      });
+
+                      const result = await response.json();
+                      console.log("🔧 Server API Result:", result);
+
+                      if (result.success && result.isShortened) {
+                        console.log(
+                          "🎉 Server API created real short URL:",
+                          result.shortUrl
+                        );
+                      } else {
+                        console.log(
+                          "⚠️ Server API returned original URL:",
+                          result.shortUrl,
+                          "Reason:",
+                          result.reason
+                        );
+                      }
+                    } catch (error) {
+                      console.error("🔧 Server API test failed:", error);
+                    }
+                  }}
+                  className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
+                >
+                  🔧 Server Test
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Legacy Post Notice */}
           {!isNewPost && !error && (
             <div className="text-xs text-gray-500 bg-blue-50 p-2 rounded flex items-center justify-between">
@@ -367,12 +441,31 @@ const NavbarPostDetails = ({ post }) => {
             </div>
           )}
 
+          {/* Force Create Button for New Posts (Development Only) */}
+          {process.env.NODE_ENV === "development" && isNewPost && (
+            <div className="text-xs text-purple-500 bg-purple-50 p-2 rounded flex items-center justify-between">
+              <span>🔧 Dev: Force recreate TinyURL (will bypass cache)</span>
+              <button
+                onClick={forceCreateShortUrl}
+                disabled={urlLoading}
+                className="text-purple-600 underline hover:text-purple-700 disabled:opacity-50"
+              >
+                {urlLoading ? "Creating..." : "Force Recreate"}
+              </button>
+            </div>
+          )}
+
           {/* Copy link button */}
           <motion.button
             onClick={async () => {
-              const success = await copyToClipboard();
-              if (success) {
-                setShowToast(true);
+              try {
+                const success = await copyToClipboard();
+                if (success) {
+                  setShowToast(true);
+                }
+              } catch (error) {
+                console.error("Copy failed:", error);
+                alert(`Copy failed: ${error.message}`);
               }
             }}
             className="w-full flex items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-300"

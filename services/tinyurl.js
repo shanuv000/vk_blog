@@ -31,7 +31,7 @@ class TinyURLService {
   }
 
   /**
-   * Create a shortened URL
+   * Create a shortened URL with automatic alias fallback
    * @param {string} longUrl - The original URL to shorten
    * @param {Object} options - Optional parameters
    * @param {string} options.alias - Custom alias for the short URL
@@ -64,63 +64,88 @@ class TinyURLService {
       // Check cache first (for development)
       const cacheKey = this.generateCacheKey(longUrl, options);
       if (this.cache.has(cacheKey)) {
-        console.log("Returning cached short URL for:", longUrl);
+        // Returning cached short URL
         return this.cache.get(cacheKey);
       }
 
-      // Prepare request payload
-      const payload = {
-        url: longUrl,
-        domain: options.domain || this.defaultOptions.domain,
-        alias: options.alias || this.generateAlias(longUrl),
-        tags: options.tags || this.defaultOptions.tags,
-        expires_at: options.expires_at || this.defaultOptions.expires_at,
-      };
+      // Try multiple aliases if the first one fails
+      const baseAlias = options.alias || this.generateAlias(longUrl);
+      const aliasesToTry = [
+        baseAlias,
+        `${baseAlias}-${Date.now().toString(36)}`,
+        `${baseAlias}-${Math.random().toString(36).substr(2, 6)}`,
+        `urtechy-${Date.now().toString(36)}`, // Final fallback
+        null, // Let TinyURL generate random alias
+      ];
 
-      // Add description if provided
-      if (options.description) {
-        payload.description = options.description.substring(0, 500); // TinyURL limit
-      }
+      for (let i = 0; i < aliasesToTry.length; i++) {
+        const currentAlias = aliasesToTry[i];
 
-      console.log("Creating short URL with TinyURL API:", {
-        longUrl,
-        alias: payload.alias,
-      });
-
-      // Make API request
-      const response = await fetch(`${TINYURL_API_BASE}/create`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      // Handle API errors
-      if (!response.ok || result.code !== 0) {
-        console.error("TinyURL API error:", result);
-
-        // Return original URL on error
-        return {
-          data: {
-            tiny_url: longUrl,
-            url: longUrl,
-            alias: payload.alias,
-            deleted: false,
-          },
-          code: result.code || response.status,
-          errors: result.errors || ["API request failed"],
+        // Prepare request payload
+        const payload = {
+          url: longUrl,
+          domain: options.domain || this.defaultOptions.domain,
+          tags: options.tags || this.defaultOptions.tags,
+          expires_at: options.expires_at || this.defaultOptions.expires_at,
         };
+
+        // Add alias if available (null means auto-generate)
+        if (currentAlias) {
+          payload.alias = currentAlias;
+        }
+
+        // Add description if provided
+        if (options.description) {
+          payload.description = options.description.substring(0, 500); // TinyURL limit
+        }
+
+        // Creating TinyURL on attempt ${i + 1}
+
+        // Make API request
+        const response = await fetch(`${TINYURL_API_BASE}/create`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json();
+
+        // Check if this attempt succeeded
+        if (response.ok && result.code === 0) {
+          // Cache the result
+          this.cache.set(cacheKey, result);
+          // Successfully created short URL
+          return result;
+        }
+
+        // If alias is not available, try the next one
+        if (
+          result.code === 5 &&
+          result.errors?.includes("Alias is not available.")
+        ) {
+          // Alias not available, trying next
+          continue;
+        }
+
+        // For other errors, log and continue to next attempt
+        console.warn(`⚠️ Attempt ${i + 1} failed:`, result.errors);
       }
 
-      // Cache the result
-      this.cache.set(cacheKey, result);
-
-      console.log("Successfully created short URL:", result.data.tiny_url);
-      return result;
+      // If all attempts failed, return original URL
+      console.error("❌ All TinyURL creation attempts failed");
+      return {
+        data: {
+          tiny_url: longUrl,
+          url: longUrl,
+          alias: null,
+          deleted: false,
+        },
+        code: 500,
+        errors: ["All alias attempts failed"],
+      };
     } catch (error) {
       console.error("Error creating short URL:", error);
 
@@ -217,15 +242,46 @@ class TinyURLService {
       const match = url.match(/\/post\/([^/?#]+)/);
       if (match) {
         const slug = match[1];
-        // Create a meaningful alias from slug (max 30 chars for TinyURL)
-        const alias = `urtechy-${slug}`
-          .substring(0, 30)
-          .replace(/[^a-zA-Z0-9-]/g, "");
+
+        // For very long slugs, create a shorter meaningful alias
+        let alias;
+        if (slug.length > 50) {
+          // Extract key parts from long slug
+          const parts = slug.split("-");
+          const keyParts = [];
+          let currentLength = 8; // "urtechy-" prefix
+
+          for (const part of parts) {
+            if (currentLength + part.length + 1 <= 30 && keyParts.length < 4) {
+              keyParts.push(part);
+              currentLength += part.length + 1;
+            } else if (keyParts.length === 0) {
+              // If no parts fit, take first part truncated
+              keyParts.push(part.substring(0, 20));
+              break;
+            } else {
+              break;
+            }
+          }
+
+          alias = `urtechy-${keyParts.join("-")}`
+            .substring(0, 30)
+            .replace(/[^a-zA-Z0-9-]/g, "");
+        } else {
+          // Short slug, use as-is with prefix
+          alias = `urtechy-${slug}`
+            .substring(0, 30)
+            .replace(/[^a-zA-Z0-9-]/g, "");
+        }
+
+        // Generated alias from post slug
         return alias;
       }
 
       // Fallback: generate random alias
-      return `urtechy-${Date.now().toString(36)}`;
+      const fallback = `urtechy-${Date.now().toString(36)}`;
+      // Using fallback alias
+      return fallback;
     } catch (error) {
       console.error("Error generating alias:", error);
       return `urtechy-${Date.now().toString(36)}`;
@@ -240,6 +296,8 @@ class TinyURLService {
    */
   async shortenPostUrl(post, baseUrl = "https://blog.urtechy.com") {
     try {
+      // TinyURL Service - shortenPostUrl called
+
       if (!post || !post.slug) {
         throw new Error("Invalid post object provided");
       }
@@ -254,11 +312,18 @@ class TinyURLService {
           : "urTechy Blog Post",
       };
 
+      // Creating short URL with options
+
       const result = await this.createShortUrl(longUrl, options);
+
+      // TinyURL creation completed
+
       return result.data.tiny_url;
     } catch (error) {
-      console.error("Error shortening post URL:", error);
-      return `${baseUrl}/post/${post.slug}`; // Return original URL on error
+      console.error("❌ Error shortening post URL:", error);
+      const fallbackUrl = `${baseUrl}/post/${post.slug}`;
+      // Returning fallback URL
+      return fallbackUrl; // Return original URL on error
     }
   }
 

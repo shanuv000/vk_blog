@@ -3,7 +3,6 @@
  * Handles new posts vs legacy posts with proper validation
  */
 import { useState, useEffect, useCallback, useMemo } from "react";
-import tinyUrlService from "../services/tinyurl";
 
 // Date when TinyURL integration was implemented (adjust this to your integration date)
 const TINYURL_INTEGRATION_DATE = new Date("2025-09-29T00:00:00Z");
@@ -96,7 +95,6 @@ export const useTinyUrl = (post, options = {}) => {
 
       // Validate if we should create short URL
       if (!customOptions.force && !forceShorten && !shouldHaveTinyUrl(post)) {
-        console.log(`Skipping TinyURL creation for legacy post: ${post.slug}`);
         setShortUrl(longUrl);
         return longUrl;
       }
@@ -105,28 +103,41 @@ export const useTinyUrl = (post, options = {}) => {
       setError(null);
 
       try {
-        console.log(
-          `Creating TinyURL for post: ${post.slug} (${
-            post.publishedAt || post.createdAt
-          })`
-        );
+        // Call server-side API endpoint where environment variables are available
+        const response = await fetch("/api/create-tinyurl", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            post,
+            baseUrl,
+            force: customOptions.force || false,
+          }),
+        });
 
-        const result = await tinyUrlService.shortenPostUrl(post, baseUrl);
+        const apiResult = await response.json();
 
-        if (result && result !== longUrl) {
+        if (!apiResult.success) {
+          throw new Error(apiResult.error || "Server API failed");
+        }
+
+        const result = apiResult.shortUrl;
+
+        if (apiResult.isShortened && result && result !== longUrl) {
           setShortUrl(result);
           // Extract alias from the shortened URL for analytics
-          const aliasMatch = result.match(/tinyurl\.com\/(.+)$/);
-          if (aliasMatch) {
-            setAlias(aliasMatch[1]);
+          if (apiResult.alias) {
+            setAlias(apiResult.alias);
+          } else {
+            const aliasMatch = result.match(/tinyurl\.com\/(.+)$/);
+            if (aliasMatch) {
+              setAlias(aliasMatch[1]);
+            }
           }
-          console.log(`✅ TinyURL created: ${result}`);
           return result;
         } else {
-          // Fallback to long URL if shortening fails
-          console.log(
-            `⚠️ TinyURL creation failed, using original URL: ${longUrl}`
-          );
+          // Use long URL (either legacy post or creation failed)
           setShortUrl(longUrl);
           return longUrl;
         }
@@ -156,16 +167,50 @@ export const useTinyUrl = (post, options = {}) => {
     }
   }, [alias, enableAnalytics]);
 
-  // Copy URL to clipboard with feedback
+  // Copy URL to clipboard with multiple fallback methods
   const copyToClipboard = useCallback(async () => {
     const urlToCopy = shortUrl || longUrl;
-    if (!urlToCopy) return false;
+    if (!urlToCopy) {
+      return false;
+    }
 
+    // Method 1: Modern Clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(urlToCopy);
+        return true;
+      } catch (err) {
+        // Continue to fallback method
+      }
+    }
+
+    // Method 2: Legacy execCommand fallback
     try {
-      await navigator.clipboard.writeText(urlToCopy);
-      return true;
+      const textarea = document.createElement("textarea");
+      textarea.value = urlToCopy;
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "-9999px";
+      textarea.setAttribute("readonly", "");
+      document.body.appendChild(textarea);
+
+      // Select and copy
+      textarea.select();
+      textarea.setSelectionRange(0, 99999); // For mobile devices
+
+      const successful = document.execCommand("copy");
+      document.body.removeChild(textarea);
+
+      if (successful) {
+        return true;
+      } else {
+        throw new Error("execCommand('copy') returned false");
+      }
     } catch (err) {
-      console.error("Failed to copy URL:", err);
+      // Final fallback - show URL in alert for manual copying
+      alert(
+        `Unable to copy automatically. Please copy manually:\n${urlToCopy}`
+      );
       return false;
     }
   }, [shortUrl, longUrl]);
@@ -231,6 +276,8 @@ export const useTinyUrl = (post, options = {}) => {
     isLoading,
     createShortUrl,
     longUrl,
+    post?.slug,
+    validationStatus.isNewPost,
   ]);
 
   // Fetch analytics periodically if enabled
@@ -329,7 +376,7 @@ export const useBulkTinyUrl = (posts, options = {}) => {
         const shortUrl = await tinyUrlService.shortenPostUrl(post, baseUrl);
         results[post.slug] = shortUrl;
 
-        console.log(`✅ Bulk TinyURL created for ${post.slug}: ${shortUrl}`);
+        // Bulk TinyURL created successfully
       } catch (error) {
         console.error(`❌ Error shortening URL for post ${post.slug}:`, error);
         errorResults[post.slug] = error.message;
