@@ -159,127 +159,129 @@ const Header = () => {
   };
 
   return (
-    <header
-      className={`${
-        isVisible ? "top-0" : "-top-24"
-      } w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-4 bg-secondary/95 backdrop-blur-sm border-b border-border transition-all duration-200 fixed`}
-      style={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)" }}
-    >
-      {/* Logo - No animations for instant load */}
-      <div className="flex items-center flex-shrink-0">
-        <Link href="/" className="flex items-center group">
-          <img
-            src="/iconified/logo4.ico"
-            alt="urTechy Blogs Logo"
-            className="h-8 sm:h-10 transition-transform duration-200 group-hover:scale-105"
-          />
-          <h1 className="text-lg sm:text-xl font-bold ml-3 whitespace-nowrap">
-            <span className="text-primary">ur</span>
-            <span className="text-primary-light">Techy</span>
-            <span className="text-text-primary"> Blogs</span>
-          </h1>
-        </Link>
-      </div>
+    <>
+      <header
+        className={`${
+          isVisible ? "top-0" : "-top-24"
+        } w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-4 bg-secondary/95 backdrop-blur-sm border-b border-border transition-all duration-200 fixed`}
+        style={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)" }}
+      >
+        {/* Logo - No animations for instant load */}
+        <div className="flex items-center flex-shrink-0">
+          <Link href="/" className="flex items-center group">
+            <img
+              src="/iconified/logo4.ico"
+              alt="urTechy Blogs Logo"
+              className="h-8 sm:h-10 transition-transform duration-200 group-hover:scale-105"
+            />
+            <h1 className="text-lg sm:text-xl font-bold ml-3 whitespace-nowrap">
+              <span className="text-primary">ur</span>
+              <span className="text-primary-light">Techy</span>
+              <span className="text-text-primary"> Blogs</span>
+            </h1>
+          </Link>
+        </div>
 
-      {/* Mobile Menu Icon */}
-      <div className="lg:hidden">
-        <button
-          onClick={toggleMobileMenu}
-          className="text-text-primary hover:text-primary focus:outline-none"
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-        </button>
-      </div>
+        {/* Mobile Menu Icon */}
+        <div className="lg:hidden">
+          <button
+            onClick={toggleMobileMenu}
+            className="text-text-primary hover:text-primary focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
+        </div>
 
-      {/* Navigation Items (Desktop) */}
-      <nav className="hidden lg:flex items-center space-x-2 xl:space-x-4">
-        {navItems.map((item) =>
-          item.isDropdown ? (
-            <div
-              className="relative"
-              key={item.key}
-              ref={(el) => (dropdownRefs.current[item.name] = el)}
-            >
-              <button
-                onClick={() => handleDropdownToggle(item.name, "desktop")}
-                className={`text-text-primary hover:text-primary px-4 py-2 text-sm font-medium flex items-center transition-colors duration-150 rounded-lg hover:bg-secondary-light ${
-                  activeDropdowns.desktop === item.name
-                    ? "text-primary bg-secondary-light"
-                    : ""
-                }`}
-                aria-expanded={activeDropdowns.desktop === item.name}
-                aria-haspopup="true"
+        {/* Navigation Items (Desktop) */}
+        <nav className="hidden lg:flex items-center space-x-2 xl:space-x-4">
+          {navItems.map((item) =>
+            item.isDropdown ? (
+              <div
+                className="relative"
+                key={item.key}
+                ref={(el) => (dropdownRefs.current[item.name] = el)}
               >
-                {item.name}
-                <RiArrowDropDownLine
-                  size={20}
-                  className={`ml-1 transition-transform duration-150 ${
-                    activeDropdowns.desktop === item.name ? "rotate-180" : ""
+                <button
+                  onClick={() => handleDropdownToggle(item.name, "desktop")}
+                  className={`text-text-primary hover:text-primary px-4 py-2 text-sm font-medium flex items-center transition-colors duration-150 rounded-lg hover:bg-secondary-light ${
+                    activeDropdowns.desktop === item.name
+                      ? "text-primary bg-secondary-light"
+                      : ""
                   }`}
-                />
-              </button>
-
-              <AnimatePresence>
-                {activeDropdowns.desktop === item.name && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-xl bg-secondary-light border border-border p-2 shadow-card max-h-96 overflow-y-auto"
-                  >
-                    <div className="py-1 grid grid-cols-1 gap-1">
-                      {dropdownData[item.name] &&
-                      dropdownData[item.name].length > 0 ? (
-                        dropdownData[item.name].map((dropdownItem, index) => (
-                          <Link
-                            key={index}
-                            href={dropdownItem.href}
-                            onClick={() =>
-                              setActiveDropdowns((prev) => ({
-                                ...prev,
-                                desktop: null,
-                              }))
-                            }
-                            className="block px-4 py-2.5 text-sm rounded-lg text-text-primary hover:bg-secondary hover:text-primary transition-colors duration-150"
-                          >
-                            {dropdownItem.name}
-                          </Link>
-                        ))
-                      ) : (
-                        <div className="px-4 py-2.5 text-sm text-text-secondary">
-                          No categories found
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ) : (
-            <Link
-              key={item.key}
-              href={item.href}
-              className="text-text-primary hover:text-primary px-4 py-2 text-sm font-medium transition-colors duration-150 flex items-center rounded-lg hover:bg-secondary-light"
-            >
-              {item.isLive && isLive ? (
-                <motion.span
-                  className="flex items-center mr-2"
-                  variants={liveTextVariants}
-                  animate="pulse"
+                  aria-expanded={activeDropdowns.desktop === item.name}
+                  aria-haspopup="true"
                 >
-                  <span className="w-2 h-2 bg-primary rounded-full mr-1.5"></span>
-                  <span className="text-primary font-semibold">Live</span>
-                </motion.span>
-              ) : null}
-              {item.name}
-            </Link>
-          )
-        )}
-      </nav>
+                  {item.name}
+                  <RiArrowDropDownLine
+                    size={20}
+                    className={`ml-1 transition-transform duration-150 ${
+                      activeDropdowns.desktop === item.name ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
 
-      {/* Mobile Menu Drawer */}
+                <AnimatePresence>
+                  {activeDropdowns.desktop === item.name && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-xl bg-secondary-light border border-border p-2 shadow-card max-h-96 overflow-y-auto"
+                    >
+                      <div className="py-1 grid grid-cols-1 gap-1">
+                        {dropdownData[item.name] &&
+                        dropdownData[item.name].length > 0 ? (
+                          dropdownData[item.name].map((dropdownItem, index) => (
+                            <Link
+                              key={index}
+                              href={dropdownItem.href}
+                              onClick={() =>
+                                setActiveDropdowns((prev) => ({
+                                  ...prev,
+                                  desktop: null,
+                                }))
+                              }
+                              className="block px-4 py-2.5 text-sm rounded-lg text-text-primary hover:bg-secondary hover:text-primary transition-colors duration-150"
+                            >
+                              {dropdownItem.name}
+                            </Link>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2.5 text-sm text-text-secondary">
+                            No categories found
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                key={item.key}
+                href={item.href}
+                className="text-text-primary hover:text-primary px-4 py-2 text-sm font-medium transition-colors duration-150 flex items-center rounded-lg hover:bg-secondary-light"
+              >
+                {item.isLive && isLive ? (
+                  <motion.span
+                    className="flex items-center mr-2"
+                    variants={liveTextVariants}
+                    animate="pulse"
+                  >
+                    <span className="w-2 h-2 bg-primary rounded-full mr-1.5"></span>
+                    <span className="text-primary font-semibold">Live</span>
+                  </motion.span>
+                ) : null}
+                {item.name}
+              </Link>
+            )
+          )}
+        </nav>
+      </header>
+
+      {/* Mobile Menu Drawer - Rendered outside header for proper z-index */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -289,7 +291,7 @@ const Header = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] lg:hidden"
               onClick={toggleMobileMenu}
             />
 
@@ -300,11 +302,11 @@ const Header = () => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
-              className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-secondary border-l border-border shadow-card-hover z-50 lg:hidden"
+              className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-secondary border-l border-border shadow-card-hover z-[110] lg:hidden overflow-hidden"
             >
               <div className="flex flex-col h-full">
                 {/* Drawer Header */}
-                <div className="flex justify-between items-center p-5 border-b border-border">
+                <div className="flex justify-between items-center p-5 border-b border-border bg-secondary-dark">
                   <Link
                     href="/"
                     onClick={toggleMobileMenu}
@@ -330,7 +332,7 @@ const Header = () => {
                 </div>
 
                 {/* Scrollable Navigation */}
-                <div className="flex-grow overflow-y-auto">
+                <div className="flex-grow overflow-y-auto bg-secondary">
                   <nav className="p-5">
                     {navItems.map((item) => (
                       <div key={item.key} className="mb-2">
@@ -394,7 +396,7 @@ const Header = () => {
                           <Link
                             href={item.href}
                             onClick={toggleMobileMenu}
-                            className="w-full text-text-primary hover:text-primary font-medium py-3 px-3 text-base flex items-center rounded-lg hover:bg-secondary-light transition-colors duration-150"
+                            className="block w-full text-text-primary hover:text-primary font-medium py-3 px-3 text-base rounded-lg hover:bg-secondary-light transition-colors duration-150"
                           >
                             {item.isLive && isLive ? (
                               <motion.span
@@ -420,7 +422,7 @@ const Header = () => {
           </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
 
