@@ -46,11 +46,12 @@ const carouselStyles = `
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
-    background: rgba(229, 9, 20, 0.9);
-    border: none;
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(229, 9, 20, 0.5);
     color: white;
     cursor: pointer;
     display: flex;
@@ -61,39 +62,45 @@ const carouselStyles = `
   }
 
   .carousel-button:hover {
-    background: rgba(229, 9, 20, 1);
-    transform: translateY(-51px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    background: rgba(229, 9, 20, 0.9);
+    border-color: rgba(229, 9, 20, 1);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
   }
 
   .carousel-button-prev {
-    left: 16px;
+    left: 12px;
   }
 
   .carousel-button-next {
-    right: 16px;
+    right: 12px;
   }
 
   .carousel-dots {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-top: 24px;
+    gap: 10px;
+    margin-top: 20px;
   }
 
   .carousel-dot {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     border: none;
-    background: rgba(229, 9, 20, 0.3);
+    background: rgba(160, 160, 160, 0.3);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+  }
+
+  .carousel-dot:hover {
+    background: rgba(229, 9, 20, 0.5);
   }
 
   .carousel-dot.active {
+    width: 24px;
+    border-radius: 4px;
     background: rgba(229, 9, 20, 1);
-    transform: scale(1.2);
   }
 
   @media (max-width: 640px) {
@@ -277,28 +284,21 @@ const FeaturedPosts = () => {
 
   return (
     <section
-      className="mb-16 relative opacity-0 animate-fadeIn"
+      className="mb-12 relative"
       aria-labelledby="featured-content-header"
-      style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}
     >
-      {/* Simplified background - removed blur effects for better performance */}
-      <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/5 to-secondary-light/10 -z-10 rounded-2xl"></div>
+      {/* Clean background - no animations for faster load */}
+      <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/10 to-transparent -z-10 rounded-2xl"></div>
 
-      <header
-        className="mb-10 text-center opacity-0 animate-fadeIn"
-        style={{ animationDelay: "0.2s", animationFillMode: "forwards" }}
-        id="featured-content-header"
-      >
+      <header className="mb-8 text-center" id="featured-content-header">
         <div className="relative inline-block">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-text-primary relative z-10">
-            <span className="bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent">
-              Featured Content
-            </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-text-primary relative">
+            <span className="text-gradient">Featured Content</span>
           </h2>
-          {/* Simplified underline without glow effects */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full"></div>
+          {/* Clean underline */}
+          <div className="mt-2 mx-auto w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full"></div>
         </div>
-        <p className="mt-4 text-text-secondary/80 text-lg font-medium max-w-2xl mx-auto">
+        <p className="mt-4 text-text-secondary text-base max-w-2xl mx-auto">
           Discover our most popular and engaging articles
         </p>
       </header>
@@ -308,77 +308,87 @@ const FeaturedPosts = () => {
       </style>
       <div className="relative">
         <div
-          className="opacity-0 animate-fadeIn"
-          style={{ animationDelay: "0.3s", animationFillMode: "forwards" }}
+          className="featured-posts-carousel"
+          onMouseEnter={pauseAutoplay}
+          onMouseLeave={resumeAutoplay}
+          aria-label="Featured articles carousel"
         >
-          <div
-            className="featured-posts-carousel"
-            onMouseEnter={pauseAutoplay}
-            onMouseLeave={resumeAutoplay}
-            aria-label="Featured articles carousel"
-          >
-            {/* Navigation buttons */}
-            {featuredPosts.length > visibleItems && (
-              <>
-                <button
-                  className="carousel-button carousel-button-prev"
-                  onClick={prevSlide}
-                  aria-label="Previous slides"
+          {/* Navigation buttons - cleaner style */}
+          {featuredPosts.length > visibleItems && (
+            <>
+              <button
+                className="carousel-button carousel-button-prev"
+                onClick={prevSlide}
+                aria-label="Previous slides"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  ←
-                </button>
-                <button
-                  className="carousel-button carousel-button-next"
-                  onClick={nextSlide}
-                  aria-label="Next slides"
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <button
+                className="carousel-button carousel-button-next"
+                onClick={nextSlide}
+                aria-label="Next slides"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  →
-                </button>
-              </>
-            )}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </>
+          )}
 
-            {/* Carousel container */}
-            <div
-              ref={containerRef}
-              className="carousel-container"
-              style={{
-                transform: `translateX(-${
-                  (currentIndex * 100) / visibleItems
-                }%)`,
-              }}
-            >
-              {featuredPosts.map((post, idx) => (
-                <div
-                  key={post.slug || idx}
-                  className="carousel-slide opacity-0 animate-fadeIn"
-                  style={{
-                    animationDelay: `${0.4 + (idx % visibleItems) * 0.1}s`,
-                    animationFillMode: "forwards",
-                  }}
-                >
-                  <div className="px-2 h-full">
-                    <FeaturedPostCard post={post} />
-                  </div>
+          {/* Carousel container - no staggered animations */}
+          <div
+            ref={containerRef}
+            className="carousel-container"
+            style={{
+              transform: `translateX(-${(currentIndex * 100) / visibleItems}%)`,
+            }}
+          >
+            {featuredPosts.map((post, idx) => (
+              <div key={post.slug || idx} className="carousel-slide">
+                <div className="px-2 h-full">
+                  <FeaturedPostCard post={post} />
                 </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Dots pagination - cleaner style */}
+          {featuredPosts.length > visibleItems && maxIndex > 0 && (
+            <div className="carousel-dots">
+              {Array.from({ length: maxIndex + 1 }, (_, index) => (
+                <button
+                  key={index}
+                  className={`carousel-dot ${
+                    currentIndex === index ? "active" : ""
+                  }`}
+                  onClick={() => goToSlide(index)}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
               ))}
             </div>
-
-            {/* Dots pagination */}
-            {featuredPosts.length > visibleItems && maxIndex > 0 && (
-              <div className="carousel-dots">
-                {Array.from({ length: maxIndex + 1 }, (_, index) => (
-                  <button
-                    key={index}
-                    className={`carousel-dot ${
-                      currentIndex === index ? "active" : ""
-                    }`}
-                    onClick={() => goToSlide(index)}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </section>

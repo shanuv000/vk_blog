@@ -6,26 +6,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // New modern color scheme
-        primary: "#E50914", // Netflix-inspired red
+        // Modern, refined color palette
+        primary: "#E50914", // Bold red - main brand color
         "primary-dark": "#B81D24", // Darker red for hover states
-        "primary-light": "#F5222D", // Lighter red for accents
-        secondary: "#141414", // Rich black
-        "secondary-light": "#1F1F1F", // Lighter black for cards
-        "secondary-dark": "#0A0A0A", // Darker black for backgrounds
-        "text-primary": "#F5F5F5", // Light text for dark backgrounds
-        "text-secondary": "#A0A0A0", // Muted text
-        accent: "#E50914", // Accent color (same as primary for consistency)
+        "primary-light": "#FF1F2E", // Brighter red for highlights
+        secondary: "#141414", // Rich black for cards
+        "secondary-light": "#232323", // Lighter black for elevated surfaces
+        "secondary-dark": "#0A0A0A", // Deep black for backgrounds
+        "text-primary": "#F5F5F5", // Primary text - high contrast
+        "text-secondary": "#A0A0A0", // Secondary text - muted
+        "text-tertiary": "#707070", // Tertiary text - subtle
+        accent: "#E50914", // Accent matches primary
+        border: "rgba(255, 255, 255, 0.1)", // Subtle borders
+        "border-light": "rgba(255, 255, 255, 0.05)", // Very subtle borders
 
-        // Keep legacy colors for backward compatibility
+        // Keep legacy colors for compatibility
         "shanu-black": "#424242",
         "head-colour": "#111111",
-        "urtechy-red": "#E50914", // Updated to match new primary
+        "urtechy-red": "#E50914",
         "urtechy-orange": "#FF8C00",
         "urtechy-tomato": "#FF6347",
       },
       fontFamily: {
-        // Modern font stack
         sans: [
           '"Inter"',
           "system-ui",
@@ -33,8 +35,6 @@ module.exports = {
           "BlinkMacSystemFont",
           '"Segoe UI"',
           "Roboto",
-          '"Helvetica Neue"',
-          "Arial",
           "sans-serif",
         ],
         heading: [
@@ -44,113 +44,137 @@ module.exports = {
           "BlinkMacSystemFont",
           '"Segoe UI"',
           "Roboto",
-          '"Helvetica Neue"',
-          "Arial",
           "sans-serif",
         ],
         mono: [
           '"JetBrains Mono"',
+          '"Fira Code"',
           "Menlo",
           "Monaco",
           "Consolas",
-          '"Liberation Mono"',
-          '"Courier New"',
           "monospace",
         ],
       },
+      // Minimal animations - only essential ones
       keyframes: {
-        wiggle: {
-          "0%, 100%": { transform: "rotate(-3deg)" },
-          "50%": { transform: "rotate(3deg)" },
-        },
+        // Simple fade in - most commonly used
         fadeIn: {
-          "0%": { opacity: 0, transform: "translateY(10px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
         },
+        // Subtle slide up
         slideUp: {
-          "0%": { transform: "translateY(20px)", opacity: 0 },
-          "100%": { transform: "translateY(0)", opacity: 1 },
+          "0%": { transform: "translateY(10px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
         },
+        // Shimmer for loading states only
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
-        modernBounce: {
-          "0%, 80%, 100%": {
-            transform: "scale(0.8)",
-            opacity: 0.5,
-          },
-          "40%": {
-            transform: "scale(1.2)",
-            opacity: 1,
-          },
-        },
-        modernPulse: {
-          "0%, 100%": {
-            opacity: 0.4,
-            transform: "scale(0.95)",
-          },
-          "50%": {
-            opacity: 1,
-            transform: "scale(1.05)",
-          },
-        },
-        ripple: {
-          "0%": {
-            transform: "scale(0)",
-            opacity: 1,
-          },
-          "100%": {
-            transform: "scale(4)",
-            opacity: 0,
-          },
-        },
-        smoothSpin: {
-          "0%": { transform: "rotate(0deg)" },
-          "100%": { transform: "rotate(360deg)" },
+        // Pulse for important notifications only
+        pulse: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.7" },
         },
       },
       animation: {
-        fadeIn: "fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-        slideUp: "slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-        shimmer: "shimmer 2.5s infinite linear",
-        modernBounce:
-          "modernBounce 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite",
-        modernPulse: "modernPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        ripple: "ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite",
-        smoothSpin:
-          "smoothSpin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite",
+        // Fast, smooth animations
+        fadeIn: "fadeIn 0.3s ease-out",
+        slideUp: "slideUp 0.3s ease-out",
+        shimmer: "shimmer 2s infinite linear",
+        pulse: "pulse 2s ease-in-out infinite",
       },
       borderWidth: {
         3: "3px",
       },
+      spacing: {
+        18: "4.5rem",
+        88: "22rem",
+      },
       typography: {
         DEFAULT: {
           css: {
-            color: "#333333",
+            color: "#e5e5e5",
+            maxWidth: "none",
             h1: {
               fontFamily: '"Poppins", sans-serif',
-              fontWeight: 700,
+              fontWeight: "700",
+              color: "#f5f5f5",
+              letterSpacing: "-0.02em",
             },
             h2: {
               fontFamily: '"Poppins", sans-serif',
-              fontWeight: 600,
+              fontWeight: "600",
+              color: "#f5f5f5",
+              letterSpacing: "-0.01em",
             },
             h3: {
               fontFamily: '"Poppins", sans-serif',
-              fontWeight: 600,
+              fontWeight: "600",
+              color: "#f5f5f5",
+            },
+            h4: {
+              fontFamily: '"Poppins", sans-serif',
+              fontWeight: "600",
+              color: "#f5f5f5",
+            },
+            p: {
+              color: "#d4d4d4",
+              lineHeight: "1.7",
             },
             a: {
               color: "#E50914",
+              textDecoration: "none",
+              transition: "color 0.2s ease",
               "&:hover": {
-                color: "#B81D24",
+                color: "#FF1F2E",
               },
+            },
+            strong: {
+              color: "#f5f5f5",
+              fontWeight: "600",
+            },
+            code: {
+              color: "#FF1F2E",
+              backgroundColor: "rgba(229, 9, 20, 0.1)",
+              padding: "0.2em 0.4em",
+              borderRadius: "0.25rem",
+              fontWeight: "500",
+            },
+            "code::before": {
+              content: '""',
+            },
+            "code::after": {
+              content: '""',
+            },
+            pre: {
+              backgroundColor: "#1a1a1a",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
             },
             blockquote: {
               borderLeftColor: "#E50914",
+              borderLeftWidth: "4px",
+              color: "#a0a0a0",
+              fontStyle: "italic",
+            },
+            ul: {
+              color: "#d4d4d4",
+            },
+            ol: {
+              color: "#d4d4d4",
+            },
+            li: {
+              color: "#d4d4d4",
             },
           },
         },
+      },
+      boxShadow: {
+        glow: "0 0 20px rgba(229, 9, 20, 0.3)",
+        "glow-sm": "0 0 10px rgba(229, 9, 20, 0.2)",
+        card: "0 4px 16px rgba(0, 0, 0, 0.3)",
+        "card-hover": "0 8px 24px rgba(0, 0, 0, 0.4)",
       },
     },
   },

@@ -60,13 +60,19 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Handle TinyURL creation for published posts
+    // 1. Handle TinyURL creation for published posts (FREE version optimized)
     if (
       operation === "publish" ||
       (operation === "update" && data.stage === "PUBLISHED")
     ) {
       try {
-        console.log(`Creating short URL for post: ${data.slug}`);
+        console.log(
+          `🔗 Creating short URL for post: ${data.slug} (FREE TinyURL)`
+        );
+
+        // Check rate limit status before attempting
+        const rateLimitStatus = tinyUrlService.getRateLimitStatus();
+        console.log("📊 Rate limit status:", rateLimitStatus);
 
         const post = {
           slug: data.slug,
@@ -78,19 +84,27 @@ export default async function handler(req, res) {
           "https://blog.urtechy.com"
         );
 
+        const longUrl = `https://blog.urtechy.com/post/${data.slug}`;
+        const isActuallyShortened = shortUrl && shortUrl !== longUrl;
+
         results.tinyurl = {
           success: true,
           shortUrl,
-          longUrl: `https://blog.urtechy.com/post/${data.slug}`,
+          longUrl,
+          isShortened: isActuallyShortened,
+          rateLimitStatus: tinyUrlService.getRateLimitStatus(),
         };
 
-        console.log(`✅ TinyURL created: ${shortUrl}`);
+        console.log(
+          `✅ TinyURL result: ${shortUrl} (shortened: ${isActuallyShortened})`
+        );
       } catch (error) {
         console.error("❌ TinyURL creation failed:", error);
         results.tinyurl = {
           success: false,
           error: error.message,
           fallbackUrl: `https://blog.urtechy.com/post/${data.slug}`,
+          rateLimitStatus: tinyUrlService.getRateLimitStatus(),
         };
       }
 

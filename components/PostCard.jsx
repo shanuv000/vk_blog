@@ -23,11 +23,11 @@ const PostCard = ({ post = {} }) => {
   };
 
   return (
-    <div className="bg-secondary rounded-lg overflow-hidden shadow-lg mb-8 transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-1">
+    <article className="group bg-secondary rounded-xl overflow-hidden border border-border shadow-card hover:shadow-card-hover transition-all duration-200 hover:-translate-y-1">
       <div className="relative overflow-hidden">
         {safePost.featuredImage?.url ? (
           <Link href={`/post/${safePost.slug}`}>
-            <div className="w-full aspect-[16/9] group">
+            <div className="w-full aspect-[16/9] bg-secondary-light">
               <OptimizedImage
                 src={safePost.featuredImage.url}
                 alt={safePost.title || "Featured image"}
@@ -40,7 +40,7 @@ const PostCard = ({ post = {} }) => {
                 showSkeleton={true}
                 aspectRatio="16/9"
                 containerClassName="w-full h-full"
-                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiBmaWxsPSJyZ2JhKDE1NiwgMTYzLCAxNzUsIDAuMSkiLz48L3N2Zz4="
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiBmaWxsPSJyZ2JhKDI1LCAyNSwgMjUsIDEpIi8+PC9zdmc+"
                 onLoad={() => {
                   // Optional: Add performance tracking
                 }}
@@ -48,18 +48,18 @@ const PostCard = ({ post = {} }) => {
                   console.warn("Post card image failed to load:", error);
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-50"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             </div>
           </Link>
         ) : (
           <div className="w-full aspect-[16/9] bg-secondary-light flex items-center justify-center">
-            <p className="text-text-secondary">No image available</p>
+            <p className="text-text-tertiary">No image available</p>
           </div>
         )}
 
-        {/* Date badge */}
-        <div className="absolute top-4 right-4 bg-primary text-white text-sm px-3 py-1 rounded-full shadow-md flex items-center">
-          <FaCalendarAlt className="mr-1" size={12} />
+        {/* Date badge - minimal design */}
+        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+          <FaCalendarAlt size={10} />
           <span suppressHydrationWarning>
             {safePost.createdAt
               ? moment(safePost.createdAt).format("MMM DD, YYYY")
@@ -72,49 +72,61 @@ const PostCard = ({ post = {} }) => {
 
       <div className="p-6">
         <Link href={`/post/${safePost.slug}`}>
-          <h2 className="text-xl md:text-2xl font-heading font-semibold mb-4 text-text-primary hover:text-primary transition-colors duration-200">
+          <h2 className="text-xl md:text-2xl font-heading font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-200 line-clamp-2">
             {safePost.title}
           </h2>
         </Link>
 
-        <p className="text-text-secondary mb-6 line-clamp-3">
+        <p className="text-text-secondary mb-5 line-clamp-3 leading-relaxed">
           {safePost.excerpt}
         </p>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pt-4 border-t border-border">
           <div className="flex items-center">
             {safePost.author?.photo?.url ? (
               <Image
                 alt={safePost.author.name || "Author"}
                 height={36}
                 width={36}
-                className="rounded-full border-2 border-primary"
+                className="rounded-full ring-2 ring-border"
                 src={safePost.author.photo.url}
                 onError={() => {
                   console.log(
                     "Author image load error in PostCard, using fallback"
                   );
-                  // Next.js Image component will use the fallback defined in next.config.js
                 }}
               />
             ) : (
-              <div className="flex items-center justify-center bg-secondary-light rounded-full h-[36px] w-[36px] border-2 border-primary">
-                <FaUser className="text-text-secondary" size={16} />
+              <div className="flex items-center justify-center bg-secondary-light rounded-full h-[36px] w-[36px] ring-2 ring-border">
+                <FaUser className="text-text-tertiary" size={14} />
               </div>
             )}
-            <p className="ml-2 text-text-secondary font-medium">
+            <p className="ml-3 text-sm text-text-secondary font-medium">
               {safePost.author?.name || "Anonymous"}
             </p>
           </div>
 
           <Link href={`/post/${safePost.slug}`}>
-            <span className="inline-block bg-primary text-white px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 hover:bg-primary-dark hover:scale-105 hover:shadow-lg">
+            <span className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 hover:bg-primary-dark hover:shadow-glow-sm">
               Read More
+              <svg
+                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </span>
           </Link>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

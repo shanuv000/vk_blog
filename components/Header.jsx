@@ -146,26 +146,14 @@ const Header = () => {
     });
   };
 
-  // Animation variants for logo only
-
-  const logoVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5, delay: 0.2, type: "spring", stiffness: 100 },
-    },
-  };
-
+  // Minimal animation for live indicator only (removed logo animations for faster load)
   const liveTextVariants = {
     pulse: {
-      scale: [1, 1.1, 1],
-      rotate: [0, 10, -10, 0],
-      color: ["#ffffff", "#ff0000", "#ffffff"],
+      opacity: [1, 0.6, 1],
       transition: {
-        duration: 1.5,
+        duration: 2,
         repeat: Infinity,
-        repeatType: "mirror",
+        ease: "easeInOut",
       },
     },
   };
@@ -174,29 +162,22 @@ const Header = () => {
     <header
       className={`${
         isVisible ? "top-0" : "-top-24"
-      } w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-3 bg-secondary shadow-md transition-all duration-300 fixed`}
+      } w-full z-30 flex justify-between items-center px-4 sm:px-6 lg:px-8 py-4 bg-secondary/95 backdrop-blur-sm border-b border-border transition-all duration-200 fixed`}
+      style={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)" }}
     >
-      {/* Logo */}
+      {/* Logo - No animations for instant load */}
       <div className="flex items-center flex-shrink-0">
-        <Link href="/" className="flex items-center">
-          <motion.img
+        <Link href="/" className="flex items-center group">
+          <img
             src="/iconified/logo4.ico"
             alt="urTechy Blogs Logo"
-            className="h-7 sm:h-9"
-            initial="hidden"
-            animate="visible"
-            variants={logoVariants}
+            className="h-8 sm:h-10 transition-transform duration-200 group-hover:scale-105"
           />
-          <motion.h1
-            className="text-lg sm:text-xl font-bold ml-2 whitespace-nowrap"
-            initial="hidden"
-            animate="visible"
-            variants={logoVariants}
-          >
+          <h1 className="text-lg sm:text-xl font-bold ml-3 whitespace-nowrap">
             <span className="text-primary">ur</span>
             <span className="text-primary-light">Techy</span>
             <span className="text-text-primary"> Blogs</span>
-          </motion.h1>
+          </h1>
         </Link>
       </div>
 
@@ -212,7 +193,7 @@ const Header = () => {
       </div>
 
       {/* Navigation Items (Desktop) */}
-      <nav className="hidden lg:flex items-center space-x-1 xl:space-x-6">
+      <nav className="hidden lg:flex items-center space-x-2 xl:space-x-4">
         {navItems.map((item) =>
           item.isDropdown ? (
             <div
@@ -222,8 +203,10 @@ const Header = () => {
             >
               <button
                 onClick={() => handleDropdownToggle(item.name, "desktop")}
-                className={`text-text-primary hover:text-primary px-3 py-2 text-sm font-medium flex items-center transition-colors duration-200 ${
-                  activeDropdowns.desktop === item.name ? "text-primary" : ""
+                className={`text-text-primary hover:text-primary px-4 py-2 text-sm font-medium flex items-center transition-colors duration-150 rounded-lg hover:bg-secondary-light ${
+                  activeDropdowns.desktop === item.name
+                    ? "text-primary bg-secondary-light"
+                    : ""
                 }`}
                 aria-expanded={activeDropdowns.desktop === item.name}
                 aria-haspopup="true"
@@ -231,7 +214,7 @@ const Header = () => {
                 {item.name}
                 <RiArrowDropDownLine
                   size={20}
-                  className={`ml-1 transition-transform duration-200 ${
+                  className={`ml-1 transition-transform duration-150 ${
                     activeDropdowns.desktop === item.name ? "rotate-180" : ""
                   }`}
                 />
@@ -240,13 +223,13 @@ const Header = () => {
               <AnimatePresence>
                 {activeDropdowns.desktop === item.name && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute right-0 z-50 mt-1 w-56 origin-top-right rounded-lg bg-secondary-light p-2 shadow-lg ring-1 ring-secondary focus:outline-none max-h-96 overflow-y-auto"
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-xl bg-secondary-light border border-border p-2 shadow-card max-h-96 overflow-y-auto"
                   >
-                    <div className="py-1 grid grid-cols-1">
+                    <div className="py-1 grid grid-cols-1 gap-1">
                       {dropdownData[item.name] &&
                       dropdownData[item.name].length > 0 ? (
                         dropdownData[item.name].map((dropdownItem, index) => (
@@ -259,13 +242,13 @@ const Header = () => {
                                 desktop: null,
                               }))
                             }
-                            className="block px-3 py-2 text-sm rounded-md text-text-primary hover:bg-secondary-dark hover:text-primary transition-colors duration-150"
+                            className="block px-4 py-2.5 text-sm rounded-lg text-text-primary hover:bg-secondary hover:text-primary transition-colors duration-150"
                           >
                             {dropdownItem.name}
                           </Link>
                         ))
                       ) : (
-                        <div className="px-3 py-2 text-sm text-text-secondary">
+                        <div className="px-4 py-2.5 text-sm text-text-secondary">
                           No categories found
                         </div>
                       )}
@@ -278,15 +261,16 @@ const Header = () => {
             <Link
               key={item.key}
               href={item.href}
-              className="text-text-primary hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200 flex items-center"
+              className="text-text-primary hover:text-primary px-4 py-2 text-sm font-medium transition-colors duration-150 flex items-center rounded-lg hover:bg-secondary-light"
             >
               {item.isLive && isLive ? (
                 <motion.span
-                  className="text-primary mr-1"
+                  className="flex items-center mr-2"
                   variants={liveTextVariants}
                   animate="pulse"
                 >
-                  Live
+                  <span className="w-2 h-2 bg-primary rounded-full mr-1.5"></span>
+                  <span className="text-primary font-semibold">Live</span>
                 </motion.span>
               ) : null}
               {item.name}
@@ -304,7 +288,8 @@ const Header = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+              transition={{ duration: 0.15 }}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
               onClick={toggleMobileMenu}
             />
 
@@ -314,12 +299,12 @@ const Header = () => {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
-              className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-secondary shadow-xl z-50 lg:hidden"
+              transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
+              className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-secondary border-l border-border shadow-card-hover z-50 lg:hidden"
             >
               <div className="flex flex-col h-full">
                 {/* Drawer Header */}
-                <div className="flex justify-between items-center p-4 border-b border-secondary-light">
+                <div className="flex justify-between items-center p-5 border-b border-border">
                   <Link
                     href="/"
                     onClick={toggleMobileMenu}
@@ -328,16 +313,16 @@ const Header = () => {
                     <img
                       src="/iconified/logo4.ico"
                       alt="Logo"
-                      className="h-8"
+                      className="h-9"
                     />
-                    <h1 className="text-lg font-bold ml-2">
+                    <h1 className="text-lg font-bold ml-3">
                       <span className="text-primary">ur</span>
                       <span className="text-primary-light">Techy</span>
                     </h1>
                   </Link>
                   <button
                     onClick={toggleMobileMenu}
-                    className="text-text-primary hover:text-primary p-1"
+                    className="text-text-primary hover:text-primary p-2 rounded-lg hover:bg-secondary-light transition-colors duration-150"
                     aria-label="Close menu"
                   >
                     <FaTimes size={20} />
@@ -346,16 +331,16 @@ const Header = () => {
 
                 {/* Scrollable Navigation */}
                 <div className="flex-grow overflow-y-auto">
-                  <nav className="p-4">
+                  <nav className="p-5">
                     {navItems.map((item) => (
-                      <div key={item.key} className="py-1">
+                      <div key={item.key} className="mb-2">
                         {item.isDropdown ? (
                           <div className="w-full">
                             <button
                               onClick={() =>
                                 handleDropdownToggle(item.name, "mobile")
                               }
-                              className="w-full text-left text-text-primary font-medium py-3 text-base flex items-center justify-between"
+                              className="w-full text-left text-text-primary font-medium py-3 px-3 text-base flex items-center justify-between rounded-lg hover:bg-secondary-light transition-colors duration-150"
                               aria-expanded={
                                 activeDropdowns.mobile === item.name
                               }
@@ -363,7 +348,7 @@ const Header = () => {
                               {item.name}
                               <IoMdArrowDropdown
                                 size={20}
-                                className={`transform transition-transform ${
+                                className={`transform transition-transform duration-150 ${
                                   activeDropdowns.mobile === item.name
                                     ? "rotate-180"
                                     : "rotate-0"
@@ -377,10 +362,10 @@ const Header = () => {
                                   initial={{ height: 0, opacity: 0 }}
                                   animate={{ height: "auto", opacity: 1 }}
                                   exit={{ height: 0, opacity: 0 }}
-                                  transition={{ duration: 0.2 }}
+                                  transition={{ duration: 0.15 }}
                                   className="overflow-hidden"
                                 >
-                                  <div className="mt-1 pl-4 border-l-2 border-secondary-light space-y-1">
+                                  <div className="mt-2 pl-4 border-l-2 border-primary/30 space-y-1">
                                     {dropdownData[item.name] &&
                                     dropdownData[item.name].length > 0 ? (
                                       dropdownData[item.name].map(
@@ -389,14 +374,14 @@ const Header = () => {
                                             key={index}
                                             href={subItem.href}
                                             onClick={toggleMobileMenu}
-                                            className="block py-2 pl-2 text-sm text-text-secondary hover:text-primary"
+                                            className="block py-2.5 pl-3 text-sm text-text-secondary hover:text-primary rounded-lg hover:bg-secondary-light transition-colors duration-150"
                                           >
                                             {subItem.name}
                                           </Link>
                                         )
                                       )
                                     ) : (
-                                      <div className="py-2 pl-2 text-sm text-text-secondary">
+                                      <div className="py-2.5 pl-3 text-sm text-text-tertiary">
                                         No categories found
                                       </div>
                                     )}
@@ -409,21 +394,23 @@ const Header = () => {
                           <Link
                             href={item.href}
                             onClick={toggleMobileMenu}
-                            className="w-full text-text-primary hover:text-primary font-medium py-3 text-base flex items-center"
+                            className="w-full text-text-primary hover:text-primary font-medium py-3 px-3 text-base flex items-center rounded-lg hover:bg-secondary-light transition-colors duration-150"
                           >
                             {item.isLive && isLive ? (
                               <motion.span
-                                className="text-primary mr-1"
+                                className="flex items-center mr-2"
                                 variants={liveTextVariants}
                                 animate="pulse"
                               >
-                                Live
+                                <span className="w-2 h-2 bg-primary rounded-full mr-1.5"></span>
+                                <span className="text-primary font-semibold">
+                                  Live
+                                </span>
                               </motion.span>
                             ) : null}
                             {item.name}
                           </Link>
                         )}
-                        <div className="border-b border-secondary-light mt-1"></div>
                       </div>
                     ))}
                   </nav>

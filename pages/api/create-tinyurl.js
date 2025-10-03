@@ -1,6 +1,22 @@
 /**
  * Server-side TinyURL creation endpoint
- * This runs o    console.log("🔄 Proceeding with TinyURL creation...");
+ * This runs o    console.log("🔄 Proceeding with TinyURL creation (FREE version)...");
+
+    // Check rate limit before proceeding
+    const rateLimitStatus = tinyUrlService.getRateLimitStatus();
+    console.log("📊 Rate limit status:", rateLimitStatus);
+
+    if (!rateLimitStatus.canMakeRequest) {
+      const originalUrl = `${baseUrl}/post/${post.slug}`;
+      return res.status(429).json({
+        success: false,
+        error: "Rate limit exceeded",
+        shortUrl: originalUrl,
+        isShortened: false,
+        rateLimitStatus,
+        message: "Using original URL due to rate limit",
+      });
+    }
 
     // Create TinyURL using server-side service
     const shortUrl = await tinyUrlService.shortenPostUrl(post, baseUrl);
@@ -14,7 +30,8 @@
       originalUrlLength: originalUrl.length,
       isActuallyShort,
       urlsEqual: shortUrl === originalUrl,
-      shortUrlType: typeof shortUrl
+      shortUrlType: typeof shortUrl,
+      rateLimitStatus: tinyUrlService.getRateLimitStatus(),
     }); where environment variables are available
  */
 
@@ -67,6 +84,8 @@ export default async function handler(req, res) {
       alias: isActuallyShort
         ? shortUrl.match(/tinyurl\.com\/(.+)$/)?.[1]
         : null,
+      rateLimitStatus: tinyUrlService.getRateLimitStatus(),
+      freeVersionOptimized: true,
     });
   } catch (error) {
     console.error("❌ Server TinyURL creation failed:", error);

@@ -50,20 +50,18 @@ const OptimizedFeaturedPosts = () => {
   if (!data.featuredPosts.length) return null;
 
   return (
-    <section className="mb-12 bg-gradient-to-r from-secondary-light/5 to-secondary-light/10 rounded-2xl p-8">
+    <section className="mb-12 bg-gradient-to-r from-secondary-light/10 to-transparent rounded-2xl p-6 md:p-8">
       <header className="mb-8 text-center">
         <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-primary">
-          <span className="bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent">
-            Featured Content
-          </span>
+          <span className="text-gradient">Featured Content</span>
         </h2>
         <div className="mt-2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full mx-auto"></div>
-        <p className="mt-4 text-text-secondary/80 text-lg font-medium">
+        <p className="mt-4 text-text-secondary text-base">
           Discover our most popular and engaging articles
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.featuredPosts.slice(0, 6).map((post, index) => (
           <EnhancedFeaturedPostCard
             key={post.slug || index}
@@ -239,18 +237,20 @@ export default function OptimizedHomepage({ initialPosts }) {
           />
 
           {/* Main content */}
-          <div className="mb-12 mt-12">
+          <div className="mb-12 mt-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Posts column */}
               <div className="lg:col-span-8 col-span-1">
-                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
-                  Latest Articles
+                <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
+                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-primary">
+                    Latest Articles
+                  </h2>
                   {pagination.totalCount > 0 && (
-                    <span className="text-sm font-normal text-text-secondary ml-2">
-                      ({mainPostsCount} of {pagination.totalCount})
+                    <span className="text-sm font-medium text-text-secondary bg-secondary-light px-3 py-1 rounded-full">
+                      {mainPostsCount} of {pagination.totalCount}
                     </span>
                   )}
-                </h2>
+                </div>
 
                 <InfiniteScroll
                   dataLength={data.mainPosts.length}
@@ -278,23 +278,23 @@ export default function OptimizedHomepage({ initialPosts }) {
 
               {/* Sidebar */}
               <div className="lg:col-span-4 col-span-1">
-                <div className="lg:sticky relative top-8 space-y-8">
+                <div className="lg:sticky relative top-8 space-y-6">
                   {/* Recent posts widget */}
-                  <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
-                    <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
+                  <div className="bg-secondary rounded-xl border border-border shadow-card overflow-hidden">
+                    <h3 className="text-xl font-heading font-bold px-6 py-4 border-b border-border text-text-primary">
                       Recent Posts
                     </h3>
-                    <div className="p-4">
+                    <div className="p-5">
                       <OptimizedPostWidget />
                     </div>
                   </div>
 
                   {/* Categories widget */}
-                  <div className="bg-secondary rounded-lg shadow-lg overflow-hidden">
-                    <h3 className="text-xl font-heading font-semibold px-6 py-4 border-b border-secondary-light text-text-primary">
+                  <div className="bg-secondary rounded-xl border border-border shadow-card overflow-hidden">
+                    <h3 className="text-xl font-heading font-bold px-6 py-4 border-b border-border text-text-primary">
                       Categories
                     </h3>
-                    <div className="p-4">
+                    <div className="p-5">
                       <OptimizedCategories />
                     </div>
                   </div>
