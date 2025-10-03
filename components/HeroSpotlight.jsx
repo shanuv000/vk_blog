@@ -174,17 +174,17 @@ const HeroSpotlight = ({
   return (
     <section
       ref={containerRef}
-      className={`relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black ${styles.heroContainer}`}
+      className={`relative w-full min-h-screen flex items-center justify-center overflow-hidden ${styles.minimalistHero}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => {
         mouseX.set(0);
         mouseY.set(0);
       }}
     >
-      {/* Hero Background Image with Enhanced Parallax */}
+      {/* Minimalist Background - Subtle Image with Clean Overlay */}
       <motion.div
-        style={{ y, opacity, scale }}
-        className={`absolute inset-0 z-0 ${styles.parallaxImage}`}
+        style={{ opacity }}
+        className={`absolute inset-0 z-0 ${styles.minimalistBackground}`}
       >
         <OptimizedImage
           src={heroData.featuredImage}
@@ -192,289 +192,183 @@ const HeroSpotlight = ({
           fill
           className="object-cover"
           priority={true}
-          quality={95}
+          quality={90}
           fallbackSrc={DEFAULT_FEATURED_IMAGE}
         />
-        {/* Enhanced Gradient Overlays */}
-        <div className={`absolute inset-0 ${styles.heroGradientOverlay}`} />
-        <div
-          className={`absolute inset-0 ${styles.heroGradientOverlayBottom}`}
-        />
-        <div className={`absolute inset-0 ${styles.heroRadialOverlay}`} />
-
-        {/* Subtle texture overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8cGF0aCBkPSJNIDEwIDAgTCAwIDAgMCAxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KICAgIDwvcGF0dGVybj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIgLz4KPC9zdmc+')] opacity-15" />
+        {/* Clean minimalist overlay */}
+        <div className={`absolute inset-0 ${styles.minimalistOverlay}`} />
       </motion.div>
 
-      {/* Main Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16 min-h-[85vh] items-center py-8 lg:py-16">
-          {/* Hero Content - Left Side */}
+      {/* Minimalist Content Container */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 min-h-[90vh] items-center justify-center py-16 lg:py-20">
+          {/* Hero Content - Clean & Focused */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            style={{ rotateX, rotateY }}
-            className={`lg:col-span-2 space-y-6 lg:space-y-8 ${styles.contentGlow}`}
+            className="flex-1 max-w-3xl space-y-8"
           >
-            {/* Enhanced Category Pill */}
+            {/* Minimalist Category Badge */}
             {heroData.categories.length > 0 && (
-              <motion.div
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                className={`inline-block ${styles.floatingElement}`}
-              >
-                <span
-                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-primary ${styles.categoryPill}`}
-                >
-                  <FaEye className="mr-2 text-xs" />
+              <motion.div variants={itemVariants}>
+                <span className={`${styles.minimalistBadge}`}>
                   {heroData.categories[0].name}
                 </span>
               </motion.div>
             )}
 
-            {/* Enhanced Hero Title */}
+            {/* Clean Hero Title - Maximum Readability */}
             <motion.h1
               variants={itemVariants}
-              className={`text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight ${styles.heroTitle}`}
+              className={`${styles.minimalistTitle}`}
+              title={heroData.title} // Tooltip for full title on hover
             >
               {heroData.title}
             </motion.h1>
 
-            {/* Enhanced Excerpt/Dek */}
+            {/* Clean Excerpt */}
             <motion.p
               variants={itemVariants}
-              className={`text-lg md:text-xl text-gray-300 leading-relaxed max-w-3xl ${styles.heroExcerpt}`}
+              className={`${styles.minimalistExcerpt}`}
             >
               {heroData.excerpt}
             </motion.p>
 
-            {/* Meta Information */}
+            {/* Minimal Meta Information */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap items-center gap-4 lg:gap-6 text-sm text-gray-400"
+              className="flex flex-wrap items-center gap-6 pt-2"
             >
               {/* Author */}
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
-                <FaUser className="text-primary" />
-                <span className="font-medium">{heroData.author.name}</span>
+              <div className={`${styles.metaItem}`}>
+                <FaUser className="text-primary w-4 h-4" />
+                <span>{heroData.author.name}</span>
               </div>
 
-              {/* Enhanced Reading Time Chip */}
-              <div
-                className={`flex items-center gap-2 px-3 py-1 rounded-full ${styles.readingTimeChip}`}
-              >
-                <FaClock className="text-primary" />
-                <span className="font-medium">{readingTime}</span>
+              {/* Reading Time */}
+              <div className={`${styles.metaItem}`}>
+                <FaClock className="text-primary w-4 h-4" />
+                <span>{readingTime}</span>
               </div>
 
               {/* Date */}
               {heroData.createdAt && (
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
-                  <span className="text-gray-300 font-medium">
+                <div className={`${styles.metaItem}`}>
+                  <span>
                     {moment(heroData.createdAt).format("MMM DD, YYYY")}
                   </span>
                 </div>
               )}
             </motion.div>
 
-            {/* CTA Button */}
-            <motion.div variants={itemVariants} className="pt-4">
+            {/* Clean CTA Button */}
+            <motion.div variants={itemVariants} className="pt-6">
               <Link href={`/post/${heroData.slug}`}>
                 <motion.button
-                  whileHover={{ scale: 1.05, x: 5 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`inline-flex items-center gap-3 px-8 py-4 text-white font-semibold rounded-full group ${styles.ctaButton}`}
+                  whileHover={{ x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`${styles.minimalistCTA} group`}
                 >
-                  <span>Read Full Article</span>
-                  <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
+                  <span>Read Article</span>
+                  <FaArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                 </motion.button>
               </Link>
             </motion.div>
           </motion.div>
 
-          {/* Auxiliary Posts - Right Side / Bottom on Mobile */}
+          {/* Minimalist Auxiliary Posts */}
           {auxiliaryPosts.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className={`lg:col-span-1 ${styles.auxiliaryPostsContainer}`}
+            <motion.aside
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="w-full lg:w-80 flex-shrink-0"
             >
-              <div className="mb-6 lg:mb-8">
-                <h3 className="text-xl lg:text-2xl font-bold text-white mb-3">
-                  Next Up
+              <div className="mb-8">
+                <h3 className={`${styles.auxiliaryHeading}`}>
+                  Continue Reading
                 </h3>
-                <div className="w-20 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full shadow-lg shadow-primary/30" />
               </div>
 
-              {/* Mobile: Horizontal scroll, Desktop: Vertical stack */}
-              <div className="lg:space-y-4 lg:block">
-                {/* Mobile horizontal scroll container */}
-                <div className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
-                  {auxiliaryPosts.map((post, index) => {
-                    const auxData = getPostData(post);
-                    return (
-                      <motion.div
-                        key={auxData.slug}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.6 + index * 0.2 }}
-                        className="flex-shrink-0 w-80 snap-start"
-                      >
-                        <Link href={`/post/${auxData.slug}`}>
-                          <article
-                            className={`group rounded-xl p-4 cursor-pointer ${styles.glassCard} h-full`}
-                          >
-                            <div className="flex gap-4 h-full">
-                              {/* Mobile optimized image */}
-                              <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ring-2 ring-white/10 group-hover:ring-primary/30 transition-all duration-300">
-                                <OptimizedImage
-                                  src={auxData.featuredImage}
-                                  alt={auxData.title}
-                                  width={80}
-                                  height={80}
-                                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                                  fallbackSrc={DEFAULT_FEATURED_IMAGE}
-                                />
-                              </div>
+              {/* Clean Stack Layout */}
+              <div className="space-y-4">
+                {auxiliaryPosts.map((post, index) => {
+                  const auxData = getPostData(post);
+                  return (
+                    <motion.div
+                      key={auxData.slug}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                    >
+                      <Link href={`/post/${auxData.slug}`}>
+                        <article className={`${styles.minimalistCard} group`}>
+                          <div className="flex gap-4 items-start">
+                            {/* Clean Image - Fixed Aspect Ratio */}
+                            <OptimizedImage
+                              src={auxData.featuredImage}
+                              alt={auxData.title}
+                              fill
+                              sizes="80px"
+                              containerClassName={`${styles.minimalistImageWrapper}`}
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              fallbackSrc={DEFAULT_FEATURED_IMAGE}
+                            />
 
-                              {/* Mobile optimized content */}
-                              <div className="flex-1 min-w-0 flex flex-col">
-                                {auxData.categories.length > 0 && (
-                                  <div className="mb-2">
-                                    <span className="text-xs text-primary font-medium uppercase tracking-wider bg-primary/10 px-2 py-1 rounded-md">
-                                      {auxData.categories[0].name}
-                                    </span>
-                                  </div>
-                                )}
+                            {/* Clean Content */}
+                            <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
+                              {/* Category Tag */}
+                              {auxData.categories.length > 0 && (
+                                <span className={`${styles.minimalistTag}`}>
+                                  {auxData.categories[0].name}
+                                </span>
+                              )}
 
-                                <h4 className="text-white font-semibold text-base leading-tight line-clamp-3 group-hover:text-primary transition-colors duration-300 mb-2 flex-grow">
-                                  {auxData.title}
-                                </h4>
+                              {/* Title with tooltip for long text */}
+                              <h4
+                                className={`${styles.auxiliaryTitle}`}
+                                title={auxData.title} // Full title on hover
+                              >
+                                {auxData.title}
+                              </h4>
 
-                                <div className="flex items-center text-xs text-gray-400 mt-auto">
-                                  <FaClock className="mr-1" />
-                                  <span>
-                                    {calculateReadingTime(
-                                      auxData.content,
-                                      auxData.title,
-                                      auxData.excerpt
-                                    )}
-                                  </span>
-                                </div>
+                              {/* Reading time */}
+                              <div className={`${styles.auxiliaryMeta}`}>
+                                <FaClock className="w-3 h-3 flex-shrink-0" />
+                                <span>
+                                  {calculateReadingTime(
+                                    auxData.content,
+                                    auxData.title,
+                                    auxData.excerpt
+                                  )}
+                                </span>
                               </div>
                             </div>
-                          </article>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                {/* Desktop vertical layout */}
-                <div className="hidden lg:block space-y-6">
-                  {auxiliaryPosts.map((post, index) => {
-                    const auxData = getPostData(post);
-                    return (
-                      <motion.div
-                        key={auxData.slug}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.6 + index * 0.2 }}
-                      >
-                        <Link href={`/post/${auxData.slug}`}>
-                          <article
-                            className={`group rounded-xl p-5 cursor-pointer ${styles.glassCard}`}
-                          >
-                            <div className="flex gap-4">
-                              {/* Desktop Mini Image */}
-                              <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ring-2 ring-white/10 group-hover:ring-primary/30 transition-all duration-300">
-                                <OptimizedImage
-                                  src={auxData.featuredImage}
-                                  alt={auxData.title}
-                                  width={80}
-                                  height={80}
-                                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                                  fallbackSrc={DEFAULT_FEATURED_IMAGE}
-                                />
-                              </div>
-
-                              {/* Desktop Content */}
-                              <div className="flex-1 min-w-0 flex flex-col">
-                                {/* Category */}
-                                {auxData.categories.length > 0 && (
-                                  <div className="mb-2">
-                                    <span className="text-xs text-primary font-medium uppercase tracking-wider bg-primary/10 px-2 py-1 rounded-md">
-                                      {auxData.categories[0].name}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {/* Title */}
-                                <h4 className="text-white font-semibold text-base leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-300 mb-2 flex-grow">
-                                  {auxData.title}
-                                </h4>
-
-                                {/* Reading time */}
-                                <div className="flex items-center text-xs text-gray-400 mt-auto">
-                                  <FaClock className="mr-1" />
-                                  <span>
-                                    {calculateReadingTime(
-                                      auxData.content,
-                                      auxData.title,
-                                      auxData.excerpt
-                                    )}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </article>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                          </div>
+                        </article>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </div>
-            </motion.div>
+            </motion.aside>
           )}
         </div>
       </div>
 
-      {/* Enhanced Scroll Indicator - Hidden on mobile */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.4 }}
-        className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 hidden lg:block ${styles.scrollIndicator}`}
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center backdrop-blur-sm bg-white/5"
-        >
-          <motion.div
-            animate={{ y: [0, 12, 0], opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-1 h-3 bg-white/70 rounded-full mt-2"
-          />
-        </motion.div>
-        <div className="text-center mt-2">
-          <span className="text-xs text-white/60 font-medium">Scroll</span>
-        </div>
-      </motion.div>
-
-      {/* Mobile-specific swipe indicator */}
+      {/* Minimalist Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.6 }}
-        className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 lg:hidden"
+        transition={{ duration: 0.6, delay: 1.2 }}
+        className={`${styles.minimalistScrollIndicator}`}
       >
-        <div className="text-center">
-          <div className="w-12 h-1 bg-white/40 rounded-full mb-2 mx-auto"></div>
-          <span className="text-xs text-white/60 font-medium">Swipe up</span>
-        </div>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="w-px h-12 bg-gradient-to-b from-transparent via-white/40 to-transparent"
+        />
       </motion.div>
     </section>
   );

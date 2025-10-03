@@ -4,6 +4,7 @@
  */
 
 import React, { createContext, useContext } from "react";
+import Link from "next/link";
 import {
   PostCard,
   Categories,
@@ -105,32 +106,33 @@ const OptimizedPostWidget = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {data.recentPosts.map((post, index) => (
-        <div
+        <Link
           key={post.slug || index}
-          className="flex items-center w-full p-2 rounded-lg hover:bg-secondary-light transition-colors duration-200"
+          href={`/post/${post.slug}`}
+          className="flex items-center w-full p-3 rounded-lg hover:bg-secondary-light transition-colors duration-200 group cursor-pointer"
         >
-          <div className="w-16 h-16 flex-none overflow-hidden rounded-md">
+          <div className="w-14 h-14 flex-none overflow-hidden rounded-md">
             {post.featuredImage?.url ? (
               <img
                 src={post.featuredImage.url}
                 alt={post.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
             ) : (
               <div className="flex items-center justify-center bg-secondary-light h-full w-full">
-                <span className="text-text-secondary">📄</span>
+                <span className="text-text-secondary text-xl">📄</span>
               </div>
             )}
           </div>
-          <div className="flex-grow ml-4">
-            <h4 className="text-text-primary font-medium line-clamp-2">
+          <div className="flex-grow ml-3 min-w-0">
+            <h4 className="text-text-primary font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
               {post.title}
             </h4>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
