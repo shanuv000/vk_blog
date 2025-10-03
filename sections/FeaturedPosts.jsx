@@ -4,19 +4,18 @@ import { FeaturedPostCard } from "../components";
 import { getFeaturedPosts } from "../services";
 import { getDirectFeaturedPosts } from "../services/direct-api";
 
-// Simple CSS-based carousel styles
+// Enhanced CSS-based carousel styles
 const carouselStyles = `
   .featured-posts-carousel {
     position: relative;
-    padding: 16px 0 48px 0;
+    padding: 16px 0 56px 0;
     width: 100%;
     overflow: hidden;
   }
 
   .carousel-container {
     display: flex;
-    transition: transform 0.5s ease;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .carousel-slide {
@@ -26,19 +25,25 @@ const carouselStyles = `
 
   @media (min-width: 640px) {
     .carousel-slide {
-      width: calc(50% - 1rem);
+      width: calc(50% - 0.75rem);
     }
   }
 
   @media (min-width: 1024px) {
     .carousel-slide {
-      width: calc(33.333% - 1.333rem);
+      width: calc(33.333% - 1rem);
+    }
+    .carousel-container {
+      gap: 1.5rem;
     }
   }
 
   @media (min-width: 1536px) {
     .carousel-slide {
-      width: calc(25% - 1.5rem);
+      width: calc(25% - 1.125rem);
+    }
+    .carousel-container {
+      gap: 1.5rem;
     }
   }
 
@@ -46,12 +51,12 @@ const carouselStyles = `
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: rgba(20, 20, 20, 0.8);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(229, 9, 20, 0.5);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(35, 35, 35, 0.8);
     color: white;
     cursor: pointer;
     display: flex;
@@ -59,47 +64,61 @@ const carouselStyles = `
     justify-content: center;
     transition: all 0.2s ease;
     z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   }
 
   .carousel-button:hover {
-    background: rgba(229, 9, 20, 0.9);
+    background: rgba(229, 9, 20, 1);
     border-color: rgba(229, 9, 20, 1);
-    transform: translateY(-50%) scale(1.05);
-    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 24px rgba(229, 9, 20, 0.4);
   }
 
   .carousel-button-prev {
-    left: 12px;
+    left: -8px;
   }
 
   .carousel-button-next {
-    right: 12px;
+    right: -8px;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-button-prev {
+      left: -20px;
+    }
+    .carousel-button-next {
+      right: -20px;
+    }
   }
 
   .carousel-dots {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
   }
 
   .carousel-dot {
-    width: 8px;
-    height: 8px;
+    position: relative;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     border: none;
-    background: rgba(160, 160, 160, 0.3);
+    background: rgba(100, 100, 100, 0.4);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .carousel-dot:hover {
-    background: rgba(229, 9, 20, 0.5);
+    background: rgba(229, 9, 20, 0.6);
+    transform: scale(1.2);
   }
 
   .carousel-dot.active {
-    width: 24px;
-    border-radius: 4px;
+    width: 32px;
+    height: 10px;
+    border-radius: 5px;
     background: rgba(229, 9, 20, 1);
   }
 
@@ -290,17 +309,32 @@ const FeaturedPosts = () => {
       {/* Clean background - no animations for faster load */}
       <div className="absolute inset-0 bg-gradient-to-r from-secondary-light/10 to-transparent -z-10 rounded-2xl"></div>
 
-      <header className="mb-8 text-center" id="featured-content-header">
-        <div className="relative inline-block">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-text-primary relative">
-            <span className="text-gradient">Featured Content</span>
-          </h2>
-          {/* Clean underline */}
-          <div className="mt-2 mx-auto w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full"></div>
+      <header
+        className="mb-10 flex items-center justify-between"
+        id="featured-content-header"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-1.5 h-10 bg-primary rounded-full"></div>
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary">
+              Featured <span className="text-primary">Stories</span>
+            </h2>
+            <p className="mt-1 text-text-secondary text-sm">
+              Handpicked articles worth your time
+            </p>
+          </div>
         </div>
-        <p className="mt-4 text-text-secondary text-base max-w-2xl mx-auto">
-          Discover our most popular and engaging articles
-        </p>
+
+        {/* Page counter for desktop */}
+        {featuredPosts.length > visibleItems && maxIndex > 0 && (
+          <div className="hidden md:flex items-center gap-2 text-sm">
+            <span className="font-bold text-text-primary text-lg">
+              {currentIndex + 1}
+            </span>
+            <span className="text-text-secondary">/</span>
+            <span className="text-text-secondary">{maxIndex + 1}</span>
+          </div>
+        )}
       </header>
       {preloadImages(featuredPosts)}
       <style jsx global>
@@ -357,18 +391,23 @@ const FeaturedPosts = () => {
             </>
           )}
 
-          {/* Carousel container - no staggered animations */}
+          {/* Carousel container - smooth transitions */}
           <div
             ref={containerRef}
             className="carousel-container"
             style={{
               transform: `translateX(-${(currentIndex * 100) / visibleItems}%)`,
+              transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
             {featuredPosts.map((post, idx) => (
               <div key={post.slug || idx} className="carousel-slide">
                 <div className="px-2 h-full">
-                  <FeaturedPostCard post={post} />
+                  <FeaturedPostCard
+                    post={post}
+                    priority={idx === 0}
+                    index={idx}
+                  />
                 </div>
               </div>
             ))}

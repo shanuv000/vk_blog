@@ -6,88 +6,131 @@ import { FaCalendarAlt, FaBookmark, FaArrowRight } from "react-icons/fa";
 import OptimizedImage from "./OptimizedImage";
 import { FeaturedImageSkeleton } from "./ImageSkeletons";
 
-const FeaturedPostCard = ({ post = {} }) => {
+const FeaturedPostCard = ({ post = {}, priority = false, index = 0 }) => {
   // Ensure post has all required properties with defaults
   const safePost = {
     slug: post.slug || "post",
     title: post.title || "Untitled Post",
+    excerpt: post.excerpt || "",
     createdAt: post.createdAt || null,
     featuredImage: post.featuredImage || { url: DEFAULT_FEATURED_IMAGE },
     categories: post.categories || [],
+    author: post.author || { name: "Anonymous" },
   };
+
+  // First card gets special treatment
+  const isHero = index === 0;
 
   return (
     <Link href={`/post/${safePost.slug}`}>
-      <article className="group relative h-80 sm:h-96 rounded-xl overflow-hidden bg-secondary border border-border shadow-card hover:shadow-card-hover transition-all duration-200 cursor-pointer hover:-translate-y-1">
-        {/* Modern Image Container */}
-        <div className="relative w-full h-2/3 overflow-hidden bg-secondary-light">
+      <article
+        className={`group relative rounded-2xl overflow-hidden bg-secondary border border-border shadow-card hover:shadow-card-hover transition-all duration-200 cursor-pointer hover:-translate-y-2 ${
+          isHero ? "h-[500px] sm:h-[550px]" : "h-[380px] sm:h-[420px]"
+        }`}
+      >
+        {/* Enhanced Image Container with better overlay */}
+        <div className="relative w-full h-full overflow-hidden">
           <OptimizedImage
             src={safePost.featuredImage.url || DEFAULT_FEATURED_IMAGE}
             alt={safePost.title || "Featured post"}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            priority={true}
-            quality={90}
+            sizes={
+              isHero
+                ? "(max-width: 768px) 100vw, 50vw"
+                : "(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            }
+            className="object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
+            priority={priority || isHero}
+            quality={isHero ? 95 : 90}
             fallbackSrc={DEFAULT_FEATURED_IMAGE}
             showSkeleton={true}
             aspectRatio="16/9"
             containerClassName="w-full h-full"
             blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI3MDAiIGhlaWdodD0iNDc1IiBmaWxsPSJyZ2JhKDI1LCAyNSwgMjUsIDEpIi8+PC9zdmc+"
-            onLoad={() => {
-              // Optional: Add analytics or performance tracking
-            }}
+            onLoad={() => {}}
             onError={(error) => {
               console.warn("Featured image failed to load:", error);
             }}
           />
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+          {/* Enhanced gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-200"></div>
 
-          {/* Featured Badge - minimal style */}
-          <div className="absolute top-3 left-3 bg-primary text-white text-xs px-2.5 py-1 rounded-md font-semibold flex items-center gap-1.5 shadow-lg">
+          {/* Featured Badge - refined design */}
+          <div className="absolute top-4 left-4 bg-primary/90 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-2 shadow-glow-sm border border-primary-light/20">
             <FaBookmark size={10} />
-            FEATURED
+            <span>FEATURED</span>
           </div>
 
-          {/* Categories - cleaner look */}
+          {/* Categories - improved visibility */}
           {safePost.categories && safePost.categories.length > 0 && (
-            <div className="absolute top-3 right-3 flex gap-1.5">
-              {safePost.categories.slice(0, 2).map((category, index) => (
-                <span
-                  key={index}
-                  className="bg-black/60 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-md font-medium"
-                >
-                  {category.name}
-                </span>
-              ))}
+            <div className="absolute top-4 right-4 flex flex-wrap gap-2 max-w-[60%] justify-end">
+              {safePost.categories
+                .slice(0, isHero ? 3 : 2)
+                .map((category, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-secondary-light/80 backdrop-blur-md text-white text-xs px-3 py-1 rounded-lg font-medium border border-border shadow-sm"
+                  >
+                    {category.name}
+                  </span>
+                ))}
             </div>
           )}
-        </div>
 
-        {/* Content Section - better spacing */}
-        <div className="p-5 h-1/3 flex flex-col justify-between bg-secondary">
-          {/* Title */}
-          <h3 className="font-bold text-text-primary text-sm sm:text-base line-clamp-2 mb-2 group-hover:text-primary transition-colors duration-200">
-            {safePost.title}
-          </h3>
+          {/* Content Overlay - positioned at bottom */}
+          <div
+            className={`absolute bottom-0 left-0 right-0 p-6 ${
+              isHero ? "sm:p-8" : "sm:p-6"
+            }`}
+          >
+            {/* Title - larger for hero */}
+            <h3
+              className={`font-bold text-white mb-3 line-clamp-2 leading-tight group-hover:text-primary-light transition-colors duration-200 ${
+                isHero
+                  ? "text-2xl sm:text-3xl md:text-4xl"
+                  : "text-lg sm:text-xl"
+              }`}
+            >
+              {safePost.title}
+            </h3>
 
-          {/* Bottom Section */}
-          <div className="flex items-center justify-between pt-2 border-t border-border">
-            {/* Date */}
-            {safePost.createdAt && (
-              <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-                <FaCalendarAlt size={10} />
-                <span className="font-medium">
-                  {moment(safePost.createdAt).format("MMM DD, YYYY")}
-                </span>
-              </div>
+            {/* Excerpt - only for hero card */}
+            {isHero && safePost.excerpt && (
+              <p className="text-gray-300 text-sm sm:text-base mb-4 line-clamp-2 leading-relaxed">
+                {safePost.excerpt}
+              </p>
             )}
 
-            {/* Read More Arrow - smooth transition */}
-            <div className="text-primary opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:translate-x-1">
-              <FaArrowRight size={14} />
+            {/* Bottom Meta Section */}
+            <div className="flex items-center justify-between">
+              {/* Date & Author */}
+              <div className="flex items-center gap-3">
+                {safePost.createdAt && (
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+                    <FaCalendarAlt size={12} className="text-primary-light" />
+                    <span className="font-medium">
+                      {moment(safePost.createdAt).format("MMM DD, YYYY")}
+                    </span>
+                  </div>
+                )}
+                {isHero && safePost.author?.name && (
+                  <>
+                    <span className="text-gray-500">•</span>
+                    <span className="text-xs sm:text-sm text-gray-300 font-medium">
+                      {safePost.author.name}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* Read More Button */}
+              <div className="flex items-center gap-2 text-primary-light opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:translate-x-2">
+                <span className="text-sm font-semibold hidden sm:inline">
+                  Read More
+                </span>
+                <FaArrowRight size={16} />
+              </div>
             </div>
           </div>
         </div>
