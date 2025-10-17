@@ -39,3 +39,7 @@ yarn-error.log*
 
 # revalidation
 @revalidation/
+
+# sentry
+.sentryclirc
+sentry.properties
