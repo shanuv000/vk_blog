@@ -5,34 +5,28 @@ import dynamic from "next/dynamic";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Social_post_details";
 import OptimizedImage from "./OptimizedImage";
-import { HeroImageSkeleton } from "./ImageSkeletons";
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
   loading: () => (
-    <div className="bg-white rounded-lg shadow-lg p-6 mb-8 text-center">
-      <div className="animate-pulse flex flex-col items-center">
-        <div className="h-4 bg-gray-200 rounded w-1/4 mb-6"></div>
-        <div className="h-20 bg-gray-200 rounded w-full mb-4"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-      </div>
+    <div className="max-w-3xl mx-auto mt-16 animate-pulse">
+      <div className="h-3 w-24 bg-gray-200 rounded mb-4"></div>
+      <div className="h-24 bg-gray-100 rounded mb-3"></div>
+      <div className="h-3 w-40 bg-gray-200 rounded"></div>
     </div>
   ),
-  ssr: false, // Don't render on server to avoid hydration issues
+  ssr: false,
 });
 
 // Lazy load SocialMediaEmbedder component
 const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
-  ssr: false, // Don't render on server to avoid hydration issues
+  ssr: false,
 });
 
 import { useData } from "../store/HandleApiContext";
 import ErrorBoundary from "./ErrorBoundary";
 import RichTextRenderer from "./RichTextRenderer";
-import {
-  DEFAULT_FEATURED_IMAGE,
-  FALLBACK_FEATURED_IMAGE,
-} from "./DefaultAvatar";
+import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 
 // Import Testing component with no SSR to avoid hydration issues
 const Testing = dynamic(
@@ -45,19 +39,23 @@ const Testing = dynamic(
 const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
   const hasFetchedData = useRef(true);
-  // Add error state to track rendering errors
   const [renderError, setRenderError] = useState(null);
+
+  const readingTime = post?.content?.raw
+    ? Math.max(
+        1,
+        Math.ceil(post.content.raw.toString().split(/\s+/).length / 200)
+      )
+    : null;
+  const heroImage = post?.featuredImage?.url || DEFAULT_FEATURED_IMAGE;
 
   // Enhanced error boundary for content rendering
   useEffect(() => {
     if (post) {
-      // Check if content exists
       if (!post.content) {
         setRenderError("No content available");
         return;
       }
-
-      // Clear any previous render errors
       setRenderError(null);
     }
   }, [post]);
@@ -81,16 +79,23 @@ const PostDetail = ({ post }) => {
   // Show detailed error information if there's a rendering error
   if (renderError) {
     return (
-      <div className="bg-secondary rounded-lg shadow-lg p-6 mb-8">
-        <h2 className="text-xl font-bold text-red-500 mb-4">
-          Error Rendering Post
-        </h2>
-        <p className="mb-4">{renderError}</p>
-        <p className="text-sm text-gray-500">
-          Post ID: {post?.slug || "unknown"}
-          <br />
-          Title: {post?.title || "unknown"}
-        </p>
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6">
+          <h2 className="text-lg font-semibold text-red-800">
+            Unable to display this post
+          </h2>
+          <p className="mt-2 text-sm text-red-700">{renderError}</p>
+          <dl className="mt-4 space-y-1 text-xs text-red-600">
+            <div>
+              <dt className="inline font-medium">Slug:</dt>{" "}
+              <dd className="inline">{post?.slug || "unknown"}</dd>
+            </div>
+            <div>
+              <dt className="inline font-medium">Title:</dt>{" "}
+              <dd className="inline">{post?.title || "unknown"}</dd>
+            </div>
+          </dl>
+        </div>
       </div>
     );
   }
@@ -98,13 +103,11 @@ const PostDetail = ({ post }) => {
   // If post is null, show a friendly error message
   if (!post) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Post Not Found
-        </h2>
-        <p className="mb-4 text-gray-600 leading-relaxed">
-          Sorry, we couldn't find the post you're looking for. It may have been
-          removed or is temporarily unavailable.
+      <div className="max-w-3xl mx-auto px-4 py-24 text-center">
+        <h2 className="text-2xl font-semibold text-gray-900">Post not found</h2>
+        <p className="mt-4 text-sm text-gray-600">
+          The article you are looking for might have been removed or is
+          temporarily unavailable.
         </p>
       </div>
     );
@@ -112,195 +115,122 @@ const PostDetail = ({ post }) => {
 
   return (
     <ErrorBoundary>
-      <>
+      <main className="bg-white min-h-screen">
         <motion.div
-          className="bg-white rounded-none sm:rounded-lg shadow-none sm:shadow-lg mb-8 overflow-hidden w-full"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.div
-            className="fixed top-0 left-0 right-0 h-1 bg-primary origin-left z-50"
-            style={{ scaleX }}
-          />
-          {/* Seo */}
-          <HeadPostDetails post={post} />
-          {/* Seo */}
+          className="fixed top-0 left-0 right-0 h-0.5 bg-gray-900 origin-left z-50"
+          style={{ scaleX }}
+        />
 
-          {/* Enhanced Featured Image with OptimizedImage */}
-          <div className="relative overflow-hidden w-full">
-            <motion.div
-              className="w-full aspect-video relative"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            >
+        <HeadPostDetails post={post} />
+
+        <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {heroImage && (
+            <figure className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-gray-100">
               <OptimizedImage
-                src={post.featuredImage?.url || DEFAULT_FEATURED_IMAGE}
+                src={heroImage}
                 alt={post.title || "Post hero image"}
                 fill
-                priority={true} // Critical for LCP optimization
-                quality={90} // Higher quality for hero images
+                priority
+                quality={85}
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1024px"
                 fallbackSrc={DEFAULT_FEATURED_IMAGE}
-                showSkeleton={true}
-                aspectRatio="16/9"
+                showSkeleton
+                aspectRatio="3/2"
                 containerClassName="w-full h-full"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2NzUiIHZpZXdCb3g9IjAgMCAxMjAwIDY3NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjc1IiBmaWxsPSJyZ2JhKDE1NiwgMTYzLCAxNzUsIDAuMSkiLz4KPHN2Zz4K"
-                onLoad={() => {
-                  // Optional: Track hero image load performance
-                  if (typeof window !== "undefined" && window.gtag) {
-                    window.gtag("event", "hero_image_loaded", {
-                      event_category: "performance",
-                      event_label: post.slug,
-                    });
-                  }
-                }}
                 onError={(error) => {
                   console.warn("Hero image failed to load:", error);
                 }}
               />
-            </motion.div>
-          </div>
+              <figcaption className="sr-only">{post.title}</figcaption>
+            </figure>
+          )}
 
-          {/* Title and date section - Separated from image - Optimized for mobile */}
-          <div className="px-0 md:px-10 py-4 md:py-6 mb-2 w-full border-b border-gray-100">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-3 md:mb-4 capitalize leading-tight tracking-tight px-3 md:px-0">
+          <header className="mt-10">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-semibold tracking-tight text-gray-900">
               {post.title}
             </h1>
-
-            <div className="flex items-center text-gray-600 px-3 md:px-0 pb-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1.5 text-primary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <span suppressHydrationWarning className="text-sm md:text-base">
+            <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-gray-500">
+              <span suppressHydrationWarning>
                 {post.createdAt
-                  ? moment(post.createdAt).format("DD MMM, YYYY")
-                  : "No date"}
+                  ? moment(post.createdAt).format("MMMM D, YYYY")
+                  : "Date unavailable"}
               </span>
+              {readingTime && <span>·</span>}
+              {readingTime && <span>{readingTime} min read</span>}
             </div>
-          </div>
+          </header>
 
-          <div className="px-0 md:px-6 lg:px-10 pt-4 pb-10 w-full">
-            {/* Wrap Testing component in ErrorBoundary to prevent it from crashing the entire page */}
-            <ErrorBoundary>
-              {post.slug && <Testing slug={post.slug} />}
-            </ErrorBoundary>
-
-            <div className="prose prose-lg w-full max-w-none mt-4 sm:mt-8 text-gray-800 mx-auto px-3 md:px-0 sm:w-full md:w-full md:max-w-none lg:max-w-4xl">
-              {post.content ? (
-                <ErrorBoundary
-                  fallback={
-                    <div className="bg-red-50 border border-red-200 p-4 rounded-md">
-                      <h3 className="text-red-600 font-medium">
-                        Error displaying content
-                      </h3>
-                      <p className="text-gray-700 mt-2">
-                        We're having trouble displaying this content. Please try
-                        refreshing the page.
-                      </p>
-                    </div>
-                  }
-                >
-                  {/* Wrap RichTextRenderer in a try-catch block for additional error handling */}
-                  {(() => {
-                    try {
-                      return (
-                        <div className="article-content w-full mobile-optimized-text sm:not-mobile-optimized-text">
-                          {/* Reading time estimate - Optimized for mobile */}
-                          <div className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-6 flex items-center px-0.5">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            <span>
-                              {Math.ceil(
-                                post.content.raw?.toString().split(" ").length /
-                                  200
-                              ) || 5}{" "}
-                              min read
-                            </span>
-                          </div>
-
-                          {/* First paragraph with drop cap styling - optimized for mobile */}
-                          <div className="first-letter:text-4xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-1 first-letter:float-left first-letter:leading-[0.8] first-letter:mt-1 w-full prose-code:bg-gray-100 prose-code:text-red-600 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm article-content px-0">
-                            {/* Render the content first */}
-                            <RichTextRenderer
-                              content={post.content}
-                              references={
-                                post.content &&
-                                Array.isArray(post.content.references)
-                                  ? post.content.references
-                                  : []
-                              }
-                            />
-                          </div>
-
-                          {/* Add SocialMediaEmbedder as a separate component outside the article-content div */}
-                          <div className="social-embeds-container mt-4 sm:mt-6 w-full overflow-hidden">
-                            <SocialMediaEmbedder key={post.slug} />
-                          </div>
-
-                          {/* Article footer - removed author section */}
-                          <div className="mt-12 pt-6 border-t border-gray-200"></div>
-
-                          {/* Share section */}
-                          <Navbar_post_details post={post} />
-                        </div>
-                      );
-                    } catch (error) {
-                      return (
-                        <div className="bg-red-50 border border-red-200 p-4 rounded-md">
-                          <h3 className="text-red-600 font-medium">
-                            Error displaying content
-                          </h3>
-                          <p className="text-gray-700 mt-2">
-                            We encountered an error while rendering this
-                            content. Please try refreshing the page.
-                          </p>
-                        </div>
-                      );
-                    }
-                  })()}
-                </ErrorBoundary>
-              ) : (
-                <p className="text-center text-lg text-gray-500 font-normal">
-                  No content available for this post.
-                </p>
-              )}
-            </div>
-
-            {/* Comments Section */}
+          <ErrorBoundary>
             {post.slug && (
-              <div className="mt-8 px-0 sm:px-0">
-                <Comments postSlug={post.slug} />
-              </div>
+              <motion.div
+                className="mt-10"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <Testing slug={post.slug} />
+              </motion.div>
             )}
-          </div>
-        </motion.div>
-      </>
+          </ErrorBoundary>
+
+          <section className="mt-12">
+            {post.content ? (
+              <ErrorBoundary
+                fallback={
+                  <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    We had trouble showing this article. Please refresh the
+                    page.
+                  </p>
+                }
+              >
+                {(() => {
+                  try {
+                    return (
+                      <div className="prose prose-lg prose-slate max-w-none leading-relaxed prose-table:border prose-table:border-gray-200 prose-td:border-t prose-td:border-gray-200 prose-th:bg-gray-50 prose-th:text-gray-800 prose-th:font-semibold prose-th:px-4 prose-th:py-2 prose-td:px-4 prose-td:py-2 prose-td:text-gray-700">
+                        <RichTextRenderer
+                          content={post.content}
+                          references={
+                            Array.isArray(post.content?.references)
+                              ? post.content.references
+                              : []
+                          }
+                        />
+                      </div>
+                    );
+                  } catch (error) {
+                    return (
+                      <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                        We encountered an error while rendering the article.
+                        Please try again.
+                      </p>
+                    );
+                  }
+                })()}
+              </ErrorBoundary>
+            ) : (
+              <p className="text-sm text-gray-500">
+                No content is available for this post.
+              </p>
+            )}
+          </section>
+
+          <section className="mt-12">
+            <SocialMediaEmbedder key={post.slug} />
+          </section>
+
+          <section className="mt-16 pt-12 border-t border-gray-200">
+            <Navbar_post_details post={post} />
+          </section>
+
+          {post.slug && (
+            <section className="mt-16">
+              <Comments postSlug={post.slug} />
+            </section>
+          )}
+        </article>
+      </main>
     </ErrorBoundary>
   );
 };
