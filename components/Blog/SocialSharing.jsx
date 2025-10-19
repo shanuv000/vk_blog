@@ -26,6 +26,21 @@ const SocialSharing = ({ post }) => {
   const encodedDescription = encodeURIComponent(description);
   const encodedImage = encodeURIComponent(imageUrl);
 
+  const isInIframe = React.useMemo(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return window.self !== window.top;
+    } catch (err) {
+      return true;
+    }
+  }, []);
+
+  const canUseNativeShare =
+    typeof window !== "undefined" &&
+    typeof navigator !== "undefined" &&
+    typeof navigator.share === "function" &&
+    !isInIframe;
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -95,16 +110,18 @@ const SocialSharing = ({ post }) => {
   };
 
   const handleNativeShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: title,
-          text: description,
-          url: postUrl,
-        });
-      } catch (error) {
-        console.log("Error sharing:", error);
-      }
+    if (!canUseNativeShare) {
+      return;
+    }
+
+    try {
+      await navigator.share({
+        title: title,
+        text: description,
+        url: postUrl,
+      });
+    } catch (error) {
+      console.log("Error sharing:", error);
     }
   };
 
@@ -219,7 +236,7 @@ const SocialSharing = ({ post }) => {
         </motion.button>
 
         {/* Native Share (if supported) */}
-        {typeof window !== "undefined" && navigator.share && (
+        {canUseNativeShare && (
           <motion.button
             onClick={handleNativeShare}
             className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-600 text-white hover:bg-gray-700 transition-colors duration-200 shadow-md hover:shadow-lg touch-manipulation"

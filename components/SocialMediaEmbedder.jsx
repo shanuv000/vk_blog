@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FacebookEmbed, InstagramEmbed } from "react-social-media-embed";
 import TwitterEmbed from "./Blog/TwitterEmbed";
@@ -407,23 +407,153 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
 
 const SocialMediaEmbedder = () => {
   const [embeds, setEmbeds] = useState([]);
+  const [shouldLoadEmbeds, setShouldLoadEmbeds] = useState(false);
+
+  const sentinelRef = useRef(null);
+  const embedQueueRef = useRef([]);
+  const rateLimiterRef = useRef(null);
+  const knownEmbedIdsRef = useRef(new Set());
+  const hasInitializedRef = useRef(false);
+  const idleCallbackIdRef = useRef(null);
 
   log("SocialMediaEmbedder component rendered");
 
   useEffect(() => {
+    knownEmbedIdsRef.current = new Set(
+      embeds.map((embed) => embed.blockquoteId)
+    );
+  }, [embeds]);
+
+  const processQueue = useCallback(() => {
+    if (typeof window === "undefined") return;
+    if (embedQueueRef.current.length === 0) {
+      rateLimiterRef.current = null;
+      return;
+    }
+
+    const nextEmbed = embedQueueRef.current.shift();
+    if (!nextEmbed) {
+      rateLimiterRef.current = null;
+      return;
+    }
+
+    if (knownEmbedIdsRef.current.has(nextEmbed.blockquoteId)) {
+      rateLimiterRef.current = window.setTimeout(processQueue, 0);
+      return;
+    }
+
+    knownEmbedIdsRef.current.add(nextEmbed.blockquoteId);
+    setEmbeds((prev) => [...prev, nextEmbed]);
+    rateLimiterRef.current = window.setTimeout(processQueue, 1200);
+  }, []);
+
+  const enqueueEmbeds = useCallback(
+    (items) => {
+      if (!items || items.length === 0) return;
+
+      const freshItems = [];
+      items.forEach((item) => {
+        if (!item || !item.blockquoteId) return;
+        if (knownEmbedIdsRef.current.has(item.blockquoteId)) return;
+
+        const alreadyQueued = embedQueueRef.current.some(
+          (queued) => queued.blockquoteId === item.blockquoteId
+        );
+
+        if (!alreadyQueued) {
+          freshItems.push(item);
+        }
+      });
+
+      if (freshItems.length === 0) return;
+
+      embedQueueRef.current.push(...freshItems);
+      if (!rateLimiterRef.current) {
+        processQueue();
+      }
+    },
+    [processQueue]
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (shouldLoadEmbeds) return;
+
+    const sentinel = sentinelRef.current;
+    if (!sentinel) {
+      setShouldLoadEmbeds(true);
+      return;
+    }
+
+    const handleDeferredLoad = () => setShouldLoadEmbeds(true);
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            handleDeferredLoad();
+          }
+        });
+      },
+      { rootMargin: "200px 0px" }
+    );
+
+    intersectionObserver.observe(sentinel);
+
+    window.addEventListener("pointerdown", handleDeferredLoad, {
+      once: true,
+    });
+    window.addEventListener("scroll", handleDeferredLoad, {
+      once: true,
+      passive: true,
+    });
+
+    let fallbackTimeout = null;
+    if (typeof window.requestIdleCallback === "function") {
+      idleCallbackIdRef.current = window.requestIdleCallback(
+        handleDeferredLoad,
+        { timeout: 6000 }
+      );
+    } else {
+      fallbackTimeout = window.setTimeout(handleDeferredLoad, 6000);
+    }
+
+    return () => {
+      intersectionObserver.disconnect();
+      window.removeEventListener("pointerdown", handleDeferredLoad);
+      window.removeEventListener("scroll", handleDeferredLoad);
+      if (idleCallbackIdRef.current) {
+        if (typeof window.cancelIdleCallback === "function") {
+          window.cancelIdleCallback(idleCallbackIdRef.current);
+        }
+        idleCallbackIdRef.current = null;
+      }
+      if (fallbackTimeout) {
+        window.clearTimeout(fallbackTimeout);
+      }
+    };
+  }, [shouldLoadEmbeds]);
+
+  useEffect(() => {
+    if (!shouldLoadEmbeds || hasInitializedRef.current) return;
+    hasInitializedRef.current = true;
+
+    let mutationObserver;
+    let mobileCleanupInterval;
+    let firstPassTimeout;
+    let secondPassTimeout;
+    let thirdPassTimeout;
+
     try {
       console.log("SocialMediaEmbedder: Starting initialization...");
 
-      // Global embed preservation system to prevent loss during DOM changes
       const preserveEmbeds = () => {
         const persistentEmbeds = document.querySelectorAll(
           '[data-persistent-embed="true"]'
         );
 
-        // Mobile-specific duplicate prevention
-        const isMobile = window.innerWidth <= 768;
-        if (isMobile) {
-          // Remove duplicate embeds on mobile
+        const isMobileViewport = window.innerWidth <= 768;
+        if (isMobileViewport) {
           const tweetIds = new Set();
           const duplicateEmbeds = [];
 
@@ -444,23 +574,19 @@ const SocialMediaEmbedder = () => {
             }
           });
 
-          // Remove duplicates
           duplicateEmbeds.forEach((duplicate) => {
             if (duplicate.parentNode) {
               duplicate.parentNode.removeChild(duplicate);
-              log(`Removed duplicate embed on mobile`);
+              log("Removed duplicate embed on mobile");
             }
           });
         }
 
         persistentEmbeds.forEach((embed) => {
-          // Skip if this embed was removed as duplicate
           if (!document.contains(embed)) return;
 
-          // Mark as preserved to prevent removal during DOM changes
           embed.setAttribute("data-preserved", "true");
 
-          // Ensure embed stays in correct position
           const blockquoteId = embed.getAttribute("data-embed-stable");
           if (blockquoteId) {
             const originalBlockquote = document.getElementById(blockquoteId);
@@ -469,7 +595,6 @@ const SocialMediaEmbedder = () => {
               originalBlockquote.parentNode &&
               embed.parentNode !== originalBlockquote.parentNode
             ) {
-              // Move embed back to correct position if it got displaced
               originalBlockquote.parentNode.insertBefore(
                 embed,
                 originalBlockquote.nextSibling
@@ -480,8 +605,7 @@ const SocialMediaEmbedder = () => {
         });
       };
 
-      // Monitor DOM changes and preserve embeds
-      const observer = new MutationObserver((mutations) => {
+      mutationObserver = new MutationObserver((mutations) => {
         let shouldPreserve = false;
         mutations.forEach((mutation) => {
           if (
@@ -497,17 +621,13 @@ const SocialMediaEmbedder = () => {
         }
       });
 
-      // Start observing DOM changes
-      observer.observe(document.body, {
+      mutationObserver.observe(document.body, {
         childList: true,
         subtree: true,
       });
 
-      // Mobile-specific duplicate cleanup interval
-      const isMobile = window.innerWidth <= 768;
-      let mobileCleanupInterval;
-
-      if (isMobile) {
+      const isMobileViewport = window.innerWidth <= 768;
+      if (isMobileViewport) {
         mobileCleanupInterval = setInterval(() => {
           const allEmbeds = document.querySelectorAll("[data-tweet-id]");
           const tweetIds = new Set();
@@ -537,83 +657,94 @@ const SocialMediaEmbedder = () => {
               }
             });
           }
-        }, 3000); // Check every 3 seconds on mobile
+        }, 3000);
       }
 
-      // Force load social media scripts
-      const loadSocialMediaScripts = () => {
-        // Load Twitter widgets script
-        if (!window.twttr && !document.getElementById("twitter-widgets-js")) {
-          const twitterScript = document.createElement("script");
-          twitterScript.id = "twitter-widgets-js";
-          twitterScript.src = "https://platform.twitter.com/widgets.js";
-          twitterScript.async = true;
-          document.head.appendChild(twitterScript);
-          console.log("Loading Twitter widgets script...");
+      const loadSocialMediaScripts = (platforms = new Set()) => {
+        if (typeof window === "undefined") return;
+
+        const scriptState =
+          window.__socialEmbedScriptState ||
+          (window.__socialEmbedScriptState = {
+            twitter: false,
+            facebook: false,
+            instagram: false,
+          });
+
+        if (platforms.has("twitter") && !scriptState.twitter) {
+          scriptState.twitter = true;
+          if (!document.getElementById("twitter-widgets-js")) {
+            const twitterScript = document.createElement("script");
+            twitterScript.id = "twitter-widgets-js";
+            twitterScript.src = "https://platform.twitter.com/widgets.js";
+            twitterScript.async = true;
+            twitterScript.defer = true;
+            document.head.appendChild(twitterScript);
+            console.log("Loading Twitter widgets script...");
+          }
         }
 
-        // Load Facebook SDK
-        if (!window.FB && !document.getElementById("facebook-jssdk")) {
-          const facebookScript = document.createElement("script");
-          facebookScript.id = "facebook-jssdk";
-          facebookScript.src =
-            "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
-          facebookScript.async = true;
-          facebookScript.onload = () => {
-            log("Facebook SDK loaded successfully");
-            // Initialize Facebook SDK with minimal config
-            setTimeout(() => {
-              if (window.FB) {
-                try {
-                  window.FB.init({
-                    xfbml: true,
-                    version: "v18.0",
-                  });
-                  log("Facebook SDK initialized");
-                } catch (e) {
-                  console.error("Facebook SDK init error:", e);
+        if (platforms.has("facebook") && !scriptState.facebook) {
+          scriptState.facebook = true;
+          if (!document.getElementById("facebook-jssdk")) {
+            const facebookScript = document.createElement("script");
+            facebookScript.id = "facebook-jssdk";
+            facebookScript.src =
+              "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
+            facebookScript.async = true;
+            facebookScript.defer = true;
+            facebookScript.onload = () => {
+              log("Facebook SDK loaded successfully");
+              setTimeout(() => {
+                if (window.FB) {
+                  try {
+                    window.FB.init({
+                      xfbml: true,
+                      version: "v18.0",
+                    });
+                    log("Facebook SDK initialized");
+                  } catch (e) {
+                    console.error("Facebook SDK init error:", e);
+                  }
                 }
-              }
-            }, 100);
-          };
-          facebookScript.onerror = () => {
-            console.error("Failed to load Facebook SDK");
-          };
-          document.head.appendChild(facebookScript);
-          console.log("Loading Facebook SDK...");
+              }, 100);
+            };
+            facebookScript.onerror = () => {
+              console.error("Failed to load Facebook SDK");
+            };
+            document.head.appendChild(facebookScript);
+            console.log("Loading Facebook SDK...");
+          }
         }
 
-        // Instagram embeds are handled by the react-social-media-embed library
-        console.log("Social media scripts loading initiated");
+        if (platforms.has("instagram") && !scriptState.instagram) {
+          scriptState.instagram = true;
+          // react-social-media-embed manages the Instagram script internally
+        }
       };
 
-      // Add CSS styles for social media embeds
       const addEmbedStyles = () => {
-        // Check if styles already exist
         if (document.getElementById("social-media-embed-styles")) {
           return;
         }
 
-        // Fix for hydration mismatch
-        const fixHydrationScript = document.createElement("script");
-        fixHydrationScript.id = "social-media-hydration-fix";
-        fixHydrationScript.textContent = `
-        // Fix for React hydration mismatch
+        if (!document.getElementById("social-media-hydration-fix")) {
+          const fixHydrationScript = document.createElement("script");
+          fixHydrationScript.id = "social-media-hydration-fix";
+          fixHydrationScript.textContent = `
         window.addEventListener('load', function() {
-          // Give time for React to finish hydration
           setTimeout(function() {
-            // Force consistent width for elements that might cause hydration mismatches
             document.querySelectorAll('[style*="width"]').forEach(function(el) {
-              if (el.style.width.includes('%')) {
+              if (el.style.width && el.style.width.includes('%')) {
                 el.style.width = '100%';
               }
             });
           }, 1000);
         });
       `;
-        document.head.appendChild(fixHydrationScript);
+          document.head.appendChild(fixHydrationScript);
+        }
 
-        // Create style element
         const style = document.createElement("style");
         style.id = "social-media-embed-styles";
         style.textContent = `
@@ -634,19 +765,16 @@ const SocialMediaEmbedder = () => {
           box-shadow: none;
         }
 
-        /* Specific styling for Facebook embeds */
         .social-media-embed-wrapper iframe[src*="facebook.com"] {
           width: 100% !important;
           min-height: 550px !important;
         }
 
-        /* Specific styling for Instagram embeds */
         .social-media-embed-wrapper iframe[src*="instagram.com"] {
           width: 100% !important;
           min-height: 650px !important;
         }
 
-        /* Specific styling for Twitter embeds */
         .social-media-embed-wrapper .twitter-tweet-container {
           width: 100% !important;
           margin: 0 auto !important;
@@ -661,7 +789,6 @@ const SocialMediaEmbedder = () => {
           margin: 0 auto !important;
         }
 
-        /* Make Twitter wrapper ultra-minimal */
         .social-media-embed-wrapper.twitter {
           border: 0 !important;
           box-shadow: none !important;
@@ -672,18 +799,15 @@ const SocialMediaEmbedder = () => {
         .social-media-embed-wrapper.twitter .embed-title { display: none !important; }
         .social-media-embed-wrapper.twitter .twitter-embed-container { min-height: 0 !important; }
 
-        /* Fix for CORS issues */
         .social-media-embed-wrapper img {
           max-width: 100%;
           height: auto;
         }
 
-        /* Hide error messages from embeds */
         .social-media-embed-wrapper .error-message {
           display: none !important;
         }
 
-        /* Fallbacks: hidden by default to avoid layout shift/extra space */
         .facebook-fallback, .twitter-fallback, .instagram-fallback {
           display: none !important;
           opacity: 0;
@@ -694,7 +818,6 @@ const SocialMediaEmbedder = () => {
           text-align: center;
         }
 
-        /* Show fallbacks if embed fails to load */
         .facebook-embed-container:not(:has(iframe)),
         .twitter-embed-container:not(:has(iframe)),
         .instagram-embed-container:not(:has(iframe)) {
@@ -710,7 +833,6 @@ const SocialMediaEmbedder = () => {
           margin-top: 8px !important;
         }
 
-        /* Minimal fallback link styling */
         .twitter-fallback-link {
           color: #1DA1F2;
           text-decoration: underline;
@@ -724,13 +846,11 @@ const SocialMediaEmbedder = () => {
             margin: 1.25rem auto;
           }
 
-          /* Adjust heights for mobile */
           .social-media-embed-wrapper iframe[src*="facebook.com"],
           .social-media-embed-wrapper iframe[src*="instagram.com"] {
             min-height: 480px !important;
           }
 
-          /* Twitter-specific mobile tweaks */
           .social-media-embed-wrapper.twitter .twitter-embed-root {
             margin: 0.5rem 0 !important;
           }
@@ -745,20 +865,14 @@ const SocialMediaEmbedder = () => {
         }
       `;
 
-        // Add style to head
         document.head.appendChild(style);
       };
 
-      // Function to extract social media URLs from blockquotes
       const extractSocialMediaUrls = () => {
         const extractedEmbeds = [];
 
-        // No debug logs in production
-
-        // Find all blockquotes in the article content
         document.querySelectorAll("blockquote").forEach((blockquote, index) => {
           try {
-            // Skip if already processed by any system
             if (
               blockquote.getAttribute("data-processed") === "true" ||
               blockquote.getAttribute("data-embed-processed") === "true" ||
@@ -768,10 +882,7 @@ const SocialMediaEmbedder = () => {
               return;
             }
 
-            // Get the text content of the blockquote
             const text = blockquote.textContent.trim();
-
-            // Check if there's already an embed for this blockquote
             const existingEmbed = document.querySelector(
               `[data-tweet-id="${text}"]`
             );
@@ -784,11 +895,9 @@ const SocialMediaEmbedder = () => {
               return;
             }
 
-            // Mark as processed to avoid double processing
             blockquote.setAttribute("data-processed", "true");
             blockquote.setAttribute("data-mobile-processed", "true");
 
-            // Enhanced debugging for unprocessed blockquotes
             const links = blockquote.querySelectorAll("a");
             console.log(`Processing blockquote ${index}:`, {
               text: text.substring(0, 100),
@@ -797,25 +906,19 @@ const SocialMediaEmbedder = () => {
               innerHTML: blockquote.innerHTML.substring(0, 200),
             });
 
-            // Add an ID to the blockquote for reference - use a more stable approach
             const blockquoteId = `social-blockquote-${index}-${text
               .substring(0, 10)
               .replace(/\D/g, "")}`;
             blockquote.id = blockquoteId;
             blockquote.setAttribute("data-social-embed-id", blockquoteId);
 
-            // Links already defined above for debugging
             let socialUrl = null;
             let platform = null;
 
-            // First check if the text is a Twitter tweet ID (numeric string)
-            // This is the highest priority check as per requirements
             if (/^\d+$/.test(text) && text.length > 8) {
-              socialUrl = text; // For Twitter, we use the ID as the "URL"
+              socialUrl = text;
               platform = "twitter";
-            }
-            // If not a tweet ID, check for links
-            else if (links.length > 0) {
+            } else if (links.length > 0) {
               for (let i = 0; i < links.length; i++) {
                 const url = links[i].href;
                 if (
@@ -837,9 +940,7 @@ const SocialMediaEmbedder = () => {
               }
             }
 
-            // If no tweet ID or link found, try to extract URL from text
             if (!socialUrl && text.includes("http")) {
-              // Try to find Facebook URL
               const fbMatch = text.match(
                 /(https?:\/\/(www\.)?(facebook|fb)\.(com|watch)[^\s"'<>]+)/i
               );
@@ -847,7 +948,6 @@ const SocialMediaEmbedder = () => {
                 socialUrl = fbMatch[1];
                 platform = "facebook";
               } else {
-                // Try to find Instagram URL
                 const igMatch = text.match(
                   /(https?:\/\/(www\.)?(instagram|instagr)\.(com|am)[^\s"'<>]+)/i
                 );
@@ -855,12 +955,9 @@ const SocialMediaEmbedder = () => {
                   socialUrl = igMatch[1];
                   platform = "instagram";
                 }
-                // Note: YouTube URLs are intentionally not detected in blockquotes
-                // as they should only be handled through iframes
               }
             }
 
-            // If we found a social media URL, add it to our embeds array
             if (socialUrl && platform) {
               extractedEmbeds.push({
                 id: `social-embed-${index}`,
@@ -868,8 +965,6 @@ const SocialMediaEmbedder = () => {
                 platform,
                 blockquoteId,
               });
-
-              // No debug logs in production
             }
           } catch (err) {
             error("Error processing blockquote:", err);
@@ -879,23 +974,16 @@ const SocialMediaEmbedder = () => {
         return extractedEmbeds;
       };
 
-      // Load social media scripts first
-      loadSocialMediaScripts();
-
-      // Add styles
       addEmbedStyles();
 
-      // Extract social media URLs after a delay to ensure the DOM is fully loaded
-      // Use a longer delay to ensure RichTextRenderer has completely finished
-      const timeoutId = setTimeout(() => {
+      firstPassTimeout = setTimeout(() => {
         console.log("Starting first pass of embed extraction...");
         const extractedEmbeds = extractSocialMediaUrls();
-        setEmbeds(extractedEmbeds);
+        enqueueEmbeds(extractedEmbeds);
+        loadSocialMediaScripts(new Set(extractedEmbeds.map((e) => e.platform)));
 
-        // Log the number of embeds found in the first pass
         log(`First pass found ${extractedEmbeds.length} social media embeds`);
 
-        // Debug: Log all blockquotes found
         if (process.env.NODE_ENV === "development") {
           const allBlockquotes = document.querySelectorAll("blockquote");
           log(`Total blockquotes found: ${allBlockquotes.length}`);
@@ -904,85 +992,79 @@ const SocialMediaEmbedder = () => {
           });
         }
 
-        // If we found embeds, log their details
         if (extractedEmbeds.length > 0) {
           extractedEmbeds.forEach((embed, i) => {
             log(`Embed ${i}: Platform=${embed.platform}, URL=${embed.url}`);
           });
         }
 
-        // Run again after a longer delay to catch any dynamically loaded content
-        setTimeout(() => {
+        secondPassTimeout = setTimeout(() => {
           const newExtractedEmbeds = extractSocialMediaUrls();
-
-          // Log in development mode only
           log(
             `Second pass found ${newExtractedEmbeds.length} social media embeds`
           );
 
-          setEmbeds((prev) => {
-            // Only add new embeds that aren't already in the array
-            const existingIds = prev.map((embed) => embed.id);
-            const newEmbeds = newExtractedEmbeds.filter(
-              (embed) => !existingIds.includes(embed.id)
-            );
+          enqueueEmbeds(newExtractedEmbeds);
+          loadSocialMediaScripts(
+            new Set(newExtractedEmbeds.map((e) => e.platform))
+          );
 
-            // Log in development mode only
-            if (newEmbeds.length > 0) {
-              log(`Adding ${newEmbeds.length} new embeds from second pass`);
-            }
-
-            return [...prev, ...newEmbeds];
-          });
-
-          // Add a third pass for any late-loading content
-          setTimeout(() => {
+          thirdPassTimeout = setTimeout(() => {
             const finalExtractedEmbeds = extractSocialMediaUrls();
-
-            // Log in development mode only
             log(
               `Final pass found ${finalExtractedEmbeds.length} social media embeds`
             );
 
-            setEmbeds((prev) => {
-              const existingIds = prev.map((embed) => embed.id);
-              const finalNewEmbeds = finalExtractedEmbeds.filter(
-                (embed) => !existingIds.includes(embed.id)
-              );
-
-              // Log in development mode only
-              if (finalNewEmbeds.length > 0) {
-                log(
-                  `Adding ${finalNewEmbeds.length} new embeds from final pass`
-                );
-              }
-
-              return [...prev, ...finalNewEmbeds];
-            });
+            enqueueEmbeds(finalExtractedEmbeds);
+            loadSocialMediaScripts(
+              new Set(finalExtractedEmbeds.map((e) => e.platform))
+            );
           }, 5000);
         }, 3000);
-      }, 3000); // Increased delay to give RichTextRenderer more time
-
-      // Clean up
-      return () => {
-        clearTimeout(timeoutId);
-        // Disconnect the mutation observer
-        if (observer) {
-          observer.disconnect();
-        }
-        // Clear mobile cleanup interval
-        if (mobileCleanupInterval) {
-          clearInterval(mobileCleanupInterval);
-        }
-      };
-    } catch (error) {
-      console.error("SocialMediaEmbedder: Error during initialization:", error);
+      }, 3000);
+    } catch (componentError) {
+      console.error(
+        "SocialMediaEmbedder: Error during initialization:",
+        componentError
+      );
     }
-  }, []);
 
-  // Render the embeds using React portals to place them directly after the blockquotes
+    return () => {
+      hasInitializedRef.current = false;
+
+      if (firstPassTimeout) {
+        clearTimeout(firstPassTimeout);
+      }
+      if (secondPassTimeout) {
+        clearTimeout(secondPassTimeout);
+      }
+      if (thirdPassTimeout) {
+        clearTimeout(thirdPassTimeout);
+      }
+      if (mutationObserver) {
+        mutationObserver.disconnect();
+      }
+      if (mobileCleanupInterval) {
+        clearInterval(mobileCleanupInterval);
+      }
+      if (rateLimiterRef.current) {
+        clearTimeout(rateLimiterRef.current);
+        rateLimiterRef.current = null;
+      }
+
+      embedQueueRef.current = [];
+      knownEmbedIdsRef.current = new Set();
+    };
+  }, [shouldLoadEmbeds, enqueueEmbeds, processQueue]);
+
   return (
     <>
+      <div
+        ref={sentinelRef}
+        data-social-embed-sentinel="true"
+        style={{ height: 1, width: "100%", position: "relative" }}
+        aria-hidden="true"
+      />
       {embeds.map((embed) => (
         <InPlaceEmbed
           key={embed.id}

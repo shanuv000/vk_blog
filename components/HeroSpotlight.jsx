@@ -19,6 +19,7 @@ import OptimizedImage from "./OptimizedImage";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import HeroSpotlightSkeleton from "./HeroSpotlightSkeleton";
 import styles from "../styles/HeroSpotlight.module.css";
+import { IMAGE_CONFIGS, getOptimizedImageUrl } from "../lib/image-config";
 
 // Calculate reading time with better accuracy
 const calculateReadingTime = (content, title = "", excerpt = "") => {
@@ -187,12 +188,11 @@ const HeroSpotlight = ({
         className={`absolute inset-0 z-0 ${styles.minimalistBackground}`}
       >
         <OptimizedImage
-          src={heroData.featuredImage}
+          src={getOptimizedImageUrl(heroData.featuredImage, "hero")}
           alt={heroData.title}
           fill
           className="object-cover"
-          priority={true}
-          quality={90}
+          {...IMAGE_CONFIGS.hero}
           fallbackSrc={DEFAULT_FEATURED_IMAGE}
         />
         {/* Clean minimalist overlay */}

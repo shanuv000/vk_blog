@@ -36,6 +36,14 @@ export const getPosts = async () => {
               name
               slug
             }
+            tags {
+              id
+              name
+              slug
+              color {
+                hex
+              }
+            }
           }
         }
       }
@@ -111,6 +119,14 @@ export const getPostDetails = async (slug) => {
           name
           slug
         }
+        tags {
+          id
+          name
+          slug
+          color {
+            hex
+          }
+        }
       }
     }
   `;
@@ -150,6 +166,14 @@ export const getPostDetails = async (slug) => {
           categories {
             name
             slug
+          }
+          tags {
+            id
+            name
+            slug
+            color {
+              hex
+            }
           }
         }
       }

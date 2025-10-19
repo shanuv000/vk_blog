@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import HeadPostDetails from "./HeadPostDetails";
 import Navbar_post_details from "./Social_post_details";
 import OptimizedImage from "./OptimizedImage";
+import TagList from "./TagList";
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
@@ -160,6 +161,13 @@ const PostDetail = ({ post }) => {
               {readingTime && <span>·</span>}
               {readingTime && <span>{readingTime} min read</span>}
             </div>
+
+            {/* Tags Section */}
+            {post.tags && post.tags.length > 0 && (
+              <div className="mt-6 pt-6 border-t border-gray-100">
+                <TagList tags={post.tags} title="" size="md" />
+              </div>
+            )}
           </header>
 
           <ErrorBoundary>

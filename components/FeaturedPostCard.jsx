@@ -5,6 +5,11 @@ import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { FaCalendarAlt, FaBookmark, FaArrowRight } from "react-icons/fa";
 import OptimizedImage from "./OptimizedImage";
 import { FeaturedImageSkeleton } from "./ImageSkeletons";
+import {
+  IMAGE_CONFIGS,
+  getOptimizedImageUrl,
+  shouldPrioritizeImage,
+} from "../lib/image-config";
 
 const FeaturedPostCard = ({ post = {}, priority = false, index = 0 }) => {
   // Ensure post has all required properties with defaults
@@ -31,17 +36,15 @@ const FeaturedPostCard = ({ post = {}, priority = false, index = 0 }) => {
         {/* Enhanced Image Container with better overlay */}
         <div className="relative w-full h-full overflow-hidden">
           <OptimizedImage
-            src={safePost.featuredImage.url || DEFAULT_FEATURED_IMAGE}
+            src={getOptimizedImageUrl(
+              safePost.featuredImage.url || DEFAULT_FEATURED_IMAGE,
+              "featured"
+            )}
             alt={safePost.title || "Featured post"}
             fill
-            sizes={
-              isHero
-                ? "(max-width: 768px) 100vw, 50vw"
-                : "(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            }
             className="object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
-            priority={priority || isHero}
-            quality={isHero ? 95 : 90}
+            priority={shouldPrioritizeImage("featured", index)}
+            {...IMAGE_CONFIGS.featured}
             fallbackSrc={DEFAULT_FEATURED_IMAGE}
             showSkeleton={true}
             aspectRatio="16/9"

@@ -43,3 +43,7 @@ yarn-error.log*
 # sentry
 .sentryclirc
 sentry.properties
+
+# MCP server
+.mcp/node_modules
+.mcp/package-lock.json

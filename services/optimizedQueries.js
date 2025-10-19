@@ -75,6 +75,17 @@ export const QUERY_FRAGMENTS = {
     }
   `,
 
+  tagsBasic: `
+    tags {
+      id
+      name
+      slug
+      color {
+        hex
+      }
+    }
+  `,
+
   contentFull: `
     content {
       raw
@@ -134,6 +145,7 @@ export const OPTIMIZED_QUERIES = {
             ${QUERY_FRAGMENTS.authorBasic}
             ${QUERY_FRAGMENTS.featuredImageOptimized}
             ${QUERY_FRAGMENTS.categoriesBasic}
+            ${QUERY_FRAGMENTS.tagsBasic}
           }
         }
         pageInfo {
@@ -186,6 +198,7 @@ export const OPTIMIZED_QUERIES = {
         ${QUERY_FRAGMENTS.authorFull}
         ${QUERY_FRAGMENTS.featuredImageOptimized}
         ${QUERY_FRAGMENTS.categoriesBasic}
+        ${QUERY_FRAGMENTS.tagsBasic}
         ${QUERY_FRAGMENTS.contentFull}
       }
     }

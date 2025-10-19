@@ -6,6 +6,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
 import { getDirectCategories } from "../services/direct-api";
 import { useIsLiveCricket } from "../hooks/useCricketData";
+import { CATEGORY_HIERARCHY } from "../utils/categoryHierarchy";
 
 const Header = () => {
   // Use direct API for categories
@@ -59,21 +60,31 @@ const Header = () => {
   // Refs for dropdown handling
   const dropdownRefs = useRef({});
 
-  // Dropdown data structure
+  // Smart category hierarchy - 8 parent categories with subcategories
   const dropdownData = {
-    Blog:
-      categories && categories.length > 0
-        ? categories.map((category) => ({
-            name: category.name.toUpperCase(),
-            href: `/category/${category.slug}`,
-          }))
-        : [
-            { name: "WEB DEVELOPMENT", href: "/category/web-dev" },
-            { name: "TECHNOLOGY", href: "/category/technology" },
-            { name: "PROGRAMMING", href: "/category/programming" },
-            { name: "MOBILE APPS", href: "/category/mobile-apps" },
-            { name: "UI/UX", href: "/category/ui-ux" },
-          ],
+    Blog: CATEGORY_HIERARCHY.flatMap((parent) => {
+      const items = [
+        {
+          name: parent.name,
+          href: `/category/${parent.slug}`,
+          isParent: true,
+          icon: parent.icon,
+        },
+      ];
+
+      // Add subcategories indented
+      if (parent.subcategories && parent.subcategories.length > 0) {
+        parent.subcategories.forEach((sub) => {
+          items.push({
+            name: `  • ${sub.name}`,
+            href: `/category/${sub.slug}`,
+            isParent: false,
+          });
+        });
+      }
+
+      return items;
+    }),
   };
 
   // Handle header visibility on scroll
@@ -228,9 +239,9 @@ const Header = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-xl bg-secondary-light border border-border p-2 shadow-card max-h-96 overflow-y-auto"
+                      className="absolute right-0 z-50 mt-2 w-64 origin-top-right rounded-xl bg-secondary-light border border-border p-2 shadow-card max-h-[500px] overflow-y-auto"
                     >
-                      <div className="py-1 grid grid-cols-1 gap-1">
+                      <div className="py-1 grid grid-cols-1 gap-0.5">
                         {dropdownData[item.name] &&
                         dropdownData[item.name].length > 0 ? (
                           dropdownData[item.name].map((dropdownItem, index) => (
@@ -243,8 +254,17 @@ const Header = () => {
                                   desktop: null,
                                 }))
                               }
-                              className="block px-4 py-2.5 text-sm rounded-lg text-text-primary hover:bg-secondary hover:text-primary transition-colors duration-150"
+                              className={`block px-4 py-2.5 text-sm rounded-lg text-text-primary hover:bg-secondary hover:text-primary transition-colors duration-150 ${
+                                dropdownItem.isParent
+                                  ? "font-semibold border-b border-border/50 mb-1"
+                                  : "text-sm pl-6"
+                              }`}
                             >
+                              {dropdownItem.icon && (
+                                <span className="mr-2">
+                                  {dropdownItem.icon}
+                                </span>
+                              )}
                               {dropdownItem.name}
                             </Link>
                           ))
@@ -367,7 +387,7 @@ const Header = () => {
                                   transition={{ duration: 0.15 }}
                                   className="overflow-hidden"
                                 >
-                                  <div className="mt-2 pl-4 border-l-2 border-primary/30 space-y-1">
+                                  <div className="mt-2 pl-4 border-l-2 border-primary/30 space-y-0.5">
                                     {dropdownData[item.name] &&
                                     dropdownData[item.name].length > 0 ? (
                                       dropdownData[item.name].map(
@@ -376,8 +396,17 @@ const Header = () => {
                                             key={index}
                                             href={subItem.href}
                                             onClick={toggleMobileMenu}
-                                            className="block py-2.5 pl-3 text-sm text-text-secondary hover:text-primary rounded-lg hover:bg-secondary-light transition-colors duration-150"
+                                            className={`block py-2.5 pl-3 rounded-lg hover:bg-secondary-light transition-colors duration-150 ${
+                                              subItem.isParent
+                                                ? "text-base font-semibold text-text-primary hover:text-primary border-b border-border/30 mb-1"
+                                                : "text-sm text-text-secondary hover:text-primary"
+                                            }`}
                                           >
+                                            {subItem.icon && (
+                                              <span className="mr-2">
+                                                {subItem.icon}
+                                              </span>
+                                            )}
                                             {subItem.name}
                                           </Link>
                                         )

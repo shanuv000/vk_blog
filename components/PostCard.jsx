@@ -6,6 +6,8 @@ import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { FaUser, FaCalendarAlt } from "react-icons/fa";
 import OptimizedImage from "./OptimizedImage";
 import { PostCardImageSkeleton } from "./ImageSkeletons";
+import TagBadge from "./TagBadge";
+import { IMAGE_CONFIGS, getOptimizedImageUrl } from "../lib/image-config";
 
 const PostCard = ({ post = {} }) => {
   // Ensure post has all required properties with defaults
@@ -29,13 +31,14 @@ const PostCard = ({ post = {} }) => {
           <Link href={`/post/${safePost.slug}`}>
             <div className="w-full aspect-[16/9] bg-secondary-light">
               <OptimizedImage
-                src={safePost.featuredImage.url}
+                src={getOptimizedImageUrl(
+                  safePost.featuredImage.url,
+                  "postCard"
+                )}
                 alt={safePost.title || "Featured image"}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                quality={80}
-                priority={false}
+                {...IMAGE_CONFIGS.postCard}
                 fallbackSrc={DEFAULT_FEATURED_IMAGE}
                 showSkeleton={true}
                 aspectRatio="16/9"
@@ -80,6 +83,20 @@ const PostCard = ({ post = {} }) => {
         <p className="text-text-secondary mb-5 line-clamp-3 leading-relaxed">
           {safePost.excerpt}
         </p>
+
+        {/* Tags Section */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="mb-5 flex flex-wrap gap-1.5">
+            {post.tags.slice(0, 3).map((tag) => (
+              <TagBadge key={tag.id} tag={tag} size="sm" />
+            ))}
+            {post.tags.length > 3 && (
+              <span className="text-xs text-text-tertiary px-2 py-1">
+                +{post.tags.length - 3}
+              </span>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div className="flex items-center">

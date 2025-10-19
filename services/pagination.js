@@ -53,6 +53,14 @@ export const getPostsPaginated = async (options = {}) => {
         name
         slug
       }
+      tags {
+        id
+        name
+        slug
+        color {
+          hex
+        }
+      }
     `;
   }
 

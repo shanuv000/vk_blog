@@ -9,6 +9,10 @@ import { PostCard, Categories, Loader } from "../../components";
 import PostCardSkeleton from "../../components/PostCardSkeleton";
 import SchemaManager from "../../components/SchemaManager";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import {
+  getCategoryInfo,
+  getCategoryBreadcrumb,
+} from "../../utils/categoryHierarchy";
 
 // Enhanced loading components
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -161,10 +165,64 @@ const CategoryPost = ({ initialPosts }) => {
       {/* Add structured data */}
       <SchemaManager posts={postsForSchema} categoryName={actualCategoryName} />
       <div className="container mx-auto px-10 mb-8">
+        {/* Breadcrumb Navigation */}
+        {categorySlug &&
+          (() => {
+            const breadcrumb = getCategoryBreadcrumb(categorySlug);
+            const categoryInfo = getCategoryInfo(categorySlug);
+
+            return breadcrumb && breadcrumb.length > 0 ? (
+              <nav className="flex items-center space-x-2 text-sm mb-6 py-3">
+                {breadcrumb.map((item, index) => (
+                  <React.Fragment key={index}>
+                    {index > 0 && (
+                      <svg
+                        className="w-4 h-4 text-text-secondary"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                    {index === breadcrumb.length - 1 ? (
+                      <span className="text-primary font-medium flex items-center">
+                        {categoryInfo?.icon && (
+                          <span className="mr-1.5">{categoryInfo.icon}</span>
+                        )}
+                        {item.name}
+                      </span>
+                    ) : (
+                      <a
+                        href={item.href}
+                        className="text-text-secondary hover:text-primary transition-colors duration-150"
+                      >
+                        {item.name}
+                      </a>
+                    )}
+                  </React.Fragment>
+                ))}
+              </nav>
+            ) : null;
+          })()}
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="col-span-1 lg:col-span-8">
             <h1 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
-              {actualCategoryName || "Category"} Articles
+              {(() => {
+                const categoryInfo = getCategoryInfo(categorySlug);
+                return (
+                  <span className="flex items-center">
+                    {categoryInfo?.icon && (
+                      <span className="mr-3 text-4xl">{categoryInfo.icon}</span>
+                    )}
+                    {actualCategoryName || "Category"} Articles
+                  </span>
+                );
+              })()}
               {totalCount > 0 && (
                 <span className="text-sm font-normal text-text-secondary ml-2">
                   ({postsCount} of {totalCount})
