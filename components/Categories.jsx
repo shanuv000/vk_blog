@@ -78,11 +78,17 @@ const Categories = () => {
           message="Loading categories..."
         />
         <div className="animate-pulse w-full">
-          {[1, 2, 3, 4, 5].map((item) => (
+          {[
+            { id: 1, width: "96%" },
+            { id: 2, width: "80%" },
+            { id: 3, width: "88%" },
+            { id: 4, width: "75%" },
+            { id: 5, width: "92%" },
+          ].map((item) => (
             <div
-              key={item}
+              key={item.id}
               className="h-4 bg-secondary-light rounded mb-3"
-              style={{ width: `${Math.floor(Math.random() * 40) + 60}%` }}
+              style={{ width: item.width }}
             />
           ))}
         </div>

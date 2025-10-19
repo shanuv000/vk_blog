@@ -69,16 +69,14 @@ export default async function handler(req, res) {
   // Set CORS headers
   const origin = req.headers.origin;
 
-  if (origin && ALLOWED_ORIGINS.has(origin)) {
+  // In development, allow localhost
+  if (process.env.NODE_ENV === "development") {
+    res.setHeader("Access-Control-Allow-Origin", origin || "*");
+  } else if (origin && ALLOWED_ORIGINS.has(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   } else if (req.method === "OPTIONS") {
     // For preflight requests only, allow any origin
     res.setHeader("Access-Control-Allow-Origin", "*");
-  } else {
-    // For actual requests, if origin is not allowed, return 403
-    if (origin && !ALLOWED_ORIGINS.has(origin)) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
   }
 
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
