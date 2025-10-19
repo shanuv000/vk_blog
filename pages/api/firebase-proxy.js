@@ -6,16 +6,18 @@
  */
 
 // Firebase project configuration - hardcoded for production to avoid env lookups
-const FIREBASE_PROJECT_ID = 'urtechy-35294';
+const FIREBASE_PROJECT_ID = "urtechy-35294";
 
 // Allowed origins for CORS - using Set for O(1) lookups
-const ALLOWED_ORIGINS = new Set([
-  "https://blog.urtechy.com",
-  "https://www.blog.urtechy.com",
-  "https://urtechy.com",
-  "https://www.urtechy.com",
-  process.env.NODE_ENV === 'development' ? "http://localhost:3000" : null
-].filter(Boolean));
+const ALLOWED_ORIGINS = new Set(
+  [
+    "https://blog.urtechy.com",
+    "https://www.blog.urtechy.com",
+    "https://urtechy.com",
+    "https://www.urtechy.com",
+    process.env.NODE_ENV === "development" ? "http://localhost:3000" : null,
+  ].filter(Boolean)
+);
 
 // Allowed Firebase endpoints
 const ALLOWED_ENDPOINTS = [
@@ -60,13 +62,13 @@ const validateRequest = (req) => {
 
 export default async function handler(req, res) {
   // Set security headers
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+
   // Set CORS headers
   const origin = req.headers.origin;
-  
+
   if (origin && ALLOWED_ORIGINS.has(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   } else if (req.method === "OPTIONS") {
@@ -78,32 +80,48 @@ export default async function handler(req, res) {
       return res.status(403).json({ error: "Forbidden" });
     }
   }
-  
+
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Max-Age", "86400"); // Cache preflight for 24 hours
-  
+
   // Handle preflight requests
   if (req.method === "OPTIONS") {
     res.status(200).end();
     return;
   }
-  
+
   // Only allow POST requests for the proxy
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  
+
   // Validate the request
   const validation = validateRequest(req);
   if (!validation.valid) {
+    // Log validation errors in development
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Firebase proxy validation failed:", validation.error, {
+        endpoint: req.body?.endpoint,
+        method: req.body?.method,
+      });
+    }
     return res.status(400).json({ error: validation.error });
   }
-  
+
   try {
     // Extract request details
     const { endpoint, method, body, headers = {} } = req.body;
-    
+
+    // Log request in development
+    if (process.env.NODE_ENV !== "production") {
+      console.log("Firebase proxy request:", {
+        endpoint,
+        method,
+        bodyKeys: Object.keys(body || {}),
+      });
+    }
+
     // Prepare fetch options
     const fetchOptions = {
       method,
@@ -112,34 +130,43 @@ export default async function handler(req, res) {
         ...headers,
       },
       // Set timeout to avoid hanging requests
-      signal: AbortSignal.timeout(10000) // 10 second timeout
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     };
-    
+
     // Add body for non-GET requests
     if (method !== "GET" && body) {
       fetchOptions.body = JSON.stringify(body);
     }
-    
+
     // Make the request to Firebase
     const response = await fetch(endpoint, fetchOptions);
-    
+
     // Get the response data
     const data = await response.json();
-    
+
+    // Log Firebase errors in development
+    if (!response.ok && process.env.NODE_ENV !== "production") {
+      console.error("Firebase API error:", {
+        status: response.status,
+        statusText: response.statusText,
+        data,
+      });
+    }
+
     // Return the response with appropriate cache headers
-    res.setHeader('Cache-Control', 'no-store, private');
+    res.setHeader("Cache-Control", "no-store, private");
     res.status(response.status).json(data);
   } catch (error) {
     // Only log detailed errors in development
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== "production") {
       console.error("Firebase proxy error:", error);
     }
-    
+
     // Check for timeout
-    if (error.name === 'AbortError') {
-      return res.status(504).json({ error: 'Gateway timeout' });
+    if (error.name === "AbortError") {
+      return res.status(504).json({ error: "Gateway timeout" });
     }
-    
+
     res.status(500).json({ error: "Failed to proxy request to Firebase" });
   }
 }

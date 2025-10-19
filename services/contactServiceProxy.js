@@ -9,7 +9,7 @@ const FIREBASE_PROJECT_ID =
 const FIREBASE_API_KEY =
   process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
   "AIzaSyCgdl-5bF_gj07SwmWdCwVip1jVQSlzZ2w";
-const CONTACTS_COLLECTION = "contacts";
+const CONTACTS_COLLECTION = "blog-contacts";
 
 // Helper function to log errors only in development
 const logError = (message, error) => {
@@ -26,15 +26,13 @@ const logError = (message, error) => {
 export const submitContactForm = async (formData) => {
   try {
     // Add timestamp and source fields
+    const now = new Date().toISOString();
     const contactData = {
       ...formData,
       fullName: `${formData.firstName} ${formData.lastName}`,
-      timestamp: {
-        // Firestore server timestamp format for REST API
-        ".sv": "timestamp",
-      },
+      timestamp: now,
       source: "contact_form",
-      submittedAt: new Date().toISOString(),
+      submittedAt: now,
     };
 
     // Prepare the request to our proxy
@@ -56,6 +54,8 @@ export const submitContactForm = async (formData) => {
     });
 
     if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      logError("Firebase proxy error response:", errorData);
       throw new Error(
         `Failed to submit form: ${response.status} ${response.statusText}`
       );
@@ -88,8 +88,9 @@ function convertToFirestoreFields(data) {
   const fields = {};
 
   for (const [key, value] of Object.entries(data)) {
-    if (value === null || value === undefined) {
-      fields[key] = { nullValue: null };
+    if (value === null || value === undefined || value === "") {
+      // Skip empty values
+      continue;
     } else if (typeof value === "string") {
       fields[key] = { stringValue: value };
     } else if (typeof value === "number") {
@@ -105,16 +106,11 @@ function convertToFirestoreFields(data) {
         },
       };
     } else if (typeof value === "object") {
-      if (value[".sv"] === "timestamp") {
-        // Handle server timestamp
-        fields[key] = { timestampValue: value };
-      } else {
-        fields[key] = {
-          mapValue: {
-            fields: convertToFirestoreFields(value),
-          },
-        };
-      }
+      fields[key] = {
+        mapValue: {
+          fields: convertToFirestoreFields(value),
+        },
+      };
     }
   }
 

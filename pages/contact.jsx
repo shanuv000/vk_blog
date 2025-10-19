@@ -5,6 +5,8 @@ import { FaCheckCircle, FaExclamationTriangle, FaPhone } from "react-icons/fa";
 import { MdEmail, MdLocationOn, MdAccessTime, MdSend } from "react-icons/md";
 // Import the proxy-based contact service
 import { submitContactForm } from "../services/contactServiceProxy";
+// Import Telegram notification service
+import { sendTelegramNotification } from "../services/telegramService";
 
 // Form field validation
 const validateField = (name, value) => {
@@ -52,7 +54,8 @@ const FormField = ({
         className={`w-full p-2 ${icon ? "pl-10" : "pl-3"} border ${
           error ? "border-red-500" : "border-gray-300"
         }
-                   rounded-md bg-gray-50 focus:outline-none focus:ring-2
+                   rounded-md bg-white text-gray-900 placeholder-gray-400
+                   focus:outline-none focus:ring-2
                    ${error ? "focus:ring-red-500" : "focus:ring-urtechy-red"}
                    transition-all duration-200 ease-in-out
                    ${type === "textarea" ? "h-32 resize-none" : ""}`}
@@ -157,6 +160,17 @@ const ContactForm = () => {
       try {
         // Submit to Firebase using REST API service
         await submitContactForm(formState);
+
+        // Send Telegram notification (non-blocking - don't wait for it)
+        sendTelegramNotification(formState).catch((telegramError) => {
+          // Log telegram error only in development, but don't fail the form submission
+          if (process.env.NODE_ENV !== "production") {
+            console.warn(
+              "Failed to send Telegram notification:",
+              telegramError
+            );
+          }
+        });
 
         // Only log in development
         if (process.env.NODE_ENV !== "production") {
@@ -368,12 +382,14 @@ const ContactForm = () => {
           <div className="relative">
             <motion.select
               name="subject"
-              className="w-full p-2 pl-3 border border-gray-300 rounded-md bg-gray-50 text-gray-500 focus:outline-none focus:ring-2 focus:ring-urtechy-red appearance-none"
+              className="w-full p-2 pl-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-urtechy-red appearance-none"
               value={formState.subject}
               onChange={handleChange}
               whileFocus={{ scale: 1.01 }}
             >
-              <option value="">Choose message subject</option>
+              <option value="" className="text-gray-500">
+                Choose message subject
+              </option>
               <option value="inquiry">General Inquiry</option>
               <option value="feedback">Feedback</option>
               <option value="partnership">Partnership Opportunity</option>

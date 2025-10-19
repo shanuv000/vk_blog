@@ -53,7 +53,9 @@ export default function SentryExamplePage() {
   const throwAsyncError = async () => {
     setMessage("Throwing async error...");
     await new Promise((resolve) => setTimeout(resolve, 100));
-    throw new Error("Sentry Async Test Error: This is a deliberate async error!");
+    throw new Error(
+      "Sentry Async Test Error: This is a deliberate async error!"
+    );
   };
 
   // Test 6: Promise rejection
@@ -81,9 +83,11 @@ export default function SentryExamplePage() {
             </p>
             <div className="mt-4 p-4 bg-yellow-900/50 border border-yellow-600 rounded-lg inline-block">
               <p className="text-yellow-200 text-sm">
-                ⚠️ <strong>Note:</strong> In development mode, errors are logged to console only.
+                ⚠️ <strong>Note:</strong> In development mode, errors are logged
+                to console only.
                 <br />
-                Deploy to production or set NEXT_PUBLIC_SENTRY_ENVIRONMENT=production to send to Sentry.
+                Deploy to production or set
+                NEXT_PUBLIC_SENTRY_ENVIRONMENT=production to send to Sentry.
               </p>
             </div>
           </div>
@@ -203,14 +207,15 @@ export default function SentryExamplePage() {
               <li className="flex items-start">
                 <span className="font-bold text-purple-400 mr-3">1.</span>
                 <span>
-                  Click any test button above to trigger different types of errors
+                  Click any test button above to trigger different types of
+                  errors
                 </span>
               </li>
               <li className="flex items-start">
                 <span className="font-bold text-purple-400 mr-3">2.</span>
                 <span>
-                  In <strong>development</strong>: Check your browser console to see Sentry events
-                  (they won't be sent to Sentry.io)
+                  In <strong>development</strong>: Check your browser console to
+                  see Sentry events (they won't be sent to Sentry.io)
                 </span>
               </li>
               <li className="flex items-start">
@@ -257,7 +262,9 @@ export default function SentryExamplePage() {
 
           {/* Environment Info */}
           <div className="mt-8 p-4 bg-gray-800/30 border border-gray-700 rounded-lg">
-            <h3 className="text-sm font-semibold text-gray-400 mb-2">Environment Info</h3>
+            <h3 className="text-sm font-semibold text-gray-400 mb-2">
+              Environment Info
+            </h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-gray-500">Mode:</span>{" "}
