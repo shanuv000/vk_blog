@@ -19,8 +19,34 @@ const Comments = dynamic(() => import("./Comments"), {
   ssr: false,
 });
 
-// Lazy load SocialMediaEmbedder component
+// Lazy load SocialMediaEmbedder component with optimized loading
 const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
+  loading: () => (
+    <div className="max-w-3xl mx-auto mt-12 space-y-8">
+      {/* Twitter embed skeleton */}
+      <div className="flex justify-center">
+        <div className="w-full max-w-[550px] bg-white border border-gray-200 rounded-2xl p-4 animate-pulse">
+          <div className="flex items-start space-x-3 mb-3">
+            <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-32"></div>
+              <div className="h-3 bg-gray-100 rounded w-24"></div>
+            </div>
+          </div>
+          <div className="space-y-2 mb-3">
+            <div className="h-3 bg-gray-100 rounded"></div>
+            <div className="h-3 bg-gray-100 rounded w-5/6"></div>
+          </div>
+          <div className="h-48 bg-gray-100 rounded-lg mb-3"></div>
+          <div className="flex justify-between text-gray-300">
+            <div className="h-4 w-16 bg-gray-100 rounded"></div>
+            <div className="h-4 w-16 bg-gray-100 rounded"></div>
+            <div className="h-4 w-16 bg-gray-100 rounded"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
   ssr: false,
 });
 
@@ -225,7 +251,17 @@ const PostDetail = ({ post }) => {
           </section>
 
           <section className="mt-12">
-            <SocialMediaEmbedder key={post.slug} />
+            <ErrorBoundary
+              fallback={
+                <div className="text-center p-6 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-sm text-gray-600">
+                    Social media embeds are temporarily unavailable
+                  </p>
+                </div>
+              }
+            >
+              <SocialMediaEmbedder key={post.slug} />
+            </ErrorBoundary>
           </section>
 
           <section className="mt-16 pt-12 border-t border-gray-200">

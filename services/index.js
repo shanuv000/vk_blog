@@ -1,29 +1,23 @@
-// Import both the original services and the Apollo hooks
-import { fetchFromCDN, fetchFromContentAPI, gql } from "./hygraph";
-import { fetchViaProxy, gql as proxyGql } from "./proxy";
-import * as apolloHooks from "../hooks/useApolloQueries";
-import { initializeApollo } from "../lib/apollo-client";
+import { fetchFromCDN, gql } from "./hygraph";
 import { deduplicate } from "../lib/request-deduplicator";
 
-// Function to get Apollo Client instance
-const getApolloClient = () => initializeApollo();
-
-// Flag to control whether to use Apollo Client or the original implementation
-const USE_APOLLO = true;
-
 export const getPosts = async (options = {}) => {
+  const {
+    limit = 12, // Lower default to reduce payload and Hygraph usage
+    fields = "full", // 'full' or 'minimal'
+    forStaticPaths = false, // Special flag for getStaticPaths usage
+    ttl,
+    debug,
+  } = options;
+
+  const dedupKey = `getPosts:${fields}:${limit}:${
+    forStaticPaths ? "static" : "default"
+  }`;
+
   // Wrap in deduplication to prevent duplicate requests
   return deduplicate(
-    "getPosts",
+    dedupKey,
     async () => {
-      // Default options
-      const {
-        limit = 12, // Lower default to reduce payload and Hygraph usage
-        fields = "full", // 'full' or 'minimal'
-        forStaticPaths = false, // Special flag for getStaticPaths usage
-        cacheKey = null, // Optional cache key for memoization
-      } = options;
-
       // Check if we're in a build context (for static generation)
       const isBuildTime = typeof window === "undefined";
 
@@ -55,17 +49,6 @@ export const getPosts = async (options = {}) => {
         } catch (error) {
           console.error("[getPosts] Error fetching post slugs:", error);
           return [];
-        }
-      }
-
-      // Use Apollo Client if enabled (for normal page rendering)
-      if (USE_APOLLO && !forStaticPaths) {
-        try {
-          const posts = await apolloHooks.fetchPosts(limit);
-          return posts;
-        } catch (apolloError) {
-          console.error("[getPosts] Apollo fetch failed:", apolloError);
-          // Fall back to direct implementation
         }
       }
 
@@ -134,35 +117,12 @@ export const getPosts = async (options = {}) => {
         return [];
       }
     },
-    options
-  ); // Close deduplicate wrapper with options for cache key
+    { ttl, debug }
+  ); // Close deduplicate wrapper
 };
 
 export const getCategories = async () => {
-  // Wrap in deduplication to prevent duplicate requests
   return deduplicate("getCategories", async () => {
-    // Use Apollo Client if enabled
-    if (USE_APOLLO) {
-      try {
-        const client = getApolloClient();
-        const { data } = await client.query({
-          query: apolloHooks.CATEGORIES_QUERY,
-          fetchPolicy: "network-only", // Always fetch fresh data for categories
-        });
-
-        if (!data || !data.categories) {
-          console.error("No categories data returned from Apollo");
-          throw new Error("No categories data returned");
-        }
-
-        return data.categories;
-      } catch (error) {
-        console.error("Error fetching categories with Apollo:", error);
-        // Fall back to original implementation
-      }
-    }
-
-    // Original implementation as fallback
     const query = gql`
       query GetGategories {
         categories(where: { show: true }, orderBy: name_DESC) {
@@ -190,90 +150,8 @@ export const getCategories = async () => {
 };
 
 export const getPostDetails = async (slug) => {
-  // Wrap in deduplication to prevent duplicate requests for same slug
   return deduplicate(`getPostDetails-${slug}`, async () => {
     console.log(`[getPostDetails] Starting fetch for slug: "${slug}"`);
-
-    // Use Apollo Client if enabled
-    if (USE_APOLLO) {
-      try {
-        console.log(
-          `[getPostDetails] Attempting Apollo fetch for slug: "${slug}"`
-        );
-        const result = await apolloHooks.fetchPostDetails(slug);
-
-        if (!result) {
-          console.warn(
-            `[getPostDetails] Apollo returned null for slug: "${slug}"`
-          );
-        } else {
-          console.log(
-            `[getPostDetails] Apollo successfully fetched data for slug: "${slug}"`
-          );
-
-          // Validate content structure
-          if (!result.content) {
-            console.warn(
-              `[getPostDetails] Post for slug "${slug}" is missing content property`
-            );
-          } else {
-            const contentKeys = Object.keys(result.content);
-            console.log(
-              `[getPostDetails] Content structure for "${slug}": ${contentKeys.join(
-                ", "
-              )}`
-            );
-
-            // Check for critical content fields
-            if (!result.content.raw && !result.content.json) {
-              console.warn(
-                `[getPostDetails] Post "${slug}" missing both content.raw and content.json`
-              );
-            }
-          }
-
-          // Check for other critical fields
-          if (!result.title) {
-            console.warn(`[getPostDetails] Post "${slug}" missing title`);
-          }
-
-          if (!result.featuredImage || !result.featuredImage.url) {
-            console.warn(
-              `[getPostDetails] Post "${slug}" missing featuredImage or url`
-            );
-          }
-
-          return result;
-        }
-      } catch (apolloError) {
-        console.error(
-          `[getPostDetails] Apollo fetch failed for slug "${slug}":`,
-          apolloError.message
-        );
-        console.error(`[getPostDetails] Error stack:`, apolloError.stack);
-
-        // Log more details about the error
-        if (apolloError.graphQLErrors) {
-          console.error(
-            `[getPostDetails] GraphQL Errors:`,
-            JSON.stringify(apolloError.graphQLErrors)
-          );
-        }
-        if (apolloError.networkError) {
-          console.error(
-            `[getPostDetails] Network Error:`,
-            apolloError.networkError.message
-          );
-        }
-
-        // Fall back to original implementation
-        console.log(
-          `[getPostDetails] Falling back to direct implementation for "${slug}"`
-        );
-      }
-    }
-
-    // Original implementation as fallback
     // Define the query to fetch post details with updated structure
     const query = gql`
       query GetPostDetails($slug: String!) {
@@ -296,15 +174,6 @@ export const getPostDetails = async (slug) => {
           content {
             raw
             json
-            references {
-              ... on Asset {
-                id
-                url
-                mimeType
-                width
-                height
-              }
-            }
           }
           categories {
             name
@@ -344,15 +213,6 @@ export const getPostDetails = async (slug) => {
           content {
             raw
             json
-            references {
-              ... on Asset {
-                id
-                url
-                mimeType
-                width
-                height
-              }
-            }
           }
           categories {
             name
@@ -416,25 +276,8 @@ export const getPostDetails = async (slug) => {
               )}`
             );
 
-            // Handle references field - ensure it's always an array
-            if (!result.post.content.references) {
-              console.log(`No references found, adding empty array`);
-              result.post.content.references = [];
-            } else if (!Array.isArray(result.post.content.references)) {
-              console.log(`References is not an array, converting to array`);
-              try {
-                result.post.content.references = Object.values(
-                  result.post.content.references
-                );
-              } catch (e) {
-                console.error(`Failed to convert references to array:`, e);
-                result.post.content.references = [];
-              }
-            }
-
-            console.log(
-              `References count: ${result.post.content.references.length}`
-            );
+            // Ensure references field is always an empty array since we don't fetch it
+            result.post.content.references = [];
           }
           return result.post;
         } else {
@@ -443,62 +286,6 @@ export const getPostDetails = async (slug) => {
       } catch (cdnError) {
         console.error(`CDN fetch failed for slug: ${slug}:`, cdnError);
         console.error(`Error details:`, cdnError.message);
-
-        // Check if this is a GraphQL error related to the references field
-        const isReferencesError =
-          cdnError.message &&
-          (cdnError.message.includes("Fragment cannot be spread here") ||
-            cdnError.message.includes("PostContentRichTextEmbeddedTypes") ||
-            cdnError.message.includes("Asset"));
-
-        if (isReferencesError) {
-          console.log(`Detected references field error, trying minimal query`);
-
-          // Create a minimal query that doesn't include the references field
-          const minimalQuery = gql`
-            query GetMinimalPostDetails($slug: String!) {
-              post(where: { slug: $slug }) {
-                title
-                excerpt
-                featuredImage {
-                  url
-                }
-                author {
-                  name
-                  photo {
-                    url
-                  }
-                }
-                createdAt
-                slug
-                content {
-                  raw
-                  json
-                }
-                categories {
-                  name
-                  slug
-                }
-              }
-            }
-          `;
-
-          try {
-            const minimalResult = await fetchFromCDN(minimalQuery, { slug });
-            if (minimalResult.post) {
-              console.log(`Minimal query succeeded for slug: ${slug}`);
-
-              // Add empty references array to avoid errors in the renderer
-              if (minimalResult.post.content) {
-                minimalResult.post.content.references = [];
-              }
-
-              return minimalResult.post;
-            }
-          } catch (minimalError) {
-            console.error(`Minimal query also failed:`, minimalError);
-          }
-        }
       }
 
       // Try alternative query as a second attempt
@@ -510,16 +297,10 @@ export const getPostDetails = async (slug) => {
         if (alternativeResult.posts && alternativeResult.posts.length > 0) {
           console.log(`Alternative query succeeded for slug: ${slug}`);
 
-          // Ensure references is an array
+          // Ensure references is an empty array since we don't fetch it
           const post = alternativeResult.posts[0];
-          if (post.content && !post.content.references) {
+          if (post.content) {
             post.content.references = [];
-          } else if (post.content && !Array.isArray(post.content.references)) {
-            try {
-              post.content.references = Object.values(post.content.references);
-            } catch (e) {
-              post.content.references = [];
-            }
           }
 
           return post;
@@ -568,18 +349,6 @@ export const getPostDetails = async (slug) => {
 };
 
 export const getSimilarPosts = async (categories, slug) => {
-  // Use Apollo Client if enabled
-  if (USE_APOLLO) {
-    const client = getApolloClient();
-    const { data } = await client.query({
-      query: apolloHooks.SIMILAR_POSTS_QUERY,
-      variables: { slug, categories },
-      fetchPolicy: "cache-first",
-    });
-    return data.posts || [];
-  }
-
-  // Original implementation as fallback
   const query = gql`
     query GetPostDetails($slug: String!, $categories: [String!]) {
       posts(
@@ -603,21 +372,6 @@ export const getSimilarPosts = async (categories, slug) => {
 };
 
 export const getAdjacentPosts = async (createdAt, slug) => {
-  // Use Apollo Client if enabled
-  if (USE_APOLLO) {
-    const client = getApolloClient();
-    const { data } = await client.query({
-      query: apolloHooks.ADJACENT_POSTS_QUERY,
-      variables: { slug, createdAt },
-      fetchPolicy: "cache-first",
-    });
-    return {
-      next: data.next?.[0] || null,
-      previous: data.previous?.[0] || null,
-    };
-  }
-
-  // Original implementation as fallback
   const query = gql`
     query GetAdjacentPosts($createdAt: DateTime!, $slug: String!) {
       next: posts(
@@ -657,45 +411,10 @@ export const getCategoryPost = async (slug) => {
     return [];
   }
 
-  // ⚠️ DEPRECATED: This Apollo query loads ALL category posts at once!
-  // Use the new pagination service instead for better performance
   console.warn(
     `⚠️ getCategoryPost for ${slug} should use pagination service instead of loading all posts at once`
   );
 
-  // Use Apollo Client if enabled (but with warning)
-  if (USE_APOLLO) {
-    try {
-      const client = getApolloClient();
-      const { data } = await client.query({
-        query: apolloHooks.CATEGORY_POSTS_QUERY,
-        variables: { slug },
-        fetchPolicy: "network-only", // Always fetch fresh data for category pages
-      });
-
-      if (data && data.postsConnection && data.postsConnection.edges) {
-        console.log(
-          `⚠️ Loaded ${data.postsConnection.edges.length} posts for category ${slug} with Apollo (inefficient - use pagination instead)`
-        );
-        // Cap the number of edges returned to reduce overfetching
-        return data.postsConnection.edges.slice(0, 12);
-      } else {
-        console.warn(
-          `No posts found for category ${slug} with Apollo, trying fallback`
-        );
-        throw new Error("No posts found with Apollo");
-      }
-    } catch (error) {
-      console.error(
-        `Error fetching category posts for ${slug} with Apollo:`,
-        error
-      );
-      // Fall back to original implementation
-    }
-  }
-
-  // Original implementation as fallback
-  // Standard query using postsConnection
   const query = gql`
     query GetCategoryPost($slug: String!) {
       postsConnection(
@@ -805,38 +524,7 @@ export const getCategoryPost = async (slug) => {
 };
 
 export const getFeaturedPosts = async () => {
-  // Wrap in deduplication to prevent duplicate requests
   return deduplicate("getFeaturedPosts", async () => {
-    // Use Apollo Client if enabled
-    if (USE_APOLLO) {
-      try {
-        const client = getApolloClient();
-        const { data } = await client.query({
-          query: apolloHooks.FEATURED_POSTS_QUERY,
-          fetchPolicy: "cache-first",
-        });
-
-        const posts = data?.posts || [];
-
-        // Process image dimensions
-        return posts.map((post) => ({
-          ...post,
-          featuredImage: {
-            ...post.featuredImage,
-            width: parseInt(post.featuredImage?.width, 10) || 30,
-            height: parseInt(post.featuredImage?.height, 10) || 30,
-          },
-        }));
-      } catch (apolloError) {
-        console.error(
-          "Error fetching featured posts with Apollo:",
-          apolloError
-        );
-        // Fall back to proxy or direct methods
-      }
-    }
-
-    // Original implementation as fallback
     const query = gql`
       query GetCategoryPost {
         posts(
@@ -863,17 +551,7 @@ export const getFeaturedPosts = async () => {
     `;
 
     try {
-      let result;
-
-      // Use proxy API for client-side requests to avoid CORS issues
-      if (typeof window !== "undefined") {
-        console.log("Fetching featured posts via proxy API");
-        result = await fetchViaProxy(query);
-      } else {
-        // Use direct CDN for server-side rendering
-        console.log("Fetching featured posts via direct CDN (server-side)");
-        result = await fetchFromCDN(query);
-      }
+      const result = await fetchFromCDN(query);
 
       return result.posts.map((post) => ({
         ...post,
@@ -886,50 +564,12 @@ export const getFeaturedPosts = async () => {
     } catch (error) {
       console.error("Error fetching featured posts:", error);
 
-      // Last resort: try direct CDN if proxy failed
-      if (typeof window !== "undefined") {
-        try {
-          console.log("Proxy failed, trying direct CDN as last resort");
-          const result = await fetchFromCDN(query);
-
-          return result.posts.map((post) => ({
-            ...post,
-            featuredImage: {
-              ...post.featuredImage,
-              width: parseInt(post.featuredImage?.width, 10) || 30,
-              height: parseInt(post.featuredImage?.height, 10) || 30,
-            },
-          }));
-        } catch (fallbackError) {
-          console.error(
-            "All attempts to fetch featured posts failed:",
-            fallbackError
-          );
-        }
-      }
-
       return [];
     }
   }); // Close deduplicate wrapper
 };
 
 export const getRecentPosts = async () => {
-  // Use Apollo Client if enabled
-  if (USE_APOLLO) {
-    try {
-      const client = getApolloClient();
-      const { data } = await client.query({
-        query: apolloHooks.RECENT_POSTS_QUERY,
-        fetchPolicy: "cache-first",
-      });
-      return data.posts || [];
-    } catch (error) {
-      console.error("Error fetching recent posts with Apollo:", error);
-      return [];
-    }
-  }
-
-  // Original implementation as fallback
   const query = gql`
     query GetPostDetails {
       posts(orderBy: createdAt_ASC, last: 3) {
@@ -944,22 +584,4 @@ export const getRecentPosts = async () => {
   `;
   const result = await fetchFromCDN(query);
   return result.posts;
-};
-
-// Export utility functions for cache management
-export const clearCache = () => {
-  if (USE_APOLLO) {
-    return apolloHooks.clearCache();
-  }
-};
-
-export const refetchQueries = async (queries = []) => {
-  if (USE_APOLLO) {
-    return apolloHooks.refetchQueries(queries);
-  }
-};
-
-// Export Apollo hooks for direct use in components
-export const useApolloHooks = () => {
-  return apolloHooks;
 };

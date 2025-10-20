@@ -10,7 +10,7 @@ import {
   materialDark,
 } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { FiCopy, FiCheck } from "react-icons/fi";
-import TwitterEmbed from "./Blog/TwitterEmbed";
+import dynamic from "next/dynamic";
 import FacebookEmbed from "./FacebookEmbed";
 import InstagramEmbed from "./InstagramEmbed";
 import CustomYouTubeEmbed from "./CustomYouTubeEmbed";
@@ -18,6 +18,17 @@ import {
   extractImageDimensions,
   createImageDebugUrl,
 } from "../utils/imageUtils";
+import { getOptimizedImageUrl } from "../lib/image-config";
+
+// Use enhanced tweet embed with lazy loading
+const EnhancedTweetEmbed = dynamic(() => import("./EnhancedTweetEmbed"), {
+  loading: () => (
+    <div className="flex justify-center my-6">
+      <div className="w-full max-w-[550px] bg-gray-100 rounded-2xl p-4 animate-pulse h-64"></div>
+    </div>
+  ),
+  ssr: false,
+});
 
 // Code block component with copy functionality
 const CodeBlock = ({ language, code }) => {
@@ -627,15 +638,15 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 // Log the tweet ID for debugging
                 console.log(`RichTextRenderer found tweet ID: ${finalTweetId}`);
 
-                // Render tweet with the found ID
+                // Render tweet with enhanced component
                 return (
-                  <div
-                    className="my-4 sm:my-6 md:my-8 mx-auto w-full flex justify-center"
-                    data-embed-type="twitter"
-                    data-embed-processed="true"
-                  >
-                    <TwitterEmbed tweetId={finalTweetId} />
-                  </div>
+                  <EnhancedTweetEmbed
+                    tweetId={finalTweetId}
+                    variant="inline"
+                    className="w-full"
+                    showError={true}
+                    showSkeleton={true}
+                  />
                 );
               }
 
@@ -818,13 +829,14 @@ const RichTextRenderer = ({ content, references = [] }) => {
               return (
                 <div className="my-8">
                   <Image
-                    src={src}
+                    src={getOptimizedImageUrl(src, "postDetail")}
                     alt={altText || "Blog image"}
                     height={imageHeight}
                     width={imageWidth}
                     className="rounded-lg shadow-md"
                     priority={false}
-                    quality={85}
+                    quality={70}
+                    sizes="(max-width: 768px) 100vw, 1000px"
                   />
                   {altText && (
                     <figcaption className="text-center text-gray-500 text-sm mt-2 italic">
@@ -1193,11 +1205,15 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   // Use the found tweet ID or fall back to trimmedText
                   const finalTweetId = tweetId || trimmedText;
 
-                  // Render tweet with the found ID
+                  // Render tweet with enhanced component
                   return (
-                    <div className="my-4 sm:my-6 md:my-8 mx-auto w-full flex justify-center">
-                      <TwitterEmbed tweetId={finalTweetId} />
-                    </div>
+                    <EnhancedTweetEmbed
+                      tweetId={finalTweetId}
+                      variant="inline"
+                      className="w-full"
+                      showError={true}
+                      showSkeleton={true}
+                    />
                   );
                 }
 
@@ -1209,9 +1225,13 @@ const RichTextRenderer = ({ content, references = [] }) => {
 
                 if (knownTweetIds[nodeId]) {
                   return (
-                    <div className="my-16 mx-auto max-w-4xl">
-                      <TwitterEmbed tweetId={knownTweetIds[nodeId]} />
-                    </div>
+                    <EnhancedTweetEmbed
+                      tweetId={knownTweetIds[nodeId]}
+                      variant="inline"
+                      className="w-full max-w-4xl"
+                      showError={true}
+                      showSkeleton={true}
+                    />
                   );
                 }
 
@@ -1258,9 +1278,13 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 }
 
                 return (
-                  <div className="my-4 sm:my-6 md:my-8 mx-auto w-full flex justify-center">
-                    <TwitterEmbed tweetId={tweetId} />
-                  </div>
+                  <EnhancedTweetEmbed
+                    tweetId={tweetId}
+                    variant="inline"
+                    className="w-full"
+                    showError={true}
+                    showSkeleton={true}
+                  />
                 );
               },
               Facebook: ({ nodeId, url, children }) => {

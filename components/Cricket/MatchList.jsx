@@ -75,6 +75,10 @@ const MatchList = ({
           <Image
             src={ball}
             alt="Cricket"
+            width={64}
+            height={64}
+            quality={70}
+            sizes="64px"
             className="w-16 h-16 opacity-50 mb-4"
           />
           <p className="text-lg font-medium text-gray-500 text-center">
@@ -223,6 +227,10 @@ const MatchList = ({
             <Image
               src={ball}
               alt="Cricket Ball"
+              width={32}
+              height={32}
+              quality={70}
+              sizes="32px"
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8"
             />
           </div>
@@ -238,6 +246,10 @@ const MatchList = ({
           <Image
             src={ball}
             alt="Cricket"
+            width={64}
+            height={64}
+            quality={70}
+            sizes="64px"
             className="w-16 h-16 opacity-40 mb-4"
           />
           <p className="text-lg font-medium text-center mb-4">

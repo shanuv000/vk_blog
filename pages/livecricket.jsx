@@ -37,6 +37,10 @@ const LiveCricket = () => {
             <Image
               src={ball}
               alt="Cricket Ball"
+              width={40}
+              height={40}
+              quality={70}
+              sizes="40px"
               className="w-10 h-10 mr-3"
               priority
             />

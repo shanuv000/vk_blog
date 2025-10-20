@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { IMAGE_CONFIGS } from "../lib/image-config";
 
 /**
  * OptimizedImage Component
@@ -21,9 +22,9 @@ const OptimizedImage = ({
   width,
   height,
   fill = false,
-  sizes,
+  sizes = IMAGE_CONFIGS.postCard.sizes,
   priority = false,
-  quality = 85,
+  quality = IMAGE_CONFIGS.postCard.quality || 70,
   className = "",
   containerClassName = "",
   aspectRatio = "16/9",

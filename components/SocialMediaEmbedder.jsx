@@ -64,6 +64,16 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
     // Log blockquote details
     log(`Processing blockquote: ${blockquoteId}`);
 
+    // Check if embed container already exists for this blockquote
+    const existingContainer = document.querySelector(
+      `[data-replaces-blockquote="${blockquoteId}"]`
+    );
+    if (existingContainer) {
+      log(`Embed container already exists for ${blockquoteId}, reusing it`);
+      setContainer(existingContainer);
+      return;
+    }
+
     // Create a container for the embed
     const embedContainer = document.createElement("div");
     embedContainer.className = "social-media-embed-container";
@@ -870,6 +880,7 @@ const SocialMediaEmbedder = () => {
 
       const extractSocialMediaUrls = () => {
         const extractedEmbeds = [];
+        const seenUrls = new Set(); // Track URLs we've already processed
 
         document.querySelectorAll("blockquote").forEach((blockquote, index) => {
           try {
@@ -895,8 +906,7 @@ const SocialMediaEmbedder = () => {
               return;
             }
 
-            blockquote.setAttribute("data-processed", "true");
-            blockquote.setAttribute("data-mobile-processed", "true");
+            // Don't mark as processed yet - only mark after we confirm it's a social media embed
 
             const links = blockquote.querySelectorAll("a");
             console.log(`Processing blockquote ${index}:`, {
@@ -915,9 +925,11 @@ const SocialMediaEmbedder = () => {
             let socialUrl = null;
             let platform = null;
 
+            // Check for Twitter numeric ID
             if (/^\d+$/.test(text) && text.length > 8) {
               socialUrl = text;
               platform = "twitter";
+              console.log(`✓ Matched Twitter ID: ${text}`);
             } else if (links.length > 0) {
               for (let i = 0; i < links.length; i++) {
                 const url = links[i].href;
@@ -959,12 +971,42 @@ const SocialMediaEmbedder = () => {
             }
 
             if (socialUrl && platform) {
+              // Check if we've already seen this URL in this pass
+              const urlKey = `${platform}:${socialUrl}`;
+
+              if (seenUrls.has(urlKey)) {
+                console.log(
+                  `⚠️ Skipping duplicate ${platform} URL: ${socialUrl}`
+                );
+                // Mark as processed to prevent future passes from picking it up
+                blockquote.setAttribute("data-processed", "true");
+                blockquote.setAttribute("data-mobile-processed", "true");
+                return;
+              }
+
+              // Add to seen URLs
+              seenUrls.add(urlKey);
+
+              // Mark as processed only when we've successfully identified a social media embed
+              blockquote.setAttribute("data-processed", "true");
+              blockquote.setAttribute("data-mobile-processed", "true");
+
               extractedEmbeds.push({
                 id: `social-embed-${index}`,
                 url: socialUrl,
                 platform,
                 blockquoteId,
               });
+            } else {
+              // Log why this blockquote wasn't matched
+              if (text.length > 0 && process.env.NODE_ENV === "development") {
+                console.log(`✗ Blockquote ${index} not matched:`, {
+                  text: text.substring(0, 100),
+                  isNumeric: /^\d+$/.test(text),
+                  length: text.length,
+                  hasLinks: links.length > 0,
+                });
+              }
             }
           } catch (err) {
             error("Error processing blockquote:", err);
@@ -975,6 +1017,41 @@ const SocialMediaEmbedder = () => {
       };
 
       addEmbedStyles();
+
+      // Clean up stale processing flags from previous navigation/mount
+      const cleanupStaleFlags = () => {
+        document
+          .querySelectorAll(
+            "blockquote[data-processed='true'], blockquote[data-mobile-processed='true'], blockquote[data-embed-processed='true']"
+          )
+          .forEach((blockquote) => {
+            const text = blockquote.textContent.trim();
+            const blockquoteId =
+              blockquote.id ||
+              `temp-${text.substring(0, 10).replace(/\D/g, "")}`;
+
+            // Check if there's actually an embed container for this blockquote
+            const hasEmbedContainer =
+              document.querySelector(
+                `[data-replaces-blockquote="${blockquoteId}"]`
+              ) || document.querySelector(`[data-tweet-id="${text}"]`);
+
+            // If no embed exists but blockquote is marked as processed, it's stale - clear the flags
+            if (!hasEmbedContainer && blockquote.style.display !== "none") {
+              console.log(
+                `🧹 Cleaning stale processing flags from blockquote: ${text.substring(
+                  0,
+                  50
+                )}`
+              );
+              blockquote.removeAttribute("data-processed");
+              blockquote.removeAttribute("data-mobile-processed");
+              blockquote.removeAttribute("data-embed-processed");
+            }
+          });
+      };
+
+      cleanupStaleFlags();
 
       firstPassTimeout = setTimeout(() => {
         console.log("Starting first pass of embed extraction...");

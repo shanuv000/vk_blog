@@ -106,7 +106,9 @@ const PostCard = ({ post = {} }) => {
                 height={36}
                 width={36}
                 className="rounded-full ring-2 ring-border"
-                src={safePost.author.photo.url}
+                src={getOptimizedImageUrl(safePost.author.photo.url, "avatar")}
+                quality={70}
+                sizes="36px"
                 onError={() => {
                   console.log(
                     "Author image load error in PostCard, using fallback"

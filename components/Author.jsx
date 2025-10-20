@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { DEFAULT_AVATAR } from "./DefaultAvatar";
 import { FaUser } from "react-icons/fa";
+import { getOptimizedImageUrl } from "../lib/image-config";
 
 const Author = ({ author }) => {
   // If author is null or undefined, provide default values
@@ -17,10 +18,12 @@ const Author = ({ author }) => {
       <div className="absolute left-0 right-0 -top-14">
         {author.photo?.url ? (
           <Image
-            src={author.photo.url}
+            src={getOptimizedImageUrl(author.photo.url, "avatar")}
             alt={author.name || "Author"}
             height={100}
             width={100}
+            quality={70}
+            sizes="100px"
             className="align-middle rounded-full"
           />
         ) : (

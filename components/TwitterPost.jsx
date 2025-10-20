@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import dynamic from "next/dynamic";
 import { hasRendered, markRendered } from "../utils/renderedTweets";
+import { getOptimizedImageUrl } from "../lib/image-config";
 
 // Use dynamic import to avoid SSR issues with the legacy embed library
 const LegacyTwitterEmbed = dynamic(() => import("./Blog/TwitterEmbed"), {
@@ -23,58 +24,50 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
   const containerRef = useRef(null);
   const controllerRef = useRef(null);
 
-  const fetchTweet = async () => {
-    if (!tweetId) {
-      setError("Tweet ID is required");
-      setLoading(false);
-      return;
-    }
+  // Fetch tweet data with optional oEmbed support
+  const fetchTweet = useCallback(
+    async (signal, useOembed = false) => {
+      try {
+        // Use oEmbed endpoint for better caching (1 hour vs 15 min) and rate limit handling
+        const endpoint = useOembed
+          ? `/api/twitter/oembed/${tweetId}`
+          : `/api/twitter/tweet/${tweetId}`;
 
-    try {
-      // cancel any in-flight request before starting a new one
-      if (controllerRef.current) {
-        try {
-          controllerRef.current.abort();
-        } catch (_) {}
-      }
-      const controller = new AbortController();
-      controllerRef.current = controller;
+        const response = await fetch(endpoint, {
+          signal,
+        });
 
-      setLoading(true);
-      setError(null);
-      setIsRateLimit(false);
-
-      const response = await fetch(`/api/twitter/tweet/${tweetId}`, {
-        signal: controller.signal,
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          setIsRateLimit(true);
-          setError(data.message || "Rate limit exceeded");
-        } else {
-          throw new Error(data.message || "Failed to fetch tweet");
+        if (!response.ok) {
+          if (response.status === 429) {
+            // If rate limited on oEmbed, try regular API (which has stale cache fallback)
+            if (useOembed) {
+              console.log(
+                `🔄 Rate limited on oEmbed for ${tweetId}, falling back to data API`
+              );
+              return fetchTweet(signal, false);
+            }
+            throw new Error("Rate limit exceeded");
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      } else {
-        setTweet(data.data);
-        if (data.stale) {
-          console.info(
-            `Tweet ${tweetId} served from stale cache due to rate limit`
-          );
+
+        const data = await response.json();
+
+        if (data.error) {
+          throw new Error(data.error);
         }
-        // mark render success to dedupe further occurrences on this page
-        markRendered(tweetId);
+
+        return data;
+      } catch (err) {
+        // Re-throw abort errors as-is
+        if (err.name === "AbortError") {
+          throw err;
+        }
+        throw err;
       }
-    } catch (err) {
-      if (err?.name === "AbortError") return; // ignore aborts
-      console.error("Error fetching tweet:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-      controllerRef.current = null;
-    }
-  };
+    },
+    [tweetId]
+  );
 
   // Observe visibility and fetch only when near viewport
   useEffect(() => {
@@ -309,11 +302,12 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
         {tweet.author?.profileImageUrl && (
           <div className="relative w-12 h-12 flex-shrink-0">
             <Image
-              src={tweet.author.profileImageUrl}
+              src={getOptimizedImageUrl(tweet.author.profileImageUrl, "avatar")}
               alt={`${tweet.author.name} profile`}
               fill
               className="rounded-full object-cover"
               sizes="48px"
+              quality={70}
             />
           </div>
         )}
@@ -358,11 +352,13 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
               {media.type === "photo" && media.url && (
                 <div className="relative rounded-lg overflow-hidden border border-gray-200">
                   <Image
-                    src={media.url}
+                    src={getOptimizedImageUrl(media.url, "featured")}
                     alt={media.altText || "Tweet image"}
                     width={media.width || 600}
                     height={media.height || 400}
                     className="w-full h-auto object-cover"
+                    quality={70}
+                    sizes="(max-width: 640px) 100vw, 600px"
                     style={{
                       maxHeight: "400px",
                     }}
@@ -372,11 +368,16 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
               {media.type === "video" && media.previewImageUrl && (
                 <div className="relative rounded-lg overflow-hidden border border-gray-200">
                   <Image
-                    src={media.previewImageUrl}
+                    src={getOptimizedImageUrl(
+                      media.previewImageUrl,
+                      "featured"
+                    )}
                     alt={media.altText || "Tweet video"}
                     width={media.width || 600}
                     height={media.height || 400}
                     className="w-full h-auto object-cover"
+                    quality={70}
+                    sizes="(max-width: 640px) 100vw, 600px"
                     style={{
                       maxHeight: "400px",
                     }}
