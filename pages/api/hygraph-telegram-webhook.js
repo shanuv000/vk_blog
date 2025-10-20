@@ -55,10 +55,31 @@ const getOperationName = (operation) => {
 };
 
 /**
+ * Escape markdown special characters for Telegram
+ */
+const escapeMarkdown = (text) => {
+  if (!text) return text;
+  // Escape special characters that could break markdown parsing
+  return text.toString().replace(/[_*[\]()~`>#+=|{}.!-]/g, '\\$&');
+};
+
+/**
  * Format Hygraph event into a Telegram message
  */
 const formatHygraphMessage = (operation, data) => {
-  const { __typename, id, slug, title, name, excerpt, featuredpost, stage, author, categories, tags } = data;
+  const {
+    __typename,
+    id,
+    slug,
+    title,
+    name,
+    excerpt,
+    featuredpost,
+    stage,
+    author,
+    categories,
+    tags,
+  } = data;
 
   // Create message header
   let message = `╔═══════════════════════════╗\n`;
@@ -72,16 +93,17 @@ const formatHygraphMessage = (operation, data) => {
   message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
   // Content-specific details
-  if (__typename === 'Post') {
+  if (__typename === "Post") {
     if (title) {
-      message += `📌 *Title:* ${title}\n`;
+      message += `📌 *Title:* ${escapeMarkdown(title)}\n`;
     }
     if (slug) {
       message += `🔗 *Slug:* \`${slug}\`\n`;
     }
     if (excerpt) {
-      const shortExcerpt = excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt;
-      message += `📄 *Excerpt:* ${shortExcerpt}\n`;
+      const shortExcerpt =
+        excerpt.length > 100 ? excerpt.substring(0, 100) + "..." : excerpt;
+      message += `📄 *Excerpt:* ${escapeMarkdown(shortExcerpt)}\n`;
     }
     if (author?.id) {
       message += `✍️ *Author ID:* \`${author.id}\`\n`;
@@ -98,20 +120,20 @@ const formatHygraphMessage = (operation, data) => {
     if (stage) {
       message += `📊 *Stage:* ${stage}\n`;
     }
-  } else if (__typename === 'Category') {
+  } else if (__typename === "Category") {
     if (name) {
       message += `�📌 *Name:* ${name}\n`;
     }
     if (slug) {
       message += `🔗 *Slug:* \`${slug}\`\n`;
     }
-  } else if (__typename === 'Author') {
+  } else if (__typename === "Author") {
     if (name) {
       message += `👤 *Name:* ${name}\n`;
     }
-  } else if (__typename === 'Comment') {
+  } else if (__typename === "Comment") {
     message += `💬 *Comment on post*\n`;
-  } else if (__typename === 'Tag') {
+  } else if (__typename === "Tag") {
     if (name) {
       message += `🏷️ *Name:* ${name}\n`;
     }
@@ -152,7 +174,7 @@ const formatHygraphMessage = (operation, data) => {
   message += `🔧 *Environment:* ${env}\n`;
 
   message += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
-  message += `\n✨ _Hygraph CMS Notification_ ✨`;
+  message += `\n✨ Hygraph CMS Notification ✨`;
 
   return message;
 };
@@ -211,33 +233,43 @@ export default async function handler(req, res) {
   try {
     // Validate webhook secret - check both query param and headers
     const { secret } = req.query;
-    const headerSignature = req.headers['x-hygraph-signature'] || 
-                           req.headers['gcms-signature'] || 
-                           req.headers['x-webhook-signature'];
-    
+    const headerSignature =
+      req.headers["x-hygraph-signature"] ||
+      req.headers["gcms-signature"] ||
+      req.headers["x-webhook-signature"];
+
     const expectedSecret = process.env.HYGRAPH_TELEGRAM_WEBHOOK_SECRET;
 
     // Log for debugging (remove in production)
-    console.log('🔍 Webhook received');
-    console.log('Headers available:', Object.keys(req.headers));
-    console.log('Query secret present:', !!secret);
-    console.log('Header signature present:', !!headerSignature);
+    console.log("🔍 Webhook received");
+    console.log("Headers available:", Object.keys(req.headers));
+    console.log("Query secret present:", !!secret);
+    console.log("Header signature present:", !!headerSignature);
 
     // Accept either query param or header signature
-    const isValidSecret = secret === expectedSecret || headerSignature === expectedSecret;
+    const isValidSecret =
+      secret === expectedSecret || headerSignature === expectedSecret;
 
     if (!isValidSecret) {
       console.warn("⚠️ Invalid webhook secret attempted");
-      console.warn("Received query secret:", secret?.substring(0, 10) + '...');
-      console.warn("Received header signature:", headerSignature?.substring(0, 10) + '...');
+      console.warn("Received query secret:", secret?.substring(0, 10) + "...");
+      console.warn(
+        "Received header signature:",
+        headerSignature?.substring(0, 10) + "..."
+      );
       return res.status(401).json({
         success: false,
         error: "Invalid webhook secret",
-        debug: process.env.NODE_ENV !== 'production' ? {
-          receivedQuerySecret: secret ? 'present' : 'missing',
-          receivedHeaderSignature: headerSignature ? 'present' : 'missing',
-          availableHeaders: Object.keys(req.headers)
-        } : undefined
+        debug:
+          process.env.NODE_ENV !== "production"
+            ? {
+                receivedQuerySecret: secret ? "present" : "missing",
+                receivedHeaderSignature: headerSignature
+                  ? "present"
+                  : "missing",
+                availableHeaders: Object.keys(req.headers),
+              }
+            : undefined,
       });
     }
 

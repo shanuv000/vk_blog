@@ -7,11 +7,13 @@ To avoid confusion with the existing `HYGRAPH_WEBHOOK_SECRET` variable, we now u
 ## 📝 Updated Variable Names
 
 ### Old Configuration (DO NOT USE)
+
 ```bash
 HYGRAPH_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 ```
 
 ### ✅ New Configuration (USE THIS)
+
 ```bash
 # Webhook secret for Hygraph (used by other webhooks)
 HYGRAPH_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
@@ -66,10 +68,10 @@ When deploying to production, add these environment variables to Vercel:
 3. Go to: **Settings** → **Environment Variables**
 4. Add these **THREE** variables:
 
-| Variable Name | Value |
-|--------------|-------|
-| `HYGRAPH_TELEGRAM_BOT_TOKEN` | `8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ` |
-| `TELEGRAM_CHAT_ID` | `866021016` |
+| Variable Name                     | Value                                                              |
+| --------------------------------- | ------------------------------------------------------------------ |
+| `HYGRAPH_TELEGRAM_BOT_TOKEN`      | `8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ`                   |
+| `TELEGRAM_CHAT_ID`                | `866021016`                                                        |
 | `HYGRAPH_TELEGRAM_WEBHOOK_SECRET` | `67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398` |
 
 5. Click **Save**
@@ -80,12 +82,14 @@ When deploying to production, add these environment variables to Vercel:
 ### Test Locally (After restart)
 
 1. **Restart your dev server:**
+
    ```bash
    # Stop the current server (Ctrl+C)
    npm run dev
    ```
 
 2. **Run the test:**
+
    ```bash
    curl -X POST "http://localhost:3000/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398" \
      -H "Content-Type: application/json" \
@@ -110,11 +114,13 @@ When deploying to production, add these environment variables to Vercel:
 ## 🎯 Why This Change?
 
 ### Problem
+
 - `HYGRAPH_WEBHOOK_SECRET` was already in use for other Hygraph webhooks
 - Using the same variable for multiple purposes causes confusion
 - Hard to manage different webhook integrations
 
 ### Solution
+
 - **Dedicated variable**: `HYGRAPH_TELEGRAM_WEBHOOK_SECRET`
 - **Clear purpose**: Specifically for Telegram notifications
 - **Better organization**: Each integration has its own secret
@@ -122,22 +128,24 @@ When deploying to production, add these environment variables to Vercel:
 
 ## 📊 Variable Usage Overview
 
-| Variable | Purpose | Used By |
-|----------|---------|---------|
-| `HYGRAPH_WEBHOOK_SECRET` | General Hygraph webhooks | Other webhook handlers |
-| `HYGRAPH_TELEGRAM_WEBHOOK_SECRET` | Telegram notifications | `/api/hygraph-telegram-webhook` |
-| `HYGRAPH_TELEGRAM_BOT_TOKEN` | Telegram bot authentication | Telegram API calls |
-| `TELEGRAM_CHAT_ID` | Target chat for notifications | Telegram message destination |
+| Variable                          | Purpose                       | Used By                         |
+| --------------------------------- | ----------------------------- | ------------------------------- |
+| `HYGRAPH_WEBHOOK_SECRET`          | General Hygraph webhooks      | Other webhook handlers          |
+| `HYGRAPH_TELEGRAM_WEBHOOK_SECRET` | Telegram notifications        | `/api/hygraph-telegram-webhook` |
+| `HYGRAPH_TELEGRAM_BOT_TOKEN`      | Telegram bot authentication   | Telegram API calls              |
+| `TELEGRAM_CHAT_ID`                | Target chat for notifications | Telegram message destination    |
 
 ## 🔍 Verification Commands
 
 ### Check Environment Variables
+
 ```bash
 # Check if all required variables are set
 cat .env.local | grep -E "HYGRAPH_TELEGRAM_WEBHOOK_SECRET|TELEGRAM_CHAT_ID|HYGRAPH_TELEGRAM_BOT_TOKEN"
 ```
 
 **Expected Output:**
+
 ```bash
 HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 TELEGRAM_CHAT_ID=866021016
@@ -145,12 +153,14 @@ HYGRAPH_TELEGRAM_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7b
 ```
 
 ### Verify Webhook Code
+
 ```bash
 # Check if webhook handler uses the correct variable
 grep "HYGRAPH_TELEGRAM_WEBHOOK_SECRET" pages/api/hygraph-telegram-webhook.js
 ```
 
 **Expected Output:**
+
 ```javascript
 const expectedSecret = process.env.HYGRAPH_TELEGRAM_WEBHOOK_SECRET;
 ```

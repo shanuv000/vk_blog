@@ -3,7 +3,8 @@
 ## ✅ Status: Code Updated & Working!
 
 Your webhook handler has been updated to accept authentication via:
-1. ✅ Query parameter: `?secret=...` 
+
+1. ✅ Query parameter: `?secret=...`
 2. ✅ Header: `x-hygraph-signature: ...`
 3. ✅ Header: `gcms-signature: ...` (legacy)
 
@@ -31,11 +32,11 @@ Project ID: `cky5wgpym15ym01z44tk90zeb`
 
 Fill in these fields:
 
-| Field | Value |
-|-------|-------|
-| **Name** | `Telegram Notifications` |
-| **Description** | `Real-time CMS notifications to Telegram` |
-| **Include Payload** | ✅ **ON** (Must be enabled) |
+| Field               | Value                                     |
+| ------------------- | ----------------------------------------- |
+| **Name**            | `Telegram Notifications`                  |
+| **Description**     | `Real-time CMS notifications to Telegram` |
+| **Include Payload** | ✅ **ON** (Must be enabled)               |
 
 ---
 
@@ -44,11 +45,13 @@ Fill in these fields:
 Choose **ONE** of these options:
 
 #### Option A: Using Query Parameter (Recommended)
+
 ```
 https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 ```
 
 #### Option B: Using Header Signature
+
 ```
 URL: https://blog.urtechy.com/api/hygraph-telegram-webhook
 Header Name: x-hygraph-signature
@@ -76,6 +79,7 @@ Select: **application/json**
 Select what events should trigger notifications:
 
 #### Models to Monitor:
+
 - ✅ **Post** (Main content)
 - ✅ **Category** (Content organization)
 - ✅ **Author** (Author profiles)
@@ -84,6 +88,7 @@ Select what events should trigger notifications:
 - ✅ **Asset** (Media files - optional)
 
 #### Operations to Track:
+
 - ✅ **Create** - New content created
 - ✅ **Update** - Content modified
 - ✅ **Delete** - Content deleted
@@ -91,6 +96,7 @@ Select what events should trigger notifications:
 - ✅ **Unpublish** - Content unpublished
 
 #### Stages:
+
 - ✅ **DRAFT** - Draft changes
 - ✅ **PUBLISHED** - Published changes
 
@@ -99,6 +105,7 @@ Select what events should trigger notifications:
 ### Step 8: Advanced Settings (Optional)
 
 **Custom Headers** (if using Option B):
+
 ```
 Name: x-hygraph-signature
 Value: 67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
@@ -215,13 +222,13 @@ blog.urtechy.com/post/israel-qatar-strike-hamas-operation-summit-fire
 
 ### Common Log Entries:
 
-| Status | Meaning | Action |
-|--------|---------|--------|
-| **200 OK** | ✅ Success | Working perfectly! |
-| **401 Unauthorized** | ❌ Wrong secret | Check secret matches |
-| **405 Method Not Allowed** | ❌ Wrong method | Use POST |
-| **500 Internal Error** | ❌ Server error | Check server logs |
-| **Timeout** | ⏱️ Too slow | Check server response time |
+| Status                     | Meaning         | Action                     |
+| -------------------------- | --------------- | -------------------------- |
+| **200 OK**                 | ✅ Success      | Working perfectly!         |
+| **401 Unauthorized**       | ❌ Wrong secret | Check secret matches       |
+| **405 Method Not Allowed** | ❌ Wrong method | Use POST                   |
+| **500 Internal Error**     | ❌ Server error | Check server logs          |
+| **Timeout**                | ⏱️ Too slow     | Check server response time |
 
 ---
 
@@ -232,11 +239,13 @@ blog.urtechy.com/post/israel-qatar-strike-hamas-operation-summit-fire
 **Solutions:**
 
 1. **Verify secret in Hygraph matches:**
+
    ```
    67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
    ```
 
 2. **Check if using query param or header:**
+
    - Query param: Add `?secret=...` to URL
    - Header: Set `x-hygraph-signature` header
 
@@ -261,6 +270,7 @@ blog.urtechy.com/post/israel-qatar-strike-hamas-operation-summit-fire
 5. ✅ Chat ID is correct: `866021016`
 
 **Test Telegram bot directly:**
+
 ```bash
 curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ/sendMessage?chat_id=866021016&text=Test"
 ```
@@ -304,6 +314,7 @@ Before going live, verify:
 ## 📊 What Gets Notified
 
 ### Post Events:
+
 - ✅ Create new draft → Get notification
 - ✅ Update post → Get notification
 - ✅ Publish post → Get notification with link
@@ -311,19 +322,23 @@ Before going live, verify:
 - ✅ Delete post → Get notification
 
 ### Category Events:
+
 - ✅ Create category → Get notification
 - ✅ Update category → Get notification
 - ✅ Delete category → Get notification
 
 ### Author Events:
+
 - ✅ Create author → Get notification
 - ✅ Update author → Get notification
 
 ### Tag Events:
+
 - ✅ Create tag → Get notification
 - ✅ Update tag → Get notification
 
 ### Comment Events:
+
 - ✅ New comment → Get notification
 
 ---
@@ -331,6 +346,7 @@ Before going live, verify:
 ## 🎨 Notification Features
 
 ### Rich Content Display:
+
 - ✨ **Emojis** for visual identification
 - 📊 **Structured layout** with sections
 - 🔗 **Direct links** to published posts
@@ -338,6 +354,7 @@ Before going live, verify:
 - 🔧 **Environment** indicators (dev/prod)
 
 ### Post-Specific Info:
+
 - Title, slug, excerpt
 - Author information
 - Featured status
@@ -358,6 +375,7 @@ Your Hygraph CMS is now ready to send real-time notifications to Telegram!
 3. ✅ Enjoy instant CMS notifications! 🎉
 
 **Questions?** Check the detailed guides:
+
 - [`HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md`](HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md)
 - [`README_HYGRAPH_TELEGRAM.md`](README_HYGRAPH_TELEGRAM.md)
 
