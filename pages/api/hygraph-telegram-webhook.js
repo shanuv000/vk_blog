@@ -58,7 +58,7 @@ const getOperationName = (operation) => {
  * Format Hygraph event into a Telegram message
  */
 const formatHygraphMessage = (operation, data) => {
-  const { __typename, id, slug, title, name } = data;
+  const { __typename, id, slug, title, name, excerpt, featuredpost, stage, author, categories, tags } = data;
 
   // Create message header
   let message = `╔═══════════════════════════╗\n`;
@@ -71,16 +71,63 @@ const formatHygraphMessage = (operation, data) => {
   )}* - ${getContentTypeEmoji(__typename)} ${__typename}\n`;
   message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-  // Content details
-  if (title) {
-    message += `📌 *Title:* ${title}\n`;
+  // Content-specific details
+  if (__typename === 'Post') {
+    if (title) {
+      message += `📌 *Title:* ${title}\n`;
+    }
+    if (slug) {
+      message += `🔗 *Slug:* \`${slug}\`\n`;
+    }
+    if (excerpt) {
+      const shortExcerpt = excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt;
+      message += `📄 *Excerpt:* ${shortExcerpt}\n`;
+    }
+    if (author?.id) {
+      message += `✍️ *Author ID:* \`${author.id}\`\n`;
+    }
+    if (featuredpost) {
+      message += `⭐ *Featured:* Yes\n`;
+    }
+    if (categories && categories.length > 0) {
+      message += `� *Categories:* ${categories.length}\n`;
+    }
+    if (tags && tags.length > 0) {
+      message += `🏷️ *Tags:* ${tags.length}\n`;
+    }
+    if (stage) {
+      message += `📊 *Stage:* ${stage}\n`;
+    }
+  } else if (__typename === 'Category') {
+    if (name) {
+      message += `�📌 *Name:* ${name}\n`;
+    }
+    if (slug) {
+      message += `🔗 *Slug:* \`${slug}\`\n`;
+    }
+  } else if (__typename === 'Author') {
+    if (name) {
+      message += `👤 *Name:* ${name}\n`;
+    }
+  } else if (__typename === 'Comment') {
+    message += `💬 *Comment on post*\n`;
+  } else if (__typename === 'Tag') {
+    if (name) {
+      message += `🏷️ *Name:* ${name}\n`;
+    }
+  } else {
+    // Generic handling for other types
+    if (title) {
+      message += `📌 *Title:* ${title}\n`;
+    }
+    if (name) {
+      message += `📌 *Name:* ${name}\n`;
+    }
+    if (slug) {
+      message += `🔗 *Slug:* \`${slug}\`\n`;
+    }
   }
-  if (name) {
-    message += `📌 *Name:* ${name}\n`;
-  }
-  if (slug) {
-    message += `🔗 *Slug:* \`${slug}\`\n`;
-  }
+
   message += `🆔 *ID:* \`${id}\`\n`;
 
   // Add direct link for Posts
@@ -162,13 +209,35 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Validate webhook secret
+    // Validate webhook secret - check both query param and headers
     const { secret } = req.query;
-    if (secret !== process.env.HYGRAPH_WEBHOOK_SECRET) {
+    const headerSignature = req.headers['x-hygraph-signature'] || 
+                           req.headers['gcms-signature'] || 
+                           req.headers['x-webhook-signature'];
+    
+    const expectedSecret = process.env.HYGRAPH_WEBHOOK_SECRET;
+
+    // Log for debugging (remove in production)
+    console.log('🔍 Webhook received');
+    console.log('Headers available:', Object.keys(req.headers));
+    console.log('Query secret present:', !!secret);
+    console.log('Header signature present:', !!headerSignature);
+
+    // Accept either query param or header signature
+    const isValidSecret = secret === expectedSecret || headerSignature === expectedSecret;
+
+    if (!isValidSecret) {
       console.warn("⚠️ Invalid webhook secret attempted");
+      console.warn("Received query secret:", secret?.substring(0, 10) + '...');
+      console.warn("Received header signature:", headerSignature?.substring(0, 10) + '...');
       return res.status(401).json({
         success: false,
         error: "Invalid webhook secret",
+        debug: process.env.NODE_ENV !== 'production' ? {
+          receivedQuerySecret: secret ? 'present' : 'missing',
+          receivedHeaderSignature: headerSignature ? 'present' : 'missing',
+          availableHeaders: Object.keys(req.headers)
+        } : undefined
       });
     }
 
