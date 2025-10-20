@@ -1,8 +1,9 @@
 import React from "react";
-import Link from "next/link";
-import Head from "next/head";
-import * as Sentry from "@sentry/nextjs";
 import Error from "next/error";
+import Head from "next/head";
+import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
+
 
 function CustomError({ statusCode }) {
   return (

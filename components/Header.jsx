@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { FaBars, FaTimes } from "react-icons/fa";
-import { RiArrowDropDownLine } from "react-icons/ri";
-import { IoMdArrowDropdown } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
-import { getDirectCategories } from "../services/direct-api";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { IoMdArrowDropdown } from "react-icons/io";
+import { RiArrowDropDownLine } from "react-icons/ri";
 import { useIsLiveCricket } from "../hooks/useCricketData";
+import { getDirectCategories } from "../services/direct-api";
 import { CATEGORY_HIERARCHY } from "../utils/categoryHierarchy";
 
 const Header = () => {
@@ -144,15 +144,46 @@ const Header = () => {
   };
 
   const handleDropdownToggle = (name, type) => {
-    console.log(`Toggling dropdown: ${name} (${type})`);
-    console.log(`Current dropdown data:`, dropdownData[name]);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`Toggling dropdown: ${name} (${type})
+
+
+      }
+
+    }
+`);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`Current dropdown data:`, dropdownData[name]);
+
+
+      }
+
+    }
 
     setActiveDropdowns((prev) => {
       const newState = {
         ...prev,
         [type]: prev[type] === name ? null : name,
       };
-      console.log(`New dropdown state:`, newState);
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(`New dropdown state:`, newState);
+
+
+        }
+
+      }
       return newState;
     });
   };
@@ -290,7 +321,7 @@ const Header = () => {
                     variants={liveTextVariants}
                     animate="pulse"
                   >
-                    <span className="w-2 h-2 bg-primary rounded-full mr-1.5"></span>
+                    <span className="w-2 h-2 bg-primary rounded-full mr-1.5" />
                     <span className="text-primary font-semibold">Live</span>
                   </motion.span>
                 ) : null}
@@ -433,7 +464,7 @@ const Header = () => {
                                 variants={liveTextVariants}
                                 animate="pulse"
                               >
-                                <span className="w-2 h-2 bg-primary rounded-full mr-1.5"></span>
+                                <span className="w-2 h-2 bg-primary rounded-full mr-1.5" />
                                 <span className="text-primary font-semibold">
                                   Live
                                 </span>

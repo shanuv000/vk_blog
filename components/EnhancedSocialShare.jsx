@@ -4,8 +4,8 @@
  */
 "use client";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { motion } from "framer-motion";
+import PropTypes from "prop-types";
 import {
   FaXTwitter,
   FaFacebook,
@@ -18,8 +18,9 @@ import {
   FaCheck,
   FaChartLine,
 } from "react-icons/fa6";
-import { useTinyUrl } from "../hooks/useTinyUrl";
+
 import Toast from "./Toast";
+import { useTinyUrl } from "../hooks/useTinyUrl";
 
 const EnhancedSocialShare = ({
   post,
@@ -82,11 +83,21 @@ const EnhancedSocialShare = ({
 
   // Track sharing events (can be extended with analytics)
   const trackShare = (platform) => {
-    console.log(`Shared on ${platform}:`, {
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`Shared on ${platform}:`, {
       post: post?.slug,
       url: displayUrl,
       isShortened,
     });
+
+
+      }
+
+    }
 
     // You can add more sophisticated tracking here
     if (typeof window !== "undefined" && window.gtag) {

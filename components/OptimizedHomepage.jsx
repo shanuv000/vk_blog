@@ -5,6 +5,7 @@
 
 import React, { createContext, useContext } from "react";
 import Link from "next/link";
+import InfiniteScroll from "react-infinite-scroll-component";
 import {
   PostCard,
   Categories,
@@ -12,16 +13,15 @@ import {
   HeroSpotlight,
   EnhancedFeaturedPostCard,
 } from "../components";
-import InfiniteScroll from "react-infinite-scroll-component";
-import HomeSeo from "../components/HomeSeo";
-import SchemaManager from "../components/SchemaManager";
-import LoadingSpinner from "../components/LoadingSpinner";
 import {
   InitialPageLoader,
   InfiniteScrollLoader,
   ApiErrorState,
   EmptyState,
 } from "../components/ApiLoadingStates";
+import HomeSeo from "../components/HomeSeo";
+import LoadingSpinner from "../components/LoadingSpinner";
+import SchemaManager from "../components/SchemaManager";
 import { useHomepageData } from "../hooks/useHomepageData";
 
 // Create context for sharing homepage data across components
@@ -37,10 +37,10 @@ const OptimizedFeaturedPosts = () => {
     return (
       <div className="mb-12 bg-secondary-light/10 rounded-2xl p-8">
         <div className="animate-pulse">
-          <div className="h-8 bg-secondary-light rounded w-64 mx-auto mb-4"></div>
+          <div className="h-8 bg-secondary-light rounded w-64 mx-auto mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-64 bg-secondary-light rounded-lg"></div>
+              <div key={i} className="h-64 bg-secondary-light rounded-lg" />
             ))}
           </div>
         </div>
@@ -48,7 +48,7 @@ const OptimizedFeaturedPosts = () => {
     );
   }
 
-  if (!data.featuredPosts.length) return null;
+  if (!data.featuredPosts.length) {return null;}
 
   return (
     <section className="mb-12 bg-gradient-to-r from-secondary-light/10 to-transparent rounded-2xl p-6 md:p-8">
@@ -56,7 +56,7 @@ const OptimizedFeaturedPosts = () => {
         <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-primary">
           <span className="text-gradient">Featured Content</span>
         </h2>
-        <div className="mt-2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full mx-auto"></div>
+        <div className="mt-2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full mx-auto" />
         <p className="mt-4 text-text-secondary text-base">
           Discover our most popular and engaging articles
         </p>
@@ -93,10 +93,10 @@ const OptimizedPostWidget = () => {
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map((item) => (
             <div className="flex items-center w-full" key={item}>
-              <div className="w-16 h-16 bg-secondary-light rounded-md flex-none"></div>
+              <div className="w-16 h-16 bg-secondary-light rounded-md flex-none" />
               <div className="flex-grow ml-4">
-                <div className="h-2 bg-secondary-light rounded w-1/4 mb-2"></div>
-                <div className="h-4 bg-secondary-light rounded w-3/4"></div>
+                <div className="h-2 bg-secondary-light rounded w-1/4 mb-2" />
+                <div className="h-4 bg-secondary-light rounded w-3/4" />
               </div>
             </div>
           ))}
@@ -226,7 +226,7 @@ export default function OptimizedHomepage({ initialPosts }) {
         {/* SEO and Schema */}
         <HomeSeo featuredPosts={data.featuredPosts.slice(0, 5)} />
         <SchemaManager
-          isHomePage={true}
+          isHomePage
           posts={data.mainPosts.map((post) => post.node)}
         />
 

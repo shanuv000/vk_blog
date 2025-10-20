@@ -1,11 +1,11 @@
 import React from "react";
-import moment from "moment";
-import Link from "next/link";
 import Image from "next/image";
-import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import Link from "next/link";
+import moment from "moment";
 import { FaUser, FaCalendarAlt } from "react-icons/fa";
-import OptimizedImage from "./OptimizedImage";
+import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { PostCardImageSkeleton } from "./ImageSkeletons";
+import OptimizedImage from "./OptimizedImage";
 import TagBadge from "./TagBadge";
 import { IMAGE_CONFIGS, getOptimizedImageUrl } from "../lib/image-config";
 
@@ -40,7 +40,7 @@ const PostCard = ({ post = {} }) => {
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 {...IMAGE_CONFIGS.postCard}
                 fallbackSrc={DEFAULT_FEATURED_IMAGE}
-                showSkeleton={true}
+                showSkeleton
                 aspectRatio="16/9"
                 containerClassName="w-full h-full"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiBmaWxsPSJyZ2JhKDI1LCAyNSwgMjUsIDEpIi8+PC9zdmc+"
@@ -51,7 +51,7 @@ const PostCard = ({ post = {} }) => {
                   console.warn("Post card image failed to load:", error);
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             </div>
           </Link>
         ) : (
@@ -110,9 +110,19 @@ const PostCard = ({ post = {} }) => {
                 quality={70}
                 sizes="36px"
                 onError={() => {
-                  console.log(
+                  if (process.env.NODE_ENV === 'development') {
+
+                    if (process.env.NODE_ENV === 'development') {
+
+
+                      console.log(
                     "Author image load error in PostCard, using fallback"
                   );
+
+
+                    }
+
+                  }
                 }}
               />
             ) : (

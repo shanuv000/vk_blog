@@ -27,7 +27,7 @@ const RateLimitInfo = ({ error, tweetId, onRetry }) => {
   }, [error]);
 
   const formatTime = (ms) => {
-    if (!ms || ms <= 0) return "Available now";
+    if (!ms || ms <= 0) {return "Available now";}
 
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);

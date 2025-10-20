@@ -27,7 +27,7 @@ const SocialSharing = ({ post }) => {
   const encodedImage = encodeURIComponent(imageUrl);
 
   const isInIframe = React.useMemo(() => {
-    if (typeof window === "undefined") return false;
+    if (typeof window === "undefined") {return false;}
     try {
       return window.self !== window.top;
     } catch (err) {
@@ -121,7 +121,17 @@ const SocialSharing = ({ post }) => {
         url: postUrl,
       });
     } catch (error) {
-      console.log("Error sharing:", error);
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log("Error sharing:", error);
+
+
+        }
+
+      }
     }
   };
 

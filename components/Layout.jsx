@@ -1,8 +1,9 @@
 import React, { memo, useEffect, useState } from "react";
-import { Header } from "./";
+import dynamic from "next/dynamic";
 import LazyDataProvider from "../store/LazyDataProvider";
 import Footer from "./footer/Footer";
-import dynamic from "next/dynamic";
+import { Header } from "./";
+
 
 // Removed PWA components for better performance
 

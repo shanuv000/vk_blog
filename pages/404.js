@@ -1,8 +1,10 @@
 import React from "react";
-import Link from "next/link";
+
 import Head from "next/head";
-import { motion } from "framer-motion";
+import Link from "next/link";
 import { useRouter } from "next/router";
+
+import { motion } from "framer-motion";
 
 export default function Custom404() {
   return (

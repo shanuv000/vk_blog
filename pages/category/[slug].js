@@ -1,27 +1,26 @@
 import React, { useEffect } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-import { getCategories, getCategoryPost } from "../../services";
 import { PostCard, Categories, Loader } from "../../components";
-import PostCardSkeleton from "../../components/PostCardSkeleton";
-import SchemaManager from "../../components/SchemaManager";
-import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
-import {
-  getCategoryInfo,
-  getCategoryBreadcrumb,
-} from "../../utils/categoryHierarchy";
-
-// Enhanced loading components
-import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   CategorySwitchLoader,
   InfiniteScrollLoader,
   ApiErrorState,
   EmptyState,
 } from "../../components/ApiLoadingStates";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import PostCardSkeleton from "../../components/PostCardSkeleton";
+import SchemaManager from "../../components/SchemaManager";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { getCategories, getCategoryPost } from "../../services";
+import {
+  getCategoryInfo,
+  getCategoryBreadcrumb,
+} from "../../utils/categoryHierarchy";
+
+// Enhanced loading components
 
 const CategoryPost = ({ initialPosts }) => {
   const router = useRouter();
@@ -324,7 +323,21 @@ export async function getStaticPaths() {
       (category) => category && category.slug
     );
 
-    console.log(`Pre-rendering ${validCategories.length} category pages`);
+    if (process.env.NODE_ENV === 'development') {
+
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+
+        console.log(`Pre-rendering ${validCategories.length} category pages`);
+
+
+
+      }
+
+
+    }
 
     return {
       paths: validCategories.map(({ slug }) => ({ params: { slug } })),

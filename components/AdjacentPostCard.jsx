@@ -1,8 +1,9 @@
 import React from "react";
-import moment from "moment";
 import Link from "next/link";
-import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { motion } from "framer-motion";
+import moment from "moment";
+import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+
 
 const AdjacentPostCard = ({ post, position }) => (
   <>

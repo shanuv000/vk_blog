@@ -1,10 +1,10 @@
 import React from "react";
-import moment from "moment";
 import Link from "next/link";
-import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import moment from "moment";
 import { FaCalendarAlt, FaBookmark, FaArrowRight } from "react-icons/fa";
-import OptimizedImage from "./OptimizedImage";
+import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { FeaturedImageSkeleton } from "./ImageSkeletons";
+import OptimizedImage from "./OptimizedImage";
 import {
   IMAGE_CONFIGS,
   getOptimizedImageUrl,
@@ -46,7 +46,7 @@ const FeaturedPostCard = ({ post = {}, priority = false, index = 0 }) => {
             priority={shouldPrioritizeImage("featured", index)}
             {...IMAGE_CONFIGS.featured}
             fallbackSrc={DEFAULT_FEATURED_IMAGE}
-            showSkeleton={true}
+            showSkeleton
             aspectRatio="16/9"
             containerClassName="w-full h-full"
             blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI3MDAiIGhlaWdodD0iNDc1IiBmaWxsPSJyZ2JhKDI1LCAyNSwgMjUsIDEpIi8+PC9zdmc+"
@@ -57,7 +57,7 @@ const FeaturedPostCard = ({ post = {}, priority = false, index = 0 }) => {
           />
 
           {/* Enhanced gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-200"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-200" />
 
           {/* Featured Badge - refined design */}
           <div className="absolute top-4 left-4 bg-primary/90 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-2 shadow-glow-sm border border-primary-light/20">

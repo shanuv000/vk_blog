@@ -1,20 +1,25 @@
 import React, { useEffect } from "react";
+
 import "../styles/globals.scss";
 import "../styles/medium-typography.css";
-import { Layout } from "../components";
 import Head from "next/head";
-import Script from "next/script";
-import ErrorBoundary from "../components/ErrorBoundary";
-import { DEFAULT_FEATURED_IMAGE } from "../components/DefaultAvatar";
-import { ApolloProvider } from "@apollo/client";
-import { useApollo, getApolloStats } from "../lib/apollo-client";
-import AnalyticsProvider from "../components/AnalyticsProvider";
-// Add this to fix hydration issues
 import { useRouter } from "next/router";
+import Script from "next/script";
+
+import { ApolloProvider } from "@apollo/client";
+
+import { Layout } from "../components";
+import AnalyticsProvider from "../components/AnalyticsProvider";
+import { DEFAULT_FEATURED_IMAGE } from "../components/DefaultAvatar";
+import ErrorBoundary from "../components/ErrorBoundary";
+import { initWebVitals } from "../components/WebVitals";
+import { useApollo, getApolloStats } from "../lib/apollo-client";
+
+// Add this to fix hydration issues
+
 // Import prefetch function
 import { prefetchCommonQueries } from "../services/hygraph";
 // Import Web Vitals for performance monitoring
-import { initWebVitals } from "../components/WebVitals";
 
 function MyApp({ Component, pageProps }) {
   // Initialize Apollo Client with the initial state

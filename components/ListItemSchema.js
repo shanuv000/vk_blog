@@ -9,7 +9,7 @@ import JsonLd from './JsonLd';
  * @returns {JSX.Element} - JsonLd component with ItemList schema
  */
 const ListItemSchema = ({ posts, categoryName }) => {
-  if (!posts || posts.length === 0) return null;
+  if (!posts || posts.length === 0) {return null;}
 
   const rootUrl = 'https://blog.urtechy.com';
   

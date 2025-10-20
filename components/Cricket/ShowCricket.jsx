@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiActivity } from "react-icons/fi";
+import { IoStatsChart } from "react-icons/io5";
+import { MdHistory, MdUpcoming } from "react-icons/md";
+import LiveMatch from "./LiveMatch";
 import MatchTable from "./MatchTable";
 import MobileMatchTable from "./MobileMatchTable";
-import LiveMatch from "./LiveMatch";
 import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";
-import { motion, AnimatePresence } from "framer-motion";
 import { useData } from "../../store/HandleApiContext";
-import { FiActivity } from "react-icons/fi";
-import { MdHistory, MdUpcoming } from "react-icons/md";
-import { IoStatsChart } from "react-icons/io5";
+
 
 /**
  * TabPanel component for displaying tab content with animation
@@ -144,7 +145,7 @@ const ShowCricket = () => {
                 {tab.label}
               </span>
               {selectedTab === tab.id && (
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-urtechy-red"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-urtechy-red" />
               )}
             </button>
           ))}

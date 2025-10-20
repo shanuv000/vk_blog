@@ -11,7 +11,7 @@ export const usePrevNextButtons = (emblaApi) => {
   }, []);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    if (!emblaApi) {return;}
 
     onSelect(emblaApi);
     emblaApi.on("select", onSelect);

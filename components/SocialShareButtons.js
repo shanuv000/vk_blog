@@ -1,6 +1,6 @@
 import React from 'react';
-import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp, FaPinterest, FaReddit } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp, FaPinterest, FaReddit } from 'react-icons/fa';
 import usePostAnalytics from '../hooks/usePostAnalytics';
 
 /**

@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import OptimizedImage from "../components/OptimizedImage";
+import {
+  ProgressiveImageLoader,
+  ShimmerLoader,
+  BlurUpLoader,
+  RippleLoader,
+} from "../components/ImageLoadingStates";
 import {
   FeaturedImageSkeleton,
   PostCardImageSkeleton,
@@ -8,12 +13,7 @@ import {
   SquareImageSkeleton,
   GalleryImageSkeleton,
 } from "../components/ImageSkeletons";
-import {
-  ProgressiveImageLoader,
-  ShimmerLoader,
-  BlurUpLoader,
-  RippleLoader,
-} from "../components/ImageLoadingStates";
+import OptimizedImage from "../components/OptimizedImage";
 
 /**
  * Image Loading Test Page
@@ -162,28 +162,28 @@ const ImageTestPage = () => {
                   Progressive Loader
                 </h3>
                 <ProgressiveImageLoader
-                  isLoading={true}
+                  isLoading
                   progress={65}
-                  showProgress={true}
+                  showProgress
                 />
               </div>
               <div className="relative h-48 bg-secondary-light rounded-lg">
                 <h3 className="absolute top-4 left-4 text-lg font-semibold z-20">
                   Shimmer Loader
                 </h3>
-                <ShimmerLoader isLoading={true} intensity="medium" />
+                <ShimmerLoader isLoading intensity="medium" />
               </div>
               <div className="relative h-48 bg-secondary-light rounded-lg">
                 <h3 className="absolute top-4 left-4 text-lg font-semibold z-20">
                   Blur-up Loader
                 </h3>
-                <BlurUpLoader isLoading={true} />
+                <BlurUpLoader isLoading />
               </div>
               <div className="relative h-48 bg-secondary-light rounded-lg">
                 <h3 className="absolute top-4 left-4 text-lg font-semibold z-20">
                   Ripple Loader
                 </h3>
-                <RippleLoader isLoading={true} />
+                <RippleLoader isLoading />
               </div>
             </div>
           </motion.section>
@@ -211,15 +211,25 @@ const ImageTestPage = () => {
                   <OptimizedImage
                     src={image.src}
                     alt={image.alt}
-                    fill={true}
+                    fill
                     aspectRatio="16/9"
                     quality={85}
-                    showSkeleton={true}
+                    showSkeleton
                     className="object-cover"
                     containerClassName="w-full"
                     sizes="(max-width: 768px) 100vw, 50vw"
                     onLoad={() =>
-                      console.log(`Image ${index + 1} loaded successfully`)
+                      if (process.env.NODE_ENV === 'development') {
+
+                        if (process.env.NODE_ENV === 'development') {
+
+
+                          console.log(`Image ${index + 1} loaded successfully`)
+
+
+                        }
+
+                      }
                     }
                     onError={(error) =>
                       console.warn(`Image ${index + 1} failed to load:`, error)

@@ -18,19 +18,39 @@ const TweetEmbedder = () => {
     // Periodic check to see if SocialMediaEmbedder becomes active
     const checkInterval = setInterval(() => {
       if (checkForSocialMediaEmbedder()) {
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(
           "TweetEmbedder: SocialMediaEmbedder detected, remaining passive"
         );
+
+
+          }
+
+        }
         clearInterval(checkInterval);
-        return;
+        
       }
     }, 1000);
 
     // Initial check - if SocialMediaEmbedder is already active, don't process
     if (checkForSocialMediaEmbedder()) {
-      console.log(
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(
         "TweetEmbedder: SocialMediaEmbedder is already active, remaining passive"
       );
+
+
+        }
+
+      }
       clearInterval(checkInterval);
       return;
     }
@@ -42,7 +62,7 @@ const TweetEmbedder = () => {
 
     // Load Twitter widget script only if we need to process embeds
     const loadTwitterScript = () => {
-      if (window.twttr) return Promise.resolve();
+      if (window.twttr) {return Promise.resolve();}
 
       return new Promise((resolve) => {
         const script = document.createElement("script");
@@ -69,8 +89,19 @@ const TweetEmbedder = () => {
           "[data-social-embed-id]"
         );
         if (existingSocialEmbeds.length > 0) {
-          console.log(
-            `TweetEmbedder: SocialMediaEmbedder is active (${existingSocialEmbeds.length} embeds), skipping processing to avoid conflicts`
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
+            `TweetEmbedder: SocialMediaEmbedder is active (${existingSocialEmbeds.length} embeds)
+
+
+            }
+
+          }
+, skipping processing to avoid conflicts`
           );
           return;
         }
@@ -82,9 +113,23 @@ const TweetEmbedder = () => {
         );
         const processedElements = [];
 
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+
+            console.log(
           `TweetEmbedder: Found ${blockquotes.length} unprocessed blockquotes`
         );
+
+
+
+          }
+
+
+        }
 
         blockquotes.forEach((blockquote, index) => {
           const text = blockquote.textContent.trim();
@@ -94,7 +139,17 @@ const TweetEmbedder = () => {
 
           if (tweetIdMatch) {
             const tweetId = tweetIdMatch[0];
-            console.log(`TweetEmbedder: Processing tweet ID ${tweetId}`);
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log(`TweetEmbedder: Processing tweet ID ${tweetId}`);
+
+
+              }
+
+            }
 
             // Mark blockquote as processed to prevent other systems from processing it
             blockquote.setAttribute("data-processed", "true");
@@ -115,9 +170,23 @@ const TweetEmbedder = () => {
               const root = createRoot(embedContainer);
               root.render(React.createElement(TwitterEmbed, { tweetId }));
 
-              console.log(
+              if (process.env.NODE_ENV === 'development') {
+
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+
+                  console.log(
                 `TweetEmbedder: Successfully rendered TwitterEmbed for ${tweetId}`
               );
+
+
+
+                }
+
+
+              }
             } catch (error) {
               console.error(
                 `TweetEmbedder: Failed to render TwitterEmbed for ${tweetId}:`,
@@ -152,9 +221,23 @@ const TweetEmbedder = () => {
           '[data-embed-type="social"]:not([data-processed])'
         );
 
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+
+            console.log(
           `TweetEmbedder: Found ${socialEmbeds.length} unprocessed social embeds`
         );
+
+
+
+          }
+
+
+        }
 
         socialEmbeds.forEach((embed) => {
           const url = embed.getAttribute("data-url");
@@ -166,9 +249,19 @@ const TweetEmbedder = () => {
 
             if (tweetIdMatch) {
               const tweetId = tweetIdMatch[1];
-              console.log(
+              if (process.env.NODE_ENV === 'development') {
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  console.log(
                 `TweetEmbedder: Processing social embed tweet ID ${tweetId}`
               );
+
+
+                }
+
+              }
 
               // Mark social embed as processed
               embed.setAttribute("data-processed", "true");
@@ -188,9 +281,23 @@ const TweetEmbedder = () => {
                 const root = createRoot(embedContainer);
                 root.render(React.createElement(TwitterEmbed, { tweetId }));
 
-                console.log(
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  if (process.env.NODE_ENV === 'development') {
+
+
+
+                    console.log(
                   `TweetEmbedder: Successfully rendered social TwitterEmbed for ${tweetId}`
                 );
+
+
+
+                  }
+
+
+                }
               } catch (error) {
                 console.error(
                   `TweetEmbedder: Failed to render social TwitterEmbed for ${tweetId}:`,
@@ -230,9 +337,23 @@ const TweetEmbedder = () => {
           }
         }
 
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+
+            console.log(
           `TweetEmbedder processed ${processedElements.length} tweet embeds`
         );
+
+
+
+          }
+
+
+        }
       } catch (error) {
         console.error("Error processing tweet embeds:", error);
       }

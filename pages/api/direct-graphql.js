@@ -185,7 +185,17 @@ export default async function handler(req, res) {
 
     // Get the predefined query
     const query = PREDEFINED_QUERIES[queryType];
-    console.log(`Processing direct GraphQL query for type: ${queryType}`);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`Processing direct GraphQL query for type: ${queryType}`);
+
+
+      }
+
+    }
 
     // Try CDN endpoint first
     try {

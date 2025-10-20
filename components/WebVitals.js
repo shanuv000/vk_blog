@@ -10,14 +10,14 @@ const webVitalsAvailable = false; // Set to true when web-vitals is installed
 
 // Track and report Core Web Vitals
 export async function reportWebVitals() {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {return;}
 
   // Only track in production or when explicitly enabled
   const shouldTrack =
     process.env.NODE_ENV === "production" ||
     process.env.NEXT_PUBLIC_ENABLE_WEB_VITALS === "true";
 
-  if (!shouldTrack) return;
+  if (!shouldTrack) {return;}
 
   try {
     if (webVitalsAvailable) {
@@ -46,7 +46,7 @@ export async function reportWebVitals() {
 
 // Fallback performance tracking without external dependencies
 function trackBasicPerformance() {
-  if (!window.performance) return;
+  if (!window.performance) {return;}
 
   // Track page load time
   window.addEventListener("load", () => {
@@ -75,7 +75,7 @@ function trackBasicPerformance() {
 
 // Track additional performance metrics
 function trackAdditionalMetrics() {
-  if (!window.performance) return;
+  if (!window.performance) {return;}
 
   // Track page load time
   window.addEventListener("load", () => {
@@ -121,7 +121,7 @@ function trackAdditionalMetrics() {
 
 // Performance observer for monitoring
 export function initPerformanceObserver() {
-  if (typeof window === "undefined" || !window.PerformanceObserver) return;
+  if (typeof window === "undefined" || !window.PerformanceObserver) {return;}
 
   try {
     // Observe long tasks (> 50ms)
@@ -166,7 +166,7 @@ export function initPerformanceObserver() {
 
 // Initialize Web Vitals tracking
 export function initWebVitals() {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {return;}
 
   // Start tracking immediately
   reportWebVitals();

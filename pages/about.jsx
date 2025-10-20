@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Link from "next/link";
 import Head from "next/head";
-import { motion, AnimatePresence } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { faEnvelope, faClipboard } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaXTwitter } from "react-icons/fa6";
 
 const About = () => {

@@ -8,7 +8,7 @@ import JsonLd from "./JsonLd";
  * @returns {JSX.Element} - JsonLd component with BreadcrumbList schema
  */
 const BreadcrumbSchema = ({ post }) => {
-  if (!post) return null;
+  if (!post) {return null;}
 
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${post.slug}`;

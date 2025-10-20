@@ -75,7 +75,7 @@ export const FeaturedImageSkeleton = ({ className = "", animationDelay = 0 }) =>
     aspectRatio="16/9"
     className={`w-full ${className}`}
     animationDelay={animationDelay}
-    showOverlay={true}
+    showOverlay
     overlayContent={
       <div className="text-center">
         {/* Featured badge skeleton */}
@@ -98,7 +98,7 @@ export const PostCardImageSkeleton = ({ className = "", animationDelay = 0 }) =>
     aspectRatio="16/9"
     className={`w-full ${className}`}
     animationDelay={animationDelay}
-    showOverlay={true}
+    showOverlay
     overlayContent={
       <div className="absolute top-4 right-4">
         <div className="w-20 h-6 bg-gray-400/20 rounded-full animate-pulse" />
@@ -113,7 +113,7 @@ export const HeroImageSkeleton = ({ className = "", animationDelay = 0 }) => (
     aspectRatio="21/9"
     className={`w-full ${className}`}
     animationDelay={animationDelay}
-    showOverlay={true}
+    showOverlay
     overlayContent={
       <div className="text-center">
         <div className="w-16 h-16 mx-auto mb-4 bg-gray-400/20 rounded-full animate-pulse" />

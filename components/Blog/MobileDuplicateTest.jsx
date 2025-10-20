@@ -177,7 +177,7 @@ const MobileDuplicateTest = () => {
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full ${
                 duplicateStats.duplicateCount === 0 ? 'bg-green-500' : 'bg-red-500'
-              }`}></div>
+              }`} />
               <span>
                 {duplicateStats.duplicateCount === 0 ? 
                   '✅ No duplicates detected' : 
@@ -188,7 +188,7 @@ const MobileDuplicateTest = () => {
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full ${
                 deviceInfo.isMobile ? 'bg-blue-500' : 'bg-gray-500'
-              }`}></div>
+              }`} />
               <span>
                 {deviceInfo.isMobile ? 
                   '📱 Mobile mode active - duplicate prevention enabled' : 
@@ -199,7 +199,7 @@ const MobileDuplicateTest = () => {
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full ${
                 duplicateStats.totalEmbeds === duplicateStats.uniqueTweetIds ? 'bg-green-500' : 'bg-yellow-500'
-              }`}></div>
+              }`} />
               <span>
                 {duplicateStats.totalEmbeds === duplicateStats.uniqueTweetIds ? 
                   '✅ All embeds are unique' : 

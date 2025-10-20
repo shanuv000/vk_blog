@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
 import { motion, useAnimation } from "framer-motion";
+import PropTypes from "prop-types";
 import {
   FaXTwitter,
   FaFacebook,
@@ -13,6 +13,7 @@ import {
   FaClock,
   FaCheckCircle,
 } from "react-icons/fa6";
+
 import {
   DEFAULT_FEATURED_IMAGE,
   FALLBACK_FEATURED_IMAGE,
@@ -121,7 +122,7 @@ const EnhancedSocialSharePost = ({ post }) => {
 
   // Format validation dates for display
   const formatDate = (dateString) => {
-    if (!dateString) return "Unknown";
+    if (!dateString) {return "Unknown";}
     try {
       return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",

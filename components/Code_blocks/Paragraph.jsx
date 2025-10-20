@@ -36,7 +36,7 @@ const Paragraph = ({ obj, modifiedText }) => {
       if (imageExtensions.test(item.href)) {
         // Render images using ImageRenderer with error handling
         return <ImageRenderer key={index} item={item} />;
-      } else {
+      } 
         // Render regular links
         return (
           <a
@@ -49,7 +49,7 @@ const Paragraph = ({ obj, modifiedText }) => {
             {item.children[0]?.text || "link"}
           </a>
         );
-      }
+      
     } else if (item.bold) {
       // Render bold text
       return (
@@ -77,18 +77,18 @@ const Paragraph = ({ obj, modifiedText }) => {
           {item.text}
         </code>
       );
-    } else {
+    } 
       // Render plain text with hashtags in pink and links for hashtags
       return item.text.split(" ").map((word, i) => (
         <React.Fragment key={i}>
           {word.startsWith("#") ? (
             <span className="text-primary">{word} </span>
           ) : (
-            word + " " // Add space after each word
+            `${word  } ` // Add space after each word
           )}
         </React.Fragment>
       ));
-    }
+    
   };
 
   return (

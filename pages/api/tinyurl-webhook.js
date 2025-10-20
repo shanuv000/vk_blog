@@ -37,11 +37,25 @@ export default async function handler(req, res) {
     // Get the webhook payload
     const { operation, data } = req.body;
 
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+
+        console.log(
       `TinyURL Webhook received: ${operation} for ${
         data?.__typename || "unknown"
       } with slug: ${data?.slug}`
     );
+
+
+
+      }
+
+
+    }
 
     // Only proceed if this is a relevant operation
     const relevantOperations = ["create", "update", "publish"];
@@ -78,7 +92,17 @@ export default async function handler(req, res) {
       (operation === "update" && data.stage === "PUBLISHED")
     ) {
       try {
-        console.log(`Creating short URL for post: ${data.slug}`);
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(`Creating short URL for post: ${data.slug}`);
+
+
+          }
+
+        }
 
         // Create the post object for TinyURL service
         const post = {
@@ -93,9 +117,19 @@ export default async function handler(req, res) {
         );
 
         // Log success
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(
           `Successfully created short URL: ${shortUrl} for post: ${data.slug}`
         );
+
+
+          }
+
+        }
 
         // Optionally, you could store the short URL back to Hygraph here
         // using the Management API if you want to save it as a field

@@ -19,12 +19,12 @@ const SharingLoader = () => (
   <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
     <div className="animate-pulse">
       <div className="text-center mb-4">
-        <div className="h-6 bg-gray-200 rounded w-32 mx-auto mb-2"></div>
-        <div className="h-4 bg-gray-200 rounded w-48 mx-auto"></div>
+        <div className="h-6 bg-gray-200 rounded w-32 mx-auto mb-2" />
+        <div className="h-4 bg-gray-200 rounded w-48 mx-auto" />
       </div>
       <div className="flex justify-center gap-3">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="w-12 h-12 bg-gray-200 rounded-full"></div>
+          <div key={i} className="w-12 h-12 bg-gray-200 rounded-full" />
         ))}
       </div>
     </div>

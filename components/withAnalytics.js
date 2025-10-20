@@ -31,7 +31,7 @@ const withAnalytics = (Component, { componentName, eventCategory = 'Component In
 
     // Create wrapped event handlers
     const wrapWithTracking = (handler, actionName) => {
-      if (!handler) return undefined;
+      if (!handler) {return undefined;}
       
       return (...args) => {
         // Track the event
@@ -50,11 +50,11 @@ const withAnalytics = (Component, { componentName, eventCategory = 'Component In
     const enhancedProps = { ...props };
     
     // Wrap common event handlers
-    if (props.onClick) enhancedProps.onClick = wrapWithTracking(props.onClick, 'click');
-    if (props.onSubmit) enhancedProps.onSubmit = wrapWithTracking(props.onSubmit, 'submit');
-    if (props.onChange) enhancedProps.onChange = wrapWithTracking(props.onChange, 'change');
-    if (props.onFocus) enhancedProps.onFocus = wrapWithTracking(props.onFocus, 'focus');
-    if (props.onBlur) enhancedProps.onBlur = wrapWithTracking(props.onBlur, 'blur');
+    if (props.onClick) {enhancedProps.onClick = wrapWithTracking(props.onClick, 'click');}
+    if (props.onSubmit) {enhancedProps.onSubmit = wrapWithTracking(props.onSubmit, 'submit');}
+    if (props.onChange) {enhancedProps.onChange = wrapWithTracking(props.onChange, 'change');}
+    if (props.onFocus) {enhancedProps.onFocus = wrapWithTracking(props.onFocus, 'focus');}
+    if (props.onBlur) {enhancedProps.onBlur = wrapWithTracking(props.onBlur, 'blur');}
 
     return <Component {...enhancedProps} />;
   };

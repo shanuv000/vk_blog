@@ -1,9 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Charts from "./ElectionResultsChart";
-
-import MatchTable from "../Cricket/MatchTable";
 import electionResults from "./electionResults.json";
+import Charts from "./ElectionResultsChart";
+import MatchTable from "../Cricket/MatchTable";
 
 export const transformData = (jsonData) => {
   const { NDA, INDIA, regional_parties } =
@@ -29,7 +28,7 @@ export const Testing = ({ slug = "" }) => {
   // Use useEffect to ensure this only runs on the client
   useEffect(() => {
     // Skip on server-side to avoid hydration mismatch
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {return;}
 
     // Skip if slug is not provided
     if (!slug) {

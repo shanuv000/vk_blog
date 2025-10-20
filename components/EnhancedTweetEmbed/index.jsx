@@ -36,49 +36,49 @@ const TweetSkeleton = ({ colors }) => {
         <div
           className="w-12 h-12 rounded-full flex-shrink-0"
           style={{ backgroundColor: defaultColors.skeletonBase }}
-        ></div>
+         />
         <div className="flex-1 space-y-2">
           <div
             className="h-4 rounded w-32"
             style={{ backgroundColor: defaultColors.skeletonBase }}
-          ></div>
+           />
           <div
             className="h-3 rounded w-24"
             style={{ backgroundColor: defaultColors.skeletonHighlight }}
-          ></div>
+           />
         </div>
       </div>
       <div className="space-y-2 mb-3">
         <div
           className="h-3 rounded"
           style={{ backgroundColor: defaultColors.skeletonHighlight }}
-        ></div>
+         />
         <div
           className="h-3 rounded w-5/6"
           style={{ backgroundColor: defaultColors.skeletonHighlight }}
-        ></div>
+         />
         <div
           className="h-3 rounded w-4/5"
           style={{ backgroundColor: defaultColors.skeletonHighlight }}
-        ></div>
+         />
       </div>
       <div
         className="h-48 rounded-lg mb-3"
         style={{ backgroundColor: defaultColors.skeletonHighlight }}
-      ></div>
+       />
       <div className="flex justify-between px-2">
         <div
           className="h-4 w-16 rounded"
           style={{ backgroundColor: defaultColors.skeletonHighlight }}
-        ></div>
+         />
         <div
           className="h-4 w-16 rounded"
           style={{ backgroundColor: defaultColors.skeletonHighlight }}
-        ></div>
+         />
         <div
           className="h-4 w-16 rounded"
           style={{ backgroundColor: defaultColors.skeletonHighlight }}
-        ></div>
+         />
       </div>
     </div>
   );
@@ -234,7 +234,7 @@ const EnhancedTweetEmbed = ({
   const tweetId = extractTweetId(rawTweetId);
 
   if (!tweetId || !isValidTweetId(tweetId)) {
-    if (!showError) return null;
+    if (!showError) {return null;}
 
     return (
       <div className={`flex justify-center my-6 ${className}`}>

@@ -1,7 +1,7 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import Head from "next/head";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Terms = () => {
   // Animation variants

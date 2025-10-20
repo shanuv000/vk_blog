@@ -1,7 +1,7 @@
 import React from "react";
-import { useData } from "../../store/HandleApiContext";
 import MatchList from "./MatchList";
 import useMatchData from "../../hooks/useMatchData";
+import { useData } from "../../store/HandleApiContext";
 
 const LiveMatch = () => {
   const { liveScores, liveScoresError, loadingLiveScores, fetchLiveScores } =

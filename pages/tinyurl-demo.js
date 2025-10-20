@@ -5,8 +5,8 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import Layout from "../components/Layout";
 import EnhancedSocialShare from "../components/EnhancedSocialShare";
+import Layout from "../components/Layout";
 import TinyUrlManager from "../components/TinyUrlManager";
 import { useTinyUrl } from "../hooks/useTinyUrl";
 
@@ -80,7 +80,7 @@ export default function TinyUrlDemo() {
 
   // Manual URL shortening demo
   const handleManualShorten = async () => {
-    if (!customUrl) return;
+    if (!customUrl) {return;}
 
     try {
       const response = await fetch("/api/tinyurl", {
@@ -227,7 +227,7 @@ export default function TinyUrlDemo() {
                 </h3>
                 <EnhancedSocialShare
                   post={demoPost}
-                  enableTinyUrl={true}
+                  enableTinyUrl
                   variant="default"
                 />
               </div>
@@ -239,7 +239,7 @@ export default function TinyUrlDemo() {
                 </h3>
                 <EnhancedSocialShare
                   post={demoPost}
-                  enableTinyUrl={true}
+                  enableTinyUrl
                   variant="compact"
                 />
               </div>
@@ -251,7 +251,7 @@ export default function TinyUrlDemo() {
                 </h3>
                 <EnhancedSocialShare
                   post={demoPost}
-                  enableTinyUrl={true}
+                  enableTinyUrl
                   variant="minimal"
                 />
               </div>
@@ -324,7 +324,7 @@ export default function TinyUrlDemo() {
             {showBulkDemo && (
               <TinyUrlManager
                 posts={samplePosts}
-                showBulkActions={true}
+                showBulkActions
                 showAnalytics={false}
               />
             )}

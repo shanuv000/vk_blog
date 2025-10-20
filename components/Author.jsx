@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import { DEFAULT_AVATAR } from "./DefaultAvatar";
 import { FaUser } from "react-icons/fa";
+import { DEFAULT_AVATAR } from "./DefaultAvatar";
 import { getOptimizedImageUrl } from "../lib/image-config";
 
 const Author = ({ author }) => {

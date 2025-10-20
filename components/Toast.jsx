@@ -7,7 +7,7 @@ const Toast = ({ message, duration = 3000, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      if (onClose) setTimeout(onClose, 300); // Allow animation to complete
+      if (onClose) {setTimeout(onClose, 300);} // Allow animation to complete
     }, duration);
 
     return () => clearTimeout(timer);

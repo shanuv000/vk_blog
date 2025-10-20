@@ -1,9 +1,10 @@
 import React from "react";
 import Head from "next/head";
-import ShowCricket from "../components/Cricket/ShowCricket";
 import Image from "next/image";
-import ball from "../public/cricket/ball.png";
 import { motion } from "framer-motion";
+import ShowCricket from "../components/Cricket/ShowCricket";
+import ball from "../public/cricket/ball.png";
+
 
 /**
  * LiveCricket page component
@@ -48,7 +49,7 @@ const LiveCricket = () => {
               Cricket Updates
             </h1>
           </div>
-          <div className="h-1 w-32 bg-gradient-to-r from-red-400 to-yellow-400 rounded-full"></div>
+          <div className="h-1 w-32 bg-gradient-to-r from-red-400 to-yellow-400 rounded-full" />
           <p className="mt-4 text-center max-w-2xl font-medium leading-relaxed">
             <span className="text-gray-200">
               Follow your favorite cricket teams with{" "}

@@ -8,7 +8,7 @@ const InstagramEmbed = ({ url }) => {
 
   // Extract Instagram URL if it's wrapped in an anchor tag or other HTML
   const extractInstagramUrl = (inputUrl) => {
-    if (!inputUrl) return null;
+    if (!inputUrl) {return null;}
 
     // If it's already a clean URL, just return it
     if (
@@ -137,7 +137,7 @@ const InstagramEmbed = ({ url }) => {
           <ReactInstagramEmbed
             url={cleanUrl}
             width="100%"
-            captioned={true}
+            captioned
             onLoad={() => setLoading(false)}
             onError={() => {
               console.error("Instagram embed error, trying fallback");
@@ -145,11 +145,11 @@ const InstagramEmbed = ({ url }) => {
             }}
             placeholder={
               <div className="animate-pulse flex flex-col items-center justify-center p-4 w-full min-h-[450px] border border-gray-200 rounded-lg">
-                <div className="h-10 bg-gray-200 rounded-full w-10 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                <div className="h-64 bg-gray-200 rounded w-full mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mt-4"></div>
+                <div className="h-10 bg-gray-200 rounded-full w-10 mb-4" />
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-4" />
+                <div className="h-64 bg-gray-200 rounded w-full mb-2" />
+                <div className="h-4 bg-gray-200 rounded w-3/4 mt-4" />
                 <div className="mt-4 text-blue-400 text-sm">
                   Loading Instagram post...
                 </div>

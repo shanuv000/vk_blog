@@ -15,6 +15,7 @@ import {
   FaDownload,
   FaTrash,
 } from "react-icons/fa";
+
 import { useBulkTinyUrl } from "../hooks/useTinyUrl";
 import tinyUrlService from "../services/tinyurl";
 
@@ -72,7 +73,7 @@ const TinyUrlManager = ({
 
   // Fetch analytics for all shortened URLs
   const fetchAllAnalytics = async () => {
-    if (!showAnalytics) return;
+    if (!showAnalytics) {return;}
 
     setIsLoadingAnalytics(true);
     const analyticsData = {};

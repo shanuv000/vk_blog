@@ -31,8 +31,24 @@ const HYGRAPH_CONTENT_API =
   "https://api-ap-south-1.hygraph.com/v2/cky5wgpym15ym01z44tk90zeb/master";
 
 // Log the API endpoints being used
-console.log("[Hygraph Proxy] Using CDN API:", HYGRAPH_CDN_API);
-console.log("[Hygraph Proxy] Using Content API:", HYGRAPH_CONTENT_API);
+if (process.env.NODE_ENV === 'development') {
+
+  if (process.env.NODE_ENV === 'development') {
+
+
+    console.log("[Hygraph Proxy] Using CDN API:", HYGRAPH_CDN_API);
+
+
+  }
+
+}
+if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
+
+    console.log("[Hygraph Proxy] Using Content API:", HYGRAPH_CONTENT_API);
+
+  }
+}
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -90,15 +106,15 @@ export default async function handler(req, res) {
 
     // Determine cache duration for server cache (in ms)
     let ttlMs = 10 * 60 * 1000; // default 10 min
-    if (query.includes("GetCategories")) ttlMs = 2 * 24 * 60 * 60 * 1000;
+    if (query.includes("GetCategories")) {ttlMs = 2 * 24 * 60 * 60 * 1000;}
     else if (
       query.includes("GetFeaturedPosts") ||
       query.includes("GetRecentPosts")
     )
-      ttlMs = 30 * 60 * 1000;
+      {ttlMs = 30 * 60 * 1000;}
     else if (query.includes("GetPostDetails") && variables?.slug)
-      ttlMs = 60 * 60 * 1000;
-    else if (query.includes("GetPosts")) ttlMs = 15 * 60 * 1000;
+      {ttlMs = 60 * 60 * 1000;}
+    else if (query.includes("GetPosts")) {ttlMs = 15 * 60 * 1000;}
 
     const cacheKey = isQueryCacheable ? makeCacheKey(query, variables) : null;
 
@@ -164,7 +180,18 @@ export default async function handler(req, res) {
     }
 
     // Log the query for debugging
-    console.log(`Processing GraphQL query: ${query.substring(0, 50)}...`);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`Processing GraphQL query: ${query.substring(0, 50)
+
+
+      }
+
+    }
+}...`);
 
     // Identify query type
     const isFeaturedPostsQuery = query.includes("GetFeaturedPosts");
@@ -195,9 +222,19 @@ export default async function handler(req, res) {
 
       // Handle different query types
       if (isFeaturedPostsQuery) {
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(
           "Using corrected query for featured posts with proper filtering"
         );
+
+
+          }
+
+        }
         // Use a corrected query that actually filters for featured posts
         const simplifiedQuery = `
           query GetFeaturedPosts {
@@ -221,7 +258,7 @@ export default async function handler(req, res) {
         `;
         try {
           const promise = cdnClient.request(simplifiedQuery);
-          if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+          if (isQueryCacheable && cacheKey) {inflight.set(cacheKey, promise);}
           const data = await promise;
           if (isQueryCacheable && cacheKey) {
             responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
@@ -235,15 +272,35 @@ export default async function handler(req, res) {
           return res.status(200).json(data);
         } catch (error) {
           inflight.delete(cacheKey);
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             "Simplified featured posts query failed, returning empty array"
           );
+
+
+            }
+
+          }
           return res.status(200).json({ posts: [] });
         }
       }
 
       if (isCategoriesQuery) {
-        console.log("Using simplified query for categories");
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log("Using simplified query for categories");
+
+
+          }
+
+        }
         // Use a simpler query for categories
         const simplifiedQuery = `
           query GetCategories {
@@ -255,7 +312,7 @@ export default async function handler(req, res) {
         `;
         try {
           const promise = cdnClient.request(simplifiedQuery);
-          if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+          if (isQueryCacheable && cacheKey) {inflight.set(cacheKey, promise);}
           const data = await promise;
           if (isQueryCacheable && cacheKey) {
             responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
@@ -269,15 +326,35 @@ export default async function handler(req, res) {
           return res.status(200).json(data);
         } catch (error) {
           inflight.delete(cacheKey);
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             "Simplified categories query failed, returning empty array"
           );
+
+
+            }
+
+          }
           return res.status(200).json({ categories: [] });
         }
       }
 
       if (isRecentPostsQuery) {
-        console.log("Using simplified query for recent posts");
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log("Using simplified query for recent posts");
+
+
+          }
+
+        }
         // Use a simpler query for recent posts
         const simplifiedQuery = `
           query GetRecentPosts {
@@ -293,7 +370,7 @@ export default async function handler(req, res) {
         `;
         try {
           const promise = cdnClient.request(simplifiedQuery);
-          if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+          if (isQueryCacheable && cacheKey) {inflight.set(cacheKey, promise);}
           const data = await promise;
           if (isQueryCacheable && cacheKey) {
             responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
@@ -307,9 +384,19 @@ export default async function handler(req, res) {
           return res.status(200).json(data);
         } catch (error) {
           inflight.delete(cacheKey);
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             "Simplified recent posts query failed, returning empty array"
           );
+
+
+            }
+
+          }
           return res.status(200).json({ posts: [] });
         }
       }
@@ -317,7 +404,7 @@ export default async function handler(req, res) {
       // For other queries, use the original query
       try {
         const promise = cdnClient.request(query, variables);
-        if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+        if (isQueryCacheable && cacheKey) {inflight.set(cacheKey, promise);}
         const data = await promise;
         if (isQueryCacheable && cacheKey) {
           responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
@@ -356,9 +443,19 @@ export default async function handler(req, res) {
 
         // Handle different query types for Content API
         if (isFeaturedPostsQuery) {
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             "Using simplified query for featured posts with Content API"
           );
+
+
+            }
+
+          }
           const simplifiedQuery = `
             query GetFeaturedPosts {
               posts(first: 12, orderBy: createdAt_DESC) {
@@ -381,15 +478,35 @@ export default async function handler(req, res) {
             const data = await contentClient.request(simplifiedQuery);
             return res.status(200).json(data);
           } catch (error) {
-            console.log(
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log(
               "Simplified featured posts query failed with Content API, returning empty array"
             );
+
+
+              }
+
+            }
             return res.status(200).json({ posts: [] });
           }
         }
 
         if (isCategoriesQuery) {
-          console.log("Using simplified query for categories with Content API");
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log("Using simplified query for categories with Content API");
+
+
+            }
+
+          }
           const simplifiedQuery = `
             query GetCategories {
               categories {
@@ -402,17 +519,37 @@ export default async function handler(req, res) {
             const data = await contentClient.request(simplifiedQuery);
             return res.status(200).json(data);
           } catch (error) {
-            console.log(
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log(
               "Simplified categories query failed with Content API, returning empty array"
             );
+
+
+              }
+
+            }
             return res.status(200).json({ categories: [] });
           }
         }
 
         if (isRecentPostsQuery) {
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             "Using simplified query for recent posts with Content API"
           );
+
+
+            }
+
+          }
           const simplifiedQuery = `
             query GetRecentPosts {
               posts(orderBy: createdAt_DESC, first: 3) {
@@ -429,9 +566,19 @@ export default async function handler(req, res) {
             const data = await contentClient.request(simplifiedQuery);
             return res.status(200).json(data);
           } catch (error) {
-            console.log(
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log(
               "Simplified recent posts query failed with Content API, returning empty array"
             );
+
+
+              }
+
+            }
             return res.status(200).json({ posts: [] });
           }
         }
@@ -446,7 +593,7 @@ export default async function handler(req, res) {
         }
 
         const promise = contentClient.request(query, variables);
-        if (isQueryCacheable && cacheKey) inflight.set(cacheKey, promise);
+        if (isQueryCacheable && cacheKey) {inflight.set(cacheKey, promise);}
         const data = await promise;
         if (isQueryCacheable && cacheKey) {
           responseCache.set(cacheKey, { data, expiry: Date.now() + ttlMs });
