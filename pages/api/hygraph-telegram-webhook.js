@@ -215,7 +215,7 @@ export default async function handler(req, res) {
                            req.headers['gcms-signature'] || 
                            req.headers['x-webhook-signature'];
     
-    const expectedSecret = process.env.HYGRAPH_WEBHOOK_SECRET;
+    const expectedSecret = process.env.HYGRAPH_TELEGRAM_WEBHOOK_SECRET;
 
     // Log for debugging (remove in production)
     console.log('🔍 Webhook received');

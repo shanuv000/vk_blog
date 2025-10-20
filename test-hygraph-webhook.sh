@@ -2,6 +2,7 @@
 
 # Quick test script for Hygraph Telegram Webhook
 # Tests both query parameter and header authentication methods
+# Uses: HYGRAPH_TELEGRAM_WEBHOOK_SECRET environment variable
 
 echo "🧪 Testing Hygraph to Telegram Webhook"
 echo "======================================="
@@ -10,6 +11,8 @@ echo ""
 # Configuration
 WEBHOOK_URL="http://localhost:3000/api/hygraph-telegram-webhook"
 SECRET="67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398"
+echo "ℹ️  Using HYGRAPH_TELEGRAM_WEBHOOK_SECRET for authentication"
+echo ""
 
 # Test 1: Query Parameter Authentication
 echo "Test 1: 🔑 Query Parameter Authentication"
