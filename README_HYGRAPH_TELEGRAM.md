@@ -9,12 +9,15 @@
 **Already set up! Just follow these 3 steps:**
 
 ### 1. Test Locally
+
 ```bash
 ./test-simple.sh
 ```
+
 ✅ You should receive a Telegram notification
 
 ### 2. Deploy to Production
+
 ```bash
 git add .
 git commit -m "Add Hygraph Telegram webhook"
@@ -22,6 +25,7 @@ git push origin main
 ```
 
 ### 3. Configure in Hygraph
+
 - Login to [Hygraph](https://app.hygraph.com)
 - Go to **Settings** → **Webhooks** → **Create**
 - Use the webhook URL from `HYGRAPH_TELEGRAM_INTEGRATION_SUMMARY.md`
@@ -32,13 +36,13 @@ git push origin main
 
 ## 📚 Documentation
 
-| Document | Purpose | When to Use |
-|----------|---------|-------------|
-| **[HYGRAPH_TELEGRAM_QUICK_START.md](HYGRAPH_TELEGRAM_QUICK_START.md)** | ⭐ **START HERE** | Quick overview |
-| **[HYGRAPH_TELEGRAM_INTEGRATION_SUMMARY.md](HYGRAPH_TELEGRAM_INTEGRATION_SUMMARY.md)** | Complete summary | Full details |
-| **[HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md](HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md)** | Step-by-step guide | Setup help |
-| **[HYGRAPH_TELEGRAM_WEBHOOK_QUICK_REF.md](HYGRAPH_TELEGRAM_WEBHOOK_QUICK_REF.md)** | Quick reference | Commands & configs |
-| **[HYGRAPH_TELEGRAM_FLOW_DIAGRAM.md](HYGRAPH_TELEGRAM_FLOW_DIAGRAM.md)** | Visual flow | Understanding |
+| Document                                                                               | Purpose            | When to Use        |
+| -------------------------------------------------------------------------------------- | ------------------ | ------------------ |
+| **[HYGRAPH_TELEGRAM_QUICK_START.md](HYGRAPH_TELEGRAM_QUICK_START.md)**                 | ⭐ **START HERE**  | Quick overview     |
+| **[HYGRAPH_TELEGRAM_INTEGRATION_SUMMARY.md](HYGRAPH_TELEGRAM_INTEGRATION_SUMMARY.md)** | Complete summary   | Full details       |
+| **[HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md](HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md)**             | Step-by-step guide | Setup help         |
+| **[HYGRAPH_TELEGRAM_WEBHOOK_QUICK_REF.md](HYGRAPH_TELEGRAM_WEBHOOK_QUICK_REF.md)**     | Quick reference    | Commands & configs |
+| **[HYGRAPH_TELEGRAM_FLOW_DIAGRAM.md](HYGRAPH_TELEGRAM_FLOW_DIAGRAM.md)**               | Visual flow        | Understanding      |
 
 ---
 
@@ -78,10 +82,12 @@ blog.urtechy.com/post/my-blog-post
 ## 🔧 Configuration
 
 ### Bot Details
+
 - **Token**: `8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ`
 - **Chat ID**: `866021016`
 
 ### Environment Variables
+
 ```bash
 HYGRAPH_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 TELEGRAM_CHAT_ID=866021016
@@ -89,6 +95,7 @@ HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ```
 
 ### Webhook Endpoint
+
 ```
 Production: https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 Local: http://localhost:3000/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
@@ -141,12 +148,12 @@ README_HYGRAPH_TELEGRAM.md                ← This file
 
 ## 🔍 Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| No notification | Check Hygraph webhook logs for errors |
-| 401 Unauthorized | Verify webhook secret matches |
-| 405 Method Not Allowed | Ensure Hygraph uses POST |
-| Missing links | Add slug to webhook payload |
+| Problem                | Solution                              |
+| ---------------------- | ------------------------------------- |
+| No notification        | Check Hygraph webhook logs for errors |
+| 401 Unauthorized       | Verify webhook secret matches         |
+| 405 Method Not Allowed | Ensure Hygraph uses POST              |
+| Missing links          | Add slug to webhook payload           |
 
 For detailed troubleshooting, see `HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md`.
 
@@ -155,12 +162,12 @@ For detailed troubleshooting, see `HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md`.
 ## 🎨 Notification Types
 
 | Operation | Emoji | Content Type | Emoji |
-|-----------|-------|--------------|-------|
-| Create | 🆕 | Post | 📰 |
-| Update | ✏️ | Category | 📁 |
-| Delete | 🗑️ | Author | 👤 |
-| Publish | 🚀 | Comment | 💬 |
-| Unpublish | 📦 | Asset | 🖼️ |
+| --------- | ----- | ------------ | ----- |
+| Create    | 🆕    | Post         | 📰    |
+| Update    | ✏️    | Category     | 📁    |
+| Delete    | 🗑️    | Author       | 👤    |
+| Publish   | 🚀    | Comment      | 💬    |
+| Unpublish | 📦    | Asset        | 🖼️    |
 
 ---
 
@@ -180,6 +187,7 @@ For detailed troubleshooting, see `HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md`.
 You're all set! Your Hygraph CMS will now send instant Telegram notifications for all content changes.
 
 **Next Steps:**
+
 1. Test locally with `./test-simple.sh`
 2. Deploy to production
 3. Configure webhook in Hygraph

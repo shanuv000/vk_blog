@@ -12,7 +12,7 @@
        │
        │ 1. Content Event Occurs
        │    • Create new post
-       │    • Update existing content  
+       │    • Update existing content
        │    • Publish draft
        │    • Delete content
        │    • Unpublish content
@@ -129,42 +129,49 @@
 ## 🔁 Complete Data Flow
 
 ### 1️⃣ Event Trigger (Hygraph)
+
 - Editor creates/updates/publishes content in Hygraph CMS
 - Hygraph webhook system detects the change
 - Webhook conditions are evaluated (models, operations, stages)
 - If conditions match, webhook fires
 
 ### 2️⃣ Webhook Delivery (Hygraph → Your Server)
+
 - Hygraph sends POST request to your webhook URL
 - Includes secret parameter for authentication
 - JSON payload contains operation and content data
 - Request typically arrives in < 1 second
 
 ### 3️⃣ Request Processing (Your Next.js API)
+
 - Webhook handler receives the POST request
 - Validates HTTP method and secret
 - Extracts and processes the payload
 - Determines content type and operation
 
 ### 4️⃣ Message Formatting (Your Server)
+
 - Selects appropriate emojis for operation and content type
 - Builds formatted Markdown message
 - Adds relevant links and metadata
 - Includes timestamp and environment info
 
 ### 5️⃣ Telegram Delivery (Your Server → Telegram)
+
 - Makes API call to Telegram Bot API
 - Sends formatted message with bot credentials
 - Telegram processes and delivers message
 - Usually takes < 1 second
 
 ### 6️⃣ Notification Receipt (Telegram → You)
+
 - Message appears in your Telegram chat
 - You see formatted notification with all details
 - Can click links to view content
 - Get instant awareness of CMS changes
 
 ### 7️⃣ Response (Full Circle)
+
 - Telegram API returns success response
 - Your webhook returns success to Hygraph
 - Hygraph logs the webhook delivery
@@ -234,7 +241,7 @@ Layer 6: Error Handling
 ## 📊 Event Type Matrix
 
 | Content Type | Create | Update | Delete | Publish | Unpublish |
-|--------------|--------|--------|--------|---------|-----------|
+| ------------ | ------ | ------ | ------ | ------- | --------- |
 | **Post**     | 🆕 ✅  | ✏️ ✅  | 🗑️ ✅  | 🚀 ✅   | 📦 ✅     |
 | **Category** | 🆕 ✅  | ✏️ ✅  | 🗑️ ✅  | 🚀 ✅   | 📦 ✅     |
 | **Author**   | 🆕 ✅  | ✏️ ✅  | 🗑️ ✅  | 🚀 ✅   | 📦 ✅     |
@@ -249,31 +256,37 @@ Layer 6: Error Handling
 ## 🎯 Use Cases
 
 ### 1. Content Publishing Alerts
+
 - Get notified immediately when posts go live
 - Know when team members publish content
 - Track publishing schedules in real-time
 
 ### 2. Content Management Tracking
+
 - Monitor all CMS activity
 - Track who changes what and when
 - Audit trail for content modifications
 
 ### 3. Quick Access to New Content
+
 - Direct links to newly published posts
 - Jump to content from notification
 - Share links quickly with team
 
 ### 4. Category & Taxonomy Updates
+
 - Track new categories being created
 - Monitor taxonomy changes
 - Stay informed about site structure
 
 ### 5. Team Collaboration
+
 - Multiple team members get notified
 - Shared awareness of CMS activity
 - Coordinate content publishing
 
 ### 6. Error Detection
+
 - Spot unexpected content changes
 - Catch accidental deletions
 - Monitor content unpublishing
@@ -283,18 +296,21 @@ Layer 6: Error Handling
 ## 🚀 Performance Characteristics
 
 ### Scalability
+
 - ✅ Handles unlimited webhook calls
 - ✅ Concurrent requests supported
 - ✅ No rate limiting on your end
 - ✅ Telegram API: 30 messages/second limit
 
 ### Reliability
+
 - ✅ Hygraph retries failed webhooks
 - ✅ Your server returns proper status codes
 - ✅ Telegram has 99.99% uptime
 - ✅ Graceful error handling
 
 ### Efficiency
+
 - ✅ Minimal processing overhead (~50ms)
 - ✅ Small payload size (~1KB)
 - ✅ Fast API response times
@@ -309,9 +325,9 @@ Want to send to multiple Telegram chats? Easy!
 ```javascript
 // Modify the webhook to support multiple recipients
 const chatIds = [
-  '866021016',      // Your chat
-  '123456789',      // Team chat
-  '987654321',      // Admin chat
+  "866021016", // Your chat
+  "123456789", // Team chat
+  "987654321", // Admin chat
 ];
 
 // Send to all chats
@@ -325,12 +341,14 @@ for (const chatId of chatIds) {
 ## 🎨 Message Customization Examples
 
 ### Minimal Notification
+
 ```
 🚀 New Post Published: "My Blog Title"
 View: blog.urtechy.com/post/my-blog-title
 ```
 
 ### Detailed Notification (Current)
+
 ```
 ╔═══════════════════════════╗
 ║   🚀 URTECHY CMS UPDATE   ║
@@ -351,6 +369,7 @@ blog.urtechy.com/post/my-blog-title
 ```
 
 ### With Action Buttons (Enhancement)
+
 ```
 [Same as detailed, plus:]
 

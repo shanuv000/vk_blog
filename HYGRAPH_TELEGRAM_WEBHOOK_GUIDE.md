@@ -67,6 +67,7 @@ cat .env.local | grep -E "HYGRAPH_WEBHOOK_SECRET|TELEGRAM_CHAT_ID|HYGRAPH_TELEGR
 ```
 
 Expected output:
+
 ```
 HYGRAPH_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 TELEGRAM_CHAT_ID=866021016
@@ -164,12 +165,14 @@ Vercel will automatically deploy your changes.
 ### 3.2 Get Your Production URL
 
 After deployment completes, note your production URL:
+
 - Example: `https://blog.urtechy.com`
 - Or: `https://your-project.vercel.app`
 
 ### 3.3 Verify Environment Variables in Production
 
 In Vercel Dashboard:
+
 1. Go to your project
 2. Navigate to **Settings** → **Environment Variables**
 3. Verify these variables exist:
@@ -199,10 +202,12 @@ If missing, add them and redeploy.
 Fill in the following details:
 
 **Basic Settings:**
+
 - **Name**: `Telegram Notifications`
 - **Description**: `Send real-time notifications to Telegram for all content changes`
 
 **Endpoint:**
+
 ```
 https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 ```
@@ -214,13 +219,15 @@ https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd
 Select **ALL** of the following:
 
 **Operations:**
+
 - ✅ Create
-- ✅ Update  
+- ✅ Update
 - ✅ Delete
 - ✅ Publish
 - ✅ Unpublish
 
 **Models:** (Select all that you want notifications for)
+
 - ✅ Post
 - ✅ Category
 - ✅ Author
@@ -229,10 +236,12 @@ Select **ALL** of the following:
 - ✅ (Any other custom models)
 
 **Stages:**
+
 - ✅ DRAFT
 - ✅ PUBLISHED
 
 **Request Headers:** (Optional, but recommended)
+
 ```
 Content-Type: application/json
 X-Webhook-Source: Hygraph
@@ -257,6 +266,7 @@ Use the following JSON payload template:
 ```
 
 **Include Secret:**
+
 - ✅ Include in Query Parameters (already in URL)
 
 ### 4.4 Save the Webhook
@@ -288,6 +298,7 @@ Click **Create Webhook** or **Save**.
 ### 5.3 Test Different Content Types
 
 Try updating:
+
 - **Category**: Create or update a category
 - **Author**: Update an author profile
 - **Comment**: Add a comment (if enabled)
@@ -307,24 +318,24 @@ Each should trigger a Telegram notification.
 
 ### Operations Tracked
 
-| Operation | Emoji | Description | Example |
-|-----------|-------|-------------|---------|
-| `create` | 🆕 | New content created | New blog post draft |
-| `update` | ✏️ | Content modified | Edit post title |
-| `delete` | 🗑️ | Content removed | Delete old post |
-| `publish` | 🚀 | Content published | Publish draft post |
-| `unpublish` | 📦 | Content unpublished | Unpublish live post |
+| Operation   | Emoji | Description         | Example             |
+| ----------- | ----- | ------------------- | ------------------- |
+| `create`    | 🆕    | New content created | New blog post draft |
+| `update`    | ✏️    | Content modified    | Edit post title     |
+| `delete`    | 🗑️    | Content removed     | Delete old post     |
+| `publish`   | 🚀    | Content published   | Publish draft post  |
+| `unpublish` | 📦    | Content unpublished | Unpublish live post |
 
 ### Content Types Supported
 
-| Type | Emoji | Notification Includes |
-|------|-------|----------------------|
-| Post | 📰 | Title, Slug, Direct Link |
-| Category | 📁 | Name, Slug |
-| Author | 👤 | Name, ID |
-| Comment | 💬 | Content preview, Post |
-| Asset | 🖼️ | File name, Type |
-| Custom Models | 📄 | ID, Available fields |
+| Type          | Emoji | Notification Includes    |
+| ------------- | ----- | ------------------------ |
+| Post          | 📰    | Title, Slug, Direct Link |
+| Category      | 📁    | Name, Slug               |
+| Author        | 👤    | Name, ID                 |
+| Comment       | 💬    | Content preview, Post    |
+| Asset         | 🖼️    | File name, Type          |
+| Custom Models | 📄    | ID, Available fields     |
 
 ---
 
@@ -384,14 +395,17 @@ blog.urtechy.com/post/10-tips-better-seo
 **Solutions:**
 
 1. **Check webhook is active in Hygraph**
+
    - Go to Settings → Webhooks
    - Ensure webhook is enabled (toggle switch ON)
 
 2. **Verify webhook logs**
+
    - Check Hygraph webhook logs for errors
    - Look for 401 (auth error) or 500 (server error)
 
 3. **Test the endpoint directly**
+
    ```bash
    curl -X POST "https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=YOUR_SECRET" \
      -H "Content-Type: application/json" \
@@ -408,6 +422,7 @@ blog.urtechy.com/post/10-tips-better-seo
 ### Problem: 401 Unauthorized Error
 
 **Solution:**
+
 - Verify the webhook secret in the URL matches `HYGRAPH_WEBHOOK_SECRET` in `.env.local`
 - Check there are no extra spaces or characters
 - Redeploy if you recently changed environment variables
@@ -415,18 +430,21 @@ blog.urtechy.com/post/10-tips-better-seo
 ### Problem: 405 Method Not Allowed
 
 **Solution:**
+
 - Ensure Hygraph is using POST method (not GET)
 - Check webhook configuration in Hygraph
 
 ### Problem: Duplicate Notifications
 
 **Solution:**
+
 - Check if you have multiple webhooks configured for the same events
 - Disable or delete duplicate webhooks in Hygraph
 
 ### Problem: Missing Post Links
 
 **Solution:**
+
 - Ensure the `slug` field is included in the webhook payload
 - Verify the post has a slug value in Hygraph
 
@@ -440,7 +458,7 @@ Edit `/pages/api/hygraph-telegram-webhook.js`:
 
 ```javascript
 // Only notify for Posts and Categories
-const allowedTypes = ['Post', 'Category'];
+const allowedTypes = ["Post", "Category"];
 if (!allowedTypes.includes(data.__typename)) {
   return res.status(200).json({
     success: true,
@@ -454,7 +472,7 @@ if (!allowedTypes.includes(data.__typename)) {
 
 ```javascript
 // Only notify for publish operations
-const allowedOperations = ['publish'];
+const allowedOperations = ["publish"];
 if (!allowedOperations.includes(operation)) {
   return res.status(200).json({
     success: true,
@@ -470,12 +488,12 @@ if (!allowedOperations.includes(operation)) {
 // Use different bots based on content type
 const getBotToken = (typename) => {
   switch (typename) {
-    case 'Post':
-      return '8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ';
-    case 'Comment':
-      return 'YOUR_COMMENTS_BOT_TOKEN';
+    case "Post":
+      return "8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ";
+    case "Comment":
+      return "YOUR_COMMENTS_BOT_TOKEN";
     default:
-      return '8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ';
+      return "8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ";
   }
 };
 ```
@@ -533,10 +551,12 @@ body: JSON.stringify({
 ### View Webhook Performance
 
 1. **In Hygraph:**
+
    - Settings → Webhooks → Your Webhook → Logs
    - Check response times and success rates
 
 2. **In Vercel (if deployed there):**
+
    - Dashboard → Your Project → Functions
    - Check invocation counts and errors
 
@@ -547,6 +567,7 @@ body: JSON.stringify({
 ### Set Up Alerts
 
 Consider setting up monitoring for:
+
 - Webhook failures (status codes != 200)
 - Slow response times (> 5 seconds)
 - High notification volume (potential spam)
@@ -594,11 +615,13 @@ If you encounter issues:
 ## 🎯 Quick Reference
 
 ### Webhook URL Template
+
 ```
 https://YOUR_DOMAIN/api/hygraph-telegram-webhook?secret=YOUR_SECRET
 ```
 
 ### Test Command
+
 ```bash
 curl -X POST "http://localhost:3000/api/hygraph-telegram-webhook?secret=YOUR_SECRET" \
   -H "Content-Type: application/json" \
@@ -606,6 +629,7 @@ curl -X POST "http://localhost:3000/api/hygraph-telegram-webhook?secret=YOUR_SEC
 ```
 
 ### Telegram Test
+
 ```bash
 curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ/sendMessage?chat_id=866021016&text=Test"
 ```

@@ -39,6 +39,7 @@ git push origin main
 ```
 
 Your webhook will be available at:
+
 ```
 https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 ```
@@ -49,12 +50,14 @@ https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd
 2. Select your project
 3. Go to **Settings** → **Webhooks** → **Create Webhook**
 4. Fill in:
+
    - **Name**: Telegram Notifications
    - **URL**: `https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398`
    - **Method**: POST
    - **Triggers**: Select ALL (Create, Update, Delete, Publish, Unpublish)
    - **Models**: Select ALL (Post, Category, Author, Comment, etc.)
    - **Payload**:
+
    ```json
    {
      "operation": "{{operation}}",
@@ -116,12 +119,14 @@ blog.urtechy.com/post/my-blog-post
 ## 🔧 Configuration Details
 
 ### Your Telegram Bot
+
 ```
 Bot Token: 8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 Chat ID: 866021016
 ```
 
 ### Environment Variables (Already Set)
+
 ```bash
 HYGRAPH_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 TELEGRAM_CHAT_ID=866021016
@@ -129,6 +134,7 @@ HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ```
 
 ### Webhook Endpoint
+
 ```
 Local: http://localhost:3000/api/hygraph-telegram-webhook?secret=...
 Production: https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=...
@@ -139,19 +145,25 @@ Production: https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=...
 ## 📚 Documentation
 
 ### For Step-by-Step Instructions:
+
 👉 Read **`HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md`**
+
 - Complete setup process
 - Troubleshooting tips
 - Advanced configuration
 
 ### For Quick Reference:
+
 👉 Read **`HYGRAPH_TELEGRAM_WEBHOOK_QUICK_REF.md`**
+
 - Testing commands
 - Configuration templates
 - Troubleshooting table
 
 ### For Understanding the Flow:
+
 👉 Read **`HYGRAPH_TELEGRAM_FLOW_DIAGRAM.md`**
+
 - Visual diagrams
 - Data flow explanation
 - Timing breakdown
@@ -161,6 +173,7 @@ Production: https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=...
 ## 🧪 Testing Commands
 
 ### Test Locally
+
 ```bash
 # Simple test (1 notification)
 ./test-simple.sh
@@ -175,6 +188,7 @@ curl -X POST "http://localhost:3000/api/hygraph-telegram-webhook?secret=67020f02
 ```
 
 ### Test Telegram Bot Directly
+
 ```bash
 curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ/sendMessage?chat_id=866021016&text=Test"
 ```
@@ -184,13 +198,15 @@ curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ## 📊 Supported Events
 
 ### Operations (All Supported ✅)
+
 - 🆕 **Create** - New content created
-- ✏️ **Update** - Content modified  
+- ✏️ **Update** - Content modified
 - 🗑️ **Delete** - Content removed
 - 🚀 **Publish** - Content published
 - 📦 **Unpublish** - Content unpublished
 
 ### Content Types (All Supported ✅)
+
 - 📰 **Post** - Blog posts (includes direct link)
 - 📁 **Category** - Post categories
 - 👤 **Author** - Author profiles
@@ -203,6 +219,7 @@ curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ## 🎨 Features
 
 ### Smart Notifications
+
 - ✨ **Emoji Indicators** - Visual operation and content type identification
 - 📊 **Structured Layout** - Clean, easy-to-read format
 - 🔗 **Direct Links** - One-click access to published posts
@@ -210,12 +227,14 @@ curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 - 🔧 **Environment Info** - Know if it's dev or production
 
 ### Security
+
 - 🔒 **Webhook Secret** - Validates all requests
 - 🚫 **Method Validation** - Only POST allowed
 - 🔐 **HTTPS** - Encrypted communication
 - 🛡️ **Error Handling** - No sensitive data leaks
 
 ### Performance
+
 - ⚡ **Fast** - ~2 second notification delivery
 - 🔄 **Reliable** - Hygraph retries on failure
 - 📈 **Scalable** - Handles unlimited webhooks
@@ -244,32 +263,35 @@ Before going live, verify:
 
 ## 🛠️ Troubleshooting Quick Reference
 
-| Problem | Solution |
-|---------|----------|
-| No notification | 1. Check webhook is enabled in Hygraph<br>2. Verify webhook logs in Hygraph<br>3. Test endpoint directly with curl |
-| 401 Unauthorized | Check webhook secret matches in URL and `.env.local` |
-| 405 Method Not Allowed | Ensure Hygraph uses POST method |
-| 500 Server Error | Check server logs, verify bot token |
-| Duplicate notifications | Check for multiple webhooks in Hygraph |
-| Missing post links | Ensure slug field is in webhook payload |
+| Problem                 | Solution                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| No notification         | 1. Check webhook is enabled in Hygraph<br>2. Verify webhook logs in Hygraph<br>3. Test endpoint directly with curl |
+| 401 Unauthorized        | Check webhook secret matches in URL and `.env.local`                                                               |
+| 405 Method Not Allowed  | Ensure Hygraph uses POST method                                                                                    |
+| 500 Server Error        | Check server logs, verify bot token                                                                                |
+| Duplicate notifications | Check for multiple webhooks in Hygraph                                                                             |
+| Missing post links      | Ensure slug field is in webhook payload                                                                            |
 
 ---
 
 ## 📞 Next Steps
 
 ### Immediate (Do Now):
+
 1. ✅ Run `./test-simple.sh` to test locally
 2. ✅ Verify Telegram notification received
 3. ✅ Commit and push changes
 4. ✅ Wait for Vercel deployment
 
 ### After Deployment:
+
 5. ✅ Test production webhook with curl
 6. ✅ Configure webhook in Hygraph
 7. ✅ Test with real content change
 8. ✅ Verify end-to-end flow works
 
 ### Optional Enhancements:
+
 - Add more fields to notifications (author, category, excerpt)
 - Filter specific content types or operations
 - Add inline buttons for quick actions
@@ -291,11 +313,13 @@ Before going live, verify:
 ## 🎓 Additional Resources
 
 ### Your Project Files
+
 - `.mcp/README.md` - Hygraph MCP server documentation
 - `.env.local` - Environment configuration
 - `pages/api/` - All API routes
 
 ### External Documentation
+
 - [Hygraph Webhooks](https://hygraph.com/docs/api-reference/basics/webhooks)
 - [Telegram Bot API](https://core.telegram.org/bots/api)
 - [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction)

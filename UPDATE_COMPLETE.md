@@ -9,19 +9,25 @@ Your Hygraph Telegram webhook has been updated to use environment variables for 
 ## ✅ What Was Done
 
 ### 1. Updated `.env.local`
+
 Added the Hygraph-specific bot token as an environment variable:
+
 ```bash
 HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ```
 
 ### 2. Updated Webhook Code
+
 Changed `/pages/api/hygraph-telegram-webhook.js` to read from environment variables instead of hardcoded value.
 
 ### 3. Updated All Documentation
+
 All 5 documentation files now reflect the new environment variable configuration.
 
 ### 4. Tested Successfully ✅
+
 Webhook test returned:
+
 ```json
 {
   "success": true,
@@ -40,6 +46,7 @@ Webhook test returned:
 ## 📋 Your Configuration
 
 ### Environment Variables (`.env.local`)
+
 ```bash
 # Contact Form Bot
 TELEGRAM_BOT_TOKEN=7963846780:AAHkEiOryFhsreEvz04YdmrCi5PdizY9ljk
@@ -57,6 +64,7 @@ HYGRAPH_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c64
 ## 🚀 Next Steps
 
 ### For Local Development
+
 ✅ **Already Working!** - Test confirmed successful
 
 ### For Production Deployment

@@ -11,11 +11,13 @@ The Hygraph Telegram bot token has been moved from hardcoded in the webhook file
 ### 1. Environment Variables Updated (`.env.local`)
 
 **Added:**
+
 ```bash
 HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ```
 
 **Your `.env.local` now has:**
+
 ```bash
 # Telegram Bot Configuration (for contact form)
 TELEGRAM_BOT_TOKEN=7963846780:AAHkEiOryFhsreEvz04YdmrCi5PdizY9ljk
@@ -28,11 +30,13 @@ HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ### 2. Webhook Code Updated (`/pages/api/hygraph-telegram-webhook.js`)
 
 **Before:**
+
 ```javascript
-const botToken = '8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ'; // Hardcoded
+const botToken = "8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ"; // Hardcoded
 ```
 
 **After:**
+
 ```javascript
 const botToken = process.env.HYGRAPH_TELEGRAM_BOT_TOKEN; // From environment
 ```
@@ -40,6 +44,7 @@ const botToken = process.env.HYGRAPH_TELEGRAM_BOT_TOKEN; // From environment
 ### 3. Documentation Updated
 
 All documentation files have been updated to reflect the new configuration:
+
 - `HYGRAPH_TELEGRAM_INTEGRATION_SUMMARY.md`
 - `HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md`
 - `HYGRAPH_TELEGRAM_QUICK_START.md`
@@ -60,6 +65,7 @@ All documentation files have been updated to reflect the new configuration:
 ## 🎯 What You Need to Do
 
 ### For Local Development
+
 ✅ **Nothing!** - Already updated in your `.env.local`
 
 ### For Production Deployment
@@ -67,6 +73,7 @@ All documentation files have been updated to reflect the new configuration:
 When you deploy, **add this environment variable** in your hosting platform:
 
 #### If Using Vercel:
+
 1. Go to your project in Vercel Dashboard
 2. Navigate to **Settings** → **Environment Variables**
 3. Add new variable:
@@ -77,6 +84,7 @@ When you deploy, **add this environment variable** in your hosting platform:
 5. **Redeploy** your project
 
 #### If Using Other Platform:
+
 Add the environment variable according to your platform's documentation.
 
 ---
@@ -84,6 +92,7 @@ Add the environment variable according to your platform's documentation.
 ## 🧪 Testing
 
 ### Test Locally (Right Now!)
+
 ```bash
 # Test the webhook with the new configuration
 ./test-simple.sh
@@ -92,12 +101,14 @@ Add the environment variable according to your platform's documentation.
 You should receive a Telegram notification confirming it works!
 
 ### Verify Environment Variable
+
 ```bash
 # Check it's set correctly
 cat .env.local | grep HYGRAPH_TELEGRAM_BOT_TOKEN
 ```
 
 Expected output:
+
 ```
 HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ```
@@ -108,10 +119,10 @@ HYGRAPH_TELEGRAM_BOT_TOKEN=8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 
 ### Two Telegram Bots in Use
 
-| Bot | Purpose | Token Variable | Chat ID |
-|-----|---------|----------------|---------|
-| **Contact Form Bot** | Contact form submissions | `TELEGRAM_BOT_TOKEN` | `866021016` |
-| **Hygraph Bot** | CMS notifications | `HYGRAPH_TELEGRAM_BOT_TOKEN` | `866021016` |
+| Bot                  | Purpose                  | Token Variable               | Chat ID     |
+| -------------------- | ------------------------ | ---------------------------- | ----------- |
+| **Contact Form Bot** | Contact form submissions | `TELEGRAM_BOT_TOKEN`         | `866021016` |
+| **Hygraph Bot**      | CMS notifications        | `HYGRAPH_TELEGRAM_BOT_TOKEN` | `866021016` |
 
 Both send to the same chat but use different bot tokens for better organization.
 
@@ -157,6 +168,7 @@ If you've already deployed the old version with hardcoded token:
 You can use different bot tokens for dev vs production:
 
 **In Vercel:**
+
 - Development: Use one bot token
 - Production: Use another bot token
 
@@ -176,6 +188,7 @@ Should return bot details if token is valid.
 ## 🎉 All Set!
 
 Your Hygraph Telegram webhook now uses environment variables for the bot token. This is:
+
 - ✅ More secure
 - ✅ More flexible
 - ✅ Better practice

@@ -22,6 +22,7 @@ test-telegram-webhook.sh
 ## 🧪 Testing Commands
 
 ### Test Locally
+
 ```bash
 # Start dev server
 npm run dev
@@ -36,11 +37,13 @@ curl -X POST "http://localhost:3000/api/hygraph-telegram-webhook?secret=67020f02
 ```
 
 ### Test Production
+
 ```bash
 ./test-telegram-webhook.sh https://blog.urtechy.com
 ```
 
 ### Test Telegram Bot Directly
+
 ```bash
 curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ/sendMessage?chat_id=866021016&text=Hello%20from%20webhook%20test"
 ```
@@ -50,11 +53,13 @@ curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ## ⚙️ Hygraph Webhook Configuration
 
 ### Webhook URL
+
 ```
 https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 ```
 
 ### Webhook Payload Template
+
 ```json
 {
   "operation": "{{operation}}",
@@ -70,6 +75,7 @@ https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd
 ```
 
 ### Operations to Enable
+
 - ✅ Create
 - ✅ Update
 - ✅ Delete
@@ -77,6 +83,7 @@ https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd
 - ✅ Unpublish
 
 ### Models to Track
+
 - ✅ Post
 - ✅ Category
 - ✅ Author
@@ -85,6 +92,7 @@ https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd
 - ✅ (All other models)
 
 ### Stages
+
 - ✅ DRAFT
 - ✅ PUBLISHED
 
@@ -93,6 +101,7 @@ https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd
 ## 📱 Notification Examples
 
 ### Post Published
+
 ```
 ╔═══════════════════════════╗
 ║   🚀 URTECHY CMS UPDATE   ║
@@ -113,6 +122,7 @@ blog.urtechy.com/post/my-blog-post
 ```
 
 ### Category Created
+
 ```
 🆕 Created - 📁 Category
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -127,6 +137,7 @@ blog.urtechy.com/post/my-blog-post
 ## 🔍 Troubleshooting
 
 ### Check Webhook Status
+
 ```bash
 # View webhook logs in Hygraph
 Settings → Webhooks → Telegram Notifications → Logs
@@ -140,13 +151,13 @@ vercel logs
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| 401 Unauthorized | Check webhook secret in URL matches `.env.local` |
-| 405 Method Not Allowed | Ensure Hygraph uses POST method |
-| 500 Server Error | Check server logs, verify Telegram bot token |
-| No notifications | Verify webhook is enabled in Hygraph |
-| Duplicate notifications | Check for multiple webhooks in Hygraph |
+| Issue                   | Solution                                         |
+| ----------------------- | ------------------------------------------------ |
+| 401 Unauthorized        | Check webhook secret in URL matches `.env.local` |
+| 405 Method Not Allowed  | Ensure Hygraph uses POST method                  |
+| 500 Server Error        | Check server logs, verify Telegram bot token     |
+| No notifications        | Verify webhook is enabled in Hygraph             |
+| Duplicate notifications | Check for multiple webhooks in Hygraph           |
 
 ### Test Individual Components
 
@@ -170,22 +181,22 @@ curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 
 ## 📊 Event Types & Emojis
 
-| Event | Emoji | Content Types |
-|-------|-------|---------------|
-| Create | 🆕 | All models |
-| Update | ✏️ | All models |
-| Delete | 🗑️ | All models |
-| Publish | 🚀 | All models |
-| Unpublish | 📦 | All models |
+| Event     | Emoji | Content Types |
+| --------- | ----- | ------------- |
+| Create    | 🆕    | All models    |
+| Update    | ✏️    | All models    |
+| Delete    | 🗑️    | All models    |
+| Publish   | 🚀    | All models    |
+| Unpublish | 📦    | All models    |
 
 | Content Type | Emoji |
-|--------------|-------|
-| Post | 📰 |
-| Category | 📁 |
-| Author | 👤 |
-| Comment | 💬 |
-| Asset | 🖼️ |
-| Other | 📄 |
+| ------------ | ----- |
+| Post         | 📰    |
+| Category     | 📁    |
+| Author       | 👤    |
+| Comment      | 💬    |
+| Asset        | 🖼️    |
+| Other        | 📄    |
 
 ---
 

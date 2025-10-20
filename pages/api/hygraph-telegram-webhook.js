@@ -1,9 +1,9 @@
 /**
  * Hygraph to Telegram Webhook Handler
- * 
+ *
  * This webhook receives all Hygraph CMS events and sends notifications to Telegram.
  * Supports: Post, Category, Author, Comment, and all other content model updates.
- * 
+ *
  * Events tracked:
  * - create: New content created
  * - update: Content updated
@@ -17,13 +17,13 @@
  */
 const getOperationEmoji = (operation) => {
   const emojiMap = {
-    create: '🆕',
-    update: '✏️',
-    delete: '🗑️',
-    publish: '🚀',
-    unpublish: '📦',
+    create: "🆕",
+    update: "✏️",
+    delete: "🗑️",
+    publish: "🚀",
+    unpublish: "📦",
   };
-  return emojiMap[operation] || '📝';
+  return emojiMap[operation] || "📝";
 };
 
 /**
@@ -31,13 +31,13 @@ const getOperationEmoji = (operation) => {
  */
 const getContentTypeEmoji = (typename) => {
   const emojiMap = {
-    Post: '📰',
-    Category: '📁',
-    Author: '👤',
-    Comment: '💬',
-    Asset: '🖼️',
+    Post: "📰",
+    Category: "📁",
+    Author: "👤",
+    Comment: "💬",
+    Asset: "🖼️",
   };
-  return emojiMap[typename] || '📄';
+  return emojiMap[typename] || "📄";
 };
 
 /**
@@ -45,11 +45,11 @@ const getContentTypeEmoji = (typename) => {
  */
 const getOperationName = (operation) => {
   const nameMap = {
-    create: 'Created',
-    update: 'Updated',
-    delete: 'Deleted',
-    publish: 'Published',
-    unpublish: 'Unpublished',
+    create: "Created",
+    update: "Updated",
+    delete: "Deleted",
+    publish: "Published",
+    unpublish: "Unpublished",
   };
   return nameMap[operation] || operation;
 };
@@ -59,14 +59,16 @@ const getOperationName = (operation) => {
  */
 const formatHygraphMessage = (operation, data) => {
   const { __typename, id, slug, title, name } = data;
-  
+
   // Create message header
   let message = `╔═══════════════════════════╗\n`;
   message += `║   *🚀 URTECHY CMS UPDATE*   ║\n`;
   message += `╚═══════════════════════════╝\n\n`;
 
   // Operation and content type
-  message += `${getOperationEmoji(operation)} *${getOperationName(operation)}* - ${getContentTypeEmoji(__typename)} ${__typename}\n`;
+  message += `${getOperationEmoji(operation)} *${getOperationName(
+    operation
+  )}* - ${getContentTypeEmoji(__typename)} ${__typename}\n`;
   message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
   // Content details
@@ -82,20 +84,24 @@ const formatHygraphMessage = (operation, data) => {
   message += `🆔 *ID:* \`${id}\`\n`;
 
   // Add direct link for Posts
-  if (__typename === 'Post' && slug && (operation === 'publish' || operation === 'update')) {
+  if (
+    __typename === "Post" &&
+    slug &&
+    (operation === "publish" || operation === "update")
+  ) {
     message += `\n🌐 *View Post:*\n`;
     message += `[blog.urtechy.com/post/${slug}](https://blog.urtechy.com/post/${slug})\n`;
   }
 
   // Add timestamp
-  message += `\n⏰ *Time:* ${new Date().toLocaleString('en-IN', {
-    timeZone: 'Asia/Kolkata',
-    dateStyle: 'medium',
-    timeStyle: 'short',
+  message += `\n⏰ *Time:* ${new Date().toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    dateStyle: "medium",
+    timeStyle: "short",
   })}\n`;
 
   // Add environment info
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV || "development";
   message += `🔧 *Environment:* ${env}\n`;
 
   message += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
@@ -113,27 +119,31 @@ const sendToTelegram = async (message) => {
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
   if (!botToken || !chatId) {
-    throw new Error('HYGRAPH_TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be configured in environment variables');
+    throw new Error(
+      "HYGRAPH_TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be configured in environment variables"
+    );
   }
 
   const telegramApiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
   const response = await fetch(telegramApiUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       chat_id: chatId,
       text: message,
-      parse_mode: 'Markdown',
+      parse_mode: "Markdown",
       disable_web_page_preview: false, // Show preview for post links
     }),
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(`Telegram API error: ${errorData.description || 'Unknown error'}`);
+    throw new Error(
+      `Telegram API error: ${errorData.description || "Unknown error"}`
+    );
   }
 
   return await response.json();
@@ -144,10 +154,10 @@ const sendToTelegram = async (message) => {
  */
 export default async function handler(req, res) {
   // Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ 
+  if (req.method !== "POST") {
+    return res.status(405).json({
       success: false,
-      error: 'Method not allowed. Use POST.' 
+      error: "Method not allowed. Use POST.",
     });
   }
 
@@ -155,10 +165,10 @@ export default async function handler(req, res) {
     // Validate webhook secret
     const { secret } = req.query;
     if (secret !== process.env.HYGRAPH_WEBHOOK_SECRET) {
-      console.warn('⚠️ Invalid webhook secret attempted');
+      console.warn("⚠️ Invalid webhook secret attempted");
       return res.status(401).json({
         success: false,
-        error: 'Invalid webhook secret',
+        error: "Invalid webhook secret",
       });
     }
 
@@ -168,11 +178,13 @@ export default async function handler(req, res) {
     if (!operation || !data) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid webhook payload. Expected operation and data fields.',
+        error: "Invalid webhook payload. Expected operation and data fields.",
       });
     }
 
-    console.log(`📥 Hygraph webhook received: ${operation} - ${data.__typename} (${data.id})`);
+    console.log(
+      `📥 Hygraph webhook received: ${operation} - ${data.__typename} (${data.id})`
+    );
 
     // Format and send Telegram notification
     const telegramMessage = formatHygraphMessage(operation, data);
@@ -183,7 +195,7 @@ export default async function handler(req, res) {
     // Return success response
     return res.status(200).json({
       success: true,
-      message: 'Webhook processed and Telegram notification sent',
+      message: "Webhook processed and Telegram notification sent",
       data: {
         operation,
         contentType: data.__typename,
@@ -191,15 +203,15 @@ export default async function handler(req, res) {
         telegramMessageId: telegramResult.result.message_id,
       },
     });
-
   } catch (error) {
-    console.error('❌ Error in Hygraph-Telegram webhook:', error);
+    console.error("❌ Error in Hygraph-Telegram webhook:", error);
 
     // Return error response
     return res.status(500).json({
       success: false,
-      error: 'Failed to process webhook',
-      details: process.env.NODE_ENV !== 'production' ? error.message : undefined,
+      error: "Failed to process webhook",
+      details:
+        process.env.NODE_ENV !== "production" ? error.message : undefined,
     });
   }
 }
@@ -207,7 +219,7 @@ export default async function handler(req, res) {
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '2mb',
+      sizeLimit: "2mb",
     },
   },
 };

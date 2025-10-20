@@ -8,15 +8,15 @@ Sends **instant Telegram notifications** whenever content changes in your Hygrap
 
 ## ⚡ Quick Facts
 
-| Feature | Detail |
-|---------|--------|
-| **Speed** | ~2 seconds from CMS change to notification |
-| **Coverage** | ALL content types, ALL operations |
-| **Security** | Webhook secret + HTTPS encryption |
-| **Bot Token** | `8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ` |
-| **Chat ID** | `866021016` |
-| **Endpoint** | `/api/hygraph-telegram-webhook` |
-| **Files Created** | 7 (webhook + guides + tests) |
+| Feature           | Detail                                           |
+| ----------------- | ------------------------------------------------ |
+| **Speed**         | ~2 seconds from CMS change to notification       |
+| **Coverage**      | ALL content types, ALL operations                |
+| **Security**      | Webhook secret + HTTPS encryption                |
+| **Bot Token**     | `8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ` |
+| **Chat ID**       | `866021016`                                      |
+| **Endpoint**      | `/api/hygraph-telegram-webhook`                  |
+| **Files Created** | 7 (webhook + guides + tests)                     |
 
 ---
 
@@ -62,40 +62,45 @@ blog.urtechy.com/post/my-blog-post
 ## 🎨 Operations & Emojis
 
 | What Happened | Emoji You'll See |
-|---------------|------------------|
-| Create | 🆕 |
-| Update | ✏️ |
-| Delete | 🗑️ |
-| Publish | 🚀 |
-| Unpublish | 📦 |
+| ------------- | ---------------- |
+| Create        | 🆕               |
+| Update        | ✏️               |
+| Delete        | 🗑️               |
+| Publish       | 🚀               |
+| Unpublish     | 📦               |
 
 | Content Type | Emoji You'll See |
-|--------------|------------------|
-| Post | 📰 |
-| Category | 📁 |
-| Author | 👤 |
-| Comment | 💬 |
-| Asset | 🖼️ |
+| ------------ | ---------------- |
+| Post         | 📰               |
+| Category     | 📁               |
+| Author       | 👤               |
+| Comment      | 💬               |
+| Asset        | 🖼️               |
 
 ---
 
 ## 🚀 3-Step Setup
 
 ### 1️⃣ Test Locally
+
 ```bash
 ./test-simple.sh
 ```
+
 ✅ You should get a Telegram notification
 
 ### 2️⃣ Deploy
+
 ```bash
 git add .
 git commit -m "Add Hygraph Telegram webhook"
 git push
 ```
+
 ✅ Vercel auto-deploys
 
 ### 3️⃣ Configure Hygraph
+
 - Go to Hygraph → Settings → Webhooks
 - Add webhook URL: `https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398`
 - Enable ALL triggers
@@ -107,27 +112,29 @@ git push
 
 ## 📚 Documentation Files
 
-| File | Purpose |
-|------|---------|
+| File                                      | Purpose                      |
+| ----------------------------------------- | ---------------------------- |
 | `HYGRAPH_TELEGRAM_INTEGRATION_SUMMARY.md` | ⭐ **START HERE** - Overview |
-| `HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md` | 📖 Detailed 10-step guide |
-| `HYGRAPH_TELEGRAM_WEBHOOK_QUICK_REF.md` | 🚀 Quick reference |
-| `HYGRAPH_TELEGRAM_FLOW_DIAGRAM.md` | 📊 Visual diagrams |
-| `HYGRAPH_TELEGRAM_SETUP_COMPLETE.md` | ✅ Completion checklist |
-| `/pages/api/hygraph-telegram-webhook.js` | 💻 The actual code |
-| `test-telegram-webhook.sh` | 🧪 Full test suite |
-| `test-simple.sh` | ⚡ Quick test |
+| `HYGRAPH_TELEGRAM_WEBHOOK_GUIDE.md`       | 📖 Detailed 10-step guide    |
+| `HYGRAPH_TELEGRAM_WEBHOOK_QUICK_REF.md`   | 🚀 Quick reference           |
+| `HYGRAPH_TELEGRAM_FLOW_DIAGRAM.md`        | 📊 Visual diagrams           |
+| `HYGRAPH_TELEGRAM_SETUP_COMPLETE.md`      | ✅ Completion checklist      |
+| `/pages/api/hygraph-telegram-webhook.js`  | 💻 The actual code           |
+| `test-telegram-webhook.sh`                | 🧪 Full test suite           |
+| `test-simple.sh`                          | ⚡ Quick test                |
 
 ---
 
 ## 🔧 Configuration
 
 ### Webhook URL (for Hygraph)
+
 ```
 https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 ```
 
 ### Payload Template (for Hygraph)
+
 ```json
 {
   "operation": "{{operation}}",
@@ -143,6 +150,7 @@ https://blog.urtechy.com/api/hygraph-telegram-webhook?secret=67020f02c7c393e08bd
 ```
 
 ### Environment Variables
+
 ```bash
 HYGRAPH_WEBHOOK_SECRET=67020f02c7c393e08bd1a5a0554af5d2e836490765ffac7bf25cb2c6413d1398
 TELEGRAM_CHAT_ID=866021016
@@ -186,18 +194,18 @@ curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 ✅ **Secure** - Webhook secret validation  
 ✅ **Fast** - ~2 second delivery  
 ✅ **Smart** - Rich formatting with emojis  
-✅ **Direct** - Clickable links to content  
+✅ **Direct** - Clickable links to content
 
 ---
 
 ## 🔍 Troubleshooting
 
-| Problem | Quick Fix |
-|---------|-----------|
+| Problem         | Quick Fix                  |
+| --------------- | -------------------------- |
 | No notification | Check Hygraph webhook logs |
-| 401 error | Verify webhook secret |
-| 405 error | Ensure POST method |
-| Wrong chat | Check TELEGRAM_CHAT_ID |
+| 401 error       | Verify webhook secret      |
+| 405 error       | Ensure POST method         |
+| Wrong chat      | Check TELEGRAM_CHAT_ID     |
 
 ---
 
@@ -218,7 +226,7 @@ curl "https://api.telegram.org/bot8225345387:AAHtSfgnn2bi0IvlPq2VH2S5k_bjuQPNIwQ
 Everything is set up and ready to go. Just:
 
 1. Test it locally
-2. Deploy to production  
+2. Deploy to production
 3. Configure the webhook in Hygraph
 4. Start receiving notifications!
 
