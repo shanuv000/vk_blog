@@ -960,22 +960,13 @@ const SocialMediaEmbedder = () => {
 
             const links = blockquote.querySelectorAll("a");
             if (process.env.NODE_ENV === 'development') {
-
-              if (process.env.NODE_ENV === 'development') {
-
-
-                console.log(`Processing blockquote ${index}:`, {
-              text: text.substring(0, 100)
-
-
-              }
-
+              console.log(`Processing blockquote ${index}:`, {
+                text: text.substring(0, 100),
+                hasLinks: links.length > 0,
+                linkHrefs: Array.from(links).map((a) => a.href),
+                innerHTML: blockquote.innerHTML.substring(0, 200),
+              });
             }
-,
-              hasLinks: links.length > 0,
-              linkHrefs: Array.from(links).map((a) => a.href),
-              innerHTML: blockquote.innerHTML.substring(0, 200),
-            });
 
             const blockquoteId = `social-blockquote-${index}-${text
               .substring(0, 10)
@@ -1081,19 +1072,8 @@ const SocialMediaEmbedder = () => {
             } else {
               // Log why this blockquote wasn't matched
               if (text.length > 0 && process.env.NODE_ENV === "development") {
-                if (process.env.NODE_ENV === 'development') {
-
-                  if (process.env.NODE_ENV === 'development') {
-
-
-                    console.log(`✗ Blockquote ${index} not matched:`, {
-                  text: text.substring(0, 100)
-
-
-                  }
-
-                }
-,
+                console.log(`✗ Blockquote ${index} not matched:`, {
+                  text: text.substring(0, 100),
                   isNumeric: /^\d+$/.test(text),
                   length: text.length,
                   hasLinks: links.length > 0,

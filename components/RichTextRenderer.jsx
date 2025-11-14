@@ -124,19 +124,12 @@ const CodeBlock = ({ language, code }) => {
     if (process.env.NODE_ENV === 'development') {
 
       if (process.env.NODE_ENV === 'development') {
-
-
         console.log("Code block content:", {
-      language: mappedLanguage,
-      codeLength: codeContent?.length,
-      codePreview: codeContent?.substring(0, 50)
-
-
+          language: mappedLanguage,
+          codeLength: codeContent?.length,
+          codePreview: codeContent?.substring(0, 50)
+        });
       }
-
-    }
-,
-    });
   }
 
   return (
@@ -886,17 +879,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
               try {
                 // Debug the structure in development
                 if (process.env.NODE_ENV === "development") {
-                  if (process.env.NODE_ENV === 'development') {
-
-                    if (process.env.NODE_ENV === 'development') {
-
-
-                      console.log("Code block structure:", children);
-
-
-                    }
-
-                  }
+                  console.log("Code block structure:", children);
                 }
 
                 // In Hygraph, code blocks are typically rendered as pre > code elements
@@ -1022,21 +1005,10 @@ const RichTextRenderer = ({ content, references = [] }) => {
 
                 // Log the extracted code in development
                 if (process.env.NODE_ENV === "development") {
-                  if (process.env.NODE_ENV === 'development') {
-
-                    if (process.env.NODE_ENV === 'development') {
-
-
-                      console.log("Extracted code:", {
+                  console.log("Extracted code:", {
                     language,
                     codePreview: code
-                      ? `${code.substring(0, 100)
-
-
-                    }
-
-                  }
-  }...`
+                      ? `${code.substring(0, 100)}...`
                       : "No code extracted",
                     codeLength: code?.length || 0,
                   });
