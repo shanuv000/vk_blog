@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     nodeEnv: process.env.NODE_ENV,
     hasApiKey: !!apiKey,
     apiKeyLength: apiKey ? apiKey.length : 0,
-    apiKeyFirst10: apiKey ? apiKey.substring(0, 10) + "..." : "NOT_SET",
+    apiKeyFirst10: apiKey ? `${apiKey.substring(0, 10)  }...` : "NOT_SET",
     allEnvKeys: Object.keys(process.env).filter(
       (key) => key.includes("TINYURL") || key.includes("tiny")
     ),
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           url: "https://blog.urtechy.com/test",
-          alias: "test-" + Date.now(),
+          alias: `test-${  Date.now()}`,
         }),
       });
 

@@ -1,8 +1,7 @@
 import React from "react";
-import moment from "moment";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import moment from "moment";
 import {
   FaCalendarAlt,
   FaBookmark,
@@ -11,6 +10,8 @@ import {
   FaEye,
   FaHeart,
 } from "react-icons/fa";
+
+import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import OptimizedImage from "./OptimizedImage";
 
 const EnhancedFeaturedPostCard = ({
@@ -35,7 +36,7 @@ const EnhancedFeaturedPostCard = ({
 
   // Calculate reading time
   const calculateReadingTime = (content) => {
-    if (!content) return "5 min read";
+    if (!content) {return "5 min read";}
     const words =
       typeof content === "string" ? content.split(/\s+/).length : 250;
     return `${Math.ceil(words / 200)} min read`;
@@ -113,7 +114,7 @@ const EnhancedFeaturedPostCard = ({
                 priority={index < 3}
                 quality={90}
                 fallbackSrc={DEFAULT_FEATURED_IMAGE}
-                showSkeleton={true}
+                showSkeleton
                 aspectRatio="16/10"
               />
             </motion.div>

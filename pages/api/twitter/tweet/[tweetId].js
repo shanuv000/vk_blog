@@ -25,7 +25,17 @@ export default async function handler(req, res) {
   const cached = cache.get(cacheKey);
 
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`Cache hit for tweet ${tweetId}`);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`Cache hit for tweet ${tweetId}`);
+
+
+      }
+
+    }
     return res.status(200).json({
       success: true,
       data: cached.data,
@@ -34,7 +44,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log(`Fetching tweet ${tweetId} from Twitter API`);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`Fetching tweet ${tweetId} from Twitter API`);
+
+
+      }
+
+    }
 
     // Dedupe upstream calls
     let promise = inFlight.get(cacheKey);

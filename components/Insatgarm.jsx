@@ -5,7 +5,7 @@ const Insatgarm = () => {
   const url = "https://instagr.am/p/Zw9o4/";
   return (
     <>
-      <div className="instagram-media" data-instgrm-permalink={url}></div>
+      <div className="instagram-media" data-instgrm-permalink={url} />
 
       {/* <InstagramEmbed
         url="https://instagr.am/p/Zw9o4/"

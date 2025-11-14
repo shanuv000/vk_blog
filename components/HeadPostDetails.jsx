@@ -40,8 +40,8 @@ const HeadPostDetails = ({ post }) => {
           <meta
             name="keywords"
             content={
-              post.categories.map((cat) => cat.name).join(", ") +
-              ", urTechy, blogs, technology, news"
+              `${post.categories.map((cat) => cat.name).join(", ") 
+              }, urTechy, blogs, technology, news`
             }
           />
         )}

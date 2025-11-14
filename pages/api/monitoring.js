@@ -32,7 +32,7 @@ const performanceMetrics = {
 
 // Helper function to calculate percentiles
 const calculatePercentile = (arr, percentile) => {
-  if (arr.length === 0) return 0;
+  if (arr.length === 0) {return 0;}
   const sorted = arr.sort((a, b) => a - b);
   const index = Math.ceil((percentile / 100) * sorted.length) - 1;
   return sorted[index] || 0;
@@ -57,16 +57,16 @@ const getSystemMetrics = () => {
 
     // Performance status calculation
     const getApiStatus = () => {
-      if (successRate < 90) return "unhealthy";
-      if (successRate < 95) return "degraded";
+      if (successRate < 90) {return "unhealthy";}
+      if (successRate < 95) {return "degraded";}
       if (averageResponseTime > PERFORMANCE_CONFIG.SLOW_QUERY_THRESHOLD)
-        return "warning";
+        {return "warning";}
       return "healthy";
     };
 
     const getCacheStatus = () => {
-      if (cacheHitRate < 30) return "unhealthy";
-      if (cacheHitRate < 50) return "warning";
+      if (cacheHitRate < 30) {return "unhealthy";}
+      if (cacheHitRate < 50) {return "warning";}
       return "healthy";
     };
 
@@ -194,9 +194,9 @@ const formatUptime = (seconds) => {
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
 
-  if (days > 0) return `${days}d ${hours}h ${minutes}m`;
-  if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
-  if (minutes > 0) return `${minutes}m ${secs}s`;
+  if (days > 0) {return `${days}d ${hours}h ${minutes}m`;}
+  if (hours > 0) {return `${hours}h ${minutes}m ${secs}s`;}
+  if (minutes > 0) {return `${minutes}m ${secs}s`;}
   return `${secs}s`;
 };
 

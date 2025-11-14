@@ -49,7 +49,17 @@ const TwitterEmbedDebugger = () => {
 
     // Listen for custom events from TweetEmbedder
     const handleTweetEmbedFound = (event) => {
-      console.log("TweetEmbedFound event:", event.detail);
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log("TweetEmbedFound event:", event.detail);
+
+
+        }
+
+      }
       checkStatus();
     };
 

@@ -6,7 +6,7 @@ const CustomYouTubeEmbed = ({ videoId, title = "YouTube Video" }) => {
 
   // Function to extract video ID from various YouTube URL formats
   const extractVideoId = (url) => {
-    if (!url) return null;
+    if (!url) {return null;}
 
     let id = null;
 
@@ -71,7 +71,7 @@ const CustomYouTubeEmbed = ({ videoId, title = "YouTube Video" }) => {
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-10 hover:bg-opacity-20 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-black bg-opacity-10 hover:bg-opacity-20 transition-opacity duration-300" />
           <div className="relative z-10 w-16 h-16 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-300">
             <svg
               className="w-8 h-8 text-white"

@@ -1,7 +1,7 @@
 import React from "react";
-import JsonLd from "./JsonLd";
 import moment from "moment";
 import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import JsonLd from "./JsonLd";
 
 /**
  * ArticleSchema component for generating Article schema structured data
@@ -10,7 +10,7 @@ import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
  * @returns {JSX.Element} - JsonLd component with Article schema
  */
 const ArticleSchema = ({ post }) => {
-  if (!post) return null;
+  if (!post) {return null;}
 
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${post.slug}`;

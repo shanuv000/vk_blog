@@ -1,19 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import moment from "moment";
-import { motion, useScroll, useSpring } from "framer-motion";
 import dynamic from "next/dynamic";
+import { motion, useScroll, useSpring } from "framer-motion";
+import moment from "moment";
+import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import ErrorBoundary from "./ErrorBoundary";
 import HeadPostDetails from "./HeadPostDetails";
-import Navbar_post_details from "./Social_post_details";
 import OptimizedImage from "./OptimizedImage";
+import RichTextRenderer from "./RichTextRenderer";
+import Navbar_post_details from "./Social_post_details";
 import TagList from "./TagList";
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
   loading: () => (
     <div className="max-w-3xl mx-auto mt-16 animate-pulse">
-      <div className="h-3 w-24 bg-gray-200 rounded mb-4"></div>
-      <div className="h-24 bg-gray-100 rounded mb-3"></div>
-      <div className="h-3 w-40 bg-gray-200 rounded"></div>
+      <div className="h-3 w-24 bg-gray-200 rounded mb-4" />
+      <div className="h-24 bg-gray-100 rounded mb-3" />
+      <div className="h-3 w-40 bg-gray-200 rounded" />
     </div>
   ),
   ssr: false,
@@ -27,21 +30,21 @@ const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
       <div className="flex justify-center">
         <div className="w-full max-w-[550px] bg-white border border-gray-200 rounded-2xl p-4 animate-pulse">
           <div className="flex items-start space-x-3 mb-3">
-            <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+            <div className="w-12 h-12 bg-gray-200 rounded-full" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-32"></div>
-              <div className="h-3 bg-gray-100 rounded w-24"></div>
+              <div className="h-4 bg-gray-200 rounded w-32" />
+              <div className="h-3 bg-gray-100 rounded w-24" />
             </div>
           </div>
           <div className="space-y-2 mb-3">
-            <div className="h-3 bg-gray-100 rounded"></div>
-            <div className="h-3 bg-gray-100 rounded w-5/6"></div>
+            <div className="h-3 bg-gray-100 rounded" />
+            <div className="h-3 bg-gray-100 rounded w-5/6" />
           </div>
-          <div className="h-48 bg-gray-100 rounded-lg mb-3"></div>
+          <div className="h-48 bg-gray-100 rounded-lg mb-3" />
           <div className="flex justify-between text-gray-300">
-            <div className="h-4 w-16 bg-gray-100 rounded"></div>
-            <div className="h-4 w-16 bg-gray-100 rounded"></div>
-            <div className="h-4 w-16 bg-gray-100 rounded"></div>
+            <div className="h-4 w-16 bg-gray-100 rounded" />
+            <div className="h-4 w-16 bg-gray-100 rounded" />
+            <div className="h-4 w-16 bg-gray-100 rounded" />
           </div>
         </div>
       </div>
@@ -51,9 +54,6 @@ const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
 });
 
 import { useData } from "../store/HandleApiContext";
-import ErrorBoundary from "./ErrorBoundary";
-import RichTextRenderer from "./RichTextRenderer";
-import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 
 // Import Testing component with no SSR to avoid hydration issues
 const Testing = dynamic(

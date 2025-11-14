@@ -1,12 +1,12 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
-import ball from "../../public/cricket/ball.png";
-import { ClipLoader } from "react-spinners";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { BiCommentDetail } from "react-icons/bi";
 import { FiRefreshCw } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
-import { BiCommentDetail } from "react-icons/bi";
+import { ClipLoader } from "react-spinners";
+import ball from "../../public/cricket/ball.png";
 
 /**
  * MatchList component displays cricket matches with filtering by tournament
@@ -59,7 +59,7 @@ const MatchList = ({
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
             {title}
-            <div className="h-1 w-20 bg-gradient-to-r from-urtechy-red to-urtechy-orange mt-2 rounded-full"></div>
+            <div className="h-1 w-20 bg-gradient-to-r from-urtechy-red to-urtechy-orange mt-2 rounded-full" />
           </h3>
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -102,7 +102,7 @@ const MatchList = ({
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl sm:text-2xl font-heading font-bold bg-gradient-to-r from-red-400 to-yellow-400 bg-clip-text text-transparent">
           {title}
-          <div className="h-1 w-20 bg-gradient-to-r from-red-400 to-yellow-400 mt-2 rounded-full"></div>
+          <div className="h-1 w-20 bg-gradient-to-r from-red-400 to-yellow-400 mt-2 rounded-full" />
         </h3>
         <motion.button
           whileHover={{ scale: 1.1 }}
@@ -152,7 +152,7 @@ const MatchList = ({
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M19 9l-7 7-7-7"
-                ></path>
+                 />
               </svg>
             </div>
           </div>
@@ -178,7 +178,7 @@ const MatchList = ({
                 strokeLinejoin="round"
                 strokeWidth="2"
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
+               />
             </svg>
             <h4 className="text-lg font-semibold text-gray-800">
               Unable to load cricket data
@@ -222,8 +222,8 @@ const MatchList = ({
       ) : loading ? (
         <div className="flex flex-col items-center justify-center py-16">
           <div className="relative w-16 h-16 mb-4">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-t-urtechy-red border-r-urtechy-orange border-b-urtechy-red border-l-urtechy-orange rounded-full animate-spin"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full" />
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-t-urtechy-red border-r-urtechy-orange border-b-urtechy-red border-l-urtechy-orange rounded-full animate-spin" />
             <Image
               src={ball}
               alt="Cricket Ball"
@@ -363,7 +363,7 @@ const MatchList = ({
                           strokeLinejoin="round"
                           strokeWidth="2"
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
+                         />
                       </svg>
                       <span className="font-medium">
                         {match.time === "N/A" ? "Live Now" : match.time}

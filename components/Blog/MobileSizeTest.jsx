@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import TwitterEmbed from "./TwitterEmbed";
 import { SocialSharing } from "./SocialSharing";
 import TweetEmbedder from "./TweetEmbedder";
+import TwitterEmbed from "./TwitterEmbed";
 
 /**
  * Mobile-focused test component to verify container sizes are appropriate
@@ -60,7 +60,7 @@ const MobileSizeTest = () => {
         buttonSize: "48px × 48px",
         iconSize: "20px"
       };
-    } else {
+    } 
       return {
         margins: "24px top/bottom (my-6)",
         padding: "16px horizontal",
@@ -68,7 +68,7 @@ const MobileSizeTest = () => {
         buttonSize: "48px × 48px", 
         iconSize: "20px"
       };
-    }
+    
   };
 
   const containerInfo = getContainerInfo();
@@ -175,19 +175,19 @@ const MobileSizeTest = () => {
           <h2 className="text-base sm:text-lg font-semibold mb-3">Mobile Design Guidelines</h2>
           <div className="space-y-2 text-xs sm:text-sm">
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5"></div>
+              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5" />
               <div><strong>Touch Targets:</strong> Minimum 44px for accessibility</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5"></div>
+              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5" />
               <div><strong>Margins:</strong> Reduced on mobile to save space</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5"></div>
+              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5" />
               <div><strong>Padding:</strong> Minimal horizontal padding on mobile</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5"></div>
+              <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0 mt-0.5" />
               <div><strong>Loading States:</strong> Smaller placeholders on mobile</div>
             </div>
           </div>

@@ -1,6 +1,6 @@
-import next from "next";
 import React from "react";
 import Link from "next/link";
+import next from "next";
 
 const Termsandcondition = () => {
   return (
@@ -12,15 +12,13 @@ const Termsandcondition = () => {
       </h1>
       <h3 className="text-gray-800 my-4">
         At keytosuccess, accessible from{" "}
-        {
-          <a
+        <a
             target="_blank"
             className="lowercase text-blue-500"
-            href="https://www.keytosuccess.me/"
+            href="https://www.keytosuccess.me/" rel="noreferrer"
           >
             https://www.keytosuccess.me/
           </a>
-        }
         , one of our main priorities is the privacy of our visitors. This
         Privacy Policy document contains types of information that is collected
         and recorded by keytosuccess and how we use it. If you have additional

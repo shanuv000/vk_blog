@@ -30,7 +30,7 @@ const YouTubeEmbed = ({ videoId, title = 'YouTube Video' }) => {
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-10 hover:bg-opacity-20 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-black bg-opacity-10 hover:bg-opacity-20 transition-opacity duration-300" />
           <div className="relative z-10 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-300">
             <svg 
               className="w-8 h-8 md:w-10 md:h-10 text-white" 

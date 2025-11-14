@@ -8,7 +8,7 @@ import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
  * @returns {JSX.Element} - NextSeo component with optimized SEO settings
  */
 export default function Seo({ post }) {
-  if (!post) return null;
+  if (!post) {return null;}
 
   const { title, excerpt, slug, featuredImage, categories } = post;
   const rootUrl = "https://blog.urtechy.com";

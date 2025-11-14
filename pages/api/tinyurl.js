@@ -73,12 +73,12 @@ async function handleCreateShortUrl(req, res) {
         longUrl: url,
         isShortened: result !== url,
       });
-    } else {
+    } 
       // Use general URL shortening
       const options = {};
-      if (alias) options.alias = alias;
-      if (tags) options.tags = Array.isArray(tags) ? tags : [tags];
-      if (description) options.description = description;
+      if (alias) {options.alias = alias;}
+      if (tags) {options.tags = Array.isArray(tags) ? tags : [tags];}
+      if (description) {options.description = description;}
 
       const response = await tinyUrlService.createShortUrl(url, options);
 
@@ -90,7 +90,7 @@ async function handleCreateShortUrl(req, res) {
         errors: response.errors || [],
         isShortened: response.data.tiny_url !== url,
       });
-    }
+    
   } catch (error) {
     console.error("Error creating short URL:", error);
     return res.status(500).json({

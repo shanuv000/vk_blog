@@ -15,15 +15,16 @@ import {
   FaEye,
   FaExclamationTriangle,
 } from "react-icons/fa";
-import OptimizedImage from "./OptimizedImage";
+
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import HeroSpotlightSkeleton from "./HeroSpotlightSkeleton";
-import styles from "../styles/HeroSpotlight.module.css";
+import OptimizedImage from "./OptimizedImage";
 import { IMAGE_CONFIGS, getOptimizedImageUrl } from "../lib/image-config";
+import styles from "../styles/HeroSpotlight.module.css";
 
 // Calculate reading time with better accuracy
 const calculateReadingTime = (content, title = "", excerpt = "") => {
-  if (!content && !title && !excerpt) return "5 min read";
+  if (!content && !title && !excerpt) {return "5 min read";}
 
   let totalWords = 0;
 
@@ -109,7 +110,7 @@ const HeroSpotlight = ({
 
   // Handle mouse movement for subtle 3D effect
   const handleMouseMove = (event) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {return;}
     const rect = containerRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;

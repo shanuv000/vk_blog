@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { getDirectCategories } from "../services/direct-api";
 import LoadingSpinner from "./LoadingSpinner";
+import { getDirectCategories } from "../services/direct-api";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -19,7 +19,17 @@ const Categories = () => {
           setCategories(result);
         } else {
           // Fallback to default categories if API returns empty
-          console.log("API returned empty categories, using defaults");
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log("API returned empty categories, using defaults");
+
+
+            }
+
+          }
           setCategories([
             { name: "Web Development", slug: "web-dev" },
             { name: "Technology", slug: "technology" },

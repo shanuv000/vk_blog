@@ -17,7 +17,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log("🧪 Direct TinyURL test starting:", { postSlug, postTitle });
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log("🧪 Direct TinyURL test starting:", { postSlug, postTitle });
+
+
+      }
+
+    }
 
     // Create a mock post object
     const mockPost = {

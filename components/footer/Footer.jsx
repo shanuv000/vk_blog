@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   FaInstagram,
   FaPinterest,
   FaFacebook,
   FaXTwitter,
 } from "react-icons/fa6";
-import { motion } from "framer-motion";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

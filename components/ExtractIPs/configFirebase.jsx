@@ -1,7 +1,7 @@
+import { runTransaction, serverTimestamp, doc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 // import { runTransaction }s frssom "firebssase/firestore";
-import { runTransaction, serverTimestamp, doc } from "firebase/firestore";
 
 // const biodataRef = collection(db, "IPaddress");
 

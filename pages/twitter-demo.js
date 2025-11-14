@@ -1,8 +1,8 @@
 import React from "react";
+import { TwitterTweetEmbed } from "react-twitter-embed";
 import Layout from "../components/Layout";
 import TwitterPost from "../components/TwitterPost";
 import TwitterUserFeed from "../components/TwitterUserFeed";
-import { TwitterTweetEmbed } from "react-twitter-embed";
 
 const TwitterDemo = () => {
   return (

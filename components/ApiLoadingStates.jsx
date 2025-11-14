@@ -16,7 +16,7 @@ export const InitialPageLoader = ({ message = "Loading latest posts..." }) => (
         {/* Simplified header skeleton */}
         <div className="mb-8">
           <div className="h-8 rounded-lg w-64 bg-gray-300/20 animate-pulse mb-4" />
-          <div className="h-px bg-gradient-to-r from-transparent via-gray-600/30 to-transparent"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-gray-600/30 to-transparent" />
         </div>
 
         {/* Simplified loading message */}
@@ -143,7 +143,7 @@ export const FullScreenApiLoader = ({ message = "Please wait..." }) => (
     size="xlarge"
     type="spinner"
     message={message}
-    fullScreen={true}
+    fullScreen
   />
 );
 
@@ -153,7 +153,7 @@ export const OverlayApiLoader = ({ message = "Updating..." }) => (
     size="large"
     type="spinner"
     message={message}
-    overlay={true}
+    overlay
   />
 );
 

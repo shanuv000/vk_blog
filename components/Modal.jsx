@@ -1,9 +1,8 @@
 import React from "react";
-
 import ShowCricket from "./Cricket/ShowCricket";
 
 const Modal = ({ show, onClose }) => {
-  if (!show) return null;
+  if (!show) {return null;}
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {

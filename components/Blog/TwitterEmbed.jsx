@@ -144,10 +144,10 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
   useEffect(() => {
     // Add responsive CSS for Twitter embeds
     const addResponsiveStyles = () => {
-      if (typeof document === "undefined") return;
+      if (typeof document === "undefined") {return;}
 
       const styleId = "twitter-embed-responsive-styles";
-      if (document.getElementById(styleId)) return;
+      if (document.getElementById(styleId)) {return;}
 
       const style = document.createElement("style");
       style.id = styleId;
@@ -342,9 +342,9 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
               }}
               placeholder={
                 <div className="animate-pulse flex flex-col items-center justify-center p-2 sm:p-3 md:p-4 w-full min-h-[140px] sm:min-h-[180px] md:min-h-[200px] max-w-full">
-                  <div className="h-5 sm:h-6 md:h-8 bg-gray-200 rounded-full w-5 sm:w-6 md:w-8 mb-2"></div>
-                  <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-3/4 max-w-xs mb-2"></div>
-                  <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-1/2 max-w-48"></div>
+                  <div className="h-5 sm:h-6 md:h-8 bg-gray-200 rounded-full w-5 sm:w-6 md:w-8 mb-2" />
+                  <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-3/4 max-w-xs mb-2" />
+                  <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-1/2 max-w-48" />
                   <div className="mt-2 sm:mt-3 text-blue-400 text-xs sm:text-sm text-center px-1 sm:px-2">
                     Loading tweet {cleanTweetId}...
                   </div>
@@ -383,18 +383,28 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
             }}
             placeholder={
               <div className="animate-pulse flex flex-col items-center justify-center p-2 sm:p-3 md:p-4 w-full min-h-[140px] sm:min-h-[180px] md:min-h-[200px] max-w-full">
-                <div className="h-5 sm:h-6 md:h-8 bg-gray-200 rounded-full w-5 sm:w-6 md:w-8 mb-2"></div>
-                <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-3/4 max-w-xs mb-2"></div>
-                <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-1/2 max-w-48"></div>
+                <div className="h-5 sm:h-6 md:h-8 bg-gray-200 rounded-full w-5 sm:w-6 md:w-8 mb-2" />
+                <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-3/4 max-w-xs mb-2" />
+                <div className="h-2 sm:h-2.5 md:h-3 bg-gray-200 rounded w-1/2 max-w-48" />
                 <div className="mt-2 sm:mt-3 text-blue-400 text-xs sm:text-sm text-center px-1 sm:px-2">
                   Loading tweet {cleanTweetId}...
                 </div>
               </div>
             }
             onLoad={() => {
-              console.log(
+              if (process.env.NODE_ENV === 'development') {
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  console.log(
                 `TwitterEmbed: Successfully loaded tweet ${cleanTweetId}`
               );
+
+
+                }
+
+              }
               setLoading(false);
             }}
             onError={(error) => {
@@ -412,7 +422,7 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
             ref={iframeRef}
             className={`w-full overflow-hidden ${loading ? "hidden" : ""}`}
             style={{ maxWidth: "100%" }}
-          ></div>
+           />
 
           {/* Method 3: Native Twitter embed - only shown if primary method fails */}
           {loading && (
@@ -422,7 +432,7 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
                 data-dnt="true"
                 data-theme="light"
               >
-                <a href={`https://twitter.com/i/status/${cleanTweetId}`}></a>
+                <a href={`https://twitter.com/i/status/${cleanTweetId}`} />
               </blockquote>
               {/* Load Twitter widgets script safely */}
               {typeof window !== "undefined" && !window.twttr && (
@@ -430,7 +440,7 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
                   async
                   src="https://platform.twitter.com/widgets.js"
                   id="twitter-widgets-js"
-                ></script>
+                 />
               )}
             </div>
           )}

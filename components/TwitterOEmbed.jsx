@@ -27,7 +27,7 @@ const TwitterOEmbed = ({ tweetId, className = "" }) => {
 
   // Intersection Observer for lazy loading
   useEffect(() => {
-    if (!containerRef.current || !isValidTweetId) return;
+    if (!containerRef.current || !isValidTweetId) {return;}
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -54,7 +54,7 @@ const TwitterOEmbed = ({ tweetId, className = "" }) => {
 
   // Fetch oEmbed HTML when visible
   useEffect(() => {
-    if (!isVisible || !isValidTweetId) return;
+    if (!isVisible || !isValidTweetId) {return;}
 
     const controller = new AbortController();
 
@@ -114,13 +114,13 @@ const TwitterOEmbed = ({ tweetId, className = "" }) => {
 
   // Load Twitter widgets script if not already loaded
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {return;}
 
     // Check if Twitter widgets script is already loaded
-    if (window.twttr) return;
+    if (window.twttr) {return;}
 
     // Check if script tag already exists
-    if (document.getElementById("twitter-widgets-script")) return;
+    if (document.getElementById("twitter-widgets-script")) {return;}
 
     // Load Twitter widgets script
     const script = document.createElement("script");
@@ -162,15 +162,15 @@ const TwitterOEmbed = ({ tweetId, className = "" }) => {
         <div className="border border-gray-200 rounded-lg p-4 bg-white">
           <div className="animate-pulse">
             <div className="flex items-center space-x-3 mb-3">
-              <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+              <div className="w-12 h-12 bg-gray-200 rounded-full" />
               <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4 mb-2" />
+                <div className="h-3 bg-gray-200 rounded w-1/3" />
               </div>
             </div>
             <div className="space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-full" />
+              <div className="h-4 bg-gray-200 rounded w-3/4" />
             </div>
           </div>
         </div>

@@ -1,13 +1,13 @@
 "use client";
-import { TwitterTweetEmbed } from "react-twitter-embed";
+import React, { useEffect, useRef } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from "react-player/youtube";
-import React, { useEffect, useRef } from "react";
+import { TwitterTweetEmbed } from "react-twitter-embed";
 import NestedTable from "./Nested_Table";
 import Paragraph from "./Paragraph";
+import CustomYouTubeEmbed from "../CustomYouTubeEmbed";
 import FacebookEmbed from "../FacebookEmbed";
 import InstagramEmbed from "../InstagramEmbed";
-import CustomYouTubeEmbed from "../CustomYouTubeEmbed";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -35,7 +35,7 @@ const useInView = (options) => {
 };
 
 export const getContentFragment = (index, text, obj, type) => {
-  let modifiedText = text;
+  const modifiedText = text;
 
   const Heading = ({ children, className, index }) => {
     const [ref, inView] = useInView({ threshold: 0.1 });
@@ -105,7 +105,7 @@ export const getContentFragment = (index, text, obj, type) => {
       return (
         <div key={index}>
           <LazyLoadImage
-            alt={"images"}
+            alt="images"
             className="rounded-lg my-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
             height={obj.height}
             width={obj.width}
@@ -125,10 +125,10 @@ export const getContentFragment = (index, text, obj, type) => {
                 url={obj.url}
                 width="100%"
                 height="100%"
-                loop={true}
-                playing={true}
-                muted={true} // Mute the video for autoplay
-                controls={true}
+                loop
+                playing
+                muted // Mute the video for autoplay
+                controls
                 light={obj.thumbnail || false}
                 config={{
                   file: {
@@ -186,7 +186,7 @@ export const getContentFragment = (index, text, obj, type) => {
               // as they should only be handled through iframes with ReactPlayer
 
               // Default blockquote rendering
-              else {
+              
                 return (
                   <blockquote
                     className="border-l-4 border-primary pl-4 italic text-text-secondary my-3 py-2"
@@ -195,7 +195,7 @@ export const getContentFragment = (index, text, obj, type) => {
                     <p>{item}</p>
                   </blockquote>
                 );
-              }
+              
             })}
         </div>
       );

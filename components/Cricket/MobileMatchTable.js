@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaCheckCircle,
   FaTimesCircle,
@@ -8,7 +9,6 @@ import {
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
 
 // Animation variants
 const rowVariants = {
@@ -82,8 +82,8 @@ const MobileMatchTable = () => {
     return (
       <div className="text-center py-8 bg-white">
         <div className="inline-block relative w-16 h-16 mb-4">
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-urtechy-red rounded-full animate-spin"></div>
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full" />
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-urtechy-red rounded-full animate-spin" />
         </div>
         <p className="font-bold text-lg text-gray-700">Loading match data...</p>
       </div>

@@ -3,10 +3,10 @@
  * Monitors API performance, cache hit rates, and system health
  */
 
+import { updateMetrics } from "./monitoring";
+import { PERFORMANCE_CONFIG } from "../../config/production";
 import { requestDeduplicator } from "../../lib/requestDeduplicator";
 import { getCacheStats } from "../../services/hygraph";
-import { PERFORMANCE_CONFIG } from "../../config/production";
-import { updateMetrics } from "./monitoring";
 
 // Store health metrics in memory
 const healthMetrics = {

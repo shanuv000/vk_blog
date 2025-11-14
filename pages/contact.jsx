@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Head from "next/head";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaCheckCircle, FaExclamationTriangle, FaPhone } from "react-icons/fa";
 import { MdEmail, MdLocationOn, MdAccessTime, MdSend } from "react-icons/md";
+
 // Import the proxy-based contact service
 import { submitContactForm } from "../services/contactServiceProxy";
 // Import Telegram notification service
@@ -105,7 +106,7 @@ const ContactForm = () => {
       Object.keys(touched).forEach((field) => {
         if (touched[field]) {
           const error = validateField(field, formState[field]);
-          if (error) newErrors[field] = error;
+          if (error) {newErrors[field] = error;}
         }
       });
 
@@ -146,7 +147,7 @@ const ContactForm = () => {
         field === "message"
       ) {
         const error = validateField(field, formState[field]);
-        if (error) formErrors[field] = error;
+        if (error) {formErrors[field] = error;}
       }
     });
 
@@ -174,7 +175,17 @@ const ContactForm = () => {
 
         // Only log in development
         if (process.env.NODE_ENV !== "production") {
-          console.log("Form submitted successfully:", formState);
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log("Form submitted successfully:", formState);
+
+
+            }
+
+          }
         }
 
         // Show success message
@@ -214,14 +225,14 @@ const ContactForm = () => {
 
       // Return cleanup function
       return () => {
-        if (timer) clearTimeout(timer);
+        if (timer) {clearTimeout(timer);}
       };
     }
   };
 
   // Form submission status message
   const StatusMessage = () => {
-    if (!submitStatus) return null;
+    if (!submitStatus) {return null;}
 
     return (
       <motion.div
@@ -340,7 +351,7 @@ const ContactForm = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={errors.firstName}
-                required={true}
+                required
               />
             </div>
             <div className="w-full">
@@ -352,7 +363,7 @@ const ContactForm = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={errors.lastName}
-                required={true}
+                required
               />
             </div>
           </div>
@@ -365,7 +376,7 @@ const ContactForm = () => {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.email}
-            required={true}
+            required
             icon={<MdEmail />}
           />
 
@@ -420,7 +431,7 @@ const ContactForm = () => {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.message}
-            required={true}
+            required
           />
 
           <motion.button
@@ -457,12 +468,12 @@ const ContactForm = () => {
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                  ></circle>
+                   />
                   <path
                     className="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
+                   />
                 </svg>
                 Sending...
               </div>
@@ -645,7 +656,7 @@ const ContactInfo = () => {
             fill="currentColor"
             viewBox="0 0 24 24"
           >
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
         </motion.a>
         <motion.a

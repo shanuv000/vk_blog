@@ -51,9 +51,23 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+
+        console.log(
       `Revalidating sitemap due to ${operation} operation on post: ${data.slug}`
     );
+
+
+
+      }
+
+
+    }
 
     // In Vercel production environment, we can't write directly to the filesystem
     // Instead, we'll just revalidate the pages which will trigger a new build
@@ -63,7 +77,17 @@ export default async function handler(req, res) {
     try {
       // Revalidate the homepage
       await res.revalidate("/");
-      console.log("Revalidated homepage");
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log("Revalidated homepage");
+
+
+        }
+
+      }
 
       // Note: We can't directly revalidate static files like sitemap.xml
       // Instead, we'll trigger a revalidation of pages that will cause
@@ -72,16 +96,46 @@ export default async function handler(req, res) {
       // If we have a slug, revalidate the specific post page
       if (data.slug) {
         await res.revalidate(`/post/${data.slug}`);
-        console.log(`Revalidated post page: /post/${data.slug}`);
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(`Revalidated post page: /post/${data.slug}`);
+
+
+          }
+
+        }
       }
 
       // Also revalidate the blog index page
       try {
         await res.revalidate("/blog");
-        console.log("Revalidated blog index page");
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log("Revalidated blog index page");
+
+
+          }
+
+        }
       } catch (indexError) {
         // If blog index doesn't exist, just log it
-        console.log("Blog index page not found, skipping revalidation");
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log("Blog index page not found, skipping revalidation");
+
+
+          }
+
+        }
       }
 
       return res.status(200).json({
@@ -139,6 +193,6 @@ function escapeXml(unsafe) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+    .replace(/"/g, """)
+    .replace(/'/g, "'");
 }

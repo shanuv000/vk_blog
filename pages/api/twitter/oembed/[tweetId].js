@@ -58,9 +58,20 @@ export default async function handler(req, res) {
   // Check fresh cache first
   const cached = cache.get(cacheKey);
   if (cached && now - cached.timestamp < CACHE_DURATION) {
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(
       `✅ [oEmbed Cache] Hit for tweet ${tweetId} (age: ${Math.round(
-        (now - cached.timestamp) / 1000
+        (now - cached.timestamp)
+
+
+      }
+
+    }
+ / 1000
       )}s)`
     );
     res.setHeader("X-Cache", "HIT");
@@ -74,9 +85,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(
       `🔄 [oEmbed] Fetching tweet ${tweetId} from Twitter oEmbed API`
     );
+
+
+      }
+
+    }
 
     // Deduplicate concurrent requests
     let promise = inFlight.get(cacheKey);
@@ -119,7 +140,21 @@ export default async function handler(req, res) {
     // Clear in-flight entry
     inFlight.delete(cacheKey);
 
-    console.log(`✅ [oEmbed] Successfully fetched and cached tweet ${tweetId}`);
+    if (process.env.NODE_ENV === 'development') {
+
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+
+        console.log(`✅ [oEmbed] Successfully fetched and cached tweet ${tweetId}`);
+
+
+
+      }
+
+
+    }
 
     res.setHeader("X-Cache", "MISS");
     res.setHeader(

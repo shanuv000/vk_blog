@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
 import { motion, useAnimation } from "framer-motion";
+import PropTypes from "prop-types";
 import {
   FaXTwitter,
   FaFacebook,
@@ -10,6 +10,7 @@ import {
   FaLinkedin,
   FaPinterest,
 } from "react-icons/fa6";
+
 import {
   DEFAULT_FEATURED_IMAGE,
   FALLBACK_FEATURED_IMAGE,
@@ -368,8 +369,24 @@ const NavbarPostDetails = ({ post }) => {
               <div className="mt-2 space-x-2">
                 <button
                   onClick={async () => {
-                    console.log("🧪 Hook Test Starting...");
-                    console.log("🧪 Testing current post:", post?.slug);
+                    if (process.env.NODE_ENV === 'development') {
+
+                      if (process.env.NODE_ENV === 'development') {
+
+
+                        console.log("🧪 Hook Test Starting...");
+
+
+                      }
+
+                    }
+                    if (process.env.NODE_ENV === 'development') {
+                      if (process.env.NODE_ENV === 'development') {
+
+                        console.log("🧪 Testing current post:", post?.slug);
+
+                      }
+                    }
                     forceCreateShortUrl();
                   }}
                   className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
@@ -378,7 +395,17 @@ const NavbarPostDetails = ({ post }) => {
                 </button>
                 <button
                   onClick={async () => {
-                    console.log("🔧 Server API Test Starting...");
+                    if (process.env.NODE_ENV === 'development') {
+
+                      if (process.env.NODE_ENV === 'development') {
+
+
+                        console.log("🔧 Server API Test Starting...");
+
+
+                      }
+
+                    }
                     try {
                       const response = await fetch("/api/create-tinyurl", {
                         method: "POST",
@@ -398,20 +425,50 @@ const NavbarPostDetails = ({ post }) => {
                       });
 
                       const result = await response.json();
-                      console.log("🔧 Server API Result:", result);
+                      if (process.env.NODE_ENV === 'development') {
+
+                        if (process.env.NODE_ENV === 'development') {
+
+
+                          console.log("🔧 Server API Result:", result);
+
+
+                        }
+
+                      }
 
                       if (result.success && result.isShortened) {
-                        console.log(
+                        if (process.env.NODE_ENV === 'development') {
+
+                          if (process.env.NODE_ENV === 'development') {
+
+
+                            console.log(
                           "🎉 Server API created real short URL:",
                           result.shortUrl
                         );
+
+
+                          }
+
+                        }
                       } else {
-                        console.log(
+                        if (process.env.NODE_ENV === 'development') {
+
+                          if (process.env.NODE_ENV === 'development') {
+
+
+                            console.log(
                           "⚠️ Server API returned original URL:",
                           result.shortUrl,
                           "Reason:",
                           result.reason
                         );
+
+
+                          }
+
+                        }
                       }
                     } catch (error) {
                       console.error("🔧 Server API test failed:", error);

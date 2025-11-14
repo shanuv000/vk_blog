@@ -53,12 +53,12 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
         articleContent.appendChild(fallbackContainer);
         setContainer(fallbackContainer);
         return;
-      } else {
+      } 
         error(
           `Could not find blockquote with ID ${blockquoteId} and no article content found`
         );
         return;
-      }
+      
     }
 
     // Log blockquote details
@@ -276,7 +276,7 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
   }, [blockquoteId]);
 
   // If no container yet, return null
-  if (!container) return null;
+  if (!container) {return null;}
 
   // Render the appropriate embed component in the portal
   return createPortal(
@@ -359,7 +359,7 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
             <InstagramEmbed
               url={url}
               width="100%"
-              captioned={true}
+              captioned
               containerTagName="div"
               protocol=""
               injectScript
@@ -435,7 +435,7 @@ const SocialMediaEmbedder = () => {
   }, [embeds]);
 
   const processQueue = useCallback(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {return;}
     if (embedQueueRef.current.length === 0) {
       rateLimiterRef.current = null;
       return;
@@ -459,12 +459,12 @@ const SocialMediaEmbedder = () => {
 
   const enqueueEmbeds = useCallback(
     (items) => {
-      if (!items || items.length === 0) return;
+      if (!items || items.length === 0) {return;}
 
       const freshItems = [];
       items.forEach((item) => {
-        if (!item || !item.blockquoteId) return;
-        if (knownEmbedIdsRef.current.has(item.blockquoteId)) return;
+        if (!item || !item.blockquoteId) {return;}
+        if (knownEmbedIdsRef.current.has(item.blockquoteId)) {return;}
 
         const alreadyQueued = embedQueueRef.current.some(
           (queued) => queued.blockquoteId === item.blockquoteId
@@ -475,7 +475,7 @@ const SocialMediaEmbedder = () => {
         }
       });
 
-      if (freshItems.length === 0) return;
+      if (freshItems.length === 0) {return;}
 
       embedQueueRef.current.push(...freshItems);
       if (!rateLimiterRef.current) {
@@ -486,8 +486,8 @@ const SocialMediaEmbedder = () => {
   );
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (shouldLoadEmbeds) return;
+    if (typeof window === "undefined") {return;}
+    if (shouldLoadEmbeds) {return;}
 
     const sentinel = sentinelRef.current;
     if (!sentinel) {
@@ -545,7 +545,7 @@ const SocialMediaEmbedder = () => {
   }, [shouldLoadEmbeds]);
 
   useEffect(() => {
-    if (!shouldLoadEmbeds || hasInitializedRef.current) return;
+    if (!shouldLoadEmbeds || hasInitializedRef.current) {return;}
     hasInitializedRef.current = true;
 
     let mutationObserver;
@@ -555,7 +555,17 @@ const SocialMediaEmbedder = () => {
     let thirdPassTimeout;
 
     try {
-      console.log("SocialMediaEmbedder: Starting initialization...");
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log("SocialMediaEmbedder: Starting initialization...");
+
+
+        }
+
+      }
 
       const preserveEmbeds = () => {
         const persistentEmbeds = document.querySelectorAll(
@@ -593,7 +603,7 @@ const SocialMediaEmbedder = () => {
         }
 
         persistentEmbeds.forEach((embed) => {
-          if (!document.contains(embed)) return;
+          if (!document.contains(embed)) {return;}
 
           embed.setAttribute("data-preserved", "true");
 
@@ -671,7 +681,7 @@ const SocialMediaEmbedder = () => {
       }
 
       const loadSocialMediaScripts = (platforms = new Set()) => {
-        if (typeof window === "undefined") return;
+        if (typeof window === "undefined") {return;}
 
         const scriptState =
           window.__socialEmbedScriptState ||
@@ -690,7 +700,17 @@ const SocialMediaEmbedder = () => {
             twitterScript.async = true;
             twitterScript.defer = true;
             document.head.appendChild(twitterScript);
-            console.log("Loading Twitter widgets script...");
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log("Loading Twitter widgets script...");
+
+
+              }
+
+            }
           }
         }
 
@@ -723,7 +743,17 @@ const SocialMediaEmbedder = () => {
               console.error("Failed to load Facebook SDK");
             };
             document.head.appendChild(facebookScript);
-            console.log("Loading Facebook SDK...");
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log("Loading Facebook SDK...");
+
+
+              }
+
+            }
           }
         }
 
@@ -889,7 +919,17 @@ const SocialMediaEmbedder = () => {
               blockquote.getAttribute("data-embed-processed") === "true" ||
               blockquote.getAttribute("data-mobile-processed") === "true"
             ) {
-              console.log(`Skipping already processed blockquote ${index}`);
+              if (process.env.NODE_ENV === 'development') {
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  console.log(`Skipping already processed blockquote ${index}`);
+
+
+                }
+
+              }
               return;
             }
 
@@ -898,9 +938,19 @@ const SocialMediaEmbedder = () => {
               `[data-tweet-id="${text}"]`
             );
             if (existingEmbed) {
-              console.log(
+              if (process.env.NODE_ENV === 'development') {
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  console.log(
                 `Skipping blockquote ${index} - embed already exists`
               );
+
+
+                }
+
+              }
               blockquote.setAttribute("data-processed", "true");
               blockquote.setAttribute("data-mobile-processed", "true");
               return;
@@ -909,8 +959,19 @@ const SocialMediaEmbedder = () => {
             // Don't mark as processed yet - only mark after we confirm it's a social media embed
 
             const links = blockquote.querySelectorAll("a");
-            console.log(`Processing blockquote ${index}:`, {
-              text: text.substring(0, 100),
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log(`Processing blockquote ${index}:`, {
+              text: text.substring(0, 100)
+
+
+              }
+
+            }
+,
               hasLinks: links.length > 0,
               linkHrefs: Array.from(links).map((a) => a.href),
               innerHTML: blockquote.innerHTML.substring(0, 200),
@@ -929,7 +990,17 @@ const SocialMediaEmbedder = () => {
             if (/^\d+$/.test(text) && text.length > 8) {
               socialUrl = text;
               platform = "twitter";
-              console.log(`✓ Matched Twitter ID: ${text}`);
+              if (process.env.NODE_ENV === 'development') {
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  console.log(`✓ Matched Twitter ID: ${text}`);
+
+
+                }
+
+              }
             } else if (links.length > 0) {
               for (let i = 0; i < links.length; i++) {
                 const url = links[i].href;
@@ -975,9 +1046,19 @@ const SocialMediaEmbedder = () => {
               const urlKey = `${platform}:${socialUrl}`;
 
               if (seenUrls.has(urlKey)) {
-                console.log(
+                if (process.env.NODE_ENV === 'development') {
+
+                  if (process.env.NODE_ENV === 'development') {
+
+
+                    console.log(
                   `⚠️ Skipping duplicate ${platform} URL: ${socialUrl}`
                 );
+
+
+                  }
+
+                }
                 // Mark as processed to prevent future passes from picking it up
                 blockquote.setAttribute("data-processed", "true");
                 blockquote.setAttribute("data-mobile-processed", "true");
@@ -1000,8 +1081,19 @@ const SocialMediaEmbedder = () => {
             } else {
               // Log why this blockquote wasn't matched
               if (text.length > 0 && process.env.NODE_ENV === "development") {
-                console.log(`✗ Blockquote ${index} not matched:`, {
-                  text: text.substring(0, 100),
+                if (process.env.NODE_ENV === 'development') {
+
+                  if (process.env.NODE_ENV === 'development') {
+
+
+                    console.log(`✗ Blockquote ${index} not matched:`, {
+                  text: text.substring(0, 100)
+
+
+                  }
+
+                }
+,
                   isNumeric: /^\d+$/.test(text),
                   length: text.length,
                   hasLinks: links.length > 0,
@@ -1038,11 +1130,22 @@ const SocialMediaEmbedder = () => {
 
             // If no embed exists but blockquote is marked as processed, it's stale - clear the flags
             if (!hasEmbedContainer && blockquote.style.display !== "none") {
-              console.log(
+              if (process.env.NODE_ENV === 'development') {
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  console.log(
                 `🧹 Cleaning stale processing flags from blockquote: ${text.substring(
                   0,
                   50
-                )}`
+                )
+
+
+                }
+
+              }
+}`
               );
               blockquote.removeAttribute("data-processed");
               blockquote.removeAttribute("data-mobile-processed");
@@ -1054,7 +1157,17 @@ const SocialMediaEmbedder = () => {
       cleanupStaleFlags();
 
       firstPassTimeout = setTimeout(() => {
-        console.log("Starting first pass of embed extraction...");
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log("Starting first pass of embed extraction...");
+
+
+          }
+
+        }
         const extractedEmbeds = extractSocialMediaUrls();
         enqueueEmbeds(extractedEmbeds);
         loadSocialMediaScripts(new Set(extractedEmbeds.map((e) => e.platform)));

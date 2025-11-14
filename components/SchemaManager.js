@@ -1,8 +1,8 @@
 import React from "react";
 import ArticleSchema from "./ArticleSchema";
 import BreadcrumbSchema from "./BreadcrumbSchema";
-import WebsiteSchema from "./WebsiteSchema";
 import ListItemSchema from "./ListItemSchema";
+import WebsiteSchema from "./WebsiteSchema";
 
 /**
  * SchemaManager component for managing all structured data schemas

@@ -1,10 +1,27 @@
 /**
  * Server-side TinyURL creation endpoint
- * This runs o    console.log("🔄 Proceeding with TinyURL creation (FREE version)...");
+ * This runs o    if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === 'development') {
+
+        console.log("🔄 Proceeding with TinyURL creation (FREE version)
+
+      }
+    }
+...");
 
     // Check rate limit before proceeding
     const rateLimitStatus = tinyUrlService.getRateLimitStatus();
-    console.log("📊 Rate limit status:", rateLimitStatus);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log("📊 Rate limit status:", rateLimitStatus);
+
+
+      }
+
+    }
 
     if (!rateLimitStatus.canMakeRequest) {
       const originalUrl = `${baseUrl}/post/${post.slug}`;
@@ -23,7 +40,14 @@
     const originalUrl = `${baseUrl}/post/${post.slug}`;
     const isActuallyShort = shortUrl && shortUrl !== originalUrl;
 
-    console.log("✅ Server TinyURL result:", {
+    if (process.env.NODE_ENV === 'development') {
+
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+
+        console.log("✅ Server TinyURL result:", {
       shortUrl,
       shortUrlLength: shortUrl?.length,
       originalUrl,
@@ -31,7 +55,15 @@
       isActuallyShort,
       urlsEqual: shortUrl === originalUrl,
       shortUrlType: typeof shortUrl,
-      rateLimitStatus: tinyUrlService.getRateLimitStatus(),
+      rateLimitStatus: tinyUrlService.getRateLimitStatus()
+
+
+
+      }
+
+
+    }
+,
     }); where environment variables are available
  */
 

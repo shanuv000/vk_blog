@@ -38,7 +38,7 @@ const LoadingSpinner = ({
         style={{
           animation: "spin 1s linear infinite",
         }}
-      ></div>
+       />
     </div>
   );
 

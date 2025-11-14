@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
-import dynamic from "next/dynamic";
-import { hasRendered, markRendered } from "../utils/renderedTweets";
 import { getOptimizedImageUrl } from "../lib/image-config";
+import { hasRendered, markRendered } from "../utils/renderedTweets";
 
 // Use dynamic import to avoid SSR issues with the legacy embed library
 const LegacyTwitterEmbed = dynamic(() => import("./Blog/TwitterEmbed"), {
@@ -41,9 +41,19 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
           if (response.status === 429) {
             // If rate limited on oEmbed, try regular API (which has stale cache fallback)
             if (useOembed) {
-              console.log(
+              if (process.env.NODE_ENV === 'development') {
+
+                if (process.env.NODE_ENV === 'development') {
+
+
+                  console.log(
                 `🔄 Rate limited on oEmbed for ${tweetId}, falling back to data API`
               );
+
+
+                }
+
+              }
               return fetchTweet(signal, false);
             }
             throw new Error("Rate limit exceeded");
@@ -71,7 +81,7 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
 
   // Observe visibility and fetch only when near viewport
   useEffect(() => {
-    if (!containerRef.current || isVisible) return;
+    if (!containerRef.current || isVisible) {return;}
     const el = containerRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
@@ -89,7 +99,7 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
 
   // Trigger fetch when visible, with same-page dedupe
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible) {return;}
     // Avoid duplicate widgets for same tweet within a page render
     if (hasRendered(tweetId)) {
       setLoading(false);
@@ -118,7 +128,7 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
   };
 
   const formatText = (text, entities) => {
-    if (!entities) return text;
+    if (!entities) {return text;}
 
     let formattedText = text;
 
@@ -183,16 +193,16 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
       >
         <div className="animate-pulse">
           <div className="flex items-center space-x-3 mb-3">
-            <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+            <div className="w-12 h-12 bg-gray-200 rounded-full" />
             <div className="flex-1">
-              <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4 mb-2" />
+              <div className="h-3 bg-gray-200 rounded w-1/3" />
             </div>
           </div>
           <div className="space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-full"></div>
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-full" />
+            <div className="h-4 bg-gray-200 rounded w-3/4" />
+            <div className="h-4 bg-gray-200 rounded w-1/2" />
           </div>
         </div>
       </div>

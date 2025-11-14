@@ -1,18 +1,28 @@
 import React, { useState, useEffect, useMemo } from "react";
-import moment from "moment";
 import Link from "next/link";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import moment from "moment";
 import { FaImage } from "react-icons/fa";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import LoadingSpinner from "./LoadingSpinner";
 import {
   getDirectRecentPosts,
   getDirectSimilarPosts,
 } from "../services/direct-api";
-import LoadingSpinner from "./LoadingSpinner";
 
 const PostWidget = ({ categories, slug }) => {
   // Debug log to see what's being passed
-  console.log("PostWidget rendered with:", { categories, slug });
+  if (process.env.NODE_ENV === 'development') {
+
+    if (process.env.NODE_ENV === 'development') {
+
+
+      console.log("PostWidget rendered with:", { categories, slug });
+
+
+    }
+
+  }
 
   // Use direct API for similar posts
   const [similarPosts, setSimilarPosts] = useState([]);
@@ -28,14 +38,44 @@ const PostWidget = ({ categories, slug }) => {
       const fetchSimilarPosts = async () => {
         try {
           setSimilarLoading(true);
-          console.log("Fetching similar posts for:", slug, categories);
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log("Fetching similar posts for:", slug, categories);
+
+
+            }
+
+          }
           const result = await getDirectSimilarPosts(slug, categories);
-          console.log("Similar posts result:", result);
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log("Similar posts result:", result);
+
+
+            }
+
+          }
 
           if (result && result.length > 0) {
             setSimilarPosts(result);
           } else {
-            console.log("No similar posts found, using fallback");
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log("No similar posts found, using fallback");
+
+
+              }
+
+            }
             // Fallback to recent posts if no similar posts are found
             const recentResult = await getDirectRecentPosts();
             setSimilarPosts(recentResult || []);
@@ -92,7 +132,17 @@ const PostWidget = ({ categories, slug }) => {
 
     // Convert object to array if needed (fixes "Expected array data but received: object" error)
     if (!Array.isArray(result) && typeof result === "object") {
-      console.log("Converting posts object to array:", result);
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log("Converting posts object to array:", result);
+
+
+        }
+
+      }
       return Object.values(result);
     }
 
@@ -117,10 +167,10 @@ const PostWidget = ({ categories, slug }) => {
           <div className="animate-pulse space-y-4">
             {[1, 2, 3].map((item) => (
               <div className="flex items-center w-full" key={item}>
-                <div className="w-16 h-16 bg-secondary-light rounded-md flex-none"></div>
+                <div className="w-16 h-16 bg-secondary-light rounded-md flex-none" />
                 <div className="flex-grow ml-4">
-                  <div className="h-2 bg-secondary-light rounded w-1/4 mb-2"></div>
-                  <div className="h-4 bg-secondary-light rounded w-3/4"></div>
+                  <div className="h-2 bg-secondary-light rounded w-1/4 mb-2" />
+                  <div className="h-4 bg-secondary-light rounded w-3/4" />
                 </div>
               </div>
             ))}

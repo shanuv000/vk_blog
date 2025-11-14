@@ -1,6 +1,6 @@
-import { getNewsArticles } from "../../services/sitemap-utils";
 import fs from "fs";
 import path from "path";
+import { getNewsArticles } from "../../services/sitemap-utils";
 
 // Configure API to accept larger requests
 export const config = {
@@ -74,11 +74,11 @@ function generateNewsSitemap(articles) {
 
 // Helper function to escape XML special characters
 function escapeXml(unsafe) {
-  if (!unsafe) return "";
+  if (!unsafe) {return "";}
   return unsafe
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+    .replace(/"/g, """)
+    .replace(/'/g, "'");
 }

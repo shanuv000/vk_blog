@@ -1,6 +1,6 @@
 import React from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 // Import components using the organization's established pattern
 import {
@@ -13,8 +13,8 @@ import {
 
 // Import data hooks instead of direct service calls
 import { usePostDetails } from "../../hooks/useApolloQueries";
-import { getPosts, getPostDetails } from "../../services";
 import { AdjacentPosts } from "../../sections";
+import { getPosts, getPostDetails } from "../../services";
 
 // Import post validation utilities
 import {
@@ -97,7 +97,7 @@ const PostDetails = ({ post, error, lastFetched }) => {
             </a>
 
             <a
-              href={`/api/hygraph-schema`}
+              href="/api/hygraph-schema"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-center"
@@ -275,35 +275,85 @@ export default PostDetails;
 // Fetch data at build time
 export async function getStaticProps({ params }) {
   try {
-    console.log(`[getStaticProps] Called for slug: ${params.slug}`);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`[getStaticProps] Called for slug: ${params.slug}`);
+
+
+      }
+
+    }
 
     // IMPORTANT: We're now treating ALL posts as potentially problematic
     // This ensures maximum compatibility and resilience
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(
       `[getStaticProps] Using optimized data fetching for: ${params.slug}`
     );
+
+
+      }
+
+    }
 
     // We'll try multiple approaches to fetch the post data
     // This ensures we get the data even if one approach fails
     let data = null;
-    let fetchErrors = [];
+    const fetchErrors = [];
 
     // For Vercel production, we'll use a more direct approach
     // This helps reduce build time and avoid timeouts
 
     // Approach 1: Standard getPostDetails function
     try {
-      console.log(`[getStaticProps] Attempt 1: Using standard getPostDetails`);
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(`[getStaticProps] Attempt 1: Using standard getPostDetails`);
+
+
+        }
+
+      }
       data = await getPostDetails(params.slug);
 
       if (data) {
-        console.log(`[getStaticProps] Attempt 1 succeeded for: ${params.slug}`);
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(`[getStaticProps] Attempt 1 succeeded for: ${params.slug}`);
+
+
+          }
+
+        }
 
         // Early return for successful fetch to optimize build time
         // Process the data minimally before returning
         data = ensureValidContent(data);
         data = processPostContent(data, (message) => {
-          console.log(`[getStaticProps] ${message}`);
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(`[getStaticProps] ${message}`);
+
+
+            }
+
+          }
         });
 
         return {
@@ -314,11 +364,21 @@ export async function getStaticProps({ params }) {
           // Use a longer revalidation time for successful fetches
           revalidate: 60 * 60, // 1 hour
         };
-      } else {
-        console.log(
+      } 
+        if (process.env.NODE_ENV === 'development') {
+ 
+          if (process.env.NODE_ENV === 'development') {
+
+ 
+            console.log(
           `[getStaticProps] Attempt 1 returned no data for: ${params.slug}`
         );
-      }
+
+ 
+          }
+ 
+        }
+      
     } catch (error1) {
       console.error(`[getStaticProps] Attempt 1 failed:`, error1.message);
       fetchErrors.push({ approach: "standard", error: error1.message });
@@ -327,9 +387,19 @@ export async function getStaticProps({ params }) {
     // Approach 2: Direct API call with simplified query
     if (!data) {
       try {
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(
           `[getStaticProps] Attempt 2: Using direct API call with simplified query`
         );
+
+
+          }
+
+        }
 
         // Import the direct API client
         const { gql, fetchFromCDN } = require("../../services/hygraph");
@@ -366,15 +436,35 @@ export async function getStaticProps({ params }) {
 
         const result = await fetchFromCDN(directQuery, { slug: params.slug });
         if (result && result.post) {
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             `[getStaticProps] Attempt 2 succeeded for: ${params.slug}`
           );
+
+
+            }
+
+          }
           data = result.post;
 
           // Early return for successful fetch to optimize build time
           data = ensureValidContent(data);
           data = processPostContent(data, (message) => {
-            console.log(`[getStaticProps] ${message}`);
+            if (process.env.NODE_ENV === 'development') {
+
+              if (process.env.NODE_ENV === 'development') {
+
+
+                console.log(`[getStaticProps] ${message}`);
+
+
+              }
+
+            }
           });
 
           return {
@@ -385,11 +475,21 @@ export async function getStaticProps({ params }) {
             // Use a longer revalidation time for successful fetches
             revalidate: 60 * 60, // 1 hour
           };
-        } else {
-          console.log(
+        } 
+          if (process.env.NODE_ENV === 'development') {
+ 
+            if (process.env.NODE_ENV === 'development') {
+
+ 
+              console.log(
             `[getStaticProps] Attempt 2 returned no data for: ${params.slug}`
           );
-        }
+
+ 
+            }
+ 
+          }
+        
       } catch (error2) {
         console.error(`[getStaticProps] Attempt 2 failed:`, error2.message);
         fetchErrors.push({ approach: "direct", error: error2.message });
@@ -399,7 +499,17 @@ export async function getStaticProps({ params }) {
     // Approach 3: Collection query instead of single post query
     if (!data) {
       try {
-        console.log(`[getStaticProps] Attempt 3: Using posts collection query`);
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(`[getStaticProps] Attempt 3: Using posts collection query`);
+
+
+          }
+
+        }
 
         // Import the direct API client
         const { gql, fetchFromCDN } = require("../../services/hygraph");
@@ -438,14 +548,34 @@ export async function getStaticProps({ params }) {
           slug: params.slug,
         });
         if (result && result.posts && result.posts.length > 0) {
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             `[getStaticProps] Attempt 3 succeeded for: ${params.slug}`
           );
+
+
+            }
+
+          }
           data = result.posts[0];
         } else {
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             `[getStaticProps] Attempt 3 returned no data for: ${params.slug}`
           );
+
+
+            }
+
+          }
         }
       } catch (error3) {
         console.error(`[getStaticProps] Attempt 3 failed:`, error3.message);
@@ -456,9 +586,19 @@ export async function getStaticProps({ params }) {
     // Approach 4: Minimal query with only essential fields
     if (!data) {
       try {
-        console.log(
+        if (process.env.NODE_ENV === 'development') {
+
+          if (process.env.NODE_ENV === 'development') {
+
+
+            console.log(
           `[getStaticProps] Attempt 4: Using minimal query with essential fields only`
         );
+
+
+          }
+
+        }
 
         // Import the direct API client
         const { gql, fetchFromCDN } = require("../../services/hygraph");
@@ -478,15 +618,35 @@ export async function getStaticProps({ params }) {
 
         const result = await fetchFromCDN(minimalQuery, { slug: params.slug });
         if (result && result.post) {
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             `[getStaticProps] Attempt 4 succeeded for: ${params.slug}`
           );
+
+
+            }
+
+          }
           // This will be a partial post object, but we'll fill in defaults later
           data = result.post;
         } else {
-          console.log(
+          if (process.env.NODE_ENV === 'development') {
+
+            if (process.env.NODE_ENV === 'development') {
+
+
+              console.log(
             `[getStaticProps] Attempt 4 returned no data for: ${params.slug}`
           );
+
+
+            }
+
+          }
         }
       } catch (error4) {
         console.error(`[getStaticProps] Attempt 4 failed:`, error4.message);
@@ -519,31 +679,76 @@ export async function getStaticProps({ params }) {
       };
     }
 
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+
+        console.log(
       `[getStaticProps] Successfully fetched post data for slug: ${
         params.slug
       }, title: ${data.title || "NO TITLE"}`
     );
 
+
+
+      }
+
+
+    }
+
     // Log the structure of the post data
     const dataKeys = Object.keys(data);
-    console.log(`[getStaticProps] Post data structure: ${dataKeys.join(", ")}`);
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(`[getStaticProps] Post data structure: ${dataKeys.join(", ")
+
+
+      }
+
+    }
+}`);
 
     // Ensure the post has all required fields with defaults if missing
 
     // Add default excerpt if missing
     if (!data.excerpt) {
-      console.log(
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(
         `[getStaticProps] Adding default excerpt for: ${params.slug}`
       );
+
+
+        }
+
+      }
       data.excerpt = data.title || "Read this interesting post";
     }
 
     // Add default featured image if missing
     if (!data.featuredImage) {
-      console.log(
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(
         `[getStaticProps] Adding default featuredImage for: ${params.slug}`
       );
+
+
+        }
+
+      }
       data.featuredImage = {
         url: "/default-image.jpg",
       };
@@ -552,9 +757,19 @@ export async function getStaticProps({ params }) {
     // Author section has been removed from the UI
     // but we'll keep the data for schema purposes
     if (!data.author) {
-      console.log(
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(
         `[getStaticProps] Adding default author for schema: ${params.slug}`
       );
+
+
+        }
+
+      }
       data.author = {
         name: "urTechy",
         bio: "Tech enthusiast and blogger",
@@ -566,9 +781,19 @@ export async function getStaticProps({ params }) {
 
     // Add default categories if missing
     if (!data.categories || !data.categories.length) {
-      console.log(
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(
         `[getStaticProps] Adding default category for: ${params.slug}`
       );
+
+
+        }
+
+      }
       data.categories = [
         {
           name: "Uncategorized",
@@ -579,16 +804,36 @@ export async function getStaticProps({ params }) {
 
     // Add default dates if missing
     if (!data.createdAt) {
-      console.log(
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(
         `[getStaticProps] Adding default createdAt for: ${params.slug}`
       );
+
+
+        }
+
+      }
       data.createdAt = new Date().toISOString();
     }
 
     if (!data.publishedAt) {
-      console.log(
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(
         `[getStaticProps] Adding default publishedAt for: ${params.slug}`
       );
+
+
+        }
+
+      }
       data.publishedAt = data.createdAt || new Date().toISOString();
     }
 
@@ -597,15 +842,35 @@ export async function getStaticProps({ params }) {
 
     // Process post content (parse strings if needed)
     data = processPostContent(data, (message) => {
-      console.log(`[getStaticProps] ${message}`);
+      if (process.env.NODE_ENV === 'development') {
+
+        if (process.env.NODE_ENV === 'development') {
+
+
+          console.log(`[getStaticProps] ${message}`);
+
+
+        }
+
+      }
     });
 
     // Log debug info after processing
     const debugInfo = getContentDebugInfo(data);
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(
       `[getStaticProps] Post content debug info after processing:`,
       debugInfo
     );
+
+
+      }
+
+    }
 
     return {
       props: {
@@ -642,9 +907,19 @@ export async function getStaticProps({ params }) {
 // The HTML is generated at build time and will be reused on each request.
 export async function getStaticPaths() {
   try {
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+        console.log(
       "[getStaticPaths] Using minimal static generation approach for Vercel"
     );
+
+
+      }
+
+    }
 
     // Define a list of critical posts that must be pre-rendered
     // Keep this list very small to avoid build timeouts
@@ -656,9 +931,23 @@ export async function getStaticPaths() {
       "ipl-2025-riyan-parag-six-consecutive-sixes-kkr-vs-rr",
     ];
 
-    console.log(
+    if (process.env.NODE_ENV === 'development') {
+
+
+      if (process.env.NODE_ENV === 'development') {
+
+
+
+        console.log(
       `[getStaticPaths] Pre-rendering only ${criticalSlugs.length} critical posts`
     );
+
+
+
+      }
+
+
+    }
 
     // Create paths array for Next.js with just these critical slugs
     const paths = criticalSlugs.map((slug) => ({
