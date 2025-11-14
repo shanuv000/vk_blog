@@ -144,28 +144,9 @@ const Header = () => {
   };
 
   const handleDropdownToggle = (name, type) => {
-    if (process.env.NODE_ENV === 'development') {
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-        console.log(`Toggling dropdown: ${name} (${type})
-
-
-      }
-
-    }
-`);
-    if (process.env.NODE_ENV === 'development') {
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-        console.log(`Current dropdown data:`, dropdownData[name]);
-
-
-      }
-
+    if (process.env.NODE_ENV === "development") {
+      console.log(`Toggling dropdown: ${name} (${type})`);
+      console.log(`Current dropdown data:`, dropdownData[name]);
     }
 
     setActiveDropdowns((prev) => {
@@ -173,16 +154,8 @@ const Header = () => {
         ...prev,
         [type]: prev[type] === name ? null : name,
       };
-      if (process.env.NODE_ENV === 'development') {
-
-        if (process.env.NODE_ENV === 'development') {
-
-
-          console.log(`New dropdown state:`, newState);
-
-
-        }
-
+      if (process.env.NODE_ENV === "development") {
+        console.log(`New dropdown state:`, newState);
       }
       return newState;
     });

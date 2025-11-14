@@ -47,15 +47,17 @@ const CodeBlock = ({ language, code }) => {
 
   // Process and clean up the code content
   const processCodeContent = (rawCode) => {
-    if (!rawCode) {return "// No code content available";}
+    if (!rawCode) {
+      return "// No code content available";
+    }
 
     // Ensure code is a string
     let codeStr =
       typeof rawCode === "string"
         ? rawCode
         : rawCode?.toString
-        ? rawCode.toString()
-        : "// No code content available";
+          ? rawCode.toString()
+          : "// No code content available";
 
     // Clean up common issues in code blocks from CMS
     codeStr = codeStr
@@ -121,15 +123,11 @@ const CodeBlock = ({ language, code }) => {
 
   // Debug log in development only
   if (process.env.NODE_ENV === "development") {
-    if (process.env.NODE_ENV === 'development') {
-
-      if (process.env.NODE_ENV === 'development') {
-        console.log("Code block content:", {
-          language: mappedLanguage,
-          codeLength: codeContent?.length,
-          codePreview: codeContent?.substring(0, 50)
-        });
-      }
+    console.log("Code block content:", {
+      language: mappedLanguage,
+      codeLength: codeContent?.length,
+      codePreview: codeContent?.substring(0, 50),
+    });
   }
 
   return (
@@ -237,7 +235,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   >
                     {Array.isArray(typeObj.children)
                       ? typeObj.children.map((item, i) => {
-                          if (!item) {return null;}
+                          if (!item) {
+                            return null;
+                          }
                           if (item.bold) {
                             return <strong key={i}>{item.text || ""}</strong>;
                           }
@@ -398,11 +398,17 @@ const RichTextRenderer = ({ content, references = [] }) => {
               try {
                 // Function to recursively extract text from React elements
                 const extractTextFromReactElement = (element) => {
-                  if (!element) {return "";}
+                  if (!element) {
+                    return "";
+                  }
 
                   // If it's a string or number, return it directly
-                  if (typeof element === "string") {return element;}
-                  if (typeof element === "number") {return element.toString();}
+                  if (typeof element === "string") {
+                    return element;
+                  }
+                  if (typeof element === "number") {
+                    return element.toString();
+                  }
 
                   // If it's a React element
                   if (React.isValidElement(element)) {
@@ -423,8 +429,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
 
                   // If it's an object with text property
                   if (element && typeof element === "object") {
-                    if (element.text) {return element.text;}
-                    if (element.content) {return element.content;}
+                    if (element.text) {
+                      return element.text;
+                    }
+                    if (element.content) {
+                      return element.content;
+                    }
 
                     // Try to extract from props.children if available
                     if (element.props && element.props.children) {
@@ -464,9 +474,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
                       // Array of elements
                       childText = children.props.children
                         .map((child) => {
-                          if (typeof child === "string") {return child;}
-                          if (typeof child === "number")
-                            {return child.toString();}
+                          if (typeof child === "string") {
+                            return child;
+                          }
+                          if (typeof child === "number") {
+                            return child.toString();
+                          }
                           return "";
                         })
                         .join("");
@@ -475,16 +488,10 @@ const RichTextRenderer = ({ content, references = [] }) => {
                       try {
                         childText = JSON.stringify(children.props.children);
                       } catch (e) {
-                        if (process.env.NODE_ENV === 'development') {
-
-                          if (process.env.NODE_ENV === 'development') {
-
-
+                        if (process.env.NODE_ENV === "development") {
+                          if (process.env.NODE_ENV === "development") {
                             console.log("Could not stringify children:", e);
-
-
                           }
-
                         }
                       }
                     }
@@ -546,7 +553,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   // Try to find a numeric string that looks like a tweet ID in the props structure
                   const findTweetId = (element, depth = 0) => {
                     // Prevent infinite recursion by limiting depth
-                    if (!element || depth > 10) {return null;}
+                    if (!element || depth > 10) {
+                      return null;
+                    }
 
                     // If it's a string and looks like a tweet ID
                     if (typeof element === "string") {
@@ -565,7 +574,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                           element.props.children,
                           depth + 1
                         );
-                        if (childResult) {return childResult;}
+                        if (childResult) {
+                          return childResult;
+                        }
                       }
 
                       // Check other props (limit to common text props)
@@ -582,7 +593,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                             element.props[key],
                             depth + 1
                           );
-                          if (propResult) {return propResult;}
+                          if (propResult) {
+                            return propResult;
+                          }
                         }
                       }
 
@@ -593,7 +606,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                     if (Array.isArray(element)) {
                       for (const item of element) {
                         const arrayResult = findTweetId(item, depth + 1);
-                        if (arrayResult) {return arrayResult;}
+                        if (arrayResult) {
+                          return arrayResult;
+                        }
                       }
                       return null; // Return null if no tweet ID found in array
                     }
@@ -623,7 +638,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                             element[key],
                             depth + 1
                           );
-                          if (objResult) {return objResult;}
+                          if (objResult) {
+                            return objResult;
+                          }
                         }
                       }
                     }
@@ -651,16 +668,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 const finalTweetId = tweetId || trimmedText;
 
                 // Log the tweet ID for debugging
-                if (process.env.NODE_ENV === 'development') {
-
-                  if (process.env.NODE_ENV === 'development') {
-
-
-                    console.log(`RichTextRenderer found tweet ID: ${finalTweetId}`);
-
-
+                if (process.env.NODE_ENV === "development") {
+                  if (process.env.NODE_ENV === "development") {
+                    console.log(
+                      `RichTextRenderer found tweet ID: ${finalTweetId}`
+                    );
                   }
-
                 }
 
                 // Render tweet with enhanced component
@@ -704,8 +717,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
               ) {
                 // Function to recursively search for anchor tags with social media URLs
                 const findSocialMediaUrl = (element) => {
-                  if (!element)
-                    {return { facebookUrl: null, instagramUrl: null };}
+                  if (!element) {
+                    return { facebookUrl: null, instagramUrl: null };
+                  }
 
                   // If it's a React element
                   if (React.isValidElement(element)) {
@@ -934,8 +948,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
                       // Handle array of children
                       code = children.props.children
                         .map((child) => {
-                          if (typeof child === "string") {return child;}
-                          if (!child || !child.props) {return "";}
+                          if (typeof child === "string") {
+                            return child;
+                          }
+                          if (!child || !child.props) {
+                            return "";
+                          }
 
                           // Check if this child has the language class
                           if (
@@ -968,13 +986,19 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 if (!code && children && typeof children === "object") {
                   // Try to access the Slate node structure
                   const extractFromSlateNode = (node) => {
-                    if (!node) {return "";}
+                    if (!node) {
+                      return "";
+                    }
 
                     // Direct text content
-                    if (typeof node === "string") {return node;}
+                    if (typeof node === "string") {
+                      return node;
+                    }
 
                     // Text node with text property
-                    if (node.text) {return node.text;}
+                    if (node.text) {
+                      return node.text;
+                    }
 
                     // Node with children
                     if (node.children && Array.isArray(node.children)) {
@@ -1015,7 +1039,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 }
               } catch (error) {
                 console.error("Error extracting code content:", error);
-                code = `// Error extracting code content: ${  error.message}`;
+                code = `// Error extracting code content: ${error.message}`;
               }
 
               // Provide a default code snippet if nothing was extracted
@@ -1097,11 +1121,17 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 try {
                   // Function to recursively extract text from React elements
                   const extractTextFromReactElement = (element) => {
-                    if (!element) {return "";}
+                    if (!element) {
+                      return "";
+                    }
 
                     // If it's a string or number, return it directly
-                    if (typeof element === "string") {return element;}
-                    if (typeof element === "number") {return element.toString();}
+                    if (typeof element === "string") {
+                      return element;
+                    }
+                    if (typeof element === "number") {
+                      return element.toString();
+                    }
 
                     // If it's a React element
                     if (React.isValidElement(element)) {
@@ -1122,8 +1152,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
 
                     // If it's an object with text property
                     if (element && typeof element === "object") {
-                      if (element.text) {return element.text;}
-                      if (element.content) {return element.content;}
+                      if (element.text) {
+                        return element.text;
+                      }
+                      if (element.content) {
+                        return element.content;
+                      }
                     }
 
                     // Last resort: try toString()
@@ -1176,7 +1210,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                   if (!tweetId) {
                     // Try to find a numeric string that looks like a tweet ID in the props structure
                     const findTweetId = (element) => {
-                      if (!element) {return null;}
+                      if (!element) {
+                        return null;
+                      }
 
                       // If it's a string and looks like a tweet ID
                       if (typeof element === "string") {
@@ -1193,7 +1229,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                           const childResult = findTweetId(
                             element.props.children
                           );
-                          if (childResult) {return childResult;}
+                          if (childResult) {
+                            return childResult;
+                          }
                         }
                       }
 
@@ -1201,7 +1239,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                       if (Array.isArray(element)) {
                         for (const item of element) {
                           const arrayResult = findTweetId(item);
-                          if (arrayResult) {return arrayResult;}
+                          if (arrayResult) {
+                            return arrayResult;
+                          }
                         }
                       }
 
@@ -1270,7 +1310,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 );
               },
               Twitter: ({ nodeId, url }) => {
-                if (!url) {return <p>Twitter embed (URL not available)</p>;}
+                if (!url) {
+                  return <p>Twitter embed (URL not available)</p>;
+                }
 
                 // Extract tweet ID from URL with better parsing
                 let tweetId;
@@ -1320,7 +1362,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 if (!finalUrl || !finalUrl.includes("facebook.com")) {
                   // Function to recursively search for Facebook URLs in children
                   const findFacebookUrl = (element) => {
-                    if (!element) {return null;}
+                    if (!element) {
+                      return null;
+                    }
 
                     // If it's a string, check if it contains a Facebook URL
                     if (typeof element === "string") {
@@ -1362,7 +1406,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                     if (Array.isArray(element)) {
                       for (const child of element) {
                         const result = findFacebookUrl(child);
-                        if (result) {return result;}
+                        if (result) {
+                          return result;
+                        }
                       }
                     }
 
@@ -1405,7 +1451,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 if (!finalUrl || !finalUrl.includes("instagram.com")) {
                   // Function to recursively search for Instagram URLs in children
                   const findInstagramUrl = (element) => {
-                    if (!element) {return null;}
+                    if (!element) {
+                      return null;
+                    }
 
                     // If it's a string, check if it contains an Instagram URL
                     if (typeof element === "string") {
@@ -1445,7 +1493,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                     if (Array.isArray(element)) {
                       for (const child of element) {
                         const result = findInstagramUrl(child);
-                        if (result) {return result;}
+                        if (result) {
+                          return result;
+                        }
                       }
                     }
 
@@ -1480,7 +1530,9 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 );
               },
               YouTube: ({ nodeId, url }) => {
-                if (!url) {return <p>YouTube embed (URL not available)</p>;}
+                if (!url) {
+                  return <p>YouTube embed (URL not available)</p>;
+                }
                 try {
                   return (
                     <CustomYouTubeEmbed videoId={url} title="YouTube Video" />
