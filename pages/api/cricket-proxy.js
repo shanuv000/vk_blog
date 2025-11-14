@@ -1,6 +1,82 @@
 // Next.js API route to proxy requests to the cricket API
 // This avoids CORS issues when fetching from the client side
 
+/**
+ * Extract tournament heading from match data for filtering
+ * @param {Object} match - Match data object
+ * @returns {string} - Tournament heading/category
+ */
+function extractHeading(match) {
+  const matchDetails = match.matchDetails || match.title || "";
+  const location = match.location || "";
+
+  // Test matches
+  if (matchDetails.includes("Test") || location.includes("Test")) {
+    return "Test Matches";
+  }
+
+  // ODI matches
+  if (matchDetails.includes("ODI") || location.includes("ODI")) {
+    return "ODI Matches";
+  }
+
+  // T20 matches (including T20I, WBBL, etc.)
+  if (
+    matchDetails.includes("T20") ||
+    location.includes("T20") ||
+    matchDetails.includes("Big Bash") ||
+    location.includes("Big Bash")
+  ) {
+    return "T20 Matches";
+  }
+
+  // Group stage matches (World Cup, Asia Cup, etc.)
+  if (matchDetails.includes("Group") || location.includes("Group")) {
+    return "Tournament Matches";
+  }
+
+  // Warm-up/Practice matches
+  if (
+    matchDetails.includes("Warm-up") ||
+    matchDetails.includes("Practice") ||
+    location.includes("Warm-up")
+  ) {
+    return "Warm-up Matches";
+  }
+
+  // Women's cricket
+  if (
+    matchDetails.includes("Women") ||
+    location.includes("Women") ||
+    match.playingTeamBat?.includes("Women") ||
+    match.playingTeamBall?.includes("Women")
+  ) {
+    return "Women's Cricket";
+  }
+
+  // Default category
+  return "Other Matches";
+}
+
+/**
+ * Add heading field to all matches in the response data
+ * @param {Object} data - API response data
+ * @returns {Object} - Modified data with heading field added
+ */
+function addHeadingToMatches(data) {
+  if (!data || !data.data || !Array.isArray(data.data)) {
+    return data;
+  }
+
+  return {
+    ...data,
+    data: data.data.map((match) => ({
+      ...match,
+      heading: extractHeading(match),
+    })),
+  };
+}
+
 export default async function handler(req, res) {
   // Only allow GET requests
   if (req.method !== "GET") {
@@ -72,10 +148,11 @@ export default async function handler(req, res) {
 
       clearTimeout(timeoutId);
 
-      // If successful, return the response
+      // If successful, return the response with heading added
       if (response.ok) {
         const data = await response.json();
-        return res.status(200).json(data);
+        const dataWithHeadings = addHeadingToMatches(data);
+        return res.status(200).json(dataWithHeadings);
       }
 
       // If not successful, throw an error to try backup APIs
@@ -108,7 +185,8 @@ export default async function handler(req, res) {
 
           if (backupResponse.ok) {
             const data = await backupResponse.json();
-            return res.status(200).json(data);
+            const dataWithHeadings = addHeadingToMatches(data);
+            return res.status(200).json(dataWithHeadings);
           }
         } catch (backupError) {
           console.warn(`Backup cricket API failed: ${backupError.message}`);
