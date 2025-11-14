@@ -222,7 +222,7 @@ const nextConfig = {
   },
 
   // Webpack configuration for audio files and optimizations
-  webpack(config) {
+  webpack(config, { isServer }) {
     // Audio file handling
     config.module.rules.push({
       test: /\.(mp3|wav)$/,
@@ -233,6 +233,48 @@ const nextConfig = {
         },
       },
     });
+
+    // Production optimizations
+    if (!isServer) {
+      // Split chunks for better caching
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: "all",
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk for react and react-dom
+            framework: {
+              name: "framework",
+              chunks: "all",
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
+              priority: 40,
+              enforce: true,
+            },
+            // Commons chunk for shared code
+            commons: {
+              name: "commons",
+              minChunks: 2,
+              priority: 20,
+            },
+            // Separate chunk for large libraries
+            lib: {
+              test: /[\\/]node_modules[\\/]/,
+              name(module) {
+                const packageName = module.context.match(
+                  /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+                )?.[1];
+                return `npm.${packageName?.replace("@", "")}`;
+              },
+              priority: 30,
+              minChunks: 1,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      };
+    }
 
     return config;
   },
@@ -246,6 +288,8 @@ const nextConfig = {
             exclude: ["error", "warn"],
           }
         : false,
+    // Remove React properties in production
+    reactRemoveProperties: process.env.NODE_ENV === "production",
   },
 
   // Optimize production builds
@@ -255,9 +299,18 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
 
+  // Output configuration for better caching
+  output: "standalone",
+
   // Experimental features for better performance
   experimental: {
     scrollRestoration: true,
+    // Optimize package imports
+    optimizePackageImports: [
+      "react-icons",
+      "lucide-react",
+      "@fortawesome/react-fontawesome",
+    ],
     // optimizeCss: true, // Disabled - requires critters package
   },
 
