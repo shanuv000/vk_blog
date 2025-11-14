@@ -113,21 +113,10 @@ export default async function handler(req, res) {
 
     // Log request in development
     if (process.env.NODE_ENV !== "production") {
-      if (process.env.NODE_ENV === 'development') {
-
-        if (process.env.NODE_ENV === 'development') {
-
-
-          console.log("Firebase proxy request:", {
+      console.log("Firebase proxy request:", {
         endpoint,
         method,
-        bodyKeys: Object.keys(body || {})
-
-
-        }
-
-      }
-,
+        bodyKeys: Object.keys(body || {}),
       });
     }
 

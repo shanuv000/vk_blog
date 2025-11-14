@@ -128,22 +128,7 @@ export default async function handler(req, res) {
     const url = new URL(apiUrl);
     url.searchParams.append("_t", Date.now());
 
-    if (process.env.NODE_ENV === 'development') {
-
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-
-        console.log(`Fetching cricket data from: ${url.toString()
-
-
-
-      }
-
-
-    }
-}`);
+    console.log(`Fetching cricket data from: ${url.toString()}`);
 
     // Try the primary API first
     try {
@@ -180,17 +165,7 @@ export default async function handler(req, res) {
       // Try backup APIs in sequence
       for (const backupUrl of backupApiUrls) {
         try {
-          if (process.env.NODE_ENV === 'development') {
-
-            if (process.env.NODE_ENV === 'development') {
-
-
-              console.log(`Trying backup cricket API: ${backupUrl}`);
-
-
-            }
-
-          }
+          console.log(`Trying backup cricket API: ${backupUrl}`);
 
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 8000);

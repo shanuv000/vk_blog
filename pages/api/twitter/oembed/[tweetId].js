@@ -58,22 +58,13 @@ export default async function handler(req, res) {
   // Check fresh cache first
   const cached = cache.get(cacheKey);
   if (cached && now - cached.timestamp < CACHE_DURATION) {
-    if (process.env.NODE_ENV === 'development') {
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-        console.log(
-      `✅ [oEmbed Cache] Hit for tweet ${tweetId} (age: ${Math.round(
-        (now - cached.timestamp)
-
-
-      }
-
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `✅ [oEmbed Cache] Hit for tweet ${tweetId} (age: ${Math.round(
+          (now - cached.timestamp) / 1000
+        )}s)`
+      );
     }
- / 1000
-      )}s)`
-    );
     res.setHeader("X-Cache", "HIT");
     res.setHeader("X-Cache-Age", Math.round((now - cached.timestamp) / 1000));
     return res.status(200).json({
@@ -85,18 +76,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (process.env.NODE_ENV === 'development') {
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-        console.log(
-      `🔄 [oEmbed] Fetching tweet ${tweetId} from Twitter oEmbed API`
-    );
-
-
-      }
-
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `🔄 [oEmbed] Fetching tweet ${tweetId} from Twitter oEmbed API`
+      );
     }
 
     // Deduplicate concurrent requests
@@ -140,20 +123,10 @@ export default async function handler(req, res) {
     // Clear in-flight entry
     inFlight.delete(cacheKey);
 
-    if (process.env.NODE_ENV === 'development') {
-
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-
-        console.log(`✅ [oEmbed] Successfully fetched and cached tweet ${tweetId}`);
-
-
-
-      }
-
-
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `✅ [oEmbed] Successfully fetched and cached tweet ${tweetId}`
+      );
     }
 
     res.setHeader("X-Cache", "MISS");

@@ -11,7 +11,6 @@ import {
   PostCardImageSkeleton,
   HeroImageSkeleton,
   SquareImageSkeleton,
-  GalleryImageSkeleton,
 } from "../components/ImageSkeletons";
 import OptimizedImage from "../components/OptimizedImage";
 
@@ -161,11 +160,7 @@ const ImageTestPage = () => {
                 <h3 className="absolute top-4 left-4 text-lg font-semibold z-20">
                   Progressive Loader
                 </h3>
-                <ProgressiveImageLoader
-                  isLoading
-                  progress={65}
-                  showProgress
-                />
+                <ProgressiveImageLoader isLoading progress={65} showProgress />
               </div>
               <div className="relative h-48 bg-secondary-light rounded-lg">
                 <h3 className="absolute top-4 left-4 text-lg font-semibold z-20">
@@ -218,22 +213,12 @@ const ImageTestPage = () => {
                     className="object-cover"
                     containerClassName="w-full"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    onLoad={() =>
-                      if (process.env.NODE_ENV === 'development') {
-
-                        if (process.env.NODE_ENV === 'development') {
-
-
-                          console.log(`Image ${index + 1} loaded successfully`)
-
-
-                        }
-
-                      }
-                    }
-                    onError={(error) =>
-                      console.warn(`Image ${index + 1} failed to load:`, error)
-                    }
+                    onLoad={() => {
+                      // Image loaded successfully
+                    }}
+                    onError={(error) => {
+                      console.warn(`Image ${index + 1} failed to load:`, error);
+                    }}
                   />
                 </div>
                 <div className="p-4">

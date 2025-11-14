@@ -51,22 +51,12 @@ export default async function handler(req, res) {
       });
     }
 
-    if (process.env.NODE_ENV === 'development') {
-
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-
+    if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === "development") {
         console.log(
-      `Revalidating sitemap due to ${operation} operation on post: ${data.slug}`
-    );
-
-
-
+          `Revalidating sitemap due to ${operation} operation on post: ${data.slug}`
+        );
       }
-
-
     }
 
     // In Vercel production environment, we can't write directly to the filesystem
@@ -77,16 +67,10 @@ export default async function handler(req, res) {
     try {
       // Revalidate the homepage
       await res.revalidate("/");
-      if (process.env.NODE_ENV === 'development') {
-
-        if (process.env.NODE_ENV === 'development') {
-
-
+      if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV === "development") {
           console.log("Revalidated homepage");
-
-
         }
-
       }
 
       // Note: We can't directly revalidate static files like sitemap.xml
@@ -96,45 +80,27 @@ export default async function handler(req, res) {
       // If we have a slug, revalidate the specific post page
       if (data.slug) {
         await res.revalidate(`/post/${data.slug}`);
-        if (process.env.NODE_ENV === 'development') {
-
-          if (process.env.NODE_ENV === 'development') {
-
-
+        if (process.env.NODE_ENV === "development") {
+          if (process.env.NODE_ENV === "development") {
             console.log(`Revalidated post page: /post/${data.slug}`);
-
-
           }
-
         }
       }
 
       // Also revalidate the blog index page
       try {
         await res.revalidate("/blog");
-        if (process.env.NODE_ENV === 'development') {
-
-          if (process.env.NODE_ENV === 'development') {
-
-
+        if (process.env.NODE_ENV === "development") {
+          if (process.env.NODE_ENV === "development") {
             console.log("Revalidated blog index page");
-
-
           }
-
         }
       } catch (indexError) {
         // If blog index doesn't exist, just log it
-        if (process.env.NODE_ENV === 'development') {
-
-          if (process.env.NODE_ENV === 'development') {
-
-
+        if (process.env.NODE_ENV === "development") {
+          if (process.env.NODE_ENV === "development") {
             console.log("Blog index page not found, skipping revalidation");
-
-
           }
-
         }
       }
 
@@ -193,6 +159,6 @@ function escapeXml(unsafe) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, """)
-    .replace(/'/g, "'");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }

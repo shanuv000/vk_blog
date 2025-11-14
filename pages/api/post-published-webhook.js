@@ -37,22 +37,12 @@ export default async function handler(req, res) {
       sitemap: null,
     };
 
-    if (process.env.NODE_ENV === 'development') {
-
-
-      if (process.env.NODE_ENV === 'development') {
-
-
-
+    if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === "development") {
         console.log(
-      `Post webhook received: ${operation} for ${data?.__typename} with slug: ${data?.slug}`
-    );
-
-
-
+          `Post webhook received: ${operation} for ${data?.__typename} with slug: ${data?.slug}`
+        );
       }
-
-
     }
 
     // Only process Post models
@@ -79,34 +69,18 @@ export default async function handler(req, res) {
       operation === "publish" ||
       (operation === "update" && data.stage === "PUBLISHED")
     ) {
+      // 1. Create TinyURL (FREE version)
       try {
-        if (process.env.NODE_ENV === 'development') {
-
-          if (process.env.NODE_ENV === 'development') {
-
-
-            console.log(
-          `🔗 Creating short URL for post: ${data.slug} (FREE TinyURL)
-
-
-          }
-
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            `🔗 Creating short URL for post: ${data.slug} (FREE TinyURL)`
+          );
         }
-`
-        );
 
         // Check rate limit status before attempting
         const rateLimitStatus = tinyUrlService.getRateLimitStatus();
-        if (process.env.NODE_ENV === 'development') {
-
-          if (process.env.NODE_ENV === 'development') {
-
-
-            console.log("📊 Rate limit status:", rateLimitStatus);
-
-
-          }
-
+        if (process.env.NODE_ENV === "development") {
+          console.log("📊 Rate limit status:", rateLimitStatus);
         }
 
         const post = {
@@ -130,24 +104,11 @@ export default async function handler(req, res) {
           rateLimitStatus: tinyUrlService.getRateLimitStatus(),
         };
 
-        if (process.env.NODE_ENV === 'development') {
-
-
-          if (process.env.NODE_ENV === 'development') {
-
-
-
-            console.log(
-          `✅ TinyURL result: ${shortUrl} (shortened: ${isActuallyShortened})
-
-
-
-          }
-
-
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            `✅ TinyURL result: ${shortUrl} (shortened: ${isActuallyShortened})`
+          );
         }
-`
-        );
       } catch (error) {
         console.error("❌ TinyURL creation failed:", error);
         results.tinyurl = {
@@ -160,16 +121,8 @@ export default async function handler(req, res) {
 
       // 2. Handle sitemap revalidation
       try {
-        if (process.env.NODE_ENV === 'development') {
-
-          if (process.env.NODE_ENV === 'development') {
-
-
-            console.log("🔄 Revalidating sitemap...");
-
-
-          }
-
+        if (process.env.NODE_ENV === "development") {
+          console.log("🔄 Revalidating sitemap...");
         }
 
         // Call your existing sitemap revalidation endpoint
@@ -192,16 +145,8 @@ export default async function handler(req, res) {
             success: true,
             message: "Sitemap revalidated successfully",
           };
-          if (process.env.NODE_ENV === 'development') {
-
-            if (process.env.NODE_ENV === 'development') {
-
-
-              console.log("✅ Sitemap revalidated");
-
-
-            }
-
+          if (process.env.NODE_ENV === "development") {
+            console.log("✅ Sitemap revalidated");
           }
         } else {
           throw new Error(`Sitemap API returned ${sitemapResponse.status}`);
