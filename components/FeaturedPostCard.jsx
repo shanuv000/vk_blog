@@ -36,23 +36,16 @@ const FeaturedPostCard = ({ post = {}, priority = false, index = 0 }) => {
         {/* Enhanced Image Container with better overlay */}
         <div className="relative w-full h-full overflow-hidden">
           <OptimizedImage
-            src={getOptimizedImageUrl(
-              safePost.featuredImage.url || DEFAULT_FEATURED_IMAGE,
-              "featured"
-            )}
-            alt={safePost.title || "Featured post"}
+            src={imageUrl}
+            alt={post.title}
             fill
-            className="object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
-            priority={shouldPrioritizeImage("featured", index)}
-            {...IMAGE_CONFIGS.featured}
-            fallbackSrc={DEFAULT_FEATURED_IMAGE}
-            showSkeleton
-            aspectRatio="16/9"
-            containerClassName="w-full h-full"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiPjxyZWN0IHdpZHRoPSI3MDAiIGhlaWdodD0iNDc1IiBmaWxsPSJyZ2JhKDI1LCAyNSwgMjUsIDEpIi8+PC9zdmc+"
-            onLoad={() => {}}
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={index < 3}
             onError={(error) => {
-              console.warn("Featured image failed to load:", error);
+              if (process.env.NODE_ENV === "development") {
+                console.warn("Featured image failed to load:", error);
+              }
             }}
           />
 

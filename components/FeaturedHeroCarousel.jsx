@@ -192,7 +192,10 @@ const FeaturedHeroCarousel = memo(
         try {
           await navigator.share(shareData);
         } catch (err) {
-          console.log("Share cancelled");
+          // User cancelled share - this is normal, no action needed
+          if (process.env.NODE_ENV === "development") {
+            console.log("Share cancelled");
+          }
         }
       } else {
         // Fallback - copy to clipboard
@@ -200,7 +203,9 @@ const FeaturedHeroCarousel = memo(
           await navigator.clipboard.writeText(shareData.url);
           alert("Link copied to clipboard!");
         } catch (err) {
-          console.error("Failed to copy:", err);
+          if (process.env.NODE_ENV === "development") {
+            console.error("Failed to copy:", err);
+          }
         }
       }
     }, []);

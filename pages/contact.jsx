@@ -44,7 +44,7 @@ const FormField = ({
   return (
     <div className="relative">
       {icon && (
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 z-10">
           {icon}
         </div>
       )}
@@ -52,18 +52,21 @@ const FormField = ({
         type={type}
         name={name}
         placeholder={placeholder}
-        className={`w-full p-2 ${icon ? "pl-10" : "pl-3"} border ${
-          error ? "border-red-500" : "border-gray-300"
+        className={`w-full py-3 px-4 ${icon ? "pl-12" : "px-4"} border-2 ${
+          error
+            ? "border-red-400 focus:border-red-500"
+            : "border-gray-300 dark:border-gray-600 focus:border-primary"
         }
-                   rounded-md bg-white text-gray-900 placeholder-gray-400
-                   focus:outline-none focus:ring-2
-                   ${error ? "focus:ring-red-500" : "focus:ring-urtechy-red"}
-                   transition-all duration-200 ease-in-out
-                   ${type === "textarea" ? "h-32 resize-none" : ""}`}
+                   rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400
+                   focus:outline-none focus:ring-4
+                   ${error ? "focus:ring-red-100 dark:focus:ring-red-900/30" : "focus:ring-primary/10"}
+                   transition-all duration-300 ease-in-out
+                   shadow-sm hover:shadow-md
+                   ${type === "textarea" ? "min-h-32 resize-none" : ""}`}
         value={value}
         onChange={onChange}
         required={required}
-        whileFocus={{ scale: 1.01 }}
+        whileFocus={{ scale: 1.005 }}
       />
       <AnimatePresence>
         {error && (
@@ -71,8 +74,9 @@ const FormField = ({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="text-red-500 text-xs mt-1 ml-1"
+            className="text-red-500 text-sm mt-2 ml-1 flex items-center gap-1"
           >
+            <FaExclamationTriangle className="text-xs" />
             {error}
           </motion.p>
         )}
@@ -106,7 +110,9 @@ const ContactForm = () => {
       Object.keys(touched).forEach((field) => {
         if (touched[field]) {
           const error = validateField(field, formState[field]);
-          if (error) {newErrors[field] = error;}
+          if (error) {
+            newErrors[field] = error;
+          }
         }
       });
 
@@ -147,7 +153,9 @@ const ContactForm = () => {
         field === "message"
       ) {
         const error = validateField(field, formState[field]);
-        if (error) {formErrors[field] = error;}
+        if (error) {
+          formErrors[field] = error;
+        }
       }
     });
 
@@ -175,16 +183,10 @@ const ContactForm = () => {
 
         // Only log in development
         if (process.env.NODE_ENV !== "production") {
-          if (process.env.NODE_ENV === 'development') {
-
-            if (process.env.NODE_ENV === 'development') {
-
-
+          if (process.env.NODE_ENV === "development") {
+            if (process.env.NODE_ENV === "development") {
               console.log("Form submitted successfully:", formState);
-
-
             }
-
           }
         }
 
@@ -225,42 +227,53 @@ const ContactForm = () => {
 
       // Return cleanup function
       return () => {
-        if (timer) {clearTimeout(timer);}
+        if (timer) {
+          clearTimeout(timer);
+        }
       };
     }
   };
 
   // Form submission status message
   const StatusMessage = () => {
-    if (!submitStatus) {return null;}
+    if (!submitStatus) {
+      return null;
+    }
 
     return (
       <motion.div
-        className={`mt-4 p-3 rounded-md ${
+        className={`mt-6 p-4 rounded-xl ${
           submitStatus === "success"
-            ? "bg-green-50 text-green-800"
-            : "bg-red-50 text-red-800"
+            ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-2 border-green-200 dark:border-green-700"
+            : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-2 border-red-200 dark:border-red-700"
         }`}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -20, scale: 0.95 }}
+        transition={{ type: "spring", duration: 0.4 }}
       >
-        <div className="flex items-center">
+        <div className="flex items-start gap-3">
           {submitStatus === "success" ? (
             <>
-              <FaCheckCircle className="mr-2 text-green-500" />
-              <span>
-                Thank you! Your message has been sent successfully and stored in
-                our database.
-              </span>
+              <FaCheckCircle className="mt-0.5 text-green-500 dark:text-green-400 text-xl flex-shrink-0" />
+              <div>
+                <p className="font-semibold mb-1">Message sent successfully!</p>
+                <p className="text-sm opacity-90">
+                  Thank you for reaching out. We'll get back to you within 24
+                  hours.
+                </p>
+              </div>
             </>
           ) : (
             <>
-              <FaExclamationTriangle className="mr-2 text-red-500" />
-              <span>
-                {error ||
-                  "There was an error saving your message to our database. Please try again or contact us directly at urtechy000@gmail.com."}
-              </span>
+              <FaExclamationTriangle className="mt-0.5 text-red-500 dark:text-red-400 text-xl flex-shrink-0" />
+              <div>
+                <p className="font-semibold mb-1">Oops! Something went wrong</p>
+                <p className="text-sm opacity-90">
+                  {error ||
+                    "There was an error sending your message. Please try again or contact us directly at urtechy000@gmail.com."}
+                </p>
+              </div>
             </>
           )}
         </div>
@@ -270,76 +283,69 @@ const ContactForm = () => {
 
   return (
     <motion.div
-      className="w-full md:w-1/2 p-4"
+      className="w-full lg:w-1/2 p-6 lg:p-8"
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.6 }}
     >
-      {/* Header with gradient text */}
-      <motion.h1
-        className="text-3xl md:text-4xl font-bold"
+      {/* Header with enhanced gradient */}
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <span className="bg-gradient-to-r from-urtechy-red to-urtechy-orange bg-clip-text text-transparent">
-          Get in Touch with Us
-        </span>
-      </motion.h1>
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
+          <span className="bg-gradient-to-r from-primary via-primary-dark to-secondary bg-clip-text text-transparent drop-shadow-sm">
+            Let's Start a Conversation
+          </span>
+        </h1>
 
+        <motion.div
+          className="h-1.5 w-32 bg-gradient-to-r from-primary to-secondary rounded-full mt-4 shadow-lg shadow-primary/20"
+          initial={{ width: 0 }}
+          animate={{ width: "8rem" }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        />
+
+        <p className="text-gray-700 dark:text-gray-200 mt-6 text-base md:text-lg leading-relaxed font-medium">
+          Have questions about our blog or looking to collaborate? We're here to
+          help! Reach out for any inquiries, content suggestions, or partnership
+          opportunities.
+        </p>
+      </motion.div>
+
+      {/* Form Container with glass morphism effect */}
       <motion.div
-        className="h-1 w-32 bg-gradient-to-r from-urtechy-red to-urtechy-orange rounded-full mt-2"
-        initial={{ width: 0 }}
-        animate={{ width: "8rem" }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      />
-
-      <motion.p
-        className="text-gray-600 mt-4 text-sm md:text-base"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        Have questions about our blog or looking to collaborate? We're here to
-        help! Reach out for any inquiries, content suggestions, or partnership
-        opportunities.
-      </motion.p>
-
-      {/* Form Container with enhanced styling */}
-      <motion.div
-        className="mt-6 bg-white p-6 rounded-lg shadow-lg border border-gray-100"
+        className="mt-8 bg-white dark:bg-gray-800 p-6 lg:p-8 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
       >
-        <motion.h2
-          className="text-xl md:text-2xl font-bold text-[#1A3C34]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          Have Questions? We're Just a Message Away!
-        </motion.h2>
-
-        <motion.p
-          className="text-gray-600 mt-2 text-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          Fill out the form below, and one of our team members will get back to
-          you shortly. Your message will be securely stored in our Firebase
-          database.
-        </motion.p>
+        <div className="flex items-center gap-3 mb-6">
+          <motion.div
+            className="p-3 bg-gradient-to-br from-primary to-secondary rounded-xl shadow-lg"
+            whileHover={{ scale: 1.05, rotate: 5 }}
+          >
+            <MdSend className="text-white text-2xl" />
+          </motion.div>
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+              Send us a Message
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+              We'll respond within 24 hours
+            </p>
+          </div>
+        </div>
 
         <AnimatePresence>{submitStatus && <StatusMessage />}</AnimatePresence>
 
         <motion.form
-          className="mt-4 space-y-4"
+          className="mt-6 space-y-5"
           onSubmit={handleSubmit}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
           <div className="flex flex-col md:flex-row gap-4">
             <div className="w-full">
@@ -393,22 +399,36 @@ const ContactForm = () => {
           <div className="relative">
             <motion.select
               name="subject"
-              className="w-full p-2 pl-3 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-urtechy-red appearance-none"
+              className="w-full py-3 px-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary appearance-none transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer"
               value={formState.subject}
               onChange={handleChange}
-              whileFocus={{ scale: 1.01 }}
+              whileFocus={{ scale: 1.005 }}
             >
-              <option value="" className="text-gray-500">
+              <option value="" className="text-gray-500 dark:text-gray-400">
                 Choose message subject
               </option>
-              <option value="inquiry">General Inquiry</option>
-              <option value="feedback">Feedback</option>
-              <option value="partnership">Partnership Opportunity</option>
-              <option value="content">Content Suggestion</option>
+              <option value="inquiry" className="text-gray-900 dark:text-white">
+                General Inquiry
+              </option>
+              <option
+                value="feedback"
+                className="text-gray-900 dark:text-white"
+              >
+                Feedback
+              </option>
+              <option
+                value="partnership"
+                className="text-gray-900 dark:text-white"
+              >
+                Partnership Opportunity
+              </option>
+              <option value="content" className="text-gray-900 dark:text-white">
+                Content Suggestion
+              </option>
             </motion.select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+            <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
               <svg
-                className="w-4 h-4 text-gray-400"
+                className="w-5 h-5 text-gray-500 dark:text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -437,26 +457,26 @@ const ContactForm = () => {
           <motion.button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full p-3 rounded-md flex items-center justify-center transition-all duration-300
+            className={`w-full py-4 rounded-xl flex items-center justify-center font-semibold text-lg transition-all duration-300 shadow-lg
                       ${
                         isSubmitting
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white hover:shadow-lg"
+                          ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed text-gray-500"
+                          : "bg-gradient-to-r from-primary via-primary-dark to-secondary text-white hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]"
                       }`}
             whileHover={
               !isSubmitting
                 ? {
-                    scale: 1.02,
-                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                    scale: 1.01,
+                    y: -2,
                   }
                 : {}
             }
             whileTap={!isSubmitting ? { scale: 0.98 } : {}}
           >
             {isSubmitting ? (
-              <div className="flex items-center">
+              <div className="flex items-center gap-3">
                 <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  className="animate-spin h-5 w-5 text-gray-600"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -468,20 +488,20 @@ const ContactForm = () => {
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                   />
+                  />
                   <path
                     className="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                   />
+                  />
                 </svg>
-                Sending...
+                <span>Sending...</span>
               </div>
             ) : (
-              <>
-                Send Message
-                <MdSend className="ml-2 text-lg" />
-              </>
+              <div className="flex items-center gap-2">
+                <span>Send Message</span>
+                <MdSend className="text-xl" />
+              </div>
             )}
           </motion.button>
         </motion.form>
@@ -512,113 +532,164 @@ const ContactInfo = () => {
 
   return (
     <motion.div
-      className="w-full md:w-1/2 p-4 bg-gradient-to-br from-[#4A7C6D] to-[#1A3C34] text-white rounded-lg mt-6 md:mt-0 shadow-xl"
+      className="w-full lg:w-1/2 p-6 lg:p-8"
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
     >
-      {/* Logo Placeholder */}
-      <motion.div
-        className="flex justify-center"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
+      <div className="sticky top-8">
         <motion.div
-          className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg"
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          transition={{ type: "spring", stiffness: 300 }}
+          className="bg-gradient-to-br from-primary via-primary-dark to-secondary text-white rounded-3xl shadow-2xl overflow-hidden"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <span className="bg-gradient-to-r from-urtechy-red to-urtechy-orange bg-clip-text text-transparent font-bold text-2xl">
-            uT
-          </span>
-        </motion.div>
-      </motion.div>
-
-      {/* Image Container with enhanced styling */}
-      <motion.div
-        className="mt-6 flex justify-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <motion.div
-          className="w-48 md:w-64 h-48 md:h-64 bg-[#E0ECE8] rounded-lg flex items-center justify-center shadow-lg overflow-hidden relative"
-          whileHover={{ scale: 1.02 }}
-        >
+          {/* Logo Section */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-tr from-urtechy-red/20 to-transparent"
+            className="flex justify-center pt-8 pb-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <motion.div
+              className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl"
+              whileHover={{ scale: 1.1, rotate: 10 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-black text-3xl">
+                uT
+              </span>
+            </motion.div>
+          </motion.div>
+
+          {/* Image Container */}
+          <motion.div
+            className="px-8 pb-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          />
-          <motion.img
-            src="/iconified/apple-touch-icon-180x180.png"
-            alt="urTechy Blogs Logo"
-            className="w-32 h-32 object-contain relative z-10"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ type: "spring", stiffness: 200 }}
-          />
-        </motion.div>
-      </motion.div>
-
-      {/* Text Overlay with enhanced styling */}
-      <motion.div
-        className="mt-6 text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-        <motion.h3
-          className="text-xl md:text-2xl font-bold"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          Our team will always help you
-        </motion.h3>
-        <motion.div
-          className="h-1 w-24 bg-[#E0ECE8] rounded-full mt-2 mx-auto"
-          initial={{ width: 0 }}
-          animate={{ width: "6rem" }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        />
-      </motion.div>
-
-      {/* Contact Details with enhanced styling */}
-      <motion.div
-        className="mt-6 space-y-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
-      >
-        {contactDetails.map((detail, index) => (
-          <motion.div
-            key={index}
-            className={`flex items-center bg-white/10 backdrop-blur-sm p-3 rounded-lg text-white border-l-4 border-urtechy-red shadow-md ${
-              detail.link ? "cursor-pointer" : ""
-            }`}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.9 + index * 0.1 }}
-            whileHover={{
-              x: 5,
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              transition: { duration: 0.2 },
-            }}
-            onClick={() => detail.link && window.open(detail.link, "_blank")}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <div className="mr-3 bg-white/10 p-2 rounded-full">
-              {detail.icon}
-            </div>
-            <span className="text-sm md:text-base">{detail.text}</span>
-            {detail.link && (
+            <motion.div
+              className="w-full aspect-square bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-xl overflow-hidden border-4 border-white/20"
+              whileHover={{ scale: 1.02 }}
+            >
+              <motion.img
+                src="/iconified/apple-touch-icon-180x180.png"
+                alt="urTechy Blogs Logo"
+                className="w-3/4 h-3/4 object-contain"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              />
+            </motion.div>
+          </motion.div>
+
+          {/* Text Section */}
+          <motion.div
+            className="px-8 pb-8 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <h3 className="text-2xl md:text-3xl font-bold mb-3">
+              We're Here to Help
+            </h3>
+            <div className="h-1 w-24 bg-white/40 rounded-full mx-auto mb-4" />
+            <p className="text-white/80 text-sm md:text-base">
+              Our team is dedicated to providing you with the best support and
+              answering all your questions
+            </p>
+          </motion.div>
+
+          {/* Contact Details */}
+          <motion.div
+            className="px-8 pb-8 space-y-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+          >
+            {contactDetails.map((detail, index) => (
               <motion.div
-                className="ml-auto text-white/70"
-                whileHover={{ scale: 1.2 }}
+                key={index}
+                className={`flex items-center bg-white/10 backdrop-blur-md p-4 rounded-xl text-white border-l-4 border-white/40 shadow-lg hover:bg-white/20 transition-all duration-300 ${
+                  detail.link ? "cursor-pointer" : ""
+                }`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.8 + index * 0.1 }}
+                whileHover={{
+                  x: 5,
+                  borderLeftWidth: 6,
+                  transition: { duration: 0.2 },
+                }}
+                onClick={() =>
+                  detail.link && window.open(detail.link, "_blank")
+                }
+              >
+                <div className="mr-4 bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                  {detail.icon}
+                </div>
+                <span className="text-sm md:text-base font-medium flex-1">
+                  {detail.text}
+                </span>
+                {detail.link && (
+                  <motion.div
+                    className="ml-2 text-white/80"
+                    whileHover={{ scale: 1.3, x: 3 }}
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Social Media Section */}
+          <motion.div
+            className="px-8 pb-8 pt-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+          >
+            <p className="text-center text-white/70 text-sm mb-4">
+              Follow us on social media
+            </p>
+            <div className="flex justify-center gap-4">
+              <motion.a
+                href="https://x.com/Onlyblogs_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white/10 backdrop-blur-md p-4 rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20"
+                whileHover={{ scale: 1.15, rotate: 5, y: -3 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-6 h-6 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </motion.a>
+              <motion.a
+                href="mailto:urtechy000@gmail.com"
+                className="bg-white/10 backdrop-blur-md p-4 rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20"
+                whileHover={{ scale: 1.15, rotate: -5, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <svg
+                  className="w-6 h-6 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -627,59 +698,14 @@ const ContactInfo = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-              </motion.div>
-            )}
+              </motion.a>
+            </div>
           </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Social Media Icons - Optional */}
-      <motion.div
-        className="mt-8 flex justify-center space-x-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 1.3 }}
-      >
-        <motion.a
-          href="https://x.com/Onlyblogs_"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors"
-          whileHover={{ scale: 1.2, rotate: 5 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <svg
-            className="w-5 h-5 text-white"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
-        </motion.a>
-        <motion.a
-          href="mailto:urtechy000@gmail.com"
-          className="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors"
-          whileHover={{ scale: 1.2, rotate: 5 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <svg
-            className="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
-        </motion.a>
-      </motion.div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 };
@@ -709,52 +735,74 @@ const Contact = () => {
       </Head>
 
       <motion.div
-        className="py-8 px-4 sm:px-6 lg:px-8 min-h-screen bg-gradient-to-b from-gray-50 to-gray-100"
+        className="py-12 px-4 sm:px-6 lg:px-8 min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
         {/* Page Header */}
         <motion.div
-          className="max-w-7xl mx-auto text-center mb-12"
+          className="max-w-7xl mx-auto text-center mb-16"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+          transition={{ delay: 0.1, duration: 0.6 }}
         >
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            <span className="block">Contact Us</span>
-          </h1>
-          <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
+              <span className="bg-gradient-to-r from-primary via-primary-dark to-secondary bg-clip-text text-transparent drop-shadow-sm">
+                Contact Us
+              </span>
+            </h1>
+          </motion.div>
+
+          <motion.div
+            className="h-1.5 w-32 bg-gradient-to-r from-primary to-secondary rounded-full mx-auto mb-6 shadow-lg shadow-primary/20"
+            initial={{ width: 0 }}
+            animate={{ width: "8rem" }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          />
+
+          <motion.p
+            className="mt-4 max-w-2xl mx-auto text-lg text-gray-700 dark:text-gray-200 leading-relaxed font-medium"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
             We'd love to hear from you! Send us a message and we'll respond as
             soon as possible.
-          </p>
-          <motion.div
-            className="h-1 w-24 bg-gradient-to-r from-urtechy-red to-urtechy-orange rounded-full mt-4 mx-auto"
-            initial={{ width: 0 }}
-            animate={{ width: "6rem" }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          />
+          </motion.p>
         </motion.div>
 
         {/* Contact Form and Info Container */}
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-center items-start gap-6 md:gap-8">
+          <div className="flex flex-col lg:flex-row justify-center items-stretch gap-8 lg:gap-10">
             <ContactForm />
             <ContactInfo />
           </div>
         </div>
 
-        {/* Map or Additional Info - Optional */}
+        {/* Footer Message */}
         <motion.div
-          className="max-w-7xl mx-auto mt-16 text-center"
+          className="max-w-7xl mx-auto mt-20 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.5 }}
         >
-          <p className="text-gray-500 text-sm">
-            Thank you for visiting urTechy Blogs. We appreciate your interest
-            and look forward to connecting with you!
-          </p>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
+            <p className="text-gray-700 dark:text-gray-200 text-base mb-2 font-medium">
+              <span className="font-bold text-primary">
+                Thank you for visiting urTechy Blogs.
+              </span>
+            </p>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
+              We appreciate your interest and look forward to connecting with
+              you!
+            </p>
+          </div>
         </motion.div>
       </motion.div>
     </>
