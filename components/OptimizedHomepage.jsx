@@ -3,14 +3,14 @@
  * This prevents multiple Hygraph API calls by consolidating data loading
  */
 
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
   PostCard,
   Categories,
   PostWidget,
-  HeroSpotlight,
+  FeaturedCarouselGrid,
   EnhancedFeaturedPostCard,
 } from "../components";
 import {
@@ -48,7 +48,9 @@ const OptimizedFeaturedPosts = () => {
     );
   }
 
-  if (!data.featuredPosts.length) {return null;}
+  if (!data.featuredPosts.length) {
+    return null;
+  }
 
   return (
     <section className="mb-12 bg-gradient-to-r from-secondary-light/10 to-transparent rounded-2xl p-6 md:p-8">
@@ -186,9 +188,10 @@ const OptimizedCategories = () => {
 
 /**
  * Main Optimized Homepage Component
+ * Memoized handlers to prevent flickering from re-renders
  */
 export default function OptimizedHomepage({ initialPosts }) {
-  const homepageData = useHomepageData();
+  const homepageData = useHomepageData(initialPosts);
 
   const {
     data,
@@ -203,6 +206,12 @@ export default function OptimizedHomepage({ initialPosts }) {
     mainPostsCount,
     canLoadMore,
   } = homepageData;
+
+  // Memoize featured posts to pass as stable reference to carousel
+  const memoizedFeaturedPosts = useMemo(
+    () => data.featuredPosts,
+    [data.featuredPosts]
+  );
 
   // Show enhanced loading state during initial load
   if (!isFullyLoaded && isAnyLoading && data.mainPosts.length === 0) {
@@ -231,12 +240,24 @@ export default function OptimizedHomepage({ initialPosts }) {
         />
 
         <div>
-          {/* Hero Spotlight Section */}
-          <HeroSpotlight
-            featuredPosts={data.featuredPosts}
-            isLoading={loading.featuredPosts}
-            error={errors.featuredPosts}
-          />
+          {/* Featured Carousel Grid Section */}
+          {!loading.featuredPosts &&
+          !errors.featuredPosts &&
+          data.featuredPosts.length > 0 ? (
+            <FeaturedCarouselGrid
+              featuredPosts={memoizedFeaturedPosts}
+              autoplayInterval={6000}
+              showStats={true}
+              maxGridItems={6}
+            />
+          ) : loading.featuredPosts ? (
+            <div className="mb-12 h-[70vh] min-h-[500px] bg-gray-900 rounded-2xl shadow-2xl flex items-center justify-center">
+              <div className="text-center text-white">
+                <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary mb-4"></div>
+                <p className="text-lg">Loading featured posts...</p>
+              </div>
+            </div>
+          ) : null}
 
           {/* Main content */}
           <div className="mb-12 mt-8">

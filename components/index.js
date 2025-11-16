@@ -9,6 +9,8 @@ export { default as FeaturedPostCard } from "./FeaturedPostCard";
 export { default as EnhancedFeaturedPostCard } from "./EnhancedFeaturedPostCard";
 export { default as HeroSpotlight } from "./HeroSpotlight";
 export { default as HeroSpotlightSkeleton } from "./HeroSpotlightSkeleton";
+export { default as FeaturedHeroCarousel } from "./FeaturedHeroCarousel";
+export { default as FeaturedCarouselGrid } from "./FeaturedCarouselGrid";
 export { default as Loader } from "./Loader";
 export { default as AdjacentPostCard } from "./AdjacentPostCard";
 export { default as SchemaManager } from "./SchemaManager";
