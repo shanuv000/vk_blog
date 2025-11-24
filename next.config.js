@@ -26,6 +26,8 @@ const nextConfig = {
               "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://www.facebook.com https://web.facebook.com https://www.instagram.com https://instagram.com https://urtechy-35294.firebaseapp.com;",
               // Scripts - Added Google Analytics, Clarity, Firebase, Google APIs
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://platform.twitter.com https://connect.facebook.net https://www.instagram.com https://instagram.com https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://apis.google.com;",
+              // Images - CRITICAL: Allow images from Hygraph and other CDNs
+              "img-src 'self' data: https: blob: https://*.graphassets.com https://*.hygraph.com https://*.graphcms.com https://pbs.twimg.com https://video.twimg.com https://www.google-analytics.com;",
               // XHR/fetch targets - Added Sentry, Firebase, Google Analytics, Clarity, Hygraph APIs
               "connect-src 'self' https://syndication.twitter.com https://api.twitter.com https://graph.facebook.com https://www.instagram.com https://instagram.com https://o4510203549384704.ingest.us.sentry.io https://*.ingest.sentry.io https://firebase.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://firebaseinstallations.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://api-ap-south-1.hygraph.com https://ap-south-1.cdn.hygraph.com https://*.hygraph.com https://*.graphassets.com;",
             ].join(" "),

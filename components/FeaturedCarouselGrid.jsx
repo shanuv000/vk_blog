@@ -22,7 +22,7 @@ import {
   FaTrophy,
 } from "react-icons/fa";
 
-import OptimizedImage from "./OptimizedImage";
+import SimpleImage from "../components/SimpleImage";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 
 /**
@@ -282,7 +282,7 @@ const FeaturedCarouselGrid = memo(
               className="absolute inset-0"
               style={{ willChange: "transform, opacity" }}
             >
-              <OptimizedImage
+              <SimpleImage
                 src={currentPost.featuredImage}
                 alt={currentPost.title}
                 fill
@@ -334,11 +334,6 @@ const FeaturedCarouselGrid = memo(
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-tight line-clamp-3">
                       {currentPost.title}
                     </h1>
-
-                    {/* Excerpt */}
-                    <p className="text-base sm:text-lg text-gray-200 leading-relaxed">
-                      {currentPost.excerpt}
-                    </p>
 
                     {/* Meta */}
                     <div className="flex flex-wrap items-center gap-5 text-gray-300 text-sm">
@@ -505,7 +500,7 @@ const FeaturedCarouselGrid = memo(
                 >
                   {/* Image Container with Fixed Aspect Ratio */}
                   <div className="relative w-full aspect-video bg-gray-800">
-                    <OptimizedImage
+                      <SimpleImage
                       src={postData.featuredImage}
                       alt={postData.title}
                       fill

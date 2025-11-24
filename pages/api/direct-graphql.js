@@ -35,6 +35,7 @@ const PREDEFINED_QUERIES = {
       posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
         title
         slug
+        excerpt
         createdAt
         publishedAt
         featuredImage {
@@ -47,6 +48,13 @@ const PREDEFINED_QUERIES = {
           photo {
             url
           }
+        }
+        categories {
+          name
+          slug
+        }
+        content {
+          raw
         }
       }
     }
