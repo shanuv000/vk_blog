@@ -194,14 +194,30 @@ export const DataProvider = ({ children }) => {
     loading: loadingLiveScores,
     refetch: fetchLiveScores,
     dataExist: isLiveScore,
-  } = useFetchData(`${API_BASE}live-scores`, (data) => data, []);
+  } = useFetchData(`${API_BASE}live-scores`, (response) => {
+    if (response && response.data && Array.isArray(response.data)) {
+      return response.data;
+    }
+    return response.data || [];
+  }, []);
 
-  const {
-    data: recentScores,
-    error: recentScoresError,
-    loading: loadingRecentScores,
-    refetch: fetchRecentScores,
-  } = useFetchData(`${API_BASE}recent-scores`, (data) => data, []);
+  // const {
+  //   data: recentScores,
+  //   error: recentScoresError,
+  //   loading: loadingRecentScores,
+  //   refetch: fetchRecentScores,
+  // } = useFetchData(`${API_BASE}recent-scores`, (response) => {
+  //   if (response && response.data && Array.isArray(response.data)) {
+  //     return response.data;
+  //   }
+  //   return response.data || [];
+  // }, []);
+
+  // Temporarily disabled
+  const recentScores = [];
+  const recentScoresError = null;
+  const loadingRecentScores = false;
+  const fetchRecentScores = () => {};
 
   const {
     data: schedule,
@@ -233,7 +249,12 @@ export const DataProvider = ({ children }) => {
     error: upcomingMatchesError,
     loading: loadingUpcomingMatches,
     refetch: fetchUpcomingMatches,
-  } = useFetchData(`${API_BASE}upcoming-matches`, (data) => data, []);
+  } = useFetchData(`${API_BASE}upcoming-matches`, (response) => {
+    if (response && response.data && Array.isArray(response.data)) {
+      return response.data;
+    }
+    return response.data || [];
+  }, []);
 
   return (
     <DataContext.Provider

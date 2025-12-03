@@ -663,6 +663,26 @@ const RichTextRenderer = ({ content, references = [] }) => {
 
               // No debugging logs in production
 
+              // Check if it's a Twitter/X URL and extract ID
+              if (!isExactlyTweetId && !tweetId && typeof trimmedText === "string") {
+                // Import extractTweetId dynamically or use regex directly
+                // Since we can't easily import here without refactoring, we'll use regex
+                const patterns = [
+                  /twitter\.com\/\w+\/status\/(\d+)/,
+                  /x\.com\/\w+\/status\/(\d+)/,
+                  /\/status\/(\d+)/
+                ];
+                
+                for (const pattern of patterns) {
+                  const match = trimmedText.match(pattern);
+                  if (match && match[1]) {
+                    tweetId = match[1];
+                    isExactlyTweetId = true;
+                    break;
+                  }
+                }
+              }
+
               if (isExactlyTweetId && (tweetId || trimmedText)) {
                 // Use the found tweet ID or fall back to trimmedText
                 const finalTweetId = tweetId || trimmedText;

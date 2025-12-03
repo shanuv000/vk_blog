@@ -26,8 +26,24 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
       );
       for (const bq of allBlockquotes) {
         const text = bq.textContent.trim();
+        // Check for Twitter ID or URL
+        let isTwitter = false;
+        if (platform === "twitter") {
+          // Check for direct ID
+          if (/^\d+$/.test(text) && text.length > 8) {
+            isTwitter = true;
+          } 
+          // Check for Twitter/X URL
+          else if (text.includes("twitter.com") || text.includes("x.com")) {
+             const match = text.match(/(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/);
+             if (match && match[1]) {
+               isTwitter = true;
+             }
+          }
+        }
+
         if (
-          (platform === "twitter" && /^\d+$/.test(text) && text.length > 8) ||
+          isTwitter ||
           (platform === "facebook" && text.includes("facebook.com")) ||
           (platform === "instagram" && text.includes("instagram.com"))
         ) {
@@ -395,7 +411,18 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
         <>
           {/* No title for Twitter embeds to avoid extra bar */}
           <div className="twitter-embed-container">
-            <TwitterEmbed tweetId={url} />
+            {/* Extract ID if it's a URL */}
+            {(() => {
+              let tweetId = url;
+              // Try to extract ID if it looks like a URL
+              if (url && (url.includes('twitter.com') || url.includes('x.com'))) {
+                const match = url.match(/(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/);
+                if (match && match[1]) {
+                  tweetId = match[1];
+                }
+              }
+              return <TwitterEmbed tweetId={tweetId} />;
+            })()}
             {/* Fallback for Twitter embed */}
             <div className="twitter-fallback">
               <a

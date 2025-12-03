@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { BiCommentDetail } from "react-icons/bi";
+import { motion, AnimatePresence } from "framer-motion";
+import { BiCommentDetail, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { FiRefreshCw } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { ClipLoader } from "react-spinners";
 import ball from "../../public/cricket/ball.png";
+import Scorecard from "./Scorecard";
 
 /**
  * MatchList component displays cricket matches with filtering by tournament
@@ -32,6 +33,8 @@ const MatchList = ({
   selectedHeading,
   setSelectedHeading,
 }) => {
+  const [expandedMatchIndex, setExpandedMatchIndex] = useState(null);
+
   // Filter matches by selected tournament
   const filteredMatches =
     matches?.filter((match) => match.heading === selectedHeading) || [];
@@ -50,6 +53,10 @@ const MatchList = ({
   const item = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
+  const toggleScorecard = (index) => {
+    setExpandedMatchIndex(expandedMatchIndex === index ? null : index);
   };
 
   // If no matches and not loading, return empty state
@@ -152,7 +159,7 @@ const MatchList = ({
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M19 9l-7 7-7-7"
-                 />
+                />
               </svg>
             </div>
           </div>
@@ -178,7 +185,7 @@ const MatchList = ({
                 strokeLinejoin="round"
                 strokeWidth="2"
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-               />
+              />
             </svg>
             <h4 className="text-lg font-semibold text-gray-800">
               Unable to load cricket data
@@ -363,7 +370,7 @@ const MatchList = ({
                           strokeLinejoin="round"
                           strokeWidth="2"
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                         />
+                        />
                       </svg>
                       <span className="font-medium">
                         {match.time === "N/A" ? "Live Now" : match.time}
@@ -389,6 +396,38 @@ const MatchList = ({
                     </div>
                   )}
                 </div>
+
+                {/* Scorecard Toggle */}
+                {match.scorecard && match.scorecard.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <button
+                      onClick={() => toggleScorecard(index)}
+                      className="flex items-center text-sm font-medium text-urtechy-red hover:text-urtechy-orange transition-colors focus:outline-none"
+                    >
+                      {expandedMatchIndex === index ? (
+                        <>
+                          Hide Scorecard <BiChevronUp className="ml-1 w-5 h-5" />
+                        </>
+                      ) : (
+                        <>
+                          View Scorecard <BiChevronDown className="ml-1 w-5 h-5" />
+                        </>
+                      )}
+                    </button>
+                    <AnimatePresence>
+                      {expandedMatchIndex === index && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Scorecard scorecard={match.scorecard} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )}
 
                 {/* Links */}
                 {match.links && Object.keys(match.links).length > 0 && (

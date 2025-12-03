@@ -151,6 +151,12 @@ export default async function handler(req, res) {
       // If successful, return the response with heading added
       if (response.ok) {
         const data = await response.json();
+
+        // Limit recent scores to top 20 to prevent "too much data" errors
+        if (endpoint === "recent-scores" && data.data && Array.isArray(data.data)) {
+          data.data = data.data.slice(0, 20);
+        }
+
         const dataWithHeadings = addHeadingToMatches(data);
         return res.status(200).json(dataWithHeadings);
       }

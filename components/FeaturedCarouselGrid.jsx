@@ -348,7 +348,7 @@ const FeaturedCarouselGrid = memo(
                         <span className="font-medium">{readingTime}</span>
                       </div>
                       {currentPost.createdAt && (
-                        <span className="font-medium">
+                        <span className="font-medium" suppressHydrationWarning>
                           {moment(currentPost.createdAt).format("MMM DD, YYYY")}
                         </span>
                       )}
