@@ -9,6 +9,7 @@ import React, {
 
 import { motion, AnimatePresence } from "framer-motion";
 import moment from "moment";
+import { FaPaperPlane, FaUser, FaRedo, FaSpinner } from "react-icons/fa";
 
 // Import the unified service that tries multiple methods
 import {
@@ -153,125 +154,125 @@ const Comments = ({ postSlug }) => {
 
   return (
     <motion.div
-      className="bg-white rounded-lg shadow-lg p-6 mb-8"
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-12"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h3 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-4 font-heading">
-        Join the conversation
-      </h3>
+      <div className="flex items-center justify-between mb-8">
+        <h3 className="text-2xl font-bold text-gray-900 font-heading">
+          Discussion
+        </h3>
+        <span className="text-sm font-medium text-gray-500 bg-gray-50 px-3 py-1 rounded-full">
+          {comments.length} {comments.length === 1 ? "Comment" : "Comments"}
+        </span>
+      </div>
 
       {/* Comment Form */}
-      <form onSubmit={handleSubmit} className="mb-8">
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Name (optional)
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200"
-            maxLength={50}
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="mb-12 relative">
+        <div className="grid grid-cols-1 gap-6">
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-semibold text-gray-700 mb-2"
+            >
+              Name <span className="text-gray-400 font-normal">(Optional)</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaUser className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="How should we call you?"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all duration-200"
+                maxLength={50}
+              />
+            </div>
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="comment"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Comment
-          </label>
-          <textarea
-            id="comment"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Share your thoughts..."
-            rows="4"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200"
-            required
-            maxLength={2000}
-          />
-          <div className="text-xs text-gray-500 mt-1 text-right">
-            {content.length}/2000 characters
+          <div>
+            <label
+              htmlFor="comment"
+              className="block text-sm font-semibold text-gray-700 mb-2"
+            >
+              Your Comment
+            </label>
+            <textarea
+              id="comment"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="What are your thoughts on this?"
+              rows="4"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all duration-200 resize-y min-h-[120px]"
+              required
+              maxLength={2000}
+            />
+            <div className="flex justify-end mt-2">
+              <span className="text-xs text-gray-400 font-medium">
+                {content.length}/2000
+              </span>
+            </div>
           </div>
         </div>
 
-        {error && (
-          <motion.div
-            className="mb-4 p-3 bg-red-50 text-red-600 rounded-md"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-          >
-            {error}
-          </motion.div>
-        )}
-
-        {success && (
-          <motion.div
-            className="mb-4 p-3 bg-green-50 text-green-600 rounded-md"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-          >
-            {success}
-          </motion.div>
-        )}
-
-        <motion.button
-          type="submit"
-          disabled={isSubmitting}
-          className={`px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-all duration-300 ${
-            isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          {isSubmitting ? (
-            <span className="flex items-center">
-              <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                 />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                 />
-              </svg>
-              Submitting...
-            </span>
-          ) : (
-            "Post Comment"
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              className="mt-4 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100 flex items-start"
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: "auto", marginTop: 16 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            >
+              <span className="mr-2">⚠️</span> {error}
+            </motion.div>
           )}
-        </motion.button>
+
+          {success && (
+            <motion.div
+              className="mt-4 p-4 bg-green-50 text-green-600 rounded-xl text-sm font-medium border border-green-100 flex items-start"
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: "auto", marginTop: 16 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            >
+              <span className="mr-2">✅</span> {success}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="mt-6 flex justify-end">
+          <motion.button
+            type="submit"
+            disabled={isSubmitting}
+            className={`inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-xl shadow-sm hover:shadow-md hover:bg-primary-dark transition-all duration-300 ${
+              isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {isSubmitting ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" />
+                Posting...
+              </>
+            ) : (
+              <>
+                <FaPaperPlane className="mr-2" />
+                Post Comment
+              </>
+            )}
+          </motion.button>
+        </div>
       </form>
 
       {/* Comments List */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-medium text-gray-800">
-            {comments.length > 0
-              ? `${comments.length} Comment${comments.length === 1 ? "" : "s"}`
-              : "Comments"}
+      <div className="border-t border-gray-100 pt-8">
+        <div className="flex justify-between items-center mb-6">
+          <h4 className="text-lg font-semibold text-gray-800">
+            Recent Comments
           </h4>
 
           <button
@@ -279,80 +280,74 @@ const Comments = ({ postSlug }) => {
               e.preventDefault();
               fetchComments();
             }}
-            className="text-sm text-primary flex items-center hover:text-primary-dark transition-colors"
+            className="text-sm text-primary flex items-center hover:text-primary-dark transition-colors font-medium"
             disabled={isLoading}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
+            <FaRedo className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`} />
             {isLoading ? "Refreshing..." : "Refresh"}
           </button>
         </div>
 
         <div className="space-y-6">
           {isLoading ? (
-            <div className="text-center py-8">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-              <p className="mt-2 text-gray-600">Loading comments...</p>
+            <div className="text-center py-12">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em]" />
+              <p className="mt-4 text-gray-500 font-medium">Loading conversation...</p>
             </div>
           ) : comments.length > 0 ? (
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {comments.map((comment) => (
                 <motion.div
                   key={comment.id}
-                  className="border-b border-gray-100 pb-6 last:border-0"
+                  className="group bg-gray-50 rounded-2xl p-5 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-gray-100"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  layout
                 >
-                  <div className="flex items-center mb-2">
-                    <div className="bg-primary bg-opacity-10 rounded-full h-10 w-10 flex items-center justify-center text-primary font-medium mr-3">
-                      {comment.name
-                        ? comment.name.charAt(0).toUpperCase()
-                        : "A"}
-                    </div>
-                    <div className="flex-grow">
-                      <div className="flex items-center">
-                        <h4 className="font-medium text-gray-800">
-                          {comment.name || "Anonymous"}
-                        </h4>
-                        {comment.isLocal && (
-                          <span className="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-                            Local
-                          </span>
-                        )}
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                        {comment.name
+                          ? comment.name.charAt(0).toUpperCase()
+                          : "A"}
                       </div>
-                      <p className="text-xs text-gray-500">
-                        {comment.createdAt
-                          ? moment(comment.createdAt).format(
-                              "MMM DD, YYYY • h:mm A"
-                            )
-                          : "Just now"}
-                      </p>
+                    </div>
+                    <div className="flex-grow min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2">
+                          <h5 className="font-bold text-gray-900 truncate">
+                            {comment.name || "Anonymous"}
+                          </h5>
+                          {comment.isLocal && (
+                            <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                              New
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-gray-400 font-medium whitespace-nowrap">
+                          {comment.createdAt
+                            ? moment(comment.createdAt).fromNow()
+                            : "Just now"}
+                        </span>
+                      </div>
+                      <div className="prose prose-sm prose-slate max-w-none text-gray-600 leading-relaxed">
+                        <p className="whitespace-pre-line">{comment.content}</p>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-gray-700 mt-2 whitespace-pre-line leading-relaxed">
-                    {comment.content}
-                  </p>
                 </motion.div>
               ))}
             </AnimatePresence>
           ) : (
-            <div className="text-center py-8 text-gray-500 border border-dashed border-gray-200 rounded-lg">
-              <p className="mb-2">No comments yet.</p>
-              <p className="text-sm">Be the first to share your thoughts!</p>
+            <div className="text-center py-12 px-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+              <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400">
+                <FaPaperPlane />
+              </div>
+              <h5 className="text-gray-900 font-medium mb-1">No comments yet</h5>
+              <p className="text-gray-500 text-sm">
+                Be the first to share your thoughts on this article!
+              </p>
             </div>
           )}
         </div>

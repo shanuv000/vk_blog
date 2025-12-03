@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useSpring } from "framer-motion";
 import moment from "moment";
+import Link from "next/link";
+import { FaArrowLeft, FaRegClock, FaRegCalendarAlt } from "react-icons/fa";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import ErrorBoundary from "./ErrorBoundary";
 import HeadPostDetails from "./HeadPostDetails";
@@ -136,34 +138,88 @@ const PostDetail = ({ post }) => {
           The article you are looking for might have been removed or is
           temporarily unavailable.
         </p>
+        <Link
+          href="/"
+          className="mt-8 inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors"
+        >
+          <FaArrowLeft className="mr-2" /> Back to Home
+        </Link>
       </div>
     );
   }
 
   return (
     <ErrorBoundary>
-      <main className="bg-white min-h-screen">
+      <main className="bg-white min-h-screen pb-20">
         <motion.div
-          className="fixed top-0 left-0 right-0 h-0.5 bg-gray-900 origin-left z-50"
+          className="fixed top-0 left-0 right-0 h-1 bg-primary origin-left z-50"
           style={{ scaleX }}
         />
 
         <HeadPostDetails post={post} />
 
-        <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
+          {/* Breadcrumb / Back Link */}
+          <nav className="mb-8">
+            <Link
+              href="/"
+              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors group"
+            >
+              <FaArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
+              Back to Blog
+            </Link>
+          </nav>
+
+          <header className="mb-10 sm:mb-14 text-center max-w-3xl mx-auto">
+            {/* Categories/Tags Badge */}
+            {post.categories && post.categories.length > 0 && (
+              <div className="flex justify-center gap-2 mb-6">
+                {post.categories.map((cat, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary tracking-wide uppercase"
+                  >
+                    {cat.name}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight text-gray-900 leading-tight mb-6">
+              {post.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-gray-500 font-medium">
+              <div className="flex items-center">
+                <FaRegCalendarAlt className="mr-2 text-gray-400" />
+                <span suppressHydrationWarning>
+                  {post.createdAt
+                    ? moment(post.createdAt).format("MMMM D, YYYY")
+                    : "Date unavailable"}
+                </span>
+              </div>
+              {readingTime && (
+                <div className="flex items-center">
+                  <FaRegClock className="mr-2 text-gray-400" />
+                  <span>{readingTime} min read</span>
+                </div>
+              )}
+            </div>
+          </header>
+
           {heroImage && (
-            <figure className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-gray-100">
+            <figure className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl shadow-xl mb-12 sm:mb-16">
               <OptimizedImage
                 src={heroImage}
                 alt={post.title || "Post hero image"}
                 fill
                 priority
-                quality={85}
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1024px"
+                quality={90}
+                className="object-cover hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
                 fallbackSrc={DEFAULT_FEATURED_IMAGE}
                 showSkeleton
-                aspectRatio="3/2"
+                aspectRatio="16/9"
                 containerClassName="w-full h-full"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2NzUiIHZpZXdCb3g9IjAgMCAxMjAwIDY3NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjc1IiBmaWxsPSJyZ2JhKDE1NiwgMTYzLCAxNzUsIDAuMSkiLz4KPHN2Zz4K"
                 onError={(error) => {
@@ -174,105 +230,95 @@ const PostDetail = ({ post }) => {
             </figure>
           )}
 
-          <header className="mt-10">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-semibold tracking-tight text-gray-900">
-              {post.title}
-            </h1>
-            <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-gray-500">
-              <span suppressHydrationWarning>
-                {post.createdAt
-                  ? moment(post.createdAt).format("MMMM D, YYYY")
-                  : "Date unavailable"}
-              </span>
-              {readingTime && <span>·</span>}
-              {readingTime && <span>{readingTime} min read</span>}
-            </div>
+          <div className="max-w-3xl mx-auto">
+            <ErrorBoundary>
+              {post.slug && (
+                <motion.div
+                  className="mb-10"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Testing slug={post.slug} />
+                </motion.div>
+              )}
+            </ErrorBoundary>
+
+            <section className="mb-12">
+              {post.content ? (
+                <ErrorBoundary
+                  fallback={
+                    <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                      We had trouble showing this article. Please refresh the
+                      page.
+                    </p>
+                  }
+                >
+                  {(() => {
+                    try {
+                      return (
+                        <div className="prose prose-lg prose-slate max-w-none leading-relaxed prose-headings:font-heading prose-headings:font-bold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-md">
+                          <RichTextRenderer
+                            content={post.content}
+                            references={
+                              Array.isArray(post.content?.references)
+                                ? post.content.references
+                                : []
+                            }
+                          />
+                        </div>
+                      );
+                    } catch (error) {
+                      return (
+                        <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                          We encountered an error while rendering the article.
+                          Please try again.
+                        </p>
+                      );
+                    }
+                  })()}
+                </ErrorBoundary>
+              ) : (
+                <p className="text-sm text-gray-500 italic">
+                  No content is available for this post.
+                </p>
+              )}
+            </section>
 
             {/* Tags Section */}
             {post.tags && post.tags.length > 0 && (
-              <div className="mt-6 pt-6 border-t border-gray-100">
+              <div className="mt-12 pt-8 border-t border-gray-100">
+                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+                  Related Topics
+                </h3>
                 <TagList tags={post.tags} title="" size="md" />
               </div>
             )}
-          </header>
 
-          <ErrorBoundary>
-            {post.slug && (
-              <motion.div
-                className="mt-10"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <Testing slug={post.slug} />
-              </motion.div>
-            )}
-          </ErrorBoundary>
-
-          <section className="mt-12">
-            {post.content ? (
+            <section className="mt-12">
               <ErrorBoundary
                 fallback={
-                  <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                    We had trouble showing this article. Please refresh the
-                    page.
-                  </p>
+                  <div className="text-center p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <p className="text-sm text-gray-600">
+                      Social media embeds are temporarily unavailable
+                    </p>
+                  </div>
                 }
               >
-                {(() => {
-                  try {
-                    return (
-                      <div className="prose prose-lg prose-slate max-w-none leading-relaxed prose-table:border prose-table:border-gray-200 prose-td:border-t prose-td:border-gray-200 prose-th:bg-gray-50 prose-th:text-gray-800 prose-th:font-semibold prose-th:px-4 prose-th:py-2 prose-td:px-4 prose-td:py-2 prose-td:text-gray-700">
-                        <RichTextRenderer
-                          content={post.content}
-                          references={
-                            Array.isArray(post.content?.references)
-                              ? post.content.references
-                              : []
-                          }
-                        />
-                      </div>
-                    );
-                  } catch (error) {
-                    return (
-                      <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                        We encountered an error while rendering the article.
-                        Please try again.
-                      </p>
-                    );
-                  }
-                })()}
+                <SocialMediaEmbedder key={post.slug} />
               </ErrorBoundary>
-            ) : (
-              <p className="text-sm text-gray-500">
-                No content is available for this post.
-              </p>
-            )}
-          </section>
-
-          <section className="mt-12">
-            <ErrorBoundary
-              fallback={
-                <div className="text-center p-6 bg-gray-50 rounded-lg border border-gray-200">
-                  <p className="text-sm text-gray-600">
-                    Social media embeds are temporarily unavailable
-                  </p>
-                </div>
-              }
-            >
-              <SocialMediaEmbedder key={post.slug} />
-            </ErrorBoundary>
-          </section>
-
-          <section className="mt-16 pt-12 border-t border-gray-200">
-            <Navbar_post_details post={post} />
-          </section>
-
-          {post.slug && (
-            <section className="mt-16">
-              <Comments postSlug={post.slug} />
             </section>
-          )}
+
+            <section className="mt-16 pt-10 border-t border-gray-100">
+              <Navbar_post_details post={post} />
+            </section>
+
+            {post.slug && (
+              <section className="mt-16">
+                <Comments postSlug={post.slug} />
+              </section>
+            )}
+          </div>
         </article>
       </main>
     </ErrorBoundary>
