@@ -1040,6 +1040,15 @@ const SocialMediaEmbedder = () => {
                 if (igMatch && igMatch[1]) {
                   socialUrl = igMatch[1];
                   platform = "instagram";
+                } else {
+                  // Check for Twitter/X URLs
+                  const twMatch = text.match(
+                    /(https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+)/i
+                  );
+                  if (twMatch && twMatch[1]) {
+                    socialUrl = twMatch[1];
+                    platform = "twitter";
+                  }
                 }
               }
             }

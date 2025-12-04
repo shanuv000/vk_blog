@@ -1,22 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { getOptimizedImageUrl } from "../lib/image-config";
 import { hasRendered, markRendered } from "../utils/renderedTweets";
 
-// Use dynamic import to avoid SSR issues with the legacy embed library
-const LegacyTwitterEmbed = dynamic(() => import("./Blog/TwitterEmbed"), {
-  ssr: false,
-});
-
-const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
+const TwitterPost = ({ tweetId, className = "", variant = "card", onError }) => {
   const [tweet, setTweet] = useState(null);
-  // Start not loading; we'll show a light placeholder until visible
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isRateLimit, setIsRateLimit] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const isInline = variant === "inline";
 
@@ -42,17 +33,7 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
             // If rate limited on oEmbed, try regular API (which has stale cache fallback)
             if (useOembed) {
               if (process.env.NODE_ENV === 'development') {
-
-                if (process.env.NODE_ENV === 'development') {
-
-
-                  console.log(
-                `🔄 Rate limited on oEmbed for ${tweetId}, falling back to data API`
-              );
-
-
-                }
-
+                 console.log(`🔄 Rate limited on oEmbed for ${tweetId}, falling back to data API`);
               }
               return fetchTweet(signal, false);
             }
@@ -105,66 +86,37 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
       setLoading(false);
       setTweet(null);
       setError(null);
-      setIsRateLimit(false);
       return;
     }
-    fetchTweet();
-  }, [tweetId, isVisible]);
+    
+    setLoading(true);
+    const controller = new AbortController();
+    controllerRef.current = controller;
 
-  // Cleanup on unmount: abort in-flight fetch
-  useEffect(() => {
+    // Try oEmbed first (true), then fallback to API
+    fetchTweet(controller.signal, true)
+      .then((data) => {
+        if (!controller.signal.aborted) {
+          setTweet(data.data);
+          setLoading(false);
+          markRendered(tweetId);
+        }
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          console.error(`TwitterPost: Failed to load tweet ${tweetId}`, err);
+          setError(err.message);
+          setLoading(false);
+          if (onError) {
+            onError(err);
+          }
+        }
+      });
+
     return () => {
-      if (controllerRef.current) {
-        try {
-          controllerRef.current.abort();
-        } catch (_) {}
-      }
+      controller.abort();
     };
-  }, []);
-
-  const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
-    fetchTweet();
-  };
-
-  const formatText = (text, entities) => {
-    if (!entities) {return text;}
-
-    let formattedText = text;
-
-    // Replace URLs with links
-    if (entities.urls) {
-      entities.urls.forEach((url) => {
-        const linkText = url.display_url || url.expanded_url;
-        formattedText = formattedText.replace(
-          url.url,
-          `<a href="${url.expanded_url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">${linkText}</a>`
-        );
-      });
-    }
-
-    // Replace mentions with links
-    if (entities.mentions) {
-      entities.mentions.forEach((mention) => {
-        formattedText = formattedText.replace(
-          `@${mention.username}`,
-          `<a href="https://twitter.com/${mention.username}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">@${mention.username}</a>`
-        );
-      });
-    }
-
-    // Replace hashtags with links
-    if (entities.hashtags) {
-      entities.hashtags.forEach((hashtag) => {
-        formattedText = formattedText.replace(
-          `#${hashtag.tag}`,
-          `<a href="https://twitter.com/hashtag/${hashtag.tag}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">#${hashtag.tag}</a>`
-        );
-      });
-    }
-
-    return formattedText;
-  };
+  }, [tweetId, isVisible, fetchTweet, onError]);
 
   // Before visible, render a lightweight placeholder to avoid layout shift
   if (!isVisible) {
@@ -210,91 +162,73 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
   }
 
   if (error) {
-    // If rate limited, switch to legacy client embed without showing the large card
-    if (isRateLimit) {
-      // Ensure dedupe even when using fallback embed
-      markRendered(tweetId);
-      return (
-        <div ref={containerRef} className={className}>
-          {isInline ? (
-            <LegacyTwitterEmbed tweetId={tweetId} useApiVersion={false} />
-          ) : (
-            <div className="border border-gray-200 rounded-lg bg-white p-2">
-              <LegacyTwitterEmbed tweetId={tweetId} useApiVersion={false} />
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    // Enhanced fallback for other errors
-    return (
-      <div
-        ref={containerRef}
-        className={`${
-          isInline
-            ? ""
-            : "border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
-        } ${className}`}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-2">
-            <svg
-              className="w-5 h-5 text-blue-400"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-            </svg>
-            <span className="font-medium text-gray-900">Twitter Post</span>
-          </div>
-          <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
-            Error
-          </span>
-        </div>
-
-        <div className="text-gray-600 mb-4">
-          <p className="text-sm mb-2">Unable to load this tweet.</p>
-          <div className="bg-gray-50 border-l-4 border-red-400 p-3 rounded">
-            <p className="text-xs text-gray-500 mb-1">Tweet ID: {tweetId}</p>
-            <p className="text-xs text-gray-500">Error: {error}</p>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center justify-between ${
-            isInline ? "pt-2" : "pt-3 border-t border-gray-100"
-          }`}
-        >
-          <a
-            href={`https://twitter.com/i/status/${tweetId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-600 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.80l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-            </svg>
-            <span>View on X (Twitter)</span>
-          </a>
-          <button
-            onClick={handleRetry}
-            className="text-sm text-gray-500 hover:text-gray-700 underline"
-          >
-            Retry {retryCount > 0 && `(${retryCount})`}
-          </button>
-        </div>
-      </div>
-    );
+    // If we have an error, we return null so the parent can handle the fallback
+    // The onError callback was already called in the catch block
+    return null;
   }
 
   if (!tweet) {
     return <div ref={containerRef} className={className} />;
   }
 
+  // If we have oEmbed HTML (from oEmbed endpoint), render that
+  if (tweet.html) {
+    return (
+      <div 
+        className={className}
+        dangerouslySetInnerHTML={{ __html: tweet.html }}
+        ref={(node) => {
+           containerRef.current = node;
+           if (node && window.twttr?.widgets?.load) {
+             window.twttr.widgets.load(node);
+           }
+        }}
+      />
+    );
+  }
+
   const timeAgo = tweet.createdAt
     ? formatDistanceToNow(new Date(tweet.createdAt), { addSuffix: true })
     : "";
+
+  const formatText = (text, entities) => {
+    if (!entities) {return text;}
+
+    let formattedText = text;
+
+    // Replace URLs with links
+    if (entities.urls) {
+      entities.urls.forEach((url) => {
+        const linkText = url.display_url || url.expanded_url;
+        formattedText = formattedText.replace(
+          url.url,
+          `<a href="${url.expanded_url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">${linkText}</a>`
+        );
+      });
+    }
+
+    // Replace mentions with links
+    if (entities.mentions) {
+      entities.mentions.forEach((mention) => {
+        formattedText = formattedText.replace(
+          `@${mention.username}`,
+          `<a href="https://twitter.com/${mention.username}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">@${mention.username}</a>`
+        );
+      });
+    }
+
+    // Replace hashtags with links
+    if (entities.hashtags) {
+      entities.hashtags.forEach((hashtag) => {
+        formattedText = formattedText.replace(
+          `#${hashtag.tag}`,
+          `<a href="https://twitter.com/hashtag/${hashtag.tag}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">#${hashtag.tag}</a>`
+        );
+      });
+    }
+
+    return formattedText;
+  };
 
   return (
     <div
@@ -302,33 +236,33 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
       className={`${
         isInline
           ? ""
-          : "border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
-      } ${className}`}
+          : "border border-gray-200 rounded-lg p-3 md:p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+      } ${className} w-full max-w-full overflow-hidden`}
     >
       {/* Header */}
       <div
-        className={`flex items-center space-x-3 ${isInline ? "mb-2" : "mb-3"}`}
+        className={`flex items-center space-x-2 md:space-x-3 ${isInline ? "mb-2" : "mb-2 md:mb-3"}`}
       >
         {tweet.author?.profileImageUrl && (
-          <div className="relative w-12 h-12 flex-shrink-0">
+          <div className="relative w-10 h-10 md:w-12 md:h-12 flex-shrink-0">
             <Image
               src={getOptimizedImageUrl(tweet.author.profileImageUrl, "avatar")}
               alt={`${tweet.author.name} profile`}
               fill
               className="rounded-full object-cover"
-              sizes="48px"
+              sizes="(max-width: 768px) 40px, 48px"
               quality={70}
             />
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-1">
-            <h3 className="font-bold text-gray-900 truncate">
+          <div className="flex items-center space-x-1 flex-wrap">
+            <h3 className="font-bold text-gray-900 truncate text-sm md:text-base">
               {tweet.author?.name || "Unknown User"}
             </h3>
             {tweet.author?.verified && (
               <svg
-                className="w-4 h-4 text-blue-500"
+                className="w-3 h-3 md:w-4 md:h-4 text-blue-500 flex-shrink-0"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -336,18 +270,18 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
               </svg>
             )}
           </div>
-          <div className="flex items-center space-x-1 text-sm text-gray-500">
-            <span>@{tweet.author?.username || "unknown"}</span>
+          <div className="flex items-center space-x-1 text-xs md:text-sm text-gray-500">
+            <span className="truncate">@{tweet.author?.username || "unknown"}</span>
             <span>•</span>
-            <span>{timeAgo}</span>
+            <span className="whitespace-nowrap">{timeAgo}</span>
           </div>
         </div>
       </div>
 
       {/* Tweet Content */}
-      <div className={isInline ? "mb-2" : "mb-3"}>
+      <div className={isInline ? "mb-2" : "mb-2 md:mb-3"}>
         <div
-          className="text-gray-900 leading-relaxed whitespace-pre-wrap"
+          className="text-gray-900 leading-relaxed whitespace-pre-wrap text-sm md:text-base break-words"
           dangerouslySetInnerHTML={{
             __html: formatText(tweet.text, tweet.entities),
           }}
@@ -356,11 +290,11 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
 
       {/* Media */}
       {tweet.media && tweet.media.length > 0 && (
-        <div className={isInline ? "mb-2" : "mb-3"}>
+        <div className={isInline ? "mb-2" : "mb-2 md:mb-3"}>
           {tweet.media.map((media, index) => (
             <div key={index} className="mt-2">
               {media.type === "photo" && media.url && (
-                <div className="relative rounded-lg overflow-hidden border border-gray-200">
+                <div className="relative rounded-lg overflow-hidden border border-gray-200 w-full">
                   <Image
                     src={getOptimizedImageUrl(media.url, "featured")}
                     alt={media.altText || "Tweet image"}
@@ -368,7 +302,7 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
                     height={media.height || 400}
                     className="w-full h-auto object-cover"
                     quality={70}
-                    sizes="(max-width: 640px) 100vw, 600px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 600px"
                     style={{
                       maxHeight: "400px",
                     }}
@@ -376,7 +310,7 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
                 </div>
               )}
               {media.type === "video" && media.previewImageUrl && (
-                <div className="relative rounded-lg overflow-hidden border border-gray-200">
+                <div className="relative rounded-lg overflow-hidden border border-gray-200 w-full">
                   <Image
                     src={getOptimizedImageUrl(
                       media.previewImageUrl,
@@ -387,14 +321,14 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
                     height={media.height || 400}
                     className="w-full h-auto object-cover"
                     quality={70}
-                    sizes="(max-width: 640px) 100vw, 600px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 600px"
                     style={{
                       maxHeight: "400px",
                     }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
                     <svg
-                      className="w-16 h-16 text-white"
+                      className="w-12 h-12 md:w-16 md:h-16 text-white"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -410,66 +344,68 @@ const TwitterPost = ({ tweetId, className = "", variant = "card" }) => {
 
       {/* Metrics */}
       <div
-        className={`flex items-center space-x-4 text-sm text-gray-500 ${
-          isInline ? "pt-2" : "border-t border-gray-100 pt-3"
+        className={`flex items-center justify-between text-xs md:text-sm text-gray-500 ${
+          isInline ? "pt-2" : "border-t border-gray-100 pt-2 md:pt-3"
         }`}
       >
-        <div className="flex items-center space-x-1">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-            />
-          </svg>
-          <span>{tweet.metrics?.reply_count || 0}</span>
+        <div className="flex items-center space-x-4 md:space-x-6">
+          <div className="flex items-center space-x-1">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
+            </svg>
+            <span>{tweet.metrics?.reply_count || 0}</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            <span>{tweet.metrics?.retweet_count || 0}</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <span>{tweet.metrics?.like_count || 0}</span>
+          </div>
         </div>
-        <div className="flex items-center space-x-1">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          <span>{tweet.metrics?.retweet_count || 0}</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-          <span>{tweet.metrics?.like_count || 0}</span>
-        </div>
-        <div className="ml-auto">
+        <div className="ml-2">
           <a
             href={tweet.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 hover:underline whitespace-nowrap"
           >
-            View on Twitter
+            View on X
           </a>
         </div>
       </div>
