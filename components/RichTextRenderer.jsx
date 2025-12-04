@@ -1392,6 +1392,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                         element.includes("facebook.com") ||
                         element.includes("fb.com") ||
                         element.includes("fb.watch")
+
                       ) {
                         return element;
                       }
@@ -1563,6 +1564,38 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 }
               },
             },
+            // Table renderers
+            table: ({ children }) => (
+              <div className="overflow-x-auto my-8 rounded-lg border border-gray-200 shadow-sm">
+                <table className="min-w-full divide-y divide-gray-200">
+                  {children}
+                </table>
+              </div>
+            ),
+            table_head: ({ children }) => (
+              <thead className="bg-gray-50">{children}</thead>
+            ),
+            table_body: ({ children }) => (
+              <tbody className="bg-white divide-y divide-gray-200">
+                {children}
+              </tbody>
+            ),
+            table_row: ({ children }) => (
+              <tr className="hover:bg-gray-50 transition-colors">{children}</tr>
+            ),
+            table_cell: ({ children }) => (
+              <td className="px-6 py-4 whitespace-normal break-words text-sm text-gray-700 border-r last:border-r-0 border-gray-100">
+                {children}
+              </td>
+            ),
+            table_header_cell: ({ children }) => (
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r last:border-r-0 border-gray-200"
+              >
+                {children}
+              </th>
+            ),
           }}
         />
       </div>

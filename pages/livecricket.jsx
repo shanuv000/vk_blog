@@ -27,12 +27,12 @@ const LiveCricket = () => {
         />
       </Head>
 
-      <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="w-full mx-auto px-0 md:px-4 py-4 md:py-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center mb-8 md:mb-12"
+          className="flex flex-col items-center mb-6 md:mb-12 px-4 md:px-0"
         >
           <div className="flex items-center mb-4">
             <Image

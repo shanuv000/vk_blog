@@ -118,13 +118,13 @@ const ShowCricket = () => {
   return (
     <div className="cricket-widget w-full max-w-5xl mx-auto px-0 md:px-4">
       {/* Mobile-friendly tab navigation */}
-      <div className="bg-white shadow-lg rounded-xl overflow-hidden mb-4">
+      <div className="bg-white shadow-lg md:rounded-xl overflow-hidden mb-4 border-b md:border-0 border-gray-100">
         <div className="grid grid-cols-4 w-full">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
-              className={`flex flex-col items-center justify-center py-4 px-1 transition-all duration-200 relative ${
+              className={`flex flex-col items-center justify-center py-3 md:py-4 px-1 transition-all duration-200 relative ${
                 selectedTab === tab.id
                   ? "text-urtechy-red font-medium"
                   : "text-gray-500 hover:text-gray-700"
@@ -135,17 +135,17 @@ const ShowCricket = () => {
               role="tab"
             >
               <span
-                className={`text-xl mb-1 ${
+                className={`text-lg md:text-xl mb-1 ${
                   selectedTab === tab.id ? "text-urtechy-red" : "text-gray-600"
                 }`}
               >
                 {tab.icon}
               </span>
-              <span className="text-xs font-medium whitespace-nowrap truncate max-w-full">
+              <span className="text-[10px] md:text-xs font-medium whitespace-nowrap truncate max-w-full">
                 {tab.label}
               </span>
               {selectedTab === tab.id && (
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-urtechy-red" />
+                <div className="absolute bottom-0 left-0 w-full h-0.5 md:h-1 bg-urtechy-red" />
               )}
             </button>
           ))}
@@ -154,8 +154,8 @@ const ShowCricket = () => {
 
       {/* Tab content with mobile-friendly styling */}
       <div
-        className={`bg-white shadow-lg rounded-xl ${
-          selectedTab === "table" && isMobile ? "p-0" : "p-3 md:p-5"
+        className={`bg-white shadow-lg md:rounded-xl ${
+          isMobile ? "p-0" : "p-3 md:p-5"
         } min-h-[350px] md:min-h-[400px]`}
       >
         {tabs.map((tab) => (

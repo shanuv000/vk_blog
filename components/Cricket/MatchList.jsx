@@ -105,7 +105,7 @@ const MatchList = ({
   }
 
   return (
-    <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
+    <div className="bg-white shadow-lg md:rounded-xl p-3 md:p-6 mb-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl sm:text-2xl font-heading font-bold bg-gradient-to-r from-red-400 to-yellow-400 bg-clip-text text-transparent">
           {title}
@@ -288,7 +288,7 @@ const MatchList = ({
               className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-md hover:shadow-lg transition-all duration-300"
             >
               {/* Match header with title */}
-              <div className="border-b border-gray-100 bg-gray-50 px-5 py-3">
+              <div className="border-b border-gray-100 bg-gray-50 px-3 py-2 md:px-5 md:py-3">
                 {match.title && match.title !== "N/A" ? (
                   <h4 className="text-base sm:text-lg font-bold text-gray-800">
                     {match.title}
@@ -301,7 +301,7 @@ const MatchList = ({
               </div>
 
               {/* Match content */}
-              <div className="p-5">
+              <div className="p-3 md:p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                   {/* Team scores */}
                   <div className="space-y-2 mb-3 sm:mb-0">

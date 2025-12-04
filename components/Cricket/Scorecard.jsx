@@ -6,17 +6,40 @@ import { GiCricketBat } from "react-icons/gi";
 const Scorecard = ({ scorecard }) => {
   const [activeInning, setActiveInning] = useState(0);
 
-  // Deduplicate innings based on content
+  // Deduplicate and organize innings
   const uniqueInnings = useMemo(() => {
     if (!scorecard || !Array.isArray(scorecard)) return [];
-    
-    const seen = new Set();
-    return scorecard.filter((inning) => {
-      const content = JSON.stringify(inning);
-      if (seen.has(content)) return false;
-      seen.add(content);
-      return true;
+
+    const inningsMap = new Map();
+
+    scorecard.forEach((inning) => {
+      const team = inning.teamName || "Unknown";
+      const header = inning.inningsHeader || "";
+      
+      // Create a unique key for the inning
+      // For Test matches, distinguish between 1st and 2nd innings
+      let key = team;
+      if (header.includes("1st Innings") || header.includes("Innings 1")) {
+        key = `${team}_1`;
+      } else if (header.includes("2nd Innings") || header.includes("Innings 2")) {
+        key = `${team}_2`;
+      } else if (header.includes("Super Over")) {
+        key = `${team}_super`;
+      }
+
+      // Store the inning, overwriting previous entries with the same key
+      // This ensures we keep the latest version of the inning (assuming the API appends updates)
+      // while preserving the order of the *first* appearance of the key
+      if (inningsMap.has(key)) {
+        // If key exists, we only update the value, but the key's position in the Map remains the same
+        // (Map preserves insertion order)
+        inningsMap.set(key, inning);
+      } else {
+        inningsMap.set(key, inning);
+      }
     });
+
+    return Array.from(inningsMap.values());
   }, [scorecard]);
 
   if (!uniqueInnings || uniqueInnings.length === 0) {
