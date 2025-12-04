@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { FaDiscord } from "react-icons/fa6";
 import { useIsLiveCricket } from "../hooks/useCricketData";
 import { getDirectCategories } from "../services/direct-api";
 import { CATEGORY_HIERARCHY } from "../utils/categoryHierarchy";
@@ -197,8 +198,27 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Mobile Menu Icon */}
-        <div className="lg:hidden">
+        {/* Mobile Menu Icon & Discord Icon (Mobile) */}
+        <div className="lg:hidden flex items-center space-x-4">
+          <motion.a
+            href="https://discord.gg/SquXBvz3Q"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#5865F2] hover:text-[#4752C4] transition-colors"
+            whileHover={{ scale: 1.1, rotate: 10 }}
+            whileTap={{ scale: 0.9 }}
+            animate={{
+              rotate: [0, -10, 10, -10, 10, 0],
+              transition: {
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 3,
+                ease: "easeInOut",
+              },
+            }}
+          >
+            <FaDiscord size={24} />
+          </motion.a>
           <button
             onClick={toggleMobileMenu}
             className="text-text-primary hover:text-primary focus:outline-none"
@@ -210,6 +230,27 @@ const Header = () => {
 
         {/* Navigation Items (Desktop) */}
         <nav className="hidden lg:flex items-center space-x-2 xl:space-x-4">
+          {/* Discord Icon (Desktop) */}
+          <motion.a
+            href="https://discord.gg/SquXBvz3Q"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#5865F2] hover:text-[#4752C4] transition-colors mr-2"
+            whileHover={{ scale: 1.1, rotate: 10 }}
+            whileTap={{ scale: 0.9 }}
+            animate={{
+              rotate: [0, -10, 10, -10, 10, 0],
+              transition: {
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 3,
+                ease: "easeInOut",
+              },
+            }}
+            title="Join our Discord"
+          >
+            <FaDiscord size={28} />
+          </motion.a>
           {navItems.map((item) =>
             item.isDropdown ? (
               <div

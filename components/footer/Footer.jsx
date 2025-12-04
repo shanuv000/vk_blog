@@ -6,6 +6,7 @@ import {
   FaPinterest,
   FaFacebook,
   FaXTwitter,
+  FaDiscord,
 } from "react-icons/fa6";
 
 const Footer = () => {
@@ -98,6 +99,18 @@ const Footer = () => {
                   aria-label="Instagram"
                 >
                   <FaInstagram className="w-5 h-5 text-white" />
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  href="https://discord.gg/SquXBvz3Q"
+                  title="Discord"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-[#5865F2] hover:bg-[#4752C4] transition-colors duration-300 shadow-md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Discord"
+                >
+                  <FaDiscord className="w-5 h-5 text-white" />
                 </motion.a>
                 <motion.a
                   whileHover={{ scale: 1.1 }}
