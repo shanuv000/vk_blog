@@ -4,8 +4,10 @@ import { motion, useScroll, useSpring } from "framer-motion";
 import moment from "moment";
 import Link from "next/link";
 import { FaArrowLeft, FaRegClock, FaRegCalendarAlt } from "react-icons/fa";
-import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import { FaXTwitter, FaFacebook, FaLink, FaCheck } from "react-icons/fa6";
+import { DEFAULT_FEATURED_IMAGE, DEFAULT_AVATAR } from "./DefaultAvatar";
 import ErrorBoundary from "./ErrorBoundary";
+import FloatingShareBar from "./FloatingShareBar";
 import HeadPostDetails from "./HeadPostDetails";
 import OptimizedImage from "./OptimizedImage";
 import RichTextRenderer from "./RichTextRenderer";
@@ -69,6 +71,7 @@ const PostDetail = ({ post }) => {
   const { data, fetchData } = useData();
   const hasFetchedData = useRef(true);
   const [renderError, setRenderError] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const readingTime = post?.content?.raw
     ? Math.max(
@@ -77,6 +80,7 @@ const PostDetail = ({ post }) => {
       )
     : null;
   const heroImage = post?.featuredImage?.url || DEFAULT_FEATURED_IMAGE;
+  const postUrl = `https://blog.urtechy.com/post/${post?.slug || ""}`;
 
   // Enhanced error boundary for content rendering
   useEffect(() => {
@@ -158,16 +162,39 @@ const PostDetail = ({ post }) => {
 
         <HeadPostDetails post={post} />
 
+        {/* Floating Share Bar - Desktop Only */}
+        <FloatingShareBar post={post} showThreshold={500} />
+
         <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
-          {/* Breadcrumb / Back Link */}
-          <nav className="mb-8">
-            <Link
-              href="/"
-              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors group"
-            >
-              <FaArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to Blog
-            </Link>
+          {/* Enhanced Breadcrumb Navigation */}
+          <nav className="mb-8" aria-label="Breadcrumb">
+            <ol className="flex flex-wrap items-center gap-2 text-sm">
+              <li>
+                <Link 
+                  href="/" 
+                  className="text-gray-500 hover:text-primary transition-colors"
+                >
+                  Home
+                </Link>
+              </li>
+              <li className="text-gray-400">/</li>
+              {post.categories?.[0] && (
+                <>
+                  <li>
+                    <Link 
+                      href={`/category/${post.categories[0].slug}`}
+                      className="text-gray-500 hover:text-primary transition-colors"
+                    >
+                      {post.categories[0].name}
+                    </Link>
+                  </li>
+                  <li className="text-gray-400">/</li>
+                </>
+              )}
+              <li className="text-gray-900 font-medium truncate max-w-[200px] sm:max-w-[300px]">
+                {post.title}
+              </li>
+            </ol>
           </nav>
 
           <header className="mb-10 sm:mb-14 text-center max-w-3xl mx-auto">
@@ -205,6 +232,53 @@ const PostDetail = ({ post }) => {
                 </div>
               )}
             </div>
+
+            {/* Inline Share Buttons */}
+            <div className="flex items-center justify-center gap-2 mt-6">
+              <span className="text-xs text-gray-400 uppercase tracking-wide font-medium">Share</span>
+              <div className="flex items-center gap-1">
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(postUrl)}&via=Onlyblogs_`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-black transition-all"
+                  title="Share on Twitter"
+                  aria-label="Share on Twitter"
+                >
+                  <FaXTwitter size={16} />
+                </a>
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-full text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-all"
+                  title="Share on Facebook"
+                  aria-label="Share on Facebook"
+                >
+                  <FaFacebook size={16} />
+                </a>
+                <button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(postUrl);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    } catch (error) {
+                      console.error("Copy failed:", error);
+                    }
+                  }}
+                  className={`p-2.5 rounded-full transition-all ${
+                    copied 
+                      ? "bg-green-100 text-green-600" 
+                      : "text-gray-400 hover:bg-gray-100 hover:text-primary"
+                  }`}
+                  title={copied ? "Copied!" : "Copy link"}
+                  aria-label="Copy link"
+                >
+                  {copied ? <FaCheck size={16} /> : <FaLink size={16} />}
+                </button>
+              </div>
+            </div>
           </header>
 
           {heroImage && (
@@ -231,6 +305,36 @@ const PostDetail = ({ post }) => {
           )}
 
           <div className="max-w-3xl mx-auto">
+            {/* Author Info Section */}
+            {post.author && (
+              <motion.div 
+                className="flex items-center gap-4 p-5 bg-gray-50 rounded-2xl mb-10"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+              >
+                <div className="relative w-14 h-14 flex-shrink-0 rounded-full overflow-hidden ring-2 ring-primary/20">
+                  <OptimizedImage
+                    src={post.author.photo?.url || DEFAULT_AVATAR}
+                    alt={post.author.name || "Author"}
+                    fill
+                    className="object-cover"
+                    sizes="56px"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-heading font-bold text-gray-900 truncate">
+                    {post.author.name}
+                  </p>
+                  {post.author.bio && (
+                    <p className="text-sm text-gray-600 mt-0.5 line-clamp-2">
+                      {post.author.bio}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
             <ErrorBoundary>
               {post.slug && (
                 <motion.div
@@ -257,7 +361,7 @@ const PostDetail = ({ post }) => {
                   {(() => {
                     try {
                       return (
-                        <div className="prose prose-lg prose-slate max-w-none leading-relaxed prose-headings:font-heading prose-headings:font-bold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-md">
+                        <div className="prose prose-lg prose-slate max-w-none prose-p:leading-[1.8] prose-li:leading-relaxed prose-headings:font-heading prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-md prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
                           <RichTextRenderer
                             content={post.content}
                             references={
