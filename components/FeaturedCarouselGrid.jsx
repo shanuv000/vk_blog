@@ -258,7 +258,20 @@ const FeaturedCarouselGrid = memo(
     );
 
     return (
-      <section className="mb-12 space-y-6">
+      <section 
+        className="mb-12 space-y-6"
+        aria-roledescription="carousel"
+        aria-label="Featured articles carousel"
+      >
+        {/* Screen reader announcement for slide changes */}
+        <div 
+          className="sr-only" 
+          aria-live="polite" 
+          aria-atomic="true"
+        >
+          Showing article {currentIndex + 1} of {validPosts.length}: {currentPost.title}
+        </div>
+
         {/* Main Hero Section */}
         <div
           className="relative w-full h-[70vh] min-h-[500px] max-h-[700px] overflow-hidden bg-gray-900 rounded-2xl shadow-2xl touch-pan-y"
@@ -267,8 +280,9 @@ const FeaturedCarouselGrid = memo(
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          aria-label="Featured article hero"
-          role="region"
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`Slide ${currentIndex + 1} of ${validPosts.length}`}
         >
           {/* Background Image */}
           <AnimatePresence initial={false} custom={direction} mode="sync">
@@ -465,8 +479,8 @@ const FeaturedCarouselGrid = memo(
             )}
           </div>
 
-          {/* Grid - Responsive & Clean */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          {/* Grid - Responsive & Clean with larger thumbnails */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
             {gridPosts.map((post, idx) => {
               const postData = getPostData(post);
               const isActive = post.originalIndex === currentIndex;

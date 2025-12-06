@@ -21,6 +21,7 @@ import {
 } from "../components/ApiLoadingStates";
 import HomeSeo from "../components/HomeSeo";
 import LoadingSpinner from "../components/LoadingSpinner";
+import NewsletterCTA from "../components/NewsletterCTA";
 import SchemaManager from "../components/SchemaManager";
 import { useHomepageData } from "../hooks/useHomepageData";
 
@@ -259,12 +260,15 @@ export default function OptimizedHomepage({ initialPosts }) {
             </div>
           ) : null}
 
+          {/* Newsletter CTA - Engagement section */}
+          <NewsletterCTA />
+
           {/* Main content */}
           <div className="mb-12 mt-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Posts column */}
               <div className="lg:col-span-8 col-span-1">
-                <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 mb-8 pb-4 border-b border-border">
                   <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-primary">
                     Latest Articles
                   </h2>
@@ -281,7 +285,7 @@ export default function OptimizedHomepage({ initialPosts }) {
                   hasMore={canLoadMore}
                   loader={<InfiniteScrollLoader count={3} />}
                   endMessage={
-                    <div className="text-center py-8">
+                    <div className="text-center py-12 mb-8 mt-8 border-t border-border">
                       <div className="inline-flex items-center space-x-2 text-text-secondary">
                         <span>
                           🎉 You've reached the end! No more posts to load.
