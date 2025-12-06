@@ -281,12 +281,13 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
       case "hygraph://posts":
         query = `
           query GetAllPosts {
-            posts(first: 50, orderBy: createdAt_DESC) {
+            posts(first: 50, orderBy: publishedAt_DESC) {
               id
               title
               slug
               excerpt
               createdAt
+              publishedAt
               featuredpost
               categories {
                 name
@@ -294,6 +295,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
               }
               author {
                 name
+                bio
               }
             }
           }
@@ -304,15 +306,27 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
       case "hygraph://posts/featured":
         query = `
           query GetFeaturedPosts {
-            posts(where: { featuredpost: true }, first: 20, orderBy: createdAt_DESC) {
+            posts(where: { featuredpost: true }, first: 20, orderBy: publishedAt_DESC) {
               id
               title
               slug
               excerpt
               createdAt
+              publishedAt
+              featuredImage {
+                url
+                width
+                height
+              }
               categories {
                 name
                 slug
+              }
+              author {
+                name
+                photo {
+                  url
+                }
               }
             }
           }
@@ -409,9 +423,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         if (args.featured !== undefined) filters.push(`featuredpost: ${args.featured}`);
         
         const where = filters.length > 0 ? `where: { ${filters.join(', ')} }` : '';
-        const first = args.first || 10;
+        const first = args.first || 12;
         const skip = args.skip || 0;
-        const orderBy = args.orderBy || 'createdAt_DESC';
+        const orderBy = args.orderBy || 'publishedAt_DESC';
         
         const query = `
           query GetPosts {
@@ -421,6 +435,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               slug
               excerpt
               createdAt
+              publishedAt
               featuredpost
               featuredImage {
                 url
@@ -431,6 +446,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               }
               author {
                 name
+                bio
                 photo {
                   url
                 }
@@ -483,10 +499,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               slug
               excerpt
               content {
+                raw
                 json
-                html
               }
               createdAt
+              publishedAt
               updatedAt
               featuredpost
               featuredImage {
@@ -497,6 +514,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               categories {
                 name
                 slug
+              }
+              tags {
+                id
+                name
+                slug
+                color {
+                  hex
+                }
               }
               author {
                 name

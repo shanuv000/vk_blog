@@ -201,10 +201,11 @@ export default async function handler(req, res) {
         // Use a corrected query that actually filters for featured posts
         const simplifiedQuery = `
           query GetFeaturedPosts {
-            posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
+            posts(where: { featuredpost: true }, first: 12, orderBy: publishedAt_DESC) {
               title
               slug
               createdAt
+              publishedAt
               featuredImage {
                 url
                 width
@@ -244,10 +245,10 @@ export default async function handler(req, res) {
 
       if (isCategoriesQuery) {
         console.log("Using simplified query for categories");
-        // Use a simpler query for categories
+        // Use a simpler query for categories - only show visible ones
         const simplifiedQuery = `
           query GetCategories {
-            categories {
+            categories(where: { show: true }, orderBy: name_DESC) {
               name
               slug
             }
@@ -281,12 +282,13 @@ export default async function handler(req, res) {
         // Use a simpler query for recent posts
         const simplifiedQuery = `
           query GetRecentPosts {
-            posts(orderBy: createdAt_DESC, first: 3) {
+            posts(orderBy: publishedAt_DESC, first: 3) {
               title
               featuredImage {
                 url
               }
               createdAt
+              publishedAt
               slug
             }
           }
@@ -359,12 +361,14 @@ export default async function handler(req, res) {
           console.log(
             "Using simplified query for featured posts with Content API"
           );
+          // FIXED: Add featuredpost filter to Content API fallback
           const simplifiedQuery = `
             query GetFeaturedPosts {
-              posts(first: 12, orderBy: createdAt_DESC) {
+              posts(where: { featuredpost: true }, first: 12, orderBy: publishedAt_DESC) {
                 title
                 slug
                 createdAt
+                publishedAt
                 featuredImage {
                   url
                 }
@@ -390,9 +394,10 @@ export default async function handler(req, res) {
 
         if (isCategoriesQuery) {
           console.log("Using simplified query for categories with Content API");
+          // FIXED: Add show filter to Content API fallback
           const simplifiedQuery = `
             query GetCategories {
-              categories {
+              categories(where: { show: true }, orderBy: name_DESC) {
                 name
                 slug
               }
@@ -415,12 +420,13 @@ export default async function handler(req, res) {
           );
           const simplifiedQuery = `
             query GetRecentPosts {
-              posts(orderBy: createdAt_DESC, first: 3) {
+              posts(orderBy: publishedAt_DESC, first: 3) {
                 title
                 featuredImage {
                   url
                 }
                 createdAt
+                publishedAt
                 slug
               }
             }

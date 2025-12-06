@@ -7,6 +7,7 @@ import { getDirectCategories } from "../services/direct-api";
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const MAX_CATEGORIES = 7; // Limit categories shown in sidebar
 
   // Use direct API for more reliable data fetching
   useEffect(() => {
@@ -16,19 +17,16 @@ const Categories = () => {
         const result = await getDirectCategories();
 
         if (result && result.length > 0) {
-          setCategories(result);
+          // Limit to MAX_CATEGORIES and fix any typos
+          const limitedCategories = result.slice(0, MAX_CATEGORIES).map(cat => ({
+            ...cat,
+            name: cat.name === 'LifeStyle' ? 'Lifestyle' : cat.name
+          }));
+          setCategories(limitedCategories);
         } else {
           // Fallback to default categories if API returns empty
           if (process.env.NODE_ENV === 'development') {
-
-            if (process.env.NODE_ENV === 'development') {
-
-
-              console.log("API returned empty categories, using defaults");
-
-
-            }
-
+            console.log("API returned empty categories, using defaults");
           }
           setCategories([
             { name: "Web Development", slug: "web-dev" },
