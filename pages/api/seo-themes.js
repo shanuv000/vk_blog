@@ -1,7 +1,12 @@
 // Next.js Serverless API route to proxy Top WP Themes API from RapidAPI
 // Uses aggressive Vercel caching to optimize 50 requests/day limit
 
+import { setCorsHeaders } from "../../lib/cors";
+
 export default async function handler(req, res) {
+  // Handle CORS preflight
+  if (setCorsHeaders(req, res)) return;
+
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
   }
@@ -12,10 +17,6 @@ export default async function handler(req, res) {
       "Cache-Control",
       "public, s-maxage=86400, stale-while-revalidate=172800, max-age=3600"
     );
-
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     res.setHeader("X-SEO-API-Cache", "true");
     res.setHeader("X-Cache-TTL", "86400");
 

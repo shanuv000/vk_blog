@@ -1,9 +1,13 @@
 // API Index - Lists all available API endpoints
 // Access at /api to see all available endpoints
 
+import { setCorsHeaders } from "../../lib/cors";
+
 export default function handler(req, res) {
+  // Handle CORS preflight
+  if (setCorsHeaders(req, res)) return;
+
   res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
-  res.setHeader("Access-Control-Allow-Origin", "*");
 
   const baseUrl = process.env.VERCEL_URL 
     ? `https://${process.env.VERCEL_URL}` 
