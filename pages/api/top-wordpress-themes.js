@@ -1,10 +1,13 @@
 // Next.js Serverless API route to proxy Top WP Themes API from RapidAPI
-// Uses aggressive Vercel caching to optimize 50 requests/day limit
+// Uses Upstash Redis for guaranteed 24-hour caching
 
 import { setCorsHeaders } from "../../lib/cors";
+import { withCache } from "../../lib/redis";
+
+const CACHE_KEY = "seo:top-wordpress-themes";
+const CACHE_TTL = 86400; // 24 hours
 
 export default async function handler(req, res) {
-  // Handle CORS preflight
   if (setCorsHeaders(req, res)) return;
 
   if (req.method !== "GET") {
@@ -12,46 +15,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Cache for 24 hours on Vercel's edge
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=86400, stale-while-revalidate=172800, max-age=3600"
-    );
-    res.setHeader("X-SEO-API-Cache", "true");
-    res.setHeader("X-Cache-TTL", "86400");
+    res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=172800");
+    res.setHeader("X-SEO-API-Cache", "redis");
 
-    const apiUrl = "https://seo-api2.p.rapidapi.com/www-reports/theme";
-
-    console.log(`[SEO-Themes API] Fetching from: ${apiUrl}`);
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        "x-rapidapi-host": "seo-api2.p.rapidapi.com",
-        "x-rapidapi-key": process.env.RAPIDAPI_KEY || "df5446d358msh92435ea35de93f9p11eea2jsn5142275af42e",
-        "Accept": "application/json",
-      },
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const { data, source } = await withCache(CACHE_KEY, fetchFromRapidAPI, CACHE_TTL);
 
     return res.status(200).json({
       success: true,
       data: data,
       meta: {
         cachedAt: new Date().toISOString(),
-        cacheMaxAge: 86400,
-        source: "rapidapi-seo-api2",
+        cacheMaxAge: CACHE_TTL,
+        source: source,
       },
     });
   } catch (error) {
@@ -70,17 +45,43 @@ export default async function handler(req, res) {
   }
 }
 
+async function fetchFromRapidAPI() {
+  const apiUrl = "https://seo-api2.p.rapidapi.com/www-reports/theme";
+  console.log(`[SEO-Themes API] Fetching fresh data from RapidAPI`);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  const response = await fetch(apiUrl, {
+    method: "GET",
+    headers: {
+      "x-rapidapi-host": "seo-api2.p.rapidapi.com",
+      "x-rapidapi-key": process.env.RAPIDAPI_KEY || "df5446d358msh92435ea35de93f9p11eea2jsn5142275af42e",
+      "Accept": "application/json",
+    },
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
+
+  if (!response.ok) {
+    throw new Error(`API responded with status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 function getFallbackData() {
   return [
-    { rank: 1, wp_themes: [{ id: "1", label: "Flavor Theme" }], total_domains: "500000", percent: "5.5%" },
-    { rank: 2, wp_themes: [{ id: "2", label: "flavor theme flavor theme flavor theme flavor theme flavor theme" }], total_domains: "450000", percent: "4.9%" },
-    { rank: 3, wp_themes: [{ id: "3", label: "flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme" }], total_domains: "400000", percent: "4.4%" },
-    { rank: 4, wp_themes: [{ id: "4", label: "flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme" }], total_domains: "350000", percent: "3.8%" },
-    { rank: 5, wp_themes: [{ id: "5", label: "flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme" }], total_domains: "300000", percent: "3.3%" },
-    { rank: 6, wp_themes: [{ id: "6", label: "flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme" }], total_domains: "250000", percent: "2.7%" },
-    { rank: 7, wp_themes: [{ id: "7", label: "flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme" }], total_domains: "200000", percent: "2.2%" },
-    { rank: 8, wp_themes: [{ id: "8", label: "flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme flavor_theme" }], total_domains: "150000", percent: "1.6%" },
-    { rank: 9, wp_themes: [{ id: "9", label: "flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme flavor_theme flavor_theme" }], total_domains: "100000", percent: "1.1%" },
-    { rank: 10, wp_themes: [{ id: "10", label: "flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme flavor_theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor theme flavor_theme flavor_theme flavor_theme flavor_theme flavor_theme" }], total_domains: "50000", percent: "0.5%" },
+    { rank: 1, wp_themes: [{ id: "1", label: "Divi" }], total_domains: "381983", percent: "1.366%" },
+    { rank: 2, wp_themes: [{ id: "2", label: "Astra" }], total_domains: "307788", percent: "1.101%" },
+    { rank: 3, wp_themes: [{ id: "3", label: "Hello-Elementor" }], total_domains: "275175", percent: "0.984%" },
+    { rank: 4, wp_themes: [{ id: "4", label: "Avada" }], total_domains: "147825", percent: "0.529%" },
+    { rank: 5, wp_themes: [{ id: "5", label: "GeneratePress" }], total_domains: "100999", percent: "0.361%" },
+    { rank: 6, wp_themes: [{ id: "6", label: "OceanWP" }], total_domains: "96121", percent: "0.344%" },
+    { rank: 7, wp_themes: [{ id: "7", label: "Enfold" }], total_domains: "85792", percent: "0.307%" },
+    { rank: 8, wp_themes: [{ id: "8", label: "Betheme" }], total_domains: "55000", percent: "0.197%" },
+    { rank: 9, wp_themes: [{ id: "9", label: "flavaid theme flavaid theme" }], total_domains: "50000", percent: "0.179%" },
+    { rank: 10, wp_themes: [{ id: "10", label: "flavor_theme flavaid theme" }], total_domains: "45000", percent: "0.161%" },
   ];
 }

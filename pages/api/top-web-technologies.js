@@ -1,76 +1,40 @@
 // Next.js Serverless API route to proxy SEO Tech API from RapidAPI
-// Uses aggressive Vercel caching to optimize 50 requests/day limit
+// Uses Upstash Redis for guaranteed 24-hour caching
 
 import { setCorsHeaders } from "../../lib/cors";
+import { withCache } from "../../lib/redis";
 
-/**
- * Cache configuration:
- * - s-maxage: 86400 (24 hours) - CDN cache for full day
- * - stale-while-revalidate: 172800 (48 hours) - Serve stale while revalidating
- * - This means the API will only be called once per day maximum
- */
+const CACHE_KEY = "seo:top-web-technologies";
+const CACHE_TTL = 86400; // 24 hours
 
 export default async function handler(req, res) {
   // Handle CORS preflight
   if (setCorsHeaders(req, res)) return;
 
-  // Only allow GET requests
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
   try {
-    // Set aggressive cache headers to minimize API calls
-    // Cache for 24 hours on Vercel's edge, serve stale for 48 hours while revalidating
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=86400, stale-while-revalidate=172800, max-age=3600"
-    );
+    // Set cache headers for CDN layer
+    res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=172800");
+    res.setHeader("X-SEO-API-Cache", "redis");
 
-    // Performance tracking headers
-    res.setHeader("X-SEO-API-Cache", "true");
-    res.setHeader("X-Cache-TTL", "86400");
+    // Use Redis cache wrapper
+    const { data, source } = await withCache(CACHE_KEY, fetchFromRapidAPI, CACHE_TTL);
 
-    const apiUrl = "https://seo-api2.p.rapidapi.com/www-reports/tech";
-
-    console.log(`[SEO-Tech API] Fetching from: ${apiUrl}`);
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        "x-rapidapi-host": "seo-api2.p.rapidapi.com",
-        "x-rapidapi-key": process.env.RAPIDAPI_KEY || "df5446d358msh92435ea35de93f9p11eea2jsn5142275af42e",
-        "Accept": "application/json",
-      },
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    // Add metadata to response
     return res.status(200).json({
       success: true,
       data: data,
       meta: {
         cachedAt: new Date().toISOString(),
-        cacheMaxAge: 86400, // 24 hours in seconds
-        source: "rapidapi-seo-api2",
+        cacheMaxAge: CACHE_TTL,
+        source: source,
       },
     });
   } catch (error) {
     console.error(`[SEO-Tech API] Error:`, error);
 
-    // Return cached fallback data to prevent UI breaking
-    // This ensures the page still works even if API fails
     return res.status(200).json({
       success: false,
       error: error.message || "Unknown error",
@@ -84,10 +48,32 @@ export default async function handler(req, res) {
   }
 }
 
-/**
- * Fallback data in case the API fails or quota is exceeded
- * Based on typical top web technologies data
- */
+async function fetchFromRapidAPI() {
+  const apiUrl = "https://seo-api2.p.rapidapi.com/www-reports/tech";
+  console.log(`[SEO-Tech API] Fetching fresh data from RapidAPI`);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  const response = await fetch(apiUrl, {
+    method: "GET",
+    headers: {
+      "x-rapidapi-host": "seo-api2.p.rapidapi.com",
+      "x-rapidapi-key": process.env.RAPIDAPI_KEY || "df5446d358msh92435ea35de93f9p11eea2jsn5142275af42e",
+      "Accept": "application/json",
+    },
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
+
+  if (!response.ok) {
+    throw new Error(`API responded with status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 function getFallbackData() {
   return [
     { rank: 1, tech: [{ id: "1656", name: "PHP" }], total_domains: "14064015", percent: "50.31%" },
@@ -102,3 +88,4 @@ function getFallbackData() {
     { rank: 10, tech: [{ id: "3607", name: "Google Hosted Libraries" }], total_domains: "1681800", percent: "6.016%" },
   ];
 }
+
