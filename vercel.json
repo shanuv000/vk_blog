@@ -72,24 +72,7 @@
       ]
     },
     {
-      "source": "/api/top-:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "public, max-age=86400, stale-while-revalidate=172800"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "public, max-age=86400, stale-while-revalidate=172800"
-        }
-      ]
-    },
-    {
-      "source": "/api/((?!firebase-proxy|top-).*)",
+      "source": "/api/((?!firebase-proxy).*)",
       "headers": [
         {
           "key": "Cache-Control",
