@@ -3,7 +3,9 @@
   "buildCommand": "next build",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["bom1"],
+  "regions": [
+    "bom1"
+  ],
   "headers": [
     {
       "source": "/(.*)\\.(jpg|jpeg|gif|mp4|png|webp|css|js|ico|svg|woff|woff2)$",
@@ -70,7 +72,16 @@
       ]
     },
     {
-      "source": "/api/((?!firebase-proxy).*)",
+      "source": "/api/top-:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=172800"
+        }
+      ]
+    },
+    {
+      "source": "/api/((?!firebase-proxy|top-).*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -89,7 +100,10 @@
     }
   ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    }
   ],
   "redirects": [
     {
