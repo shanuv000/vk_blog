@@ -5,7 +5,7 @@ import { setCorsHeaders } from "../../lib/cors";
 import { withCache } from "../../lib/redis";
 
 const CACHE_KEY = "seo:top-wordpress-themes";
-const CACHE_TTL = 86400; // 24 hours
+// Cache expires at 5:00 AM IST daily
 
 export default async function handler(req, res) {
   if (setCorsHeaders(req, res)) return;
@@ -18,14 +18,14 @@ export default async function handler(req, res) {
     res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=172800");
     res.setHeader("X-SEO-API-Cache", "redis");
 
-    const { data, source } = await withCache(CACHE_KEY, fetchFromRapidAPI, CACHE_TTL);
+    const { data, source } = await withCache(CACHE_KEY, fetchFromRapidAPI);
 
     return res.status(200).json({
       success: true,
       data: data,
       meta: {
         cachedAt: new Date().toISOString(),
-        cacheMaxAge: CACHE_TTL,
+        cacheMaxAge: "5:00 AM IST",
         source: source,
       },
     });

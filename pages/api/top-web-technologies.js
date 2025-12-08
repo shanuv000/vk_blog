@@ -5,7 +5,7 @@ import { setCorsHeaders } from "../../lib/cors";
 import { withCache } from "../../lib/redis";
 
 const CACHE_KEY = "seo:top-web-technologies";
-const CACHE_TTL = 86400; // 24 hours
+// Cache expires at 5:00 AM IST daily
 
 export default async function handler(req, res) {
   // Handle CORS preflight
@@ -21,14 +21,14 @@ export default async function handler(req, res) {
     res.setHeader("X-SEO-API-Cache", "redis");
 
     // Use Redis cache wrapper
-    const { data, source } = await withCache(CACHE_KEY, fetchFromRapidAPI, CACHE_TTL);
+    const { data, source } = await withCache(CACHE_KEY, fetchFromRapidAPI);
 
     return res.status(200).json({
       success: true,
       data: data,
       meta: {
         cachedAt: new Date().toISOString(),
-        cacheMaxAge: CACHE_TTL,
+        cacheMaxAge: "5:00 AM IST",
         source: source,
       },
     });
