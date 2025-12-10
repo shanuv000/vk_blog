@@ -1,13 +1,12 @@
 // API route to generate FAQs for blog posts using Perplexity AI
-// Uses Upstash Redis for persistent caching across serverless instances
+// Uses Firebase Firestore for permanent storage (no expiry)
 
 import { generateFAQs, getFallbackFAQs } from "../../lib/perplexity";
-import { getCachedData, setCachedData } from "../../lib/redis";
+import { db } from "../../lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
-// Cache key prefix for FAQs
-const FAQ_CACHE_PREFIX = "faq:";
-// FAQ cache TTL: 24 hours in seconds
-const FAQ_CACHE_TTL = 24 * 60 * 60;
+// Firestore collection name
+const FAQ_COLLECTION = "faqs";
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -31,42 +30,58 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing required fields: slug, title" });
     }
 
-    const cacheKey = `${FAQ_CACHE_PREFIX}${slug}`;
+    // Check Firestore for existing FAQs
+    try {
+      const docRef = doc(db, FAQ_COLLECTION, slug);
+      const docSnap = await getDoc(docRef);
 
-    // Check Redis cache first
-    const cached = await getCachedData(cacheKey);
-    if (cached) {
-      console.log(`[FAQ API] Redis cache HIT for: ${slug}`);
-      return res.status(200).json({
-        success: true,
-        faqs: cached.faqs,
-        source: "redis-cache",
-        cached_at: cached.cached_at,
-      });
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log(`[FAQ API] Firestore HIT for: ${slug}`);
+        return res.status(200).json({
+          success: true,
+          faqs: data.faqs,
+          source: "firestore",
+          generated_at: data.generated_at,
+        });
+      }
+    } catch (firestoreError) {
+      console.warn(`[FAQ API] Firestore read failed:`, firestoreError.message);
+      // Continue to generate new FAQs
     }
 
-    console.log(`[FAQ API] Cache MISS, generating FAQs for: ${slug}`);
+    console.log(`[FAQ API] Generating new FAQs for: ${slug}`);
 
     // Generate FAQs using Perplexity
     const faqs = await generateFAQs(title, excerpt, content);
 
     if (faqs && faqs.length > 0) {
-      // Cache the result in Redis for 24 hours
-      const cacheData = {
+      // Save to Firestore permanently
+      const faqData = {
         faqs,
-        cached_at: new Date().toISOString(),
+        post_title: title,
+        generated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
-      await setCachedData(cacheKey, cacheData, FAQ_CACHE_TTL);
+
+      try {
+        const docRef = doc(db, FAQ_COLLECTION, slug);
+        await setDoc(docRef, faqData);
+        console.log(`[FAQ API] Saved to Firestore: ${slug}`);
+      } catch (saveError) {
+        console.error(`[FAQ API] Firestore save failed:`, saveError.message);
+        // Continue even if save fails - return the generated FAQs
+      }
 
       return res.status(200).json({
         success: true,
         faqs,
         source: "perplexity",
-        generated_at: new Date().toISOString(),
+        generated_at: faqData.generated_at,
       });
     }
 
-    // If generation failed, use fallback FAQs (don't cache fallbacks)
+    // If generation failed, use fallback FAQs (don't save fallbacks)
     console.log(`[FAQ API] Using fallback FAQs for: ${slug}`);
     const fallbackFaqs = getFallbackFAQs(title);
 
