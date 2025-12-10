@@ -57,6 +57,19 @@ const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
   ssr: false,
 });
 
+// Lazy load FAQ component for AI-generated FAQs
+const FAQ = dynamic(() => import("./FAQ"), {
+  loading: () => (
+    <div className="mt-16 p-6 bg-gray-50 rounded-2xl animate-pulse">
+      <div className="h-6 w-48 bg-gray-200 rounded mb-4" />
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="h-12 bg-gray-100 rounded-xl mb-3" />
+      ))}
+    </div>
+  ),
+  ssr: false,
+});
+
 import { useData } from "../store/HandleApiContext";
 
 // Import Testing component with no SSR to avoid hydration issues
@@ -398,6 +411,17 @@ const PostDetail = ({ post }) => {
                 <TagList tags={post.tags} title="" size="md" />
               </div>
             )}
+
+            {/* AI-Generated FAQ Section */}
+            <ErrorBoundary
+              fallback={
+                <div className="mt-12 p-6 bg-gray-50 rounded-xl text-center">
+                  <p className="text-sm text-gray-500">FAQs unavailable</p>
+                </div>
+              }
+            >
+              <FAQ post={post} />
+            </ErrorBoundary>
 
             <section className="mt-12">
               <ErrorBoundary
