@@ -1,35 +1,50 @@
 // API route to generate FAQs for blog posts using Perplexity AI
-// Uses Firebase Firestore for permanent storage (no expiry)
+// Saves FAQs to Hygraph for permanent storage and SSR support
 
 import { generateFAQs, getFallbackFAQs } from "../../lib/perplexity";
+import { GraphQLClient } from "graphql-request";
 
-// Firestore collection name
-const FAQ_COLLECTION = "faqs";
+// Hygraph API configuration
+const HYGRAPH_CONTENT_API = process.env.NEXT_PUBLIC_HYGRAPH_CONTENT_API;
+const HYGRAPH_AUTH_TOKEN = process.env.HYGRAPH_AUTH_TOKEN;
 
-// Lazy import Firebase to avoid SSR issues
-let db = null;
-let docFn = null;
-let getDocFn = null;
-let setDocFn = null;
-
-async function initFirestore() {
-  if (db) return true;
-  
-  try {
-    const firebase = await import("../../lib/firebase");
-    const firestore = await import("firebase/firestore");
-    
-    db = firebase.db;
-    docFn = firestore.doc;
-    getDocFn = firestore.getDoc;
-    setDocFn = firestore.setDoc;
-    
-    return true;
-  } catch (error) {
-    console.error("[FAQ API] Failed to initialize Firestore:", error.message);
-    return false;
+// GraphQL client for mutations (needs auth token)
+const getHygraphClient = () => {
+  if (!HYGRAPH_CONTENT_API || !HYGRAPH_AUTH_TOKEN) {
+    console.error("[FAQ API] Missing Hygraph credentials");
+    return null;
   }
-}
+  
+  return new GraphQLClient(HYGRAPH_CONTENT_API, {
+    headers: {
+      Authorization: `Bearer ${HYGRAPH_AUTH_TOKEN}`,
+    },
+  });
+};
+
+// Mutation to update post with FAQs
+const UPDATE_POST_FAQS = `
+  mutation UpdatePostFaqs($slug: String!, $faQs: Json!) {
+    updatePost(where: { slug: $slug }, data: { faQs: $faQs }) {
+      id
+      slug
+      faQs
+    }
+    publishPost(where: { slug: $slug }) {
+      id
+    }
+  }
+`;
+
+// Query to check if FAQs already exist
+const GET_POST_FAQS = `
+  query GetPostFaqs($slug: String!) {
+    post(where: { slug: $slug }) {
+      id
+      faQs
+    }
+  }
+`;
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -53,27 +68,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing required fields: slug, title" });
     }
 
-    // Try to initialize Firestore
-    const firestoreReady = await initFirestore();
+    const client = getHygraphClient();
 
-    // Check Firestore for existing FAQs
-    if (firestoreReady && db && docFn && getDocFn) {
+    // Check if FAQs already exist in Hygraph
+    if (client) {
       try {
-        const docRef = docFn(db, FAQ_COLLECTION, slug);
-        const docSnap = await getDocFn(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          console.log(`[FAQ API] Firestore HIT for: ${slug}`);
+        const existingData = await client.request(GET_POST_FAQS, { slug });
+        
+        if (existingData?.post?.faQs && Array.isArray(existingData.post.faQs) && existingData.post.faQs.length > 0) {
+          console.log(`[FAQ API] Hygraph HIT for: ${slug}`);
           return res.status(200).json({
             success: true,
-            faqs: data.faqs,
-            source: "firestore",
-            generated_at: data.generated_at,
+            faqs: existingData.post.faQs,
+            source: "hygraph",
           });
         }
-      } catch (firestoreError) {
-        console.warn(`[FAQ API] Firestore read failed:`, firestoreError.message);
+      } catch (queryError) {
+        console.warn(`[FAQ API] Hygraph query failed:`, queryError.message);
         // Continue to generate new FAQs
       }
     }
@@ -84,21 +95,16 @@ export default async function handler(req, res) {
     const faqs = await generateFAQs(title, excerpt, content);
 
     if (faqs && faqs.length > 0) {
-      // Save to Firestore permanently if available
-      const faqData = {
-        faqs,
-        post_title: title,
-        generated_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      if (firestoreReady && db && docFn && setDocFn) {
+      // Save to Hygraph
+      if (client) {
         try {
-          const docRef = docFn(db, FAQ_COLLECTION, slug);
-          await setDocFn(docRef, faqData);
-          console.log(`[FAQ API] Saved to Firestore: ${slug}`);
+          await client.request(UPDATE_POST_FAQS, { 
+            slug, 
+            faQs: faqs 
+          });
+          console.log(`[FAQ API] Saved to Hygraph: ${slug}`);
         } catch (saveError) {
-          console.error(`[FAQ API] Firestore save failed:`, saveError.message);
+          console.error(`[FAQ API] Hygraph save failed:`, saveError.message);
           // Continue even if save fails - return the generated FAQs
         }
       }
@@ -107,7 +113,6 @@ export default async function handler(req, res) {
         success: true,
         faqs,
         source: "perplexity",
-        generated_at: faqData.generated_at,
       });
     }
 
@@ -119,7 +124,6 @@ export default async function handler(req, res) {
       success: true,
       faqs: fallbackFaqs,
       source: "fallback",
-      generated_at: new Date().toISOString(),
     });
   } catch (error) {
     console.error("[FAQ API] Error:", error.message);

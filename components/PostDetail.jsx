@@ -57,7 +57,7 @@ const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
   ssr: false,
 });
 
-// Lazy load FAQ component for AI-generated FAQs
+// Lazy load FAQ component - SSR enabled for SEO (reads faQs from Hygraph)
 const FAQ = dynamic(() => import("./FAQ"), {
   loading: () => (
     <div className="mt-16 p-6 bg-gray-50 rounded-2xl animate-pulse">
@@ -67,7 +67,6 @@ const FAQ = dynamic(() => import("./FAQ"), {
       ))}
     </div>
   ),
-  ssr: false,
 });
 
 import { useData } from "../store/HandleApiContext";

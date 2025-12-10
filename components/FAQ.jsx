@@ -6,13 +6,20 @@ import Head from "next/head";
 
 /**
  * Premium FAQ Component with Glassmorphic UI
- * Features: Animated accordion, SEO schema, lazy loading
+ * Features: Animated accordion, SEO schema, SSR support
+ * 
+ * Now reads FAQs directly from post.faQs (stored in Hygraph)
+ * If no FAQs exist, triggers generation via API
  */
 const FAQ = ({ post }) => {
-  const [faqs, setFaqs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Handle both array and null cases for faQs
+  const postFaqs = Array.isArray(post?.faQs) ? post.faQs : [];
+  
+  const [faqs, setFaqs] = useState(postFaqs);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Extract plain text from post content for API
   const getContentText = () => {
@@ -42,16 +49,23 @@ const FAQ = ({ post }) => {
     }
   };
 
-  // Fetch FAQs on mount - only depends on slug
+  // Generate FAQs if none exist in Hygraph
   useEffect(() => {
-    if (!post?.slug || !post?.title) {
-      setLoading(false);
+    // If FAQs already exist from Hygraph, use them
+    if (postFaqs.length > 0) {
+      setFaqs(postFaqs);
+      return;
+    }
+
+    // No FAQs exist - trigger generation
+    if (!post?.slug || !post?.title || isGenerating) {
       return;
     }
 
     let isMounted = true;
+    setIsGenerating(true);
 
-    const fetchFAQs = async () => {
+    const generateFAQs = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -78,22 +92,23 @@ const FAQ = ({ post }) => {
         }
       } catch (err) {
         if (isMounted) {
-          console.error("[FAQ] Error fetching:", err);
+          console.error("[FAQ] Error generating:", err);
           setError(err.message);
         }
       } finally {
         if (isMounted) {
           setLoading(false);
+          setIsGenerating(false);
         }
       }
     };
 
-    fetchFAQs();
+    generateFAQs();
 
     return () => {
       isMounted = false;
     };
-  }, [post?.slug]); // Only re-fetch when slug changes
+  }, [post?.slug, postFaqs.length]);
 
   // Generate FAQ Schema for SEO
   const generateFAQSchema = () => {
@@ -113,8 +128,8 @@ const FAQ = ({ post }) => {
     };
   };
 
-  // Loading skeleton
-  if (loading) {
+  // Loading skeleton - only show when generating new FAQs
+  if (loading && faqs.length === 0) {
     return (
       <section className="mt-12 mb-8">
         <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-white border border-gray-100 p-4 sm:p-6">

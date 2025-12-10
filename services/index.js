@@ -187,6 +187,7 @@ export const getPostDetails = async (slug) => {
               hex
             }
           }
+          faQs
         }
       }
     `;
@@ -226,6 +227,7 @@ export const getPostDetails = async (slug) => {
               hex
             }
           }
+          faQs
         }
       }
     `;
@@ -254,6 +256,7 @@ export const getPostDetails = async (slug) => {
             name
             slug
           }
+          faQs
         }
       }
     `;
