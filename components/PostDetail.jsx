@@ -412,8 +412,7 @@ const PostDetail = ({ post }) => {
               </div>
             )}
 
-            {/* AI-Generated FAQ Section - Temporarily disabled for debugging */}
-            {/* 
+            {/* AI-Generated FAQ Section */}
             <ErrorBoundary
               fallback={
                 <div className="mt-12 p-6 bg-gray-50 rounded-xl text-center">
@@ -423,7 +422,6 @@ const PostDetail = ({ post }) => {
             >
               <FAQ post={post} />
             </ErrorBoundary>
-            */}
 
             <section className="mt-12">
               <ErrorBoundary
