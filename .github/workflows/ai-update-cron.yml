@@ -33,3 +33,17 @@ jobs:
           fi
           
           echo "AI post updates triggered successfully!"
+
+      - name: Trigger Vercel Redeployment
+        run: |
+          echo "Triggering Vercel redeployment..."
+          
+          response=$(curl -s -w "\n%{http_code}" -X POST "https://api.vercel.com/v1/integrations/deploy/prj_ZMqqO6YxwqPCkKMqdLjCZxXQwSDF/2YvXH50RTz")
+          
+          http_code=$(echo "$response" | tail -n1)
+          
+          if [ "$http_code" -eq 200 ] || [ "$http_code" -eq 201 ]; then
+            echo "Vercel redeployment triggered successfully!"
+          else
+            echo "Warning: Vercel deploy hook returned status $http_code"
+          fi
