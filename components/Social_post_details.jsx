@@ -18,7 +18,7 @@ import {
   FALLBACK_FEATURED_IMAGE,
 } from "./DefaultAvatar";
 import Toast from "./Toast";
-import { useTinyUrl } from "../hooks/useTinyUrlEnhanced";
+import { useDub } from "../hooks/useDub";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -55,28 +55,22 @@ const NavbarPostDetails = ({ post }) => {
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${slug}`;
 
-  // Enhanced TinyURL hook for shortened URLs with validation
+  // Dub.co hook for shortened URLs
   const {
     shortUrl,
     longUrl,
     isLoading: urlLoading,
-    getSharingUrls,
     copyToClipboard,
     isShortened,
-    isNewPost,
-    shouldHaveShortUrl,
-    validationStatus,
-    forceCreateShortUrl,
+    shareUrls,
     error,
-  } = useTinyUrl(post, {
-    autoShorten: true,
+  } = useDub(post, {
+    autoFetch: true,
     baseUrl: rootUrl,
-    enableAnalytics: false, // Disable analytics for performance
   });
 
-  // Use shortened URL for sharing if available, otherwise use original
+  // Use shortened URL for sharing if available
   const shareUrl = shortUrl || postUrl;
-  const sharingUrls = getSharingUrls();
 
   // Ensure we're using the featured image and not accidentally using author image
   // First check if featuredImage exists and has a url property
@@ -143,11 +137,11 @@ const NavbarPostDetails = ({ post }) => {
             Share this article
           </h3>
 
-          {/* TinyURL Status Indicator - Minimal */}
-          {isNewPost && (
+          {/* Short URL Status Indicator */}
+          {isShortened && (
             <div className="flex items-center gap-1.5 text-[10px] font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full border border-green-100 uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              TinyURL Active
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              Short Link
             </div>
           )}
         </div>
@@ -156,7 +150,7 @@ const NavbarPostDetails = ({ post }) => {
           {/* WhatsApp */}
           <motion.a
             href={
-              sharingUrls.whatsapp ||
+              shareUrls.whatsapp ||
               `https://wa.me/?text=${encodeURIComponent(
                 `${title} - ${shareUrl}${imageUrl ? " 📷" : ""}`
               )}`
@@ -176,7 +170,7 @@ const NavbarPostDetails = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.facebook ||
+              shareUrls.facebook ||
               `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                 shareUrl
               )}&quote=${encodeURIComponent(title)}`
@@ -195,7 +189,7 @@ const NavbarPostDetails = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.twitter ||
+              shareUrls.twitter ||
               `https://twitter.com/intent/tweet?text=${encodeURIComponent(
                 title
               )}&url=${encodeURIComponent(
@@ -216,7 +210,7 @@ const NavbarPostDetails = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.linkedin ||
+              shareUrls.linkedin ||
               `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
                 shareUrl
               )}&title=${encodeURIComponent(
@@ -237,7 +231,7 @@ const NavbarPostDetails = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.reddit ||
+              shareUrls.reddit ||
               `http://www.reddit.com/submit?url=${encodeURIComponent(
                 shareUrl
               )}&title=${encodeURIComponent(title)}`
@@ -256,7 +250,6 @@ const NavbarPostDetails = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.pinterest ||
               `http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
                 shareUrl
               )}&description=${encodeURIComponent(
@@ -305,16 +298,8 @@ const NavbarPostDetails = ({ post }) => {
         <div className="mt-6">
           {/* Error State */}
           {error && (
-            <div className="mb-3 flex items-center justify-between gap-2 text-xs text-red-500 bg-red-50 p-3 rounded-lg border border-red-100">
+            <div className="mb-3 flex items-center gap-2 text-xs text-red-500 bg-red-50 p-3 rounded-lg border border-red-100">
               <span>⚠️ {error}</span>
-              {!isNewPost && (
-                <button
-                  onClick={forceCreateShortUrl}
-                  className="text-red-600 font-medium hover:underline"
-                >
-                  Retry
-                </button>
-              )}
             </div>
           )}
 
@@ -336,33 +321,21 @@ const NavbarPostDetails = ({ post }) => {
                   SHORT
                 </span>
               ) : (
-                !isNewPost && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-200 text-gray-800">
-                    ORIGINAL
-                  </span>
-                )
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-200 text-gray-800">
+                  ORIGINAL
+                </span>
               )}
             </div>
           </div>
         </div>
 
-        {/* Debug Info (remove in production) */}
+        {/* Debug Info (only in development) */}
         {process.env.NODE_ENV === "development" && (
           <div className="mt-4 p-3 bg-gray-100 rounded-lg text-xs font-mono text-gray-500 border border-gray-200">
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-bold">Debug Tools</span>
-              <div className="space-x-2">
-                <button
-                  onClick={forceCreateShortUrl}
-                  className="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-50"
-                >
-                  Force Shorten
-                </button>
-              </div>
-            </div>
+            <div className="font-bold mb-2">Debug Info</div>
             <div className="grid grid-cols-2 gap-2">
               <div>Shortened: {isShortened ? "YES" : "NO"}</div>
-              <div>New Post: {isNewPost ? "YES" : "NO"}</div>
+              <div>Loading: {urlLoading ? "YES" : "NO"}</div>
             </div>
           </div>
         )}

@@ -1,8 +1,8 @@
 /**
  * Combined Webhook Handler for Post Publishing
- * Handles both TinyURL creation and sitemap revalidation
+ * Handles both Dub.co URL creation and sitemap revalidation
  */
-import tinyUrlService from "../../services/tinyurl";
+import dubService from "../../services/dub";
 
 export const config = {
   api: {
@@ -64,31 +64,33 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Handle TinyURL creation for published posts (FREE version optimized)
+    // 1. Handle Dub.co URL creation for published posts
     if (
       operation === "publish" ||
       (operation === "update" && data.stage === "PUBLISHED")
     ) {
-      // 1. Create TinyURL (FREE version)
+      // 1. Create Dub.co short URL
       try {
         if (process.env.NODE_ENV === "development") {
           console.log(
-            `🔗 Creating short URL for post: ${data.slug} (FREE TinyURL)`
+            `🔗 Creating short URL for post: ${data.slug} (Dub.co)`
           );
         }
 
         // Check rate limit status before attempting
-        const rateLimitStatus = tinyUrlService.getRateLimitStatus();
+        const rateLimitStatus = dubService.getRateLimitStatus();
         if (process.env.NODE_ENV === "development") {
           console.log("📊 Rate limit status:", rateLimitStatus);
         }
 
         const post = {
+          id: data.id,
           slug: data.slug,
           title: data.title || `Blog Post - ${data.slug}`,
+          categories: data.categories || [],
         };
 
-        const shortUrl = await tinyUrlService.shortenPostUrl(
+        const shortUrl = await dubService.shortenPostUrl(
           post,
           "https://blog.urtechy.com"
         );
@@ -96,26 +98,26 @@ export default async function handler(req, res) {
         const longUrl = `https://blog.urtechy.com/post/${data.slug}`;
         const isActuallyShortened = shortUrl && shortUrl !== longUrl;
 
-        results.tinyurl = {
+        results.shorturl = {
           success: true,
           shortUrl,
           longUrl,
           isShortened: isActuallyShortened,
-          rateLimitStatus: tinyUrlService.getRateLimitStatus(),
+          rateLimitStatus: dubService.getRateLimitStatus(),
         };
 
         if (process.env.NODE_ENV === "development") {
           console.log(
-            `✅ TinyURL result: ${shortUrl} (shortened: ${isActuallyShortened})`
+            `✅ Dub.co result: ${shortUrl} (shortened: ${isActuallyShortened})`
           );
         }
       } catch (error) {
-        console.error("❌ TinyURL creation failed:", error);
-        results.tinyurl = {
+        console.error("❌ Dub.co creation failed:", error);
+        results.shorturl = {
           success: false,
           error: error.message,
           fallbackUrl: `https://blog.urtechy.com/post/${data.slug}`,
-          rateLimitStatus: tinyUrlService.getRateLimitStatus(),
+          rateLimitStatus: dubService.getRateLimitStatus(),
         };
       }
 

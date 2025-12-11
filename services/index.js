@@ -189,6 +189,7 @@ export const getPostDetails = async (slug) => {
           }
           faQs
           recentUpdates
+          shortUrl
         }
       }
     `;

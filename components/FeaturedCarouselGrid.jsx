@@ -258,18 +258,15 @@ const FeaturedCarouselGrid = memo(
     );
 
     return (
-      <section 
+      <section
         className="mb-12 space-y-6"
         aria-roledescription="carousel"
         aria-label="Featured articles carousel"
       >
         {/* Screen reader announcement for slide changes */}
-        <div 
-          className="sr-only" 
-          aria-live="polite" 
-          aria-atomic="true"
-        >
-          Showing article {currentIndex + 1} of {validPosts.length}: {currentPost.title}
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          Showing article {currentIndex + 1} of {validPosts.length}:{" "}
+          {currentPost.title}
         </div>
 
         {/* Main Hero Section */}
@@ -514,7 +511,7 @@ const FeaturedCarouselGrid = memo(
                 >
                   {/* Image Container with Fixed Aspect Ratio */}
                   <div className="relative w-full aspect-video bg-gray-800">
-                      <SimpleImage
+                    <SimpleImage
                       src={postData.featuredImage}
                       alt={postData.title}
                       fill
