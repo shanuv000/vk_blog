@@ -47,3 +47,17 @@ jobs:
           else
             echo "Warning: Vercel deploy hook returned status $http_code"
           fi
+
+      - name: Trigger Second Project Redeployment
+        run: |
+          echo "Triggering second project redeployment..."
+          
+          response=$(curl -s -w "\n%{http_code}" -X POST "https://api.vercel.com/v1/integrations/deploy/prj_797rwYcPl8q3I5edQAOYpzbSSkI0/bPdSS9MdFQ")
+          
+          http_code=$(echo "$response" | tail -n1)
+          
+          if [ "$http_code" -eq 200 ] || [ "$http_code" -eq 201 ]; then
+            echo "Second project redeployment triggered successfully!"
+          else
+            echo "Warning: Deploy hook returned status $http_code"
+          fi
