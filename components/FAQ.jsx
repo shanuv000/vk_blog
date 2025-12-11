@@ -243,14 +243,29 @@ const FAQ = ({ post }) => {
                       </motion.div>
                     </div>
 
-                    <AnimatePresence>
+                    <AnimatePresence mode="wait" initial={false}>
                       {expandedIndex === index && (
                         <motion.div
+                          key={`faq-answer-${index}`}
                           initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          animate={{ 
+                            height: "auto", 
+                            opacity: 1,
+                            transition: {
+                              height: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+                              opacity: { duration: 0.2, delay: 0.05 }
+                            }
+                          }}
+                          exit={{ 
+                            height: 0, 
+                            opacity: 0,
+                            transition: {
+                              height: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+                              opacity: { duration: 0.1 }
+                            }
+                          }}
                           className="overflow-hidden"
+                          style={{ willChange: "height, opacity" }}
                         >
                           <p className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100 text-sm sm:text-base text-gray-600 leading-relaxed">
                             {faq.answer}
