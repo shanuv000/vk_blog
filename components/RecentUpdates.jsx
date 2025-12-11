@@ -31,6 +31,16 @@ const RecentUpdates = ({ updates }) => {
     }
   };
 
+  // Clean citation brackets from text (e.g., [1], [2], [3])
+  const cleanText = (text) => {
+    if (!text) return "";
+    return text
+      .replace(/\[\d+\]/g, "")           // Remove [1], [2], etc.
+      .replace(/\[\d+,\s*\d+\]/g, "")    // Remove [1, 2] format
+      .replace(/\s{2,}/g, " ")           // Clean up extra spaces
+      .trim();
+  };
+
   return (
     <div className="recent-updates-container">
       {/* Latest Update */}
@@ -42,7 +52,7 @@ const RecentUpdates = ({ updates }) => {
             {formatDate(latestUpdate.timestamp)}
           </span>
         </div>
-        <p className="recent-update-text">{latestUpdate.text}</p>
+        <p className="recent-update-text">{cleanText(latestUpdate.text)}</p>
       </div>
 
       {/* Previous Updates Toggle */}
@@ -64,7 +74,7 @@ const RecentUpdates = ({ updates }) => {
                   <span className="previous-update-date">
                     {formatDate(update.timestamp)}
                   </span>
-                  <p className="previous-update-text">{update.text}</p>
+                  <p className="previous-update-text">{cleanText(update.text)}</p>
                 </div>
               ))}
             </div>
