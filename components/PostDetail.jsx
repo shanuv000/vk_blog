@@ -13,6 +13,7 @@ import OptimizedImage from "./OptimizedImage";
 import RichTextRenderer from "./RichTextRenderer";
 import Navbar_post_details from "./Social_post_details";
 import TagList from "./TagList";
+import RecentUpdates from "./RecentUpdates";
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
@@ -346,6 +347,9 @@ const PostDetail = ({ post }) => {
                 </div>
               </motion.div>
             )}
+
+            {/* AI-Generated Recent Updates - After Author */}
+            <RecentUpdates updates={post.recentUpdates} />
 
             <ErrorBoundary>
               {post.slug && (

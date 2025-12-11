@@ -23,9 +23,6 @@ import {
   ensureValidContent,
   processPostContent,
 } from "../../utils/postValidation";
-
-// Import AI-generated recent updates component
-import RecentUpdates from "../../components/RecentUpdates";
 // import Footer from "../../components/footer/Footer";
 
 const PostDetails = ({ post, error, lastFetched }) => {
@@ -250,8 +247,6 @@ const PostDetails = ({ post, error, lastFetched }) => {
       <div className="sm:container mx-auto px-0 sm:px-4 lg:px-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12">
           <div className="col-span-1 lg:col-span-8">
-            {/* AI-generated recent updates - only shown if data exists */}
-            <RecentUpdates updates={post.recentUpdates} />
             <PostDetail post={post} />
             {/* Ensure slug and createdAt exist before passing to AdjacentPosts */}
             {post.slug && post.createdAt && (
