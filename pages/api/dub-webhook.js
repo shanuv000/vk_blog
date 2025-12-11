@@ -52,6 +52,21 @@ const PUBLISH_POST = gql`
   }
 `;
 
+// Query to fetch post details by ID (when webhook only sends minimal data)
+const GET_POST_BY_ID = gql`
+  query GetPostById($id: ID!) {
+    post(where: { id: $id }) {
+      id
+      slug
+      title
+      shortUrl
+      categories {
+        name
+      }
+    }
+  }
+`;
+
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== "POST") {
@@ -75,7 +90,7 @@ export default async function handler(req, res) {
     const { operation, data } = req.body;
 
     console.log(
-      `🔗 Dub Webhook: ${operation} for ${data?.__typename} - ${data?.slug}`
+      `🔗 Dub Webhook: ${operation} for ${data?.__typename} - ID: ${data?.id}`
     );
 
     // Only process Post models
@@ -106,38 +121,66 @@ export default async function handler(req, res) {
       });
     }
 
-    // Check required data
-    if (!data.slug) {
+    // Check for post ID
+    if (!data.id) {
       return res.status(400).json({
         success: false,
-        message: "Post slug is required",
-        error: "Missing slug",
+        message: "Post ID is required",
+        error: "Missing id",
       });
     }
 
+    // If slug is missing, fetch post details from Hygraph
+    let postData = { ...data };
+    if (!postData.slug) {
+      console.log("📥 Fetching post details from Hygraph...");
+      try {
+        const client = getHygraphClient();
+        const result = await client.request(GET_POST_BY_ID, { id: data.id });
+        
+        if (!result.post) {
+          return res.status(404).json({
+            success: false,
+            message: "Post not found in Hygraph",
+            error: "Post not found",
+          });
+        }
+        
+        postData = { ...data, ...result.post };
+        console.log(`✅ Fetched post: ${postData.slug}`);
+      } catch (fetchError) {
+        console.error("❌ Error fetching post:", fetchError.message);
+        return res.status(500).json({
+          success: false,
+          message: "Failed to fetch post details from Hygraph",
+          error: fetchError.message,
+        });
+      }
+    }
+
     // Skip if short URL already exists (avoid duplicate API calls)
-    if (data.shortUrl && data.shortUrl.includes("dub.sh") || 
-        data.shortUrl && data.shortUrl.includes(process.env.DUB_CUSTOM_DOMAIN || "")) {
-      console.log("✅ Short URL already exists:", data.shortUrl);
+    if (postData.shortUrl && (postData.shortUrl.includes("dub.sh") || 
+        postData.shortUrl.includes(process.env.DUB_CUSTOM_DOMAIN || ""))) {
+      console.log("✅ Short URL already exists:", postData.shortUrl);
       return res.status(200).json({
         success: true,
         message: "Short URL already exists",
         data: {
-          slug: data.slug,
-          shortUrl: data.shortUrl,
+          slug: postData.slug,
+          shortUrl: postData.shortUrl,
         },
         skipped: true,
       });
     }
 
     // Create the short URL
-    console.log(`🔗 Creating Dub.co short URL for: ${data.slug}`);
+    console.log(`🔗 Creating Dub.co short URL for: ${postData.slug}`);
 
     const post = {
-      id: data.id,
-      slug: data.slug,
-      title: data.title || `Blog Post - ${data.slug}`,
-      categories: data.categories || [],
+      id: postData.id,
+      slug: postData.slug,
+      title: postData.title || `Blog Post - ${postData.slug}`,
+      categories: postData.categories || [],
     };
 
     const shortUrl = await dubService.shortenPostUrl(
@@ -145,27 +188,27 @@ export default async function handler(req, res) {
       "https://blog.urtechy.com"
     );
 
-    const longUrl = `https://blog.urtechy.com/post/${data.slug}`;
+    const longUrl = `https://blog.urtechy.com/post/${postData.slug}`;
     const isShortened = shortUrl !== longUrl;
 
     console.log(`✅ Created short URL: ${shortUrl} (shortened: ${isShortened})`);
 
     // Save short URL back to Hygraph if successfully shortened
     let hygraphUpdateResult = null;
-    if (isShortened && data.id) {
+    if (isShortened && postData.id) {
       try {
         console.log("📝 Saving short URL to Hygraph...");
         const client = getHygraphClient();
 
         // Update the post with the short URL
         const updateResult = await client.request(UPDATE_POST_SHORT_URL, {
-          id: data.id,
+          id: postData.id,
           shortUrl: shortUrl,
         });
 
         // Publish the updated post
         const publishResult = await client.request(PUBLISH_POST, {
-          id: data.id,
+          id: postData.id,
         });
 
         hygraphUpdateResult = {
@@ -188,7 +231,7 @@ export default async function handler(req, res) {
       success: true,
       message: "Short URL created successfully",
       data: {
-        slug: data.slug,
+        slug: postData.slug,
         operation,
         shortUrl,
         longUrl,
