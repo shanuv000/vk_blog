@@ -1,0 +1,35 @@
+name: AI Post Updates
+
+on:
+  schedule:
+    # Run daily at 6:00 AM UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Allow manual trigger from GitHub UI
+
+jobs:
+  update-posts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Trigger AI Post Updates
+        run: |
+          echo "Triggering AI post updates..."
+          
+          response=$(curl -s -w "\n%{http_code}" -X POST "${{ secrets.SITE_URL }}/api/ai-update-posts" \
+            -H "Authorization: Bearer ${{ secrets.AI_UPDATE_SECRET }}" \
+            -H "Content-Type: application/json")
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "Response status: $http_code"
+          echo "Response body: $body"
+          
+          if [ "$http_code" -ne 200 ]; then
+            echo "Error: API returned status $http_code"
+            exit 1
+          fi
+          
+          echo "AI post updates triggered successfully!"

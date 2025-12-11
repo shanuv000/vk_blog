@@ -188,6 +188,7 @@ export const getPostDetails = async (slug) => {
             }
           }
           faQs
+          recentUpdates
         }
       }
     `;
@@ -228,6 +229,7 @@ export const getPostDetails = async (slug) => {
             }
           }
           faQs
+          recentUpdates
         }
       }
     `;
@@ -257,6 +259,7 @@ export const getPostDetails = async (slug) => {
             slug
           }
           faQs
+          recentUpdates
         }
       }
     `;

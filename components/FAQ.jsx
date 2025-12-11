@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { FaChevronDown } from "react-icons/fa6";
 import { HiSparkles, HiLightBulb } from "react-icons/hi2";
 import Head from "next/head";
 
 /**
  * Premium FAQ Component with Glassmorphic UI
- * Features: Animated accordion, SEO schema, SSR support
+ * Features: Smooth accordion, SEO schema, SSR support
  * 
  * Now reads FAQs directly from post.faQs (stored in Hygraph)
  * If no FAQs exist, triggers generation via API
+ * 
+ * FIXED: Removed conflicting animations to prevent flickering
  */
 const FAQ = ({ post }) => {
   // Handle both array and null cases for faQs
-  const postFaqs = Array.isArray(post?.faQs) ? post.faQs : [];
+  const postFaqs = useMemo(() => 
+    Array.isArray(post?.faQs) ? post.faQs : [], 
+    [post?.faQs]
+  );
   
   const [faqs, setFaqs] = useState(postFaqs);
   const [loading, setLoading] = useState(false);
@@ -22,7 +26,7 @@ const FAQ = ({ post }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Extract plain text from post content for API
-  const getContentText = () => {
+  const getContentText = useCallback(() => {
     if (!post?.content?.raw) return "";
     
     try {
@@ -47,7 +51,7 @@ const FAQ = ({ post }) => {
     } catch {
       return "";
     }
-  };
+  }, [post?.content?.raw]);
 
   // Generate FAQs if none exist in Hygraph
   useEffect(() => {
@@ -108,10 +112,10 @@ const FAQ = ({ post }) => {
     return () => {
       isMounted = false;
     };
-  }, [post?.slug, postFaqs.length]);
+  }, [post?.slug, post?.title, post?.excerpt, postFaqs.length, isGenerating, getContentText]);
 
   // Generate FAQ Schema for SEO
-  const generateFAQSchema = () => {
+  const faqSchema = useMemo(() => {
     if (!faqs || faqs.length === 0) return null;
 
     return {
@@ -126,7 +130,12 @@ const FAQ = ({ post }) => {
         },
       })),
     };
-  };
+  }, [faqs]);
+
+  // Toggle FAQ expansion - memoized to prevent recreation
+  const toggleFaq = useCallback((index) => {
+    setExpandedIndex(prev => prev === index ? null : index);
+  }, []);
 
   // Loading skeleton - only show when generating new FAQs
   if (loading && faqs.length === 0) {
@@ -159,17 +168,14 @@ const FAQ = ({ post }) => {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(generateFAQSchema()),
+            __html: JSON.stringify(faqSchema),
           }}
         />
       </Head>
 
       <section className="mt-12 sm:mt-16 mb-8">
-        {/* Premium Glassmorphic Container */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+        {/* Premium Glassmorphic Container - No animation to prevent flickering */}
+        <div
           className="relative rounded-2xl sm:rounded-3xl overflow-hidden"
           style={{
             background: "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(249,250,251,0.95) 100%)",
@@ -206,79 +212,67 @@ const FAQ = ({ post }) => {
               </div>
             </div>
 
-            {/* FAQ Items */}
+            {/* FAQ Items - No staggered animation */}
             <div className="space-y-2 sm:space-y-3">
-              {faqs.map((faq, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                >
-                  <button
-                    onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-                    className={`w-full text-left p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl transition-all duration-300 group ${
-                      expandedIndex === index
-                        ? "bg-white shadow-lg ring-1 ring-gray-100"
-                        : "bg-gray-50/50 hover:bg-white hover:shadow-md active:scale-[0.99]"
-                    }`}
-                    aria-expanded={expandedIndex === index}
-                  >
-                    <div className="flex items-start justify-between gap-2 sm:gap-4">
-                      <span className={`font-semibold text-sm sm:text-base leading-relaxed transition-colors ${
-                        expandedIndex === index ? "text-indigo-600" : "text-gray-900"
-                      }`}>
-                        {faq.question}
-                      </span>
-                      <motion.div
-                        animate={{ rotate: expandedIndex === index ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                        className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center transition-colors ${
-                          expandedIndex === index
-                            ? "bg-indigo-100 text-indigo-600"
-                            : "bg-gray-100 text-gray-400 group-hover:bg-gray-200"
-                        }`}
-                      >
-                        <FaChevronDown className="text-[10px] sm:text-xs" />
-                      </motion.div>
-                    </div>
-
-                    <AnimatePresence mode="wait" initial={false}>
-                      {expandedIndex === index && (
-                        <motion.div
-                          key={`faq-answer-${index}`}
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ 
-                            height: "auto", 
-                            opacity: 1,
-                            transition: {
-                              height: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
-                              opacity: { duration: 0.2, delay: 0.05 }
-                            }
-                          }}
-                          exit={{ 
-                            height: 0, 
-                            opacity: 0,
-                            transition: {
-                              height: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
-                              opacity: { duration: 0.1 }
-                            }
-                          }}
-                          className="overflow-hidden"
-                          style={{ willChange: "height, opacity" }}
+              {faqs.map((faq, index) => {
+                const isExpanded = expandedIndex === index;
+                
+                return (
+                  <div key={`faq-${index}`}>
+                    <button
+                      onClick={() => toggleFaq(index)}
+                      className={`w-full text-left p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl group ${
+                        isExpanded
+                          ? "bg-white shadow-lg ring-1 ring-gray-100"
+                          : "bg-gray-50/50 hover:bg-white hover:shadow-md"
+                      }`}
+                      aria-expanded={isExpanded}
+                      style={{ transition: "background-color 0.2s ease, box-shadow 0.2s ease" }}
+                    >
+                      <div className="flex items-start justify-between gap-2 sm:gap-4">
+                        <span 
+                          className={`font-semibold text-sm sm:text-base leading-relaxed ${
+                            isExpanded ? "text-indigo-600" : "text-gray-900"
+                          }`}
+                          style={{ transition: "color 0.2s ease" }}
                         >
-                          <p className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100 text-sm sm:text-base text-gray-600 leading-relaxed">
-                            {faq.answer}
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </button>
-                </motion.div>
-              ))}
+                          {faq.question}
+                        </span>
+                        <div
+                          className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center ${
+                            isExpanded
+                              ? "bg-indigo-100 text-indigo-600"
+                              : "bg-gray-100 text-gray-400 group-hover:bg-gray-200"
+                          }`}
+                          style={{ 
+                            transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                            transition: "transform 0.2s ease, background-color 0.2s ease, color 0.2s ease"
+                          }}
+                        >
+                          <FaChevronDown className="text-[10px] sm:text-xs" />
+                        </div>
+                      </div>
+
+                      {/* Answer - CSS-based animation instead of Framer Motion */}
+                      <div
+                        className="overflow-hidden"
+                        style={{
+                          maxHeight: isExpanded ? "500px" : "0px",
+                          opacity: isExpanded ? 1 : 0,
+                          transition: "max-height 0.3s ease-out, opacity 0.2s ease-out"
+                        }}
+                      >
+                        <p className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100 text-sm sm:text-base text-gray-600 leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </motion.div>
+        </div>
       </section>
     </>
   );
