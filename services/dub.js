@@ -301,7 +301,7 @@ class DubService {
         `${DUB_API_BASE}/analytics?linkId=${linkId}&event=clicks`,
         {
           headers: {
-            Authorization: `Bearer ${this.apiKey}`,
+            Authorization: `Bearer ${this.getApiKey()}`,
           },
         }
       );
