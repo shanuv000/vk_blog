@@ -32,61 +32,23 @@ export const useDub = (post, options = {}) => {
     return `${baseUrl}/post/${post.slug}`;
   }, [post?.slug, baseUrl]);
 
-  // Initialize short URL from post data or fetch on-demand
+  // Initialize short URL from post data (from Hygraph)
+  // No on-demand creation - short URLs are only created via Hygraph webhook
   useEffect(() => {
     if (!enabled || !post?.slug) return;
 
-    // If post already has shortUrl from Hygraph, use it directly
+    // If post already has shortUrl from Hygraph, use it
     if (post.shortUrl) {
       setShortUrl(post.shortUrl);
       setIsLoading(false);
       return;
     }
 
-    // If autoFetch is disabled, just use long URL
-    if (!autoFetch) {
-      setShortUrl(longUrl);
-      return;
-    }
-
-    // Fetch short URL on-demand via API
-    const fetchShortUrl = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch("/api/create-dub-link", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            post: {
-              slug: post.slug,
-              title: post.title,
-              id: post.id,
-            },
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to create short URL");
-        }
-
-        const data = await response.json();
-        setShortUrl(data.shortUrl || longUrl);
-      } catch (err) {
-        console.error("Error fetching short URL:", err);
-        setError(err.message);
-        setShortUrl(longUrl); // Fallback to long URL
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Only fetch if we don't have a cached short URL
-    fetchShortUrl();
-  }, [post?.slug, post?.shortUrl, longUrl, autoFetch, enabled]);
+    // No shortUrl yet - use long URL as fallback
+    // Short URL will be created when post is published via webhook
+    setShortUrl(longUrl);
+    setIsLoading(false);
+  }, [post?.slug, post?.shortUrl, longUrl, enabled]);
 
   // Copy to clipboard function
   const copyToClipboard = useCallback(async () => {
