@@ -17,7 +17,9 @@ const SocialSharing = ({ post }) => {
   const slug = post?.slug || "";
   const description = post?.excerpt || post?.description || "";
   const rootUrl = "https://urtechy.com";
-  const postUrl = `${rootUrl}/blog/${slug}`;
+  const longUrl = `${rootUrl}/blog/${slug}`;
+  // Use short URL from Hygraph if available, otherwise use long URL
+  const postUrl = post?.shortUrl || longUrl;
   const imageUrl = post?.featuredImage?.url || "";
 
   // Encode URLs and text for sharing

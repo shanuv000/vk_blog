@@ -20,11 +20,10 @@ import {
 } from "react-icons/fa6";
 
 import Toast from "./Toast";
-import { useTinyUrl } from "../hooks/useTinyUrl";
+import { useDub } from "../hooks/useDub";
 
 const EnhancedSocialShare = ({
   post,
-  enableTinyUrl = true,
   showAnalytics = false,
   baseUrl = "https://blog.urtechy.com",
   className = "",
@@ -35,25 +34,18 @@ const EnhancedSocialShare = ({
   const [toastMessage, setToastMessage] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // TinyURL hook for shortened URLs
+  // Dub.co hook for shortened URLs
   const {
     shortUrl,
     longUrl,
     isLoading: urlLoading,
     error: urlError,
-    analytics,
-    getSharingUrls,
+    shareUrls: sharingUrls,
     copyToClipboard,
-    fetchAnalytics,
     isShortened,
-  } = useTinyUrl(post, {
-    autoShorten: enableTinyUrl,
+  } = useDub(post, {
     baseUrl,
-    enableAnalytics: showAnalytics,
   });
-
-  // Get sharing URLs (will use shortened URLs if available)
-  const sharingUrls = getSharingUrls();
 
   // Display URL (prefer short URL, fallback to long URL)
   const displayUrl = shortUrl || longUrl;
@@ -286,25 +278,23 @@ const EnhancedSocialShare = ({
           </h3>
 
           {/* URL Status Indicator */}
-          {enableTinyUrl && (
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              {urlLoading && (
-                <>
-                  <div className="animate-spin w-3 h-3 border border-gray-300 border-t-gray-600 rounded-full" />
-                  <span>Shortening URL...</span>
-                </>
-              )}
-              {isShortened && (
-                <>
-                  <FaCheck className="text-green-500" />
-                  <span>Short URL ready</span>
-                </>
-              )}
-              {urlError && (
-                <span className="text-orange-500">Using long URL</span>
-              )}
-            </div>
-          )}
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            {urlLoading && (
+              <>
+                <div className="animate-spin w-3 h-3 border border-gray-300 border-t-gray-600 rounded-full" />
+                <span>Loading...</span>
+              </>
+            )}
+            {isShortened && (
+              <>
+                <FaCheck className="text-green-500" />
+                <span>Short URL</span>
+              </>
+            )}
+            {urlError && (
+              <span className="text-orange-500">Using long URL</span>
+            )}
+          </div>
         </div>
 
         {/* Share Buttons */}

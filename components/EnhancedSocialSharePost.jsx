@@ -19,7 +19,7 @@ import {
   FALLBACK_FEATURED_IMAGE,
 } from "./DefaultAvatar";
 import Toast from "./Toast";
-import { useTinyUrl } from "../hooks/useTinyUrlEnhanced";
+import { useDub } from "../hooks/useDub";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -49,7 +49,6 @@ const useInView = (options) => {
 const EnhancedSocialSharePost = ({ post }) => {
   // State for toast notification
   const [showToast, setShowToast] = useState(false);
-  const [showValidationInfo, setShowValidationInfo] = useState(false);
 
   // Safely extract properties with fallbacks
   const title = post?.title || "urTechy Blog Post";
@@ -57,28 +56,21 @@ const EnhancedSocialSharePost = ({ post }) => {
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${slug}`;
 
-  // Enhanced TinyURL hook with validation
+  // Dub.co hook for shortened URLs
   const {
     shortUrl,
     longUrl,
     isLoading: urlLoading,
-    getSharingUrls,
     copyToClipboard,
     isShortened,
-    isNewPost,
-    shouldHaveShortUrl,
-    validationStatus,
-    forceCreateShortUrl,
+    shareUrls,
     error,
-  } = useTinyUrl(post, {
-    autoShorten: true,
+  } = useDub(post, {
     baseUrl: rootUrl,
-    enableAnalytics: true,
   });
 
   // Use shortened URL for sharing if available, otherwise use original
   const shareUrl = shortUrl || postUrl;
-  const sharingUrls = getSharingUrls();
 
   // Image handling (same as before)
   const hasFeaturedImage = post?.featuredImage && post.featuredImage.url;
@@ -143,15 +135,15 @@ const EnhancedSocialSharePost = ({ post }) => {
       className="my-8 sm:my-10 py-4 sm:py-6 w-full"
     >
       <div className="w-full sm:max-w-3xl mx-auto">
-        {/* Header with validation info */}
+        {/* Header with short URL status */}
         <div className="flex items-center justify-between mb-3 sm:mb-5">
           <h3 className="text-gray-800 font-heading text-lg sm:text-xl font-semibold">
             Share this article
           </h3>
 
-          {/* Validation status indicator */}
+          {/* Short URL status indicator */}
           <div className="flex items-center gap-2">
-            {isNewPost ? (
+            {isShortened ? (
               <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
                 <FaCheckCircle size={12} />
                 <span>Short URL</span>
@@ -159,76 +151,18 @@ const EnhancedSocialSharePost = ({ post }) => {
             ) : (
               <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
                 <FaClock size={12} />
-                <span>Legacy post</span>
+                <span>Original URL</span>
               </div>
             )}
-
-            <button
-              onClick={() => setShowValidationInfo(!showValidationInfo)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              title="URL shortening info"
-            >
-              <FaInfoCircle size={14} />
-            </button>
           </div>
         </div>
-
-        {/* Validation info panel */}
-        {showValidationInfo && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mb-4 p-3 bg-gray-50 rounded-lg border text-sm"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div>
-                <span className="font-medium text-gray-700">Post Status:</span>
-                <span
-                  className={`ml-2 ${
-                    isNewPost ? "text-green-600" : "text-gray-500"
-                  }`}
-                >
-                  {isNewPost ? "New (has TinyURL)" : "Legacy (original URL)"}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700">Published:</span>
-                <span className="ml-2 text-gray-600">
-                  {formatDate(validationStatus.publishDate)}
-                </span>
-              </div>
-              <div className="sm:col-span-2">
-                <span className="font-medium text-gray-700">
-                  TinyURL Integration:
-                </span>
-                <span className="ml-2 text-gray-600">
-                  Started {formatDate(validationStatus.integrationDate)}
-                </span>
-              </div>
-              {!isNewPost && (
-                <div className="sm:col-span-2">
-                  <button
-                    onClick={forceCreateShortUrl}
-                    disabled={urlLoading}
-                    className="text-blue-600 hover:text-blue-700 text-xs underline disabled:opacity-50"
-                  >
-                    {urlLoading
-                      ? "Creating..."
-                      : "Create TinyURL for this post"}
-                  </button>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
 
         {/* Social sharing buttons */}
         <div className="flex flex-wrap gap-2 sm:gap-3">
           {/* WhatsApp */}
           <motion.a
             href={
-              sharingUrls.whatsapp ||
+              shareUrls.whatsapp ||
               `https://wa.me/?text=${encodeURIComponent(
                 `${title} - ${shareUrl}${imageUrl ? " 📷" : ""}`
               )}`
@@ -251,7 +185,7 @@ const EnhancedSocialSharePost = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.facebook ||
+              shareUrls.facebook ||
               `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                 shareUrl
               )}&quote=${encodeURIComponent(title)}`
@@ -273,7 +207,7 @@ const EnhancedSocialSharePost = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.twitter ||
+              shareUrls.twitter ||
               `https://twitter.com/intent/tweet?text=${encodeURIComponent(
                 title
               )}&url=${encodeURIComponent(
@@ -297,7 +231,7 @@ const EnhancedSocialSharePost = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.linkedin ||
+              shareUrls.linkedin ||
               `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
                 shareUrl
               )}&title=${encodeURIComponent(
@@ -321,7 +255,7 @@ const EnhancedSocialSharePost = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.reddit ||
+              shareUrls.reddit ||
               `http://www.reddit.com/submit?url=${encodeURIComponent(
                 shareUrl
               )}&title=${encodeURIComponent(title)}`
@@ -343,7 +277,7 @@ const EnhancedSocialSharePost = ({ post }) => {
             target="_blank"
             rel="noopener noreferrer"
             href={
-              sharingUrls.pinterest ||
+              shareUrls.pinterest ||
               `http://pinterest.com/pin/create/button/?url=${encodeURIComponent(
                 shareUrl
               )}&description=${encodeURIComponent(

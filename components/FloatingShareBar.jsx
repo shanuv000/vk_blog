@@ -22,7 +22,9 @@ const FloatingShareBar = ({ post, showThreshold = 500 }) => {
   // Post data
   const title = post?.title || "Check out this article";
   const slug = post?.slug || "";
-  const postUrl = `https://blog.urtechy.com/post/${slug}`;
+  const longUrl = `https://blog.urtechy.com/post/${slug}`;
+  // Use short URL from Hygraph if available, otherwise use long URL
+  const postUrl = post?.shortUrl || longUrl;
 
   // Handle scroll visibility
   useEffect(() => {
@@ -52,7 +54,7 @@ const FloatingShareBar = ({ post, showThreshold = 500 }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Share URLs
+  // Share URLs (use postUrl which may be short or long)
   const shareUrls = {
     twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(postUrl)}&via=Onlyblogs_`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
