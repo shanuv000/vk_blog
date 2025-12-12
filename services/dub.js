@@ -145,16 +145,11 @@ class DubService {
         };
       }
 
-      // FIRST: Check if a link already exists for this URL (prevents duplicates)
-      console.log("🔍 Checking for existing Dub.co link...");
-      const existingLink = await this.findLinkByUrl(longUrl);
-      if (existingLink) {
-        console.log("✅ Found existing link:", existingLink.shortLink);
-        this.setCachedResult(cacheKey, existingLink);
-        return { ...existingLink, fromCache: false, wasExisting: true };
-      }
+      // NOTE: We don't pre-check for existing links because Dub.co's API 
+      // returns all links when querying by URL (not filtered).
+      // Instead, we rely on Dub.co's 409 conflict error to detect duplicates.
 
-      console.log("🔗 No existing link found, creating new Dub.co short link...");
+      console.log("🔗 Creating new Dub.co short link for:", longUrl);
 
       // Build request payload
       const payload = {
