@@ -127,7 +127,7 @@ class DubService {
         };
       }
 
-      // Check cache first
+      // Check cache first (note: cache is ephemeral in serverless)
       const cacheKey = this.generateCacheKey(longUrl);
       const cachedResult = this.getCachedResult(cacheKey);
       if (cachedResult) {
@@ -145,7 +145,16 @@ class DubService {
         };
       }
 
-      console.log("🔗 Creating Dub.co short link...");
+      // FIRST: Check if a link already exists for this URL (prevents duplicates)
+      console.log("🔍 Checking for existing Dub.co link...");
+      const existingLink = await this.findLinkByUrl(longUrl);
+      if (existingLink) {
+        console.log("✅ Found existing link:", existingLink.shortLink);
+        this.setCachedResult(cacheKey, existingLink);
+        return { ...existingLink, fromCache: false, wasExisting: true };
+      }
+
+      console.log("🔗 No existing link found, creating new Dub.co short link...");
 
       // Build request payload
       const payload = {
