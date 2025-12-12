@@ -6,8 +6,6 @@
 
 // Dub.co API Configuration
 const DUB_API_BASE = "https://api.dub.co";
-const DUB_API_KEY = process.env.DUB_API_KEY;
-const DUB_CUSTOM_DOMAIN = process.env.DUB_CUSTOM_DOMAIN || "dub.sh";
 
 // Rate limiting (Dub.co free tier: 10 requests/second)
 const RATE_LIMIT = {
@@ -21,10 +19,22 @@ const RATE_LIMIT = {
  */
 class DubService {
   constructor() {
-    this.apiKey = DUB_API_KEY;
-    this.domain = DUB_CUSTOM_DOMAIN;
     this.cache = new Map();
     this.rateLimiter = { ...RATE_LIMIT };
+  }
+
+  /**
+   * Get API key at runtime (for serverless environments)
+   */
+  getApiKey() {
+    return process.env.DUB_API_KEY;
+  }
+
+  /**
+   * Get custom domain at runtime (for serverless environments)
+   */
+  getDomain() {
+    return process.env.DUB_CUSTOM_DOMAIN || "dub.sh";
   }
 
   /**
@@ -32,7 +42,12 @@ class DubService {
    * @returns {boolean}
    */
   isConfigured() {
-    return !!this.apiKey;
+    const apiKey = this.getApiKey();
+    const configured = !!apiKey;
+    if (!configured) {
+      console.warn("⚠️ DUB_API_KEY not found in environment");
+    }
+    return configured;
   }
 
   /**
@@ -154,7 +169,7 @@ class DubService {
       // Build request payload
       const payload = {
         url: longUrl,
-        domain: this.domain,
+        domain: this.getDomain(),
       };
 
       // Add optional parameters
@@ -172,7 +187,7 @@ class DubService {
       const response = await fetch(`${DUB_API_BASE}/links`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.getApiKey()}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
