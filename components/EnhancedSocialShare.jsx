@@ -374,7 +374,7 @@ EnhancedSocialShare.propTypes = {
       url: PropTypes.string,
     }),
   }).isRequired,
-  enableTinyUrl: PropTypes.bool,
+
   showAnalytics: PropTypes.bool,
   baseUrl: PropTypes.string,
   className: PropTypes.string,
