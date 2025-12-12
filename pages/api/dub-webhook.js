@@ -158,20 +158,9 @@ export default async function handler(req, res) {
       }
     }
 
-    // Skip if short URL already exists (avoid duplicate API calls)
-    if (postData.shortUrl && (postData.shortUrl.includes("dub.sh") || 
-        postData.shortUrl.includes(process.env.DUB_CUSTOM_DOMAIN || ""))) {
-      console.log("✅ Short URL already exists:", postData.shortUrl);
-      return res.status(200).json({
-        success: true,
-        message: "Short URL already exists",
-        data: {
-          slug: postData.slug,
-          shortUrl: postData.shortUrl,
-        },
-        skipped: true,
-      });
-    }
+    // NOTE: We previously skipped if shortUrl exists, but wrong URLs were cached
+    // from an earlier bug. Now we always create/verify the correct short URL.
+    // The Dub.co API handles duplicates with 409 conflict.
 
     // Create the short URL
     console.log(`🔗 Creating Dub.co short URL for: ${postData.slug}`);
