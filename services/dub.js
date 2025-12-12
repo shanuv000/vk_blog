@@ -378,7 +378,7 @@ class DubService {
   getStats() {
     return {
       cacheSize: this.cache.size,
-      domain: this.domain,
+      domain: this.getDomain(),
       isConfigured: this.isConfigured(),
       rateLimiter: {
         requests: this.rateLimiter.requests.length,
