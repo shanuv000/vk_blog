@@ -259,7 +259,7 @@ class DubService {
         `${DUB_API_BASE}/links?url=${encodeURIComponent(url)}`,
         {
           headers: {
-            Authorization: `Bearer ${this.apiKey}`,
+            Authorization: `Bearer ${this.getApiKey()}`,
           },
         }
       );
