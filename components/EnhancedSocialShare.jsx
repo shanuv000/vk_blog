@@ -20,7 +20,6 @@ import {
 } from "react-icons/fa6";
 
 import Toast from "./Toast";
-import { useDub } from "../hooks/useDub";
 
 const EnhancedSocialShare = ({
   post,
@@ -34,21 +33,51 @@ const EnhancedSocialShare = ({
   const [toastMessage, setToastMessage] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // Dub.co hook for shortened URLs
-  const {
-    shortUrl,
-    longUrl,
-    isLoading: urlLoading,
-    error: urlError,
-    shareUrls: sharingUrls,
-    copyToClipboard,
-    isShortened,
-  } = useDub(post, {
-    baseUrl,
-  });
-
-  // Display URL (prefer short URL, fallback to long URL)
-  const displayUrl = shortUrl || longUrl;
+  // Use short URL from Hygraph if available, otherwise use long URL
+  const longUrl = post?.slug ? `${baseUrl}/post/${post.slug}` : baseUrl;
+  const shortUrl = post?.shortUrl || longUrl;
+  const isShortened = shortUrl !== longUrl;
+  const displayUrl = shortUrl;
+  
+  // Generate share URLs for different platforms
+  const sharingUrls = React.useMemo(() => {
+    const url = encodeURIComponent(shortUrl);
+    const encodedTitle = encodeURIComponent(title);
+    
+    return {
+      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${encodedTitle}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${encodedTitle}`,
+      whatsapp: `https://wa.me/?text=${encodedTitle}%20${url}`,
+      telegram: `https://t.me/share/url?url=${url}&text=${encodedTitle}`,
+      email: `mailto:?subject=${encodedTitle}&body=${url}`,
+      reddit: `https://www.reddit.com/submit?url=${url}&title=${encodedTitle}`,
+      pinterest: `http://pinterest.com/pin/create/button/?url=${url}&description=${encodedTitle}&media=${encodeURIComponent(imageUrl)}`,
+    };
+  }, [shortUrl, title, imageUrl]);
+  
+  // Copy to clipboard function
+  const copyToClipboard = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shortUrl);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = shortUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      return true;
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      return false;
+    }
+  };
 
   // Safe post data extraction
   const title = post?.title || "urTechy Blog Post";
@@ -279,20 +308,11 @@ const EnhancedSocialShare = ({
 
           {/* URL Status Indicator */}
           <div className="flex items-center gap-2 text-xs text-gray-500">
-            {urlLoading && (
-              <>
-                <div className="animate-spin w-3 h-3 border border-gray-300 border-t-gray-600 rounded-full" />
-                <span>Loading...</span>
-              </>
-            )}
             {isShortened && (
               <>
                 <FaCheck className="text-green-500" />
                 <span>Short URL</span>
               </>
-            )}
-            {urlError && (
-              <span className="text-orange-500">Using long URL</span>
             )}
           </div>
         </div>
@@ -318,7 +338,6 @@ const EnhancedSocialShare = ({
             }`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            disabled={urlLoading}
           >
             {copySuccess ? (
               <>

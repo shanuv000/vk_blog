@@ -1,8 +1,7 @@
 /**
- * Combined Webhook Handler for Post Publishing
- * Handles both Dub.co URL creation and sitemap revalidation
+ * Post Publishing Webhook Handler
+ * Handles sitemap revalidation when posts are published
  */
-import dubService from "../../services/dub";
 
 export const config = {
   api: {
@@ -33,16 +32,13 @@ export default async function handler(req, res) {
 
     const { operation, data } = req.body;
     const results = {
-      tinyurl: null,
       sitemap: null,
     };
 
     if (process.env.NODE_ENV === "development") {
-      if (process.env.NODE_ENV === "development") {
-        console.log(
-          `Post webhook received: ${operation} for ${data?.__typename} with slug: ${data?.slug}`
-        );
-      }
+      console.log(
+        `Post webhook received: ${operation} for ${data?.__typename} with slug: ${data?.slug}`
+      );
     }
 
     // Only process Post models
@@ -64,70 +60,17 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Handle Dub.co URL creation for published posts
+    // Handle sitemap revalidation for published posts
     if (
       operation === "publish" ||
       (operation === "update" && data.stage === "PUBLISHED")
     ) {
-      // 1. Create Dub.co short URL
-      try {
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            `🔗 Creating short URL for post: ${data.slug} (Dub.co)`
-          );
-        }
-
-        // Check rate limit status before attempting
-        const rateLimitStatus = dubService.getRateLimitStatus();
-        if (process.env.NODE_ENV === "development") {
-          console.log("📊 Rate limit status:", rateLimitStatus);
-        }
-
-        const post = {
-          id: data.id,
-          slug: data.slug,
-          title: data.title || `Blog Post - ${data.slug}`,
-          categories: data.categories || [],
-        };
-
-        const shortUrl = await dubService.shortenPostUrl(
-          post,
-          "https://blog.urtechy.com"
-        );
-
-        const longUrl = `https://blog.urtechy.com/post/${data.slug}`;
-        const isActuallyShortened = shortUrl && shortUrl !== longUrl;
-
-        results.shorturl = {
-          success: true,
-          shortUrl,
-          longUrl,
-          isShortened: isActuallyShortened,
-          rateLimitStatus: dubService.getRateLimitStatus(),
-        };
-
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            `✅ Dub.co result: ${shortUrl} (shortened: ${isActuallyShortened})`
-          );
-        }
-      } catch (error) {
-        console.error("❌ Dub.co creation failed:", error);
-        results.shorturl = {
-          success: false,
-          error: error.message,
-          fallbackUrl: `https://blog.urtechy.com/post/${data.slug}`,
-          rateLimitStatus: dubService.getRateLimitStatus(),
-        };
-      }
-
-      // 2. Handle sitemap revalidation
       try {
         if (process.env.NODE_ENV === "development") {
           console.log("🔄 Revalidating sitemap...");
         }
 
-        // Call your existing sitemap revalidation endpoint
+        // Call sitemap revalidation endpoint
         const sitemapResponse = await fetch(
           `https://blog.urtechy.com/api/revalidate-sitemap?secret=${secret}`,
           {

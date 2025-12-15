@@ -19,7 +19,6 @@ import {
   FALLBACK_FEATURED_IMAGE,
 } from "./DefaultAvatar";
 import Toast from "./Toast";
-import { useDub } from "../hooks/useDub";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -56,21 +55,52 @@ const EnhancedSocialSharePost = ({ post }) => {
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${slug}`;
 
-  // Dub.co hook for shortened URLs
-  const {
-    shortUrl,
-    longUrl,
-    isLoading: urlLoading,
-    copyToClipboard,
-    isShortened,
-    shareUrls,
-    error,
-  } = useDub(post, {
-    baseUrl: rootUrl,
-  });
+  // Use short URL from Hygraph if available, otherwise use long URL
+  const shortUrl = post?.shortUrl || postUrl;
+  const longUrl = postUrl;
+  const isShortened = shortUrl !== longUrl;
+  
+  // Generate share URLs for different platforms
+  const shareUrls = React.useMemo(() => {
+    const url = encodeURIComponent(shortUrl);
+    const encodedTitle = encodeURIComponent(title);
+    
+    return {
+      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${encodedTitle}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${encodedTitle}`,
+      whatsapp: `https://wa.me/?text=${encodedTitle}%20${url}`,
+      telegram: `https://t.me/share/url?url=${url}&text=${encodedTitle}`,
+      reddit: `https://www.reddit.com/submit?url=${url}&title=${encodedTitle}`,
+      pinterest: `http://pinterest.com/pin/create/button/?url=${url}&description=${encodedTitle}`,
+    };
+  }, [shortUrl, title]);
+  
+  // Copy to clipboard function
+  const copyToClipboard = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shortUrl);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = shortUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      return true;
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      return false;
+    }
+  };
 
-  // Use shortened URL for sharing if available, otherwise use original
-  const shareUrl = shortUrl || postUrl;
+  // Use shortened URL for sharing
+  const shareUrl = shortUrl;
 
   // Image handling (same as before)
   const hasFeaturedImage = post?.featuredImage && post.featuredImage.url;
@@ -299,29 +329,6 @@ const EnhancedSocialSharePost = ({ post }) => {
 
         {/* URL Display and Copy Section */}
         <div className="mt-4 space-y-2">
-          {/* Loading State */}
-          {urlLoading && (
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <div className="animate-spin w-3 h-3 border border-gray-300 border-t-gray-600 rounded-full" />
-              <span>
-                {isNewPost ? "Creating short URL..." : "Generating TinyURL..."}
-              </span>
-            </div>
-          )}
-
-          {/* Error State */}
-          {error && (
-            <div className="flex items-center gap-2 text-xs text-red-500 bg-red-50 p-2 rounded">
-              <span>❌ {error}</span>
-              <button
-                onClick={forceCreateShortUrl}
-                className="text-red-600 underline hover:text-red-700"
-              >
-                Retry
-              </button>
-            </div>
-          )}
-
           {/* URL Display */}
           <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
             <code className="flex-1 text-xs font-mono text-gray-600 truncate">
@@ -333,7 +340,7 @@ const EnhancedSocialSharePost = ({ post }) => {
                   Short
                 </span>
               )}
-              {!isNewPost && !isShortened && (
+              {!isShortened && (
                 <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-0.5 rounded">
                   Original
                 </span>
@@ -352,7 +359,6 @@ const EnhancedSocialSharePost = ({ post }) => {
             className="w-full flex items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-300"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            disabled={urlLoading}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

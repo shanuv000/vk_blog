@@ -18,7 +18,6 @@ import {
   FALLBACK_FEATURED_IMAGE,
 } from "./DefaultAvatar";
 import Toast from "./Toast";
-import { useDub } from "../hooks/useDub";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -55,22 +54,50 @@ const NavbarPostDetails = ({ post }) => {
   const rootUrl = "https://blog.urtechy.com";
   const postUrl = `${rootUrl}/post/${slug}`;
 
-  // Dub.co hook for shortened URLs
-  const {
-    shortUrl,
-    longUrl,
-    isLoading: urlLoading,
-    copyToClipboard,
-    isShortened,
-    shareUrls,
-    error,
-  } = useDub(post, {
-    autoFetch: true,
-    baseUrl: rootUrl,
-  });
+  // Use short URL from Hygraph if available, otherwise use long URL
+  const shortUrl = post?.shortUrl || postUrl;
+  const longUrl = postUrl;
+  const isShortened = shortUrl !== longUrl;
+  
+  // Generate share URLs for different platforms
+  const shareUrls = React.useMemo(() => {
+    const url = encodeURIComponent(shortUrl);
+    const encodedTitle = encodeURIComponent(title);
+    
+    return {
+      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${encodedTitle}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${encodedTitle}`,
+      whatsapp: `https://wa.me/?text=${encodedTitle}%20${url}`,
+      reddit: `https://www.reddit.com/submit?url=${url}&title=${encodedTitle}`,
+    };
+  }, [shortUrl, title]);
+  
+  // Copy to clipboard function
+  const copyToClipboard = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shortUrl);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = shortUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      return true;
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      return false;
+    }
+  };
 
-  // Use shortened URL for sharing if available
-  const shareUrl = shortUrl || postUrl;
+  // Use shortened URL for sharing
+  const shareUrl = shortUrl;
 
   // Ensure we're using the featured image and not accidentally using author image
   // First check if featuredImage exists and has a url property
@@ -281,7 +308,6 @@ const NavbarPostDetails = ({ post }) => {
             className="flex items-center px-5 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 ml-auto shadow-sm hover:shadow-md"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            disabled={urlLoading}
           >
             {showToast ? (
               <FaCheck className="mr-2 text-green-400" size={14} />
@@ -296,12 +322,6 @@ const NavbarPostDetails = ({ post }) => {
 
         {/* URL Display - Minimal */}
         <div className="mt-6">
-          {/* Error State */}
-          {error && (
-            <div className="mb-3 flex items-center gap-2 text-xs text-red-500 bg-red-50 p-3 rounded-lg border border-red-100">
-              <span>⚠️ {error}</span>
-            </div>
-          )}
 
           {/* URL Input-like Display */}
           <div className="relative group">
@@ -335,7 +355,6 @@ const NavbarPostDetails = ({ post }) => {
             <div className="font-bold mb-2">Debug Info</div>
             <div className="grid grid-cols-2 gap-2">
               <div>Shortened: {isShortened ? "YES" : "NO"}</div>
-              <div>Loading: {urlLoading ? "YES" : "NO"}</div>
             </div>
           </div>
         )}
