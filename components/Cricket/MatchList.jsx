@@ -3,19 +3,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { BiCommentDetail, BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { FiRefreshCw } from "react-icons/fi";
-import { IoLocationOutline, IoCalendarOutline } from "react-icons/io5";
-import { ClipLoader } from "react-spinners";
+import { FiRefreshCw, FiExternalLink } from "react-icons/fi";
+import { IoLocationOutline, IoCalendarOutline, IoTrophyOutline } from "react-icons/io5";
 import ball from "../../public/cricket/ball.png";
 import Scorecard from "./Scorecard";
 
 /**
  * Format match date to rich readable format
- * @param {Object} match - Match data object
- * @returns {string} - Formatted date string
  */
 function formatMatchDate(match) {
-  // Try to use ISO date first for accurate parsing
   if (match.matchStartTime?.startDateISO) {
     try {
       const date = new Date(match.matchStartTime.startDateISO);
@@ -23,44 +19,31 @@ function formatMatchDate(match) {
         weekday: 'short',
         day: 'numeric',
         month: 'short',
-        year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
         hour12: true
       });
     } catch (e) {
-      // Fall through to other options
+      // Fall through
     }
   }
   
-  // Fall back to time field
   if (match.time && match.time !== 'N/A' && match.time !== 'LIVE') {
     return match.time;
   }
   
-  // Use matchStartTime display values
   if (match.matchStartTime) {
     const parts = [];
     if (match.matchStartTime.date) parts.push(match.matchStartTime.date);
     if (match.matchStartTime.time) parts.push(match.matchStartTime.time);
-    if (parts.length > 0) return parts.join(' at ');
+    if (parts.length > 0) return parts.join(' • ');
   }
   
   return null;
 }
 
 /**
- * MatchList component displays cricket matches with filtering by tournament
- *
- * @param {string} title - Title of the match list
- * @param {Array} matches - Array of match data
- * @param {string} error - Error message if any
- * @param {boolean} loading - Loading state
- * @param {Function} onRefresh - Function to refresh match data
- * @param {boolean} isRefreshing - Refreshing state
- * @param {Array} headings - Array of tournament headings
- * @param {string} selectedHeading - Currently selected tournament heading
- * @param {Function} setSelectedHeading - Function to set selected heading
+ * MatchList component - Premium dark theme design
  */
 const MatchList = ({
   title,
@@ -75,23 +58,19 @@ const MatchList = ({
 }) => {
   const [expandedMatchIndex, setExpandedMatchIndex] = useState(null);
 
-  // Filter matches by selected tournament
   const filteredMatches =
     matches?.filter((match) => match.heading === selectedHeading) || [];
 
-  // Animation variants for list items
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.08 },
     },
   };
 
   const item = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 15 },
     show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
@@ -99,43 +78,44 @@ const MatchList = ({
     setExpandedMatchIndex(expandedMatchIndex === index ? null : index);
   };
 
-  // If no matches and not loading, return empty state
+  // Empty state
   if (!loading && (!matches || matches.length === 0)) {
     return (
-      <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
+      <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
+          <h3 className="text-xl font-bold text-white">
             {title}
-            <div className="h-1 w-20 bg-gradient-to-r from-urtechy-red to-urtechy-orange mt-2 rounded-full" />
+            <div className="h-1 w-16 bg-gradient-to-r from-rose-500 to-amber-500 mt-2 rounded-full" />
           </h3>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={onRefresh}
-            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-            aria-label="Refresh matches"
+            className="p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
           >
-            <FiRefreshCw className="w-5 h-5 text-gray-700" />
+            <FiRefreshCw className="w-5 h-5" />
           </motion.button>
         </div>
-        <div className="flex flex-col items-center justify-center py-10">
-          <Image
-            src={ball}
-            alt="Cricket"
-            width={64}
-            height={64}
-            quality={70}
-            sizes="64px"
-            className="w-16 h-16 opacity-50 mb-4"
-          />
-          <p className="text-lg font-medium text-gray-500 text-center">
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="relative mb-4">
+            <div className="absolute inset-0 bg-rose-500/30 rounded-full blur-xl" />
+            <Image
+              src={ball}
+              alt="Cricket"
+              width={64}
+              height={64}
+              quality={70}
+              className="relative w-16 h-16 opacity-60"
+            />
+          </div>
+          <p className="text-lg font-medium text-slate-400 text-center mb-4">
             No matches available at the moment
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onRefresh}
-            className="mt-4 px-6 py-2 bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white rounded-full font-medium shadow-md hover:shadow-lg transition-shadow"
+            className="px-6 py-3 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-xl font-medium shadow-lg shadow-rose-500/25"
           >
             Refresh
           </motion.button>
@@ -145,150 +125,146 @@ const MatchList = ({
   }
 
   return (
-    <div className="bg-white shadow-lg md:rounded-xl p-3 md:p-6 mb-6">
+    <div className="p-4 md:p-6">
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl sm:text-2xl font-heading font-bold bg-gradient-to-r from-red-400 to-yellow-400 bg-clip-text text-transparent">
+        <h3 className="text-xl md:text-2xl font-bold text-white">
           {title}
-          <div className="h-1 w-20 bg-gradient-to-r from-red-400 to-yellow-400 mt-2 rounded-full" />
+          <div className="h-1 w-20 bg-gradient-to-r from-rose-500 to-amber-500 mt-2 rounded-full" />
         </h3>
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, rotate: 180 }}
           whileTap={{ scale: 0.9 }}
           onClick={onRefresh}
-          className={`p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors ${
+          className={`p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all ${
             isRefreshing ? "animate-spin" : ""
           }`}
           disabled={isRefreshing}
         >
-          <FiRefreshCw className="w-5 h-5 text-gray-700" />
+          <FiRefreshCw className="w-5 h-5" />
         </motion.button>
       </div>
 
-      {/* Tournament selector */}
+      {/* Tournament Selector */}
       {headings.length > 0 && (
         <div className="mb-6">
-          <label
-            htmlFor="heading-select"
-            className="block mb-2 text-base font-medium text-gray-700"
-          >
+          <label className="block text-sm font-medium text-slate-400 mb-2">
             Tournament
           </label>
           <div className="relative">
             <select
-              id="heading-select"
               value={selectedHeading}
               onChange={(e) => setSelectedHeading(e.target.value)}
-              className="block w-full px-4 py-3 pr-8 leading-tight text-gray-700 bg-white border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-urtechy-orange focus:border-transparent"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white appearance-none focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500/50 transition-all"
               disabled={loading || isRefreshing}
             >
               {headings.map((heading, index) => (
-                <option key={index} value={heading}>
+                <option key={index} value={heading} className="bg-slate-800 text-white">
                   {heading}
                 </option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <svg
-                className="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
           </div>
         </div>
       )}
 
-      {/* Error and loading states */}
+      {/* Error State */}
       {error ? (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6 bg-white border-l-4 border-red-500 rounded-lg shadow-md mb-6"
+          className="p-6 bg-red-500/10 border border-red-500/30 rounded-2xl"
         >
-          <div className="flex items-center mb-4">
-            <svg
-              className="w-6 h-6 text-red-500 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <h4 className="text-lg font-semibold text-gray-800">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+              <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h4 className="text-lg font-semibold text-white">
               Unable to load cricket data
             </h4>
           </div>
-
-          <p className="text-gray-600 mb-4">
-            We're having trouble connecting to our cricket data service. You can
-            try refreshing or check other sources for the latest updates.
+          <p className="text-slate-400 mb-4">
+            We're having trouble connecting. Try refreshing or check other sources.
           </p>
-
-          <div className="flex flex-wrap gap-3 mb-6">
+          <div className="flex flex-wrap gap-3">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onRefresh}
-              className="px-4 py-2 bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white rounded-md font-medium shadow-sm"
+              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-lg font-medium"
             >
               Try Again
             </motion.button>
-
             <a
               href="https://www.espncricinfo.com/live-cricket-score"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md font-medium shadow-sm hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors flex items-center gap-2"
             >
-              ESPNCricinfo
-            </a>
-
-            <a
-              href="https://www.cricbuzz.com/cricket-match/live-scores"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md font-medium shadow-sm hover:bg-gray-50 transition-colors"
-            >
-              Cricbuzz
+              ESPNCricinfo <FiExternalLink className="w-4 h-4" />
             </a>
           </div>
         </motion.div>
       ) : loading ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="relative w-16 h-16 mb-4">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full" />
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-t-urtechy-red border-r-urtechy-orange border-b-urtechy-red border-l-urtechy-orange rounded-full animate-spin" />
-            <Image
-              src={ball}
-              alt="Cricket Ball"
-              width={32}
-              height={32}
-              quality={70}
-              sizes="32px"
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8"
-            />
-          </div>
-          <p className="text-lg font-medium">
-            <span className="text-red-400">Loading</span>
-            <span className="text-gray-200"> cricket </span>
-            <span className="text-yellow-400">updates</span>
-            <span className="text-gray-200">...</span>
+        /* Premium Skeleton Loader - Instant visual feedback */
+        <div className="space-y-4 animate-pulse">
+          {[1, 2, 3].map((i) => (
+            <div 
+              key={i} 
+              className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden"
+            >
+              {/* Shimmer effect */}
+              <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+              
+              {/* Card Header Skeleton */}
+              <div className="border-b border-white/10 bg-white/5 px-4 py-3 flex items-center justify-between">
+                <div className="h-4 w-32 bg-white/10 rounded-lg" />
+                <div className="h-6 w-20 bg-emerald-500/20 rounded-full" />
+              </div>
+
+              {/* Card Content Skeleton */}
+              <div className="p-4">
+                {/* Team 1 */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white/10" />
+                    <div className="h-4 w-24 bg-white/10 rounded-lg" />
+                  </div>
+                  <div className="h-6 w-16 bg-rose-500/20 rounded-lg" />
+                </div>
+                
+                {/* Team 2 */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white/10" />
+                    <div className="h-4 w-28 bg-white/10 rounded-lg" />
+                  </div>
+                  <div className="h-5 w-14 bg-white/10 rounded-lg" />
+                </div>
+
+                {/* Info Tags */}
+                <div className="flex gap-3">
+                  <div className="h-6 w-32 bg-white/5 rounded-lg" />
+                  <div className="h-6 w-24 bg-white/5 rounded-lg" />
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {/* Loading Text */}
+          <p className="text-center text-sm text-slate-500 mt-4">
+            Fetching latest updates...
           </p>
         </div>
       ) : filteredMatches.length === 0 ? (
+        /* No Matches for Tournament */
         <div className="flex flex-col items-center justify-center py-12">
           <Image
             src={ball}
@@ -296,260 +272,234 @@ const MatchList = ({
             width={64}
             height={64}
             quality={70}
-            sizes="64px"
-            className="w-16 h-16 opacity-40 mb-4"
+            className="w-16 h-16 opacity-30 mb-4"
           />
           <p className="text-lg font-medium text-center mb-4">
-            <span className="text-gray-200">No matches available for </span>
-            <span className="text-yellow-400 font-semibold">
-              this tournament
-            </span>
+            <span className="text-slate-400">No matches in </span>
+            <span className="text-amber-400 font-semibold">this tournament</span>
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onRefresh}
-            className="px-6 py-2 bg-gradient-to-r from-urtechy-red to-urtechy-orange text-white rounded-full font-medium shadow-md"
+            className="px-6 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-xl font-medium"
           >
             Refresh
           </motion.button>
         </div>
       ) : (
+        /* Match List */
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="space-y-6"
+          className="space-y-4"
         >
           {filteredMatches.map((match, index) => (
             <motion.div
               key={`${match.heading}-${index}`}
               variants={item}
-              className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-md hover:shadow-lg transition-all duration-300"
+              className="relative group"
             >
-              {/* Match header with title */}
-              <div className="border-b border-gray-100 bg-gray-50 px-3 py-2 md:px-5 md:py-3">
-                {match.title && match.title !== "N/A" ? (
-                  <h4 className="text-base sm:text-lg font-bold text-gray-800">
-                    {match.title}
-                  </h4>
-                ) : (
-                  <h4 className="text-base sm:text-lg font-bold text-gray-800">
-                    {match.heading || "Cricket Match"}
-                  </h4>
-                )}
-              </div>
-
-              {/* Match content */}
-              <div className="p-3 md:p-5">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                  {/* Team scores */}
-                  <div className="space-y-2 mb-3 sm:mb-0">
-                    {/* Batting team */}
-                    {match.playingTeamBat && match.playingTeamBat !== "N/A" && (
-                      <div className="flex items-center">
-                        {match.team1Icon ? (
-                          <div className="w-8 h-8 mr-3 relative overflow-hidden rounded-full bg-gray-100">
-                            <Image
-                              src={match.team1Icon}
-                              alt={match.playingTeamBat}
-                              width={32}
-                              height={32}
-                              className="object-cover"
-                              unoptimized
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-urtechy-red to-urtechy-orange flex items-center justify-center text-white font-bold text-xs mr-3">
-                            {match.playingTeamBat.substring(0, 2).toUpperCase()}
-                          </div>
-                        )}
-                        <div>
-                          <h2 className="text-base font-bold text-gray-800">
-                            {match.playingTeamBat}
-                          </h2>
-                          <p className="text-lg font-extrabold text-urtechy-red">
-                            {match.liveScorebat}
-                          </p>
-                        </div>
+              {/* Card Glow */}
+              <div className={`absolute inset-0 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+                match.matchStatus === "live" 
+                  ? "bg-emerald-500/20" 
+                  : match.matchStatus === "completed"
+                  ? "bg-slate-500/20"
+                  : "bg-amber-500/20"
+              }`} />
+              
+              {/* Match Card */}
+              <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300">
+                {/* Match Header */}
+                <div className="border-b border-white/10 bg-white/5 px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm md:text-base font-bold text-white truncate pr-2">
+                      {match.title && match.title !== "N/A" ? match.title : match.heading || "Cricket Match"}
+                    </h4>
+                    
+                    {/* Status Badge */}
+                    {match.matchStatus === "live" && (
+                      <div className="flex items-center px-3 py-1 bg-emerald-500/20 rounded-full border border-emerald-500/30 shrink-0">
+                        <span className="relative flex h-2 w-2 mr-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span className="text-xs font-bold text-emerald-400">LIVE</span>
                       </div>
                     )}
+                    {match.matchStatus === "completed" && (
+                      <div className="flex items-center px-3 py-1 bg-slate-500/20 rounded-full border border-slate-500/30 shrink-0">
+                        <IoTrophyOutline className="w-3 h-3 mr-1 text-slate-400" />
+                        <span className="text-xs font-bold text-slate-400">COMPLETED</span>
+                      </div>
+                    )}
+                    {match.matchStatus === "upcoming" && (
+                      <div className="flex items-center px-3 py-1 bg-amber-500/20 rounded-full border border-amber-500/30 shrink-0">
+                        <IoCalendarOutline className="w-3 h-3 mr-1 text-amber-400" />
+                        <span className="text-xs font-bold text-amber-400">UPCOMING</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
-                    {/* Bowling team */}
-                    {match.playingTeamBall &&
-                      match.playingTeamBall !== "N/A" && (
-                        <div className="flex items-center">
-                          {match.team2Icon ? (
-                            <div className="w-8 h-8 mr-3 relative overflow-hidden rounded-full bg-gray-100">
+                {/* Match Content */}
+                <div className="p-4">
+                  {/* Teams */}
+                  <div className="flex flex-col gap-3 mb-4">
+                    {/* Batting Team */}
+                    {match.playingTeamBat && match.playingTeamBat !== "N/A" && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {match.team1Icon ? (
+                            <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden ring-2 ring-rose-500/30">
                               <Image
-                                src={match.team2Icon}
-                                alt={match.playingTeamBall}
-                                width={32}
-                                height={32}
+                                src={match.team1Icon}
+                                alt={match.playingTeamBat}
+                                width={40}
+                                height={40}
                                 className="object-cover"
                                 unoptimized
                               />
                             </div>
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs mr-3">
-                              {match.playingTeamBall
-                                .substring(0, 2)
-                                .toUpperCase()}
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center text-white font-bold text-sm ring-2 ring-rose-500/30">
+                              {match.playingTeamBat.substring(0, 2).toUpperCase()}
                             </div>
                           )}
-                          <div>
-                            <h2 className="text-base font-medium text-gray-700">
-                              {match.playingTeamBall}
-                            </h2>
-                            {match.liveScoreball &&
-                              match.liveScoreball !== "N/A" && (
-                                <p className="text-base font-bold text-gray-600">
-                                  {match.liveScoreball}
-                                </p>
-                              )}
-                          </div>
+                          <span className="font-semibold text-white">
+                            {match.playingTeamBat}
+                          </span>
                         </div>
-                      )}
+                        <span className="text-xl font-bold text-rose-400">
+                          {match.liveScorebat}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Bowling Team */}
+                    {match.playingTeamBall && match.playingTeamBall !== "N/A" && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {match.team2Icon ? (
+                            <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden ring-2 ring-slate-500/30">
+                              <Image
+                                src={match.team2Icon}
+                                alt={match.playingTeamBall}
+                                width={40}
+                                height={40}
+                                className="object-cover"
+                                unoptimized
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center text-white font-bold text-sm ring-2 ring-slate-500/30">
+                              {match.playingTeamBall.substring(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                          <span className="font-medium text-slate-300">
+                            {match.playingTeamBall}
+                          </span>
+                        </div>
+                        {match.liveScoreball && match.liveScoreball !== "N/A" && (
+                          <span className="text-lg font-bold text-slate-400">
+                            {match.liveScoreball}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  {/* Match status badge */}
-                  <div className="flex flex-col items-end gap-2 self-start">
-                    {/* Status Badge - LIVE, COMPLETED, or UPCOMING */}
-                    {match.matchStatus === "live" && (
-                      <div className="flex items-center px-3 py-1 bg-green-100 rounded-full text-sm font-bold text-green-700">
-                        <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                        LIVE
-                      </div>
-                    )}
-                    {match.matchStatus === "completed" && (
-                      <div className="flex items-center px-3 py-1 bg-gray-200 rounded-full text-sm font-bold text-gray-700">
-                        <svg className="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        COMPLETED
-                      </div>
-                    )}
-                    {match.matchStatus === "upcoming" && (
-                      <div className="flex items-center px-3 py-1 bg-blue-100 rounded-full text-sm font-bold text-blue-700">
-                        <IoCalendarOutline className="w-3 h-3 mr-1.5" />
-                        UPCOMING
-                      </div>
-                    )}
-                    
-                    {/* Result for completed matches */}
-                    {match.matchStatus === "completed" && match.result && (
-                      <div className="px-3 py-1 bg-urtechy-red/10 rounded-full text-sm font-semibold text-urtechy-red max-w-[200px] text-right">
+                  {/* Result for completed matches */}
+                  {match.matchStatus === "completed" && match.result && (
+                    <div className="mb-4 px-4 py-2 bg-gradient-to-r from-rose-500/10 to-amber-500/10 rounded-xl border border-rose-500/20">
+                      <p className="text-sm font-semibold text-rose-400 text-center">
                         {match.result}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Match Info */}
+                  <div className="flex flex-wrap gap-3 text-xs text-slate-400">
+                    {/* Date/Time */}
+                    {formatMatchDate(match) && (
+                      <div className="flex items-center gap-1 px-2 py-1 bg-white/5 rounded-lg">
+                        <IoCalendarOutline className="w-3 h-3" />
+                        <span>{formatMatchDate(match)}</span>
                       </div>
                     )}
                     
-                    {/* Rich Date Display */}
-                    {formatMatchDate(match) && (
-                      <div className="flex items-center text-xs text-gray-500">
-                        <IoCalendarOutline className="w-3 h-3 mr-1" />
-                        {formatMatchDate(match)}
+                    {/* Location */}
+                    {match.location && (
+                      <div className="flex items-center gap-1 px-2 py-1 bg-white/5 rounded-lg">
+                        <IoLocationOutline className="w-3 h-3" />
+                        <span className="truncate max-w-[150px]">{match.location}</span>
                       </div>
                     )}
                   </div>
-                </div>
-
-                {/* Match info */}
-                <div className="mt-4 pt-4 border-t border-gray-100 space-y-2 text-sm">
-                  {/* Time for live matches */}
-                  {title === "Live Matches" && match.time && (
-                    <div className="flex items-center text-green-600">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span className="font-medium">
-                        {match.time === "N/A" ? "Live Now" : match.time}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Location */}
-                  {match.location && (
-                    <div className="flex items-center text-gray-600">
-                      <IoLocationOutline className="w-4 h-4 mr-2" />
-                      <span>{match.location}</span>
-                    </div>
-                  )}
 
                   {/* Commentary */}
                   {match.liveCommentary && (
-                    <div className="flex items-start text-gray-600 mt-2">
-                      <BiCommentDetail className="w-4 h-4 mr-2 mt-1" />
-                      <span className="text-urtechy-orange font-medium">
+                    <div className="mt-3 flex items-start gap-2 px-3 py-2 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                      <BiCommentDetail className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                      <span className="text-sm text-amber-300">
                         {match.liveCommentary}
                       </span>
                     </div>
                   )}
-                </div>
 
-                {/* Scorecard Toggle */}
-                {match.scorecard && match.scorecard.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <button
-                      onClick={() => toggleScorecard(index)}
-                      className="flex items-center text-sm font-medium text-urtechy-red hover:text-urtechy-orange transition-colors focus:outline-none"
-                    >
-                      {expandedMatchIndex === index ? (
-                        <>
-                          Hide Scorecard <BiChevronUp className="ml-1 w-5 h-5" />
-                        </>
-                      ) : (
-                        <>
-                          View Scorecard <BiChevronDown className="ml-1 w-5 h-5" />
-                        </>
-                      )}
-                    </button>
-                    <AnimatePresence>
-                      {expandedMatchIndex === index && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Scorecard scorecard={match.scorecard} />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                )}
-
-                {/* Links */}
-                {match.links && Object.keys(match.links).length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-2">
-                    {Object.entries(match.links).map(
-                      ([linkTitle, linkUrl], linkIndex) => (
-                        <Link
-                          key={linkIndex}
-                          href={linkUrl || "#"}
-                          legacyBehavior
-                        >
-                          <a
-                            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm font-medium transition-colors"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                  {/* Scorecard Toggle */}
+                  {match.scorecard && match.scorecard.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <motion.button
+                        onClick={() => toggleScorecard(index)}
+                        className="flex items-center text-sm font-medium text-rose-400 hover:text-rose-300 transition-colors"
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {expandedMatchIndex === index ? (
+                          <>Hide Scorecard <BiChevronUp className="ml-1 w-5 h-5" /></>
+                        ) : (
+                          <>View Scorecard <BiChevronDown className="ml-1 w-5 h-5" /></>
+                        )}
+                      </motion.button>
+                      <AnimatePresence>
+                        {expandedMatchIndex === index && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
                           >
-                            {linkTitle}
-                          </a>
-                        </Link>
-                      )
-                    )}
-                  </div>
-                )}
+                            <Scorecard scorecard={match.scorecard} />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+
+                  {/* Quick Links */}
+                  {match.links && Object.keys(match.links).length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <div className="flex flex-wrap gap-2">
+                        {Object.entries(match.links).map(
+                          ([linkTitle, linkUrl], linkIndex) => (
+                            <Link key={linkIndex} href={linkUrl || "#"} legacyBehavior>
+                              <a
+                                className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-slate-300 rounded-lg text-xs font-medium transition-colors flex items-center gap-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {linkTitle}
+                                <FiExternalLink className="w-3 h-3" />
+                              </a>
+                            </Link>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}

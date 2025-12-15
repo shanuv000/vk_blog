@@ -8,39 +8,24 @@ import MatchTable from "./MatchTable";
 import MobileMatchTable from "./MobileMatchTable";
 import RecentMatch from "./RecentMatch";
 import UpcomingMatch from "./UpcomingMatch";
-import { useData } from "../../store/HandleApiContext";
-
 
 /**
  * TabPanel component for displaying tab content with animation
- *
- * @param {Object} props - Component props
- * @param {React.ReactNode} props.children - Tab content
- * @param {string} props.value - Current selected tab value
- * @param {string} props.index - This tab's index value
- * @param {string} props.id - ID for accessibility
- * @param {string} props.ariaLabelledby - ARIA attribute for accessibility
- * @returns {React.ReactElement} - Rendered component
  */
-const TabPanel = ({ children, value, index, id, ariaLabelledby, isMobile }) => {
-  // Check if this is the table tab
-  const isTableTab = index === "table";
-
+const TabPanel = ({ children, value, index, id, ariaLabelledby }) => {
   return (
     <AnimatePresence mode="wait">
       {value === index && (
         <motion.div
           key={index}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
           role="tabpanel"
           id={id}
           aria-labelledby={ariaLabelledby}
-          className={`focus:outline-none w-full ${
-            isTableTab && isMobile ? "p-0" : ""
-          }`}
+          className="focus:outline-none w-full"
         >
           {children}
         </motion.div>
@@ -50,126 +35,139 @@ const TabPanel = ({ children, value, index, id, ariaLabelledby, isMobile }) => {
 };
 
 /**
- * ShowCricket component displays cricket match information in tabs
- *
- * @returns {React.ReactElement} - Rendered component
+ * ShowCricket component - Premium mobile-first design
  */
 const ShowCricket = () => {
-  const { isLiveScore } = useData();
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("live");
 
-  // Check if we're on mobile
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
-    // Initial check
     checkIfMobile();
-
-    // Add event listener for window resize
     window.addEventListener("resize", checkIfMobile);
-
-    // Cleanup
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  // Set initial tab based on whether live matches are available
-  const [selectedTab, setSelectedTab] = useState(
-    isLiveScore ? "live" : "recent"
-  );
-
-  // Tab configuration with icons and labels
+  // Tab configuration with icons - Live tab always visible
   const tabs = [
-    ...(isLiveScore
-      ? [
-          {
-            id: "live",
-            label: "Live Matches",
-            icon: <FiActivity className="w-5 h-5" />,
-            ariaId: "tab-live",
-            component: <LiveMatch />,
-          },
-        ]
-      : []),
+    {
+      id: "live",
+      label: "Live",
+      fullLabel: "Live Matches",
+      icon: <FiActivity className="w-5 h-5" />,
+      ariaId: "tab-live",
+      component: <LiveMatch />,
+      color: "emerald",
+    },
     {
       id: "recent",
-      label: "Recent Matches",
+      label: "Recent",
+      fullLabel: "Recent Matches",
       icon: <MdHistory className="w-5 h-5" />,
       ariaId: "tab-recent",
       component: <RecentMatch />,
+      color: "rose",
     },
     {
       id: "upcoming",
-      label: "Upcoming Matches",
+      label: "Upcoming",
+      fullLabel: "Upcoming",
       icon: <MdUpcoming className="w-5 h-5" />,
       ariaId: "tab-upcoming",
       component: <UpcomingMatch />,
+      color: "amber",
     },
     {
       id: "table",
-      label: "Tournament Table",
+      label: "Standings",
+      fullLabel: "Standings",
       icon: <IoStatsChart className="w-5 h-5" />,
       ariaId: "tab-table",
       component: isMobile ? <MobileMatchTable /> : <MatchTable />,
+      color: "cyan",
     },
   ];
 
+  const getTabColorClass = (color, isActive) => {
+    const colors = {
+      emerald: isActive ? "text-emerald-400 bg-emerald-500/20 border-emerald-500/30" : "text-slate-400 hover:text-emerald-400",
+      rose: isActive ? "text-rose-400 bg-rose-500/20 border-rose-500/30" : "text-slate-400 hover:text-rose-400",
+      amber: isActive ? "text-amber-400 bg-amber-500/20 border-amber-500/30" : "text-slate-400 hover:text-amber-400",
+      cyan: isActive ? "text-cyan-400 bg-cyan-500/20 border-cyan-500/30" : "text-slate-400 hover:text-cyan-400",
+    };
+    return colors[color] || colors.rose;
+  };
+
   return (
     <div className="cricket-widget w-full max-w-5xl mx-auto px-0 md:px-4">
-      {/* Mobile-friendly tab navigation */}
-      <div className="bg-white shadow-lg md:rounded-xl overflow-hidden mb-4 border-b md:border-0 border-gray-100">
-        <div className="grid grid-cols-4 w-full">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setSelectedTab(tab.id)}
-              className={`flex flex-col items-center justify-center py-3 md:py-4 px-1 transition-all duration-200 relative ${
-                selectedTab === tab.id
-                  ? "text-urtechy-red font-medium"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-              id={tab.ariaId}
-              aria-controls={`tabpanel-${tab.id}`}
-              aria-selected={selectedTab === tab.id}
-              role="tab"
-            >
-              <span
-                className={`text-lg md:text-xl mb-1 ${
-                  selectedTab === tab.id ? "text-urtechy-red" : "text-gray-600"
-                }`}
-              >
-                {tab.icon}
-              </span>
-              <span className="text-[10px] md:text-xs font-medium whitespace-nowrap truncate max-w-full">
-                {tab.label}
-              </span>
-              {selectedTab === tab.id && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 md:h-1 bg-urtechy-red" />
-              )}
-            </button>
-          ))}
+      {/* Premium Glassmorphism Tab Navigation */}
+      <div className="relative mb-4">
+        {/* Glow Effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-rose-500/20 via-amber-500/20 to-cyan-500/20 rounded-2xl blur-xl opacity-50" />
+        
+        {/* Tab Bar */}
+        <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-2 md:p-3">
+          <div className="flex gap-2 w-full">
+            {tabs.map((tab) => {
+              const isActive = selectedTab === tab.id;
+              
+              return (
+                <motion.button
+                  key={tab.id}
+                  onClick={() => setSelectedTab(tab.id)}
+                  className={`flex-1 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 py-3 px-2 md:px-4 rounded-xl transition-all duration-300 relative border ${
+                    isActive 
+                      ? getTabColorClass(tab.color, true) + " border-current"
+                      : "border-transparent " + getTabColorClass(tab.color, false)
+                  }`}
+                  id={tab.ariaId}
+                  aria-controls={`tabpanel-${tab.id}`}
+                  aria-selected={isActive}
+                  role="tab"
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {/* Live Pulse */}
+                  {tab.id === "live" && isActive && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                  )}
+                  
+                  <span className="text-lg md:text-base">
+                    {tab.icon}
+                  </span>
+                  <span className="text-[10px] md:text-sm font-medium whitespace-nowrap">
+                    {isMobile ? tab.label : tab.fullLabel}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Tab content with mobile-friendly styling */}
-      <div
-        className={`bg-white shadow-lg md:rounded-xl ${
-          isMobile ? "p-0" : "p-3 md:p-5"
-        } min-h-[350px] md:min-h-[400px]`}
-      >
-        {tabs.map((tab) => (
-          <TabPanel
-            key={tab.id}
-            value={selectedTab}
-            index={tab.id}
-            id={`tabpanel-${tab.id}`}
-            ariaLabelledby={tab.ariaId}
-            isMobile={isMobile}
-          >
-            {tab.component}
-          </TabPanel>
-        ))}
+      {/* Tab Content */}
+      <div className="relative">
+        {/* Content Glow */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-2xl blur-xl opacity-30" />
+        
+        {/* Content Container */}
+        <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-0 md:p-4 min-h-[400px] overflow-hidden">
+          {tabs.map((tab) => (
+            <TabPanel
+              key={tab.id}
+              value={selectedTab}
+              index={tab.id}
+              id={`tabpanel-${tab.id}`}
+              ariaLabelledby={tab.ariaId}
+            >
+              {tab.component}
+            </TabPanel>
+          ))}
+        </div>
       </div>
     </div>
   );

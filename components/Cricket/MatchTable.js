@@ -8,9 +8,10 @@ import {
   FaCheck,
   FaChevronDown,
   FaChevronUp,
+  FaTrophy,
+  FaMedal,
 } from "react-icons/fa";
 
-// Animation variants
 const tableVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -18,21 +19,17 @@ const tableVariants = {
     transition: {
       duration: 0.5,
       when: "beforeChildren",
-      staggerChildren: 0.1,
+      staggerChildren: 0.05,
     },
   },
 };
 
 const rowVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
     y: 0,
     transition: { duration: 0.3 },
-  },
-  hover: {
-    backgroundColor: "rgba(229, 9, 20, 0.05)",
-    transition: { duration: 0.2 },
   },
 };
 
@@ -51,26 +48,20 @@ const expandVariants = {
 };
 
 const DesktopPointsTable = () => {
-  // State variables
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedIndex, setExpandedIndex] = useState(null);
 
-  // Fetch data from API on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
           "https://api-sync.vercel.app/api/cricket/schedule"
         );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
-        if (!data.success) {
-          throw new Error("API returned success: false");
-        }
+        if (!data.success) throw new Error("API returned success: false");
         setTeams(data.data.teams);
         setLoading(false);
       } catch (error) {
@@ -81,7 +72,6 @@ const DesktopPointsTable = () => {
     fetchData();
   }, []);
 
-  // Function to parse team name and qualification status
   const getTeamNameAndStatus = (teamString) => {
     const trimmed = teamString.trim();
     if (trimmed.endsWith("(Q)")) {
@@ -93,40 +83,47 @@ const DesktopPointsTable = () => {
     return { name: trimmed, isQualified: false };
   };
 
-  // Render loading state
+  const getPositionStyle = (position) => {
+    if (position === 1) return "from-yellow-400 to-amber-500 shadow-amber-500/30";
+    if (position === 2) return "from-slate-300 to-slate-400 shadow-slate-400/30";
+    if (position === 3) return "from-amber-600 to-amber-700 shadow-amber-600/30";
+    return "from-slate-600 to-slate-700";
+  };
+
+  // Loading state
   if (loading) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-center py-8"
+        className="text-center py-12"
       >
         <div className="inline-block relative w-16 h-16 mb-4">
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full" />
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-urtechy-red rounded-full animate-spin" />
+          <div className="absolute inset-0 border-4 border-white/10 rounded-full" />
+          <div className="absolute inset-0 border-4 border-t-rose-500 border-r-amber-500 border-b-rose-500 border-l-amber-500 rounded-full animate-spin" />
         </div>
-        <p className="font-bold text-lg text-gray-700">Loading match data...</p>
+        <p className="font-bold text-lg text-white">Loading standings...</p>
       </motion.div>
     );
   }
 
-  // Render error state
+  // Error state
   if (error) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center py-8 px-4 mx-auto max-w-md"
+        className="text-center py-8 px-4 max-w-md mx-auto"
       >
-        <div className="bg-red-50 p-6 rounded-lg shadow-sm border border-red-100">
-          <FaTimesCircle className="text-red-500 text-4xl mx-auto mb-4" />
-          <h3 className="font-bold text-lg text-gray-800 mb-2">
+        <div className="bg-red-500/10 border border-red-500/30 p-6 rounded-2xl">
+          <FaTimesCircle className="text-red-400 text-4xl mx-auto mb-4" />
+          <h3 className="font-bold text-lg text-white mb-2">
             Unable to Load Data
           </h3>
-          <p className="text-gray-600 mb-4">{error.message}</p>
+          <p className="text-slate-400 mb-4">{error.message}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-rose-500/25 transition-all"
           >
             Try Again
           </button>
@@ -135,51 +132,65 @@ const DesktopPointsTable = () => {
     );
   }
 
-  // Render table
   return (
     <motion.div
-      className="w-full rounded-lg shadow-md"
+      className="w-full rounded-2xl overflow-hidden"
       variants={tableVariants}
       initial="hidden"
       animate="visible"
     >
       <div className="overflow-x-auto">
-        <table className="table-auto w-full border-collapse bg-white">
+        <table className="table-auto w-full">
           {/* Table Header */}
           <thead>
-            <tr className="bg-urtechy-red text-white">
-              <th className="px-4 py-3 text-left font-bold">Team</th>
-              <th className="px-4 py-3 text-center font-bold">M</th>
-              <th className="px-4 py-3 text-center font-bold">W</th>
-              <th className="px-4 py-3 text-center font-bold">L</th>
-              <th className="px-4 py-3 text-center font-bold">T</th>
-              <th className="px-4 py-3 text-center font-bold">NR</th>
-              <th className="px-4 py-3 text-center font-bold">Pts</th>
-              <th className="px-4 py-3 text-center font-bold">NRR</th>
+            <tr className="bg-gradient-to-r from-rose-500/20 to-amber-500/20 border-b border-white/10">
+              <th className="px-4 py-4 text-left font-bold text-white">#</th>
+              <th className="px-4 py-4 text-left font-bold text-white">Team</th>
+              <th className="px-4 py-4 text-center font-bold text-slate-300">M</th>
+              <th className="px-4 py-4 text-center font-bold text-emerald-400">W</th>
+              <th className="px-4 py-4 text-center font-bold text-red-400">L</th>
+              <th className="px-4 py-4 text-center font-bold text-slate-300">T</th>
+              <th className="px-4 py-4 text-center font-bold text-slate-300">NR</th>
+              <th className="px-4 py-4 text-center font-bold text-rose-400">Pts</th>
+              <th className="px-4 py-4 text-center font-bold text-slate-300">NRR</th>
             </tr>
           </thead>
           {/* Table Body */}
           <tbody>
             {teams.map((team, index) => {
               const { name, isQualified } = getTeamNameAndStatus(team.team);
-              const isEven = index % 2 === 0;
+              const position = index + 1;
 
               return (
                 <React.Fragment key={index}>
-                  {/* Team Row */}
                   <motion.tr
                     variants={rowVariants}
-                    whileHover="hover"
-                    className={`cursor-pointer border-b ${
-                      isEven ? "bg-white" : "bg-gray-50"
+                    className={`cursor-pointer border-b border-white/5 transition-all duration-200 hover:bg-white/5 ${
+                      index % 2 === 0 ? "bg-transparent" : "bg-white/[0.02]"
                     }`}
                     onClick={() =>
                       setExpandedIndex(expandedIndex === index ? null : index)
                     }
                   >
-                    <td className="px-4 py-3 border-r">
+                    {/* Position */}
+                    <td className="px-4 py-4">
+                      <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${getPositionStyle(position)} flex items-center justify-center shadow-lg`}>
+                        {position <= 3 ? (
+                          position === 1 ? (
+                            <FaTrophy className="w-4 h-4 text-white" />
+                          ) : (
+                            <FaMedal className="w-4 h-4 text-white" />
+                          )
+                        ) : (
+                          <span className="text-sm font-bold text-white">{position}</span>
+                        )}
+                      </div>
+                    </td>
+                    
+                    {/* Team */}
+                    <td className="px-4 py-4">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full mr-3 flex items-center justify-center overflow-hidden bg-urtechy-red">
+                        <div className="w-10 h-10 rounded-full mr-3 overflow-hidden bg-gradient-to-br from-rose-500 to-amber-500 ring-2 ring-white/10">
                           {team.teamImage ? (
                             <img
                               src={team.teamImage}
@@ -187,53 +198,57 @@ const DesktopPointsTable = () => {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <span className="text-white font-bold text-xs">
-                              {name.substring(0, 2).toUpperCase()}
-                            </span>
+                            <div className="w-full h-full flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">
+                                {name.substring(0, 2).toUpperCase()}
+                              </span>
+                            </div>
                           )}
                         </div>
                         <div className="flex flex-col">
-                          <span className="font-medium text-gray-800">
+                          <span className="font-semibold text-white">
                             {name}
                           </span>
                           {isQualified && (
-                            <span className="text-xs text-green-600 flex items-center">
-                              <FaCheck className="mr-1" /> Qualified
+                            <span className="text-xs text-emerald-400 flex items-center gap-1">
+                              <FaCheck className="w-3 h-3" /> Qualified
                             </span>
                           )}
                         </div>
                         {expandedIndex === index ? (
-                          <FaChevronUp className="ml-auto text-gray-400" />
+                          <FaChevronUp className="ml-auto text-slate-400" />
                         ) : (
-                          <FaChevronDown className="ml-auto text-gray-400" />
+                          <FaChevronDown className="ml-auto text-slate-400" />
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-center border-r text-gray-700">
+                    
+                    <td className="px-4 py-4 text-center text-slate-300">
                       {team.matches}
                     </td>
-                    <td className="px-4 py-3 text-center border-r font-medium text-green-600">
+                    <td className="px-4 py-4 text-center font-semibold text-emerald-400">
                       {team.wins}
                     </td>
-                    <td className="px-4 py-3 text-center border-r font-medium text-red-600">
+                    <td className="px-4 py-4 text-center font-semibold text-red-400">
                       {team.losses}
                     </td>
-                    <td className="px-4 py-3 text-center border-r text-gray-700">
+                    <td className="px-4 py-4 text-center text-slate-400">
                       {team.tied}
                     </td>
-                    <td className="px-4 py-3 text-center border-r text-gray-700">
+                    <td className="px-4 py-4 text-center text-slate-400">
                       {team.noResult}
                     </td>
-                    <td className="px-4 py-3 text-center border-r font-bold text-urtechy-red">
+                    <td className="px-4 py-4 text-center font-bold text-rose-400 text-lg">
                       {team.points}
                     </td>
                     <td
-                      className={`px-4 py-3 text-center font-medium ${
+                      className={`px-4 py-4 text-center font-medium ${
                         parseFloat(team.netRunRate) >= 0
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "text-emerald-400"
+                          : "text-red-400"
                       }`}
                     >
+                      {parseFloat(team.netRunRate) >= 0 ? "+" : ""}
                       {team.netRunRate}
                     </td>
                   </motion.tr>
@@ -247,51 +262,51 @@ const DesktopPointsTable = () => {
                         animate="visible"
                         exit="exit"
                       >
-                        <td colSpan={8} className="px-0 py-0 border-b">
-                          <div className="bg-gray-50 p-5 border-t-2 border-urtechy-red">
-                            <h3 className="text-lg font-bold mb-4 text-gray-800">
+                        <td colSpan={9} className="px-0 py-0">
+                          <div className="bg-white/[0.02] p-6 border-t-2 border-rose-500/50">
+                            <h3 className="text-lg font-bold mb-4 text-white flex items-center gap-2">
+                              <FaClock className="text-amber-400" />
                               Match History
                             </h3>
-                            <div className="grid gap-3 md:grid-cols-1 lg:grid-cols-2">
+                            <div className="grid gap-3 md:grid-cols-2">
                               {team.matchesPlayed.map((match, idx) => {
-                                // Determine result type and styling
                                 let resultIcon, resultClass, resultBg;
                                 if (match.result.startsWith("Won")) {
                                   resultIcon = (
-                                    <FaCheckCircle className="text-green-500 mr-2" />
+                                    <FaCheckCircle className="text-emerald-400 mr-2 shrink-0" />
                                   );
-                                  resultClass = "text-green-700";
-                                  resultBg = "bg-green-50";
+                                  resultClass = "text-emerald-400";
+                                  resultBg = "bg-emerald-500/10 border-emerald-500/20";
                                 } else if (match.result.startsWith("Loss")) {
                                   resultIcon = (
-                                    <FaTimesCircle className="text-red-500 mr-2" />
+                                    <FaTimesCircle className="text-red-400 mr-2 shrink-0" />
                                   );
-                                  resultClass = "text-red-700";
-                                  resultBg = "bg-red-50";
+                                  resultClass = "text-red-400";
+                                  resultBg = "bg-red-500/10 border-red-500/20";
                                 } else if (match.result.includes("tied")) {
                                   resultIcon = (
-                                    <FaMinusCircle className="text-yellow-500 mr-2" />
+                                    <FaMinusCircle className="text-amber-400 mr-2 shrink-0" />
                                   );
-                                  resultClass = "text-yellow-700";
-                                  resultBg = "bg-yellow-50";
+                                  resultClass = "text-amber-400";
+                                  resultBg = "bg-amber-500/10 border-amber-500/20";
                                 } else {
                                   resultIcon = (
-                                    <FaClock className="text-gray-500 mr-2" />
+                                    <FaClock className="text-slate-400 mr-2 shrink-0" />
                                   );
-                                  resultClass = "text-gray-700";
-                                  resultBg = "bg-gray-100";
+                                  resultClass = "text-slate-400";
+                                  resultBg = "bg-white/5 border-white/10";
                                 }
 
                                 return (
                                   <motion.div
                                     key={idx}
-                                    className={`p-3 rounded-lg ${resultBg} border border-gray-100`}
+                                    className={`p-4 rounded-xl ${resultBg} border`}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.05 }}
                                   >
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <div className="flex items-center mr-2">
+                                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                                      <div className="flex items-center">
                                         {resultIcon}
                                         <span
                                           className={`font-medium ${resultClass}`}
@@ -299,11 +314,11 @@ const DesktopPointsTable = () => {
                                           {match.result || "Upcoming"}
                                         </span>
                                       </div>
-                                      <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded">
+                                      <span className="text-sm text-slate-500 bg-white/5 px-2 py-1 rounded">
                                         {match.date}
                                       </span>
                                     </div>
-                                    <div className="mt-2 text-gray-700">
+                                    <div className="text-slate-300">
                                       <span className="font-medium">
                                         {match.description}
                                       </span>{" "}

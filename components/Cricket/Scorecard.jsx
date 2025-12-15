@@ -16,8 +16,6 @@ const Scorecard = ({ scorecard }) => {
       const team = inning.teamName || "Unknown";
       const header = inning.inningsHeader || "";
       
-      // Create a unique key for the inning
-      // For Test matches, distinguish between 1st and 2nd innings
       let key = team;
       if (header.includes("1st Innings") || header.includes("Innings 1")) {
         key = `${team}_1`;
@@ -27,16 +25,7 @@ const Scorecard = ({ scorecard }) => {
         key = `${team}_super`;
       }
 
-      // Store the inning, overwriting previous entries with the same key
-      // This ensures we keep the latest version of the inning (assuming the API appends updates)
-      // while preserving the order of the *first* appearance of the key
-      if (inningsMap.has(key)) {
-        // If key exists, we only update the value, but the key's position in the Map remains the same
-        // (Map preserves insertion order)
-        inningsMap.set(key, inning);
-      } else {
-        inningsMap.set(key, inning);
-      }
+      inningsMap.set(key, inning);
     });
 
     return Array.from(inningsMap.values());
@@ -44,40 +33,40 @@ const Scorecard = ({ scorecard }) => {
 
   if (!uniqueInnings || uniqueInnings.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500 bg-gray-50 rounded-lg">
+      <div className="mt-4 p-4 text-center text-slate-400 bg-white/5 rounded-xl border border-white/10">
         Scorecard not available yet.
       </div>
     );
   }
 
   return (
-    <div className="mt-4 bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+    <div className="mt-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden">
       {/* Innings Tabs */}
-      <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-hide">
+      <div className="flex border-b border-white/10 overflow-x-auto scrollbar-hide">
         {uniqueInnings.map((inning, index) => (
           <button
             key={index}
             onClick={() => setActiveInning(index)}
-            className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-all relative ${
+            className={`flex-1 min-w-[120px] px-4 py-3 text-sm font-medium whitespace-nowrap transition-all relative ${
               activeInning === index
-                ? "text-urtechy-red bg-red-50"
-                : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+                ? "text-rose-400 bg-rose-500/10"
+                : "text-slate-400 hover:bg-white/5 hover:text-white"
             }`}
           >
-            <div className="flex flex-col items-start">
-              <span className="font-bold">
+            <div className="flex flex-col items-center md:items-start">
+              <span className="font-bold text-xs md:text-sm">
                 {inning.teamName || `Inning ${index + 1}`}
               </span>
               {inning.inningsHeader && (
-                <span className="text-xs opacity-80 font-normal">
+                <span className="text-[10px] opacity-70 font-normal">
                   {inning.inningsHeader.replace(inning.teamName || "", "").trim()}
                 </span>
               )}
             </div>
             {activeInning === index && (
               <motion.div
-                layoutId="activeTabIndicator"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-urtechy-red"
+                layoutId="scorecardTab"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-rose-500 to-amber-500"
               />
             )}
           </button>
@@ -85,7 +74,7 @@ const Scorecard = ({ scorecard }) => {
       </div>
 
       {/* Scorecard Content */}
-      <div className="p-0 sm:p-4">
+      <div className="p-2 md:p-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeInning}
@@ -95,64 +84,67 @@ const Scorecard = ({ scorecard }) => {
             transition={{ duration: 0.2 }}
           >
             {/* Batting Table */}
-            <div className="mb-6 overflow-hidden sm:rounded-lg border-b sm:border border-gray-100">
-              <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex items-center">
-                <GiCricketBat className="text-gray-500 mr-2" />
-                <h4 className="text-sm font-bold text-gray-800 uppercase">
+            <div className="mb-4 overflow-hidden rounded-xl border border-white/10">
+              <div className="bg-white/5 px-4 py-2 flex items-center border-b border-white/10">
+                <GiCricketBat className="text-rose-400 mr-2" />
+                <h4 className="text-xs font-bold text-white uppercase tracking-wide">
                   Batting
                 </h4>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-gray-500 uppercase bg-gray-50/50">
-                    <tr>
-                      <th className="px-3 py-2 font-semibold">Batter</th>
-                      <th className="px-3 py-2 font-semibold text-right">R</th>
-                      <th className="px-3 py-2 font-semibold text-right">B</th>
-                      <th className="px-3 py-2 font-semibold text-right hidden sm:table-cell">4s</th>
-                      <th className="px-3 py-2 font-semibold text-right hidden sm:table-cell">6s</th>
-                      <th className="px-3 py-2 font-semibold text-right">SR</th>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-white/5 text-slate-400 text-xs uppercase">
+                      <th className="px-3 py-2 text-left font-semibold">Batter</th>
+                      <th className="px-2 py-2 text-right font-semibold">R</th>
+                      <th className="px-2 py-2 text-right font-semibold">B</th>
+                      <th className="px-2 py-2 text-right font-semibold hidden sm:table-cell">4s</th>
+                      <th className="px-2 py-2 text-right font-semibold hidden sm:table-cell">6s</th>
+                      <th className="px-2 py-2 text-right font-semibold">SR</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
+                  <tbody>
                     {uniqueInnings[activeInning]?.batting?.map((batter, idx) => (
                       <tr
                         key={idx}
-                        className={`transition-colors ${
+                        className={`border-t border-white/5 transition-colors ${
                           batter.isBatting 
-                            ? "bg-red-50/30 hover:bg-red-50/50" 
-                            : "hover:bg-gray-50"
+                            ? "bg-emerald-500/10" 
+                            : idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.02]"
                         }`}
                       >
                         <td className="px-3 py-2.5">
                           <div className="flex items-center">
                             {batter.isBatting && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-urtechy-red mr-2 animate-pulse" />
+                              <span className="relative flex h-2 w-2 mr-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                              </span>
                             )}
                             <div>
-                              <div className={`font-medium ${batter.isBatting ? "text-urtechy-red" : "text-gray-800"}`}>
+                              <div className={`font-medium ${batter.isBatting ? "text-emerald-400" : "text-white"}`}>
                                 {batter.batter}
                                 {batter.isBatting && "*"}
                               </div>
-                              <div className="text-xs text-gray-500 font-normal truncate max-w-[120px] sm:max-w-xs">
+                              <div className="text-[10px] text-slate-500 truncate max-w-[100px] md:max-w-[180px]">
                                 {batter.dismissal}
                               </div>
                             </div>
                           </div>
                         </td>
-                        <td className={`px-3 py-2 text-right font-bold ${batter.isBatting ? "text-gray-900" : "text-gray-700"}`}>
+                        <td className={`px-2 py-2 text-right font-bold ${batter.isBatting ? "text-white" : "text-slate-300"}`}>
                           {batter.runs}
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600">
+                        <td className="px-2 py-2 text-right text-slate-400">
                           {batter.balls}
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600 hidden sm:table-cell">
+                        <td className="px-2 py-2 text-right text-slate-400 hidden sm:table-cell">
                           {batter.fours}
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600 hidden sm:table-cell">
+                        <td className="px-2 py-2 text-right text-slate-400 hidden sm:table-cell">
                           {batter.sixes}
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600">
+                        <td className="px-2 py-2 text-right text-slate-400">
                           {batter.sr}
                         </td>
                       </tr>
@@ -163,58 +155,61 @@ const Scorecard = ({ scorecard }) => {
             </div>
 
             {/* Bowling Table */}
-            <div className="overflow-hidden sm:rounded-lg border-b sm:border border-gray-100">
-              <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex items-center">
-                <FaBaseballBall className="text-gray-500 mr-2" />
-                <h4 className="text-sm font-bold text-gray-800 uppercase">
+            <div className="overflow-hidden rounded-xl border border-white/10">
+              <div className="bg-white/5 px-4 py-2 flex items-center border-b border-white/10">
+                <FaBaseballBall className="text-amber-400 mr-2" />
+                <h4 className="text-xs font-bold text-white uppercase tracking-wide">
                   Bowling
                 </h4>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-gray-500 uppercase bg-gray-50/50">
-                    <tr>
-                      <th className="px-3 py-2 font-semibold">Bowler</th>
-                      <th className="px-3 py-2 font-semibold text-right">O</th>
-                      <th className="px-3 py-2 font-semibold text-right">M</th>
-                      <th className="px-3 py-2 font-semibold text-right">R</th>
-                      <th className="px-3 py-2 font-semibold text-right">W</th>
-                      <th className="px-3 py-2 font-semibold text-right">ECO</th>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-white/5 text-slate-400 text-xs uppercase">
+                      <th className="px-3 py-2 text-left font-semibold">Bowler</th>
+                      <th className="px-2 py-2 text-right font-semibold">O</th>
+                      <th className="px-2 py-2 text-right font-semibold">M</th>
+                      <th className="px-2 py-2 text-right font-semibold">R</th>
+                      <th className="px-2 py-2 text-right font-semibold">W</th>
+                      <th className="px-2 py-2 text-right font-semibold">ECO</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
+                  <tbody>
                     {uniqueInnings[activeInning]?.bowling?.map((bowler, idx) => (
                       <tr
                         key={idx}
-                        className={`transition-colors ${
+                        className={`border-t border-white/5 transition-colors ${
                           bowler.isBowling 
-                            ? "bg-red-50/30 hover:bg-red-50/50" 
-                            : "hover:bg-gray-50"
+                            ? "bg-emerald-500/10" 
+                            : idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.02]"
                         }`}
                       >
                         <td className="px-3 py-2.5">
                           <div className="flex items-center">
                             {bowler.isBowling && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-urtechy-red mr-2 animate-pulse" />
+                              <span className="relative flex h-2 w-2 mr-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                              </span>
                             )}
-                            <span className={`font-medium ${bowler.isBowling ? "text-urtechy-red" : "text-gray-800"}`}>
+                            <span className={`font-medium ${bowler.isBowling ? "text-emerald-400" : "text-white"}`}>
                               {bowler.bowler}
                             </span>
                           </div>
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600">
+                        <td className="px-2 py-2 text-right text-slate-400">
                           {bowler.overs}
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600">
+                        <td className="px-2 py-2 text-right text-slate-400">
                           {bowler.maidens}
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600">
+                        <td className="px-2 py-2 text-right text-slate-400">
                           {bowler.runs}
                         </td>
-                        <td className="px-3 py-2 text-right font-bold text-urtechy-red">
+                        <td className="px-2 py-2 text-right font-bold text-rose-400">
                           {bowler.wickets}
                         </td>
-                        <td className="px-3 py-2 text-right text-gray-600">
+                        <td className="px-2 py-2 text-right text-slate-400">
                           {bowler.eco}
                         </td>
                       </tr>
