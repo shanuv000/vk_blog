@@ -283,12 +283,23 @@ export const getDirectSimilarPosts = async (slug, categories) => {
     }
 
     // Convert object to array if needed
-    if (!Array.isArray(data.posts) && typeof data.posts === "object") {
+    let posts = data.posts;
+    if (!Array.isArray(posts) && typeof posts === "object") {
       console.log("Converting posts object to array in getDirectSimilarPosts");
-      return Object.values(data.posts);
+      posts = Object.values(posts);
     }
 
-    return data.posts;
+    // Optimize image URLs for thumbnails (112x112 for 2x display)
+    return posts.map((post) => ({
+      ...post,
+      featuredImage: post.featuredImage?.url
+        ? {
+            url: post.featuredImage.url,
+            // Pre-compute optimized URL for faster rendering
+            thumbnailUrl: `${post.featuredImage.url}?w=112&h=112&q=75&fit=crop&auto=format`,
+          }
+        : null,
+    }));
   } catch (error) {
     console.error("Error fetching similar posts directly:", error);
     return [];

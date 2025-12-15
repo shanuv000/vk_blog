@@ -1,29 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import moment from "moment";
-import { FaImage } from "react-icons/fa";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
-import LoadingSpinner from "./LoadingSpinner";
 import {
   getDirectRecentPosts,
   getDirectSimilarPosts,
 } from "../services/direct-api";
 
 const PostWidget = ({ categories, slug }) => {
-  // Debug log to see what's being passed
-  if (process.env.NODE_ENV === 'development') {
-
-    if (process.env.NODE_ENV === 'development') {
-
-
-      console.log("PostWidget rendered with:", { categories, slug });
-
-
-    }
-
-  }
-
   // Use direct API for similar posts
   const [similarPosts, setSimilarPosts] = useState([]);
   const [similarLoading, setSimilarLoading] = useState(true);
@@ -38,44 +20,11 @@ const PostWidget = ({ categories, slug }) => {
       const fetchSimilarPosts = async () => {
         try {
           setSimilarLoading(true);
-          if (process.env.NODE_ENV === 'development') {
-
-            if (process.env.NODE_ENV === 'development') {
-
-
-              console.log("Fetching similar posts for:", slug, categories);
-
-
-            }
-
-          }
           const result = await getDirectSimilarPosts(slug, categories);
-          if (process.env.NODE_ENV === 'development') {
-
-            if (process.env.NODE_ENV === 'development') {
-
-
-              console.log("Similar posts result:", result);
-
-
-            }
-
-          }
 
           if (result && result.length > 0) {
             setSimilarPosts(result);
           } else {
-            if (process.env.NODE_ENV === 'development') {
-
-              if (process.env.NODE_ENV === 'development') {
-
-
-                console.log("No similar posts found, using fallback");
-
-
-              }
-
-            }
             // Fallback to recent posts if no similar posts are found
             const recentResult = await getDirectRecentPosts();
             setSimilarPosts(recentResult || []);
@@ -118,31 +67,13 @@ const PostWidget = ({ categories, slug }) => {
 
   // Determine which posts to show based on props
   const posts = useMemo(() => {
-    let result;
-    if (slug) {
-      result = similarPosts;
-    } else {
-      result = recentPosts;
-    }
+    let result = slug ? similarPosts : recentPosts;
 
     // Ensure posts is always an array
-    if (!result) {
-      return [];
-    }
+    if (!result) return [];
 
-    // Convert object to array if needed (fixes "Expected array data but received: object" error)
+    // Convert object to array if needed
     if (!Array.isArray(result) && typeof result === "object") {
-      if (process.env.NODE_ENV === 'development') {
-
-        if (process.env.NODE_ENV === 'development') {
-
-
-          console.log("Converting posts object to array:", result);
-
-
-        }
-
-      }
       return Object.values(result);
     }
 
@@ -152,80 +83,80 @@ const PostWidget = ({ categories, slug }) => {
   // Loading state
   const isLoading = slug ? similarLoading : recentLoading;
 
-  return (
-    <div className="space-y-4">
-      {isLoading ? (
-        // Enhanced loading state
-        <div className="space-y-4">
-          <LoadingSpinner
-            size="small"
-            type="dots"
-            message={
-              slug ? "Loading similar posts..." : "Loading recent posts..."
-            }
-          />
-          <div className="animate-pulse space-y-4">
-            {[1, 2, 3].map((item) => (
-              <div className="flex items-center w-full" key={item}>
-                <div className="w-16 h-16 bg-secondary-light rounded-md flex-none" />
-                <div className="flex-grow ml-4">
-                  <div className="h-2 bg-secondary-light rounded w-1/4 mb-2" />
-                  <div className="h-4 bg-secondary-light rounded w-3/4" />
-                </div>
-              </div>
-            ))}
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((item) => (
+          <div className="flex items-center w-full p-2" key={item}>
+            <div className="w-12 h-12 bg-secondary-light rounded-md flex-none animate-pulse" />
+            <div className="flex-grow ml-3">
+              <div className="h-3 bg-secondary-light rounded w-3/4 animate-pulse" />
+              <div className="h-2 bg-secondary-light rounded w-1/2 mt-2 animate-pulse" />
+            </div>
           </div>
-        </div>
-      ) : posts && posts.length > 0 ? (
-        // Posts loaded successfully
-        posts.map((post, index) => (
+        ))}
+      </div>
+    );
+  }
+
+  if (!posts || posts.length === 0) {
+    return (
+      <p className="text-text-secondary text-center py-4 text-sm">
+        No posts available
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      {posts.map((post, index) => {
+        // Use pre-computed thumbnail URL from API
+        const imageUrl = post.featuredImage?.thumbnailUrl || 
+          (post.featuredImage?.url ? `${post.featuredImage.url}?w=112&h=112&q=75&fit=crop&auto=format` : null);
+        
+        // Simple date formatter
+        const dateStr = post.publishedAt || post.createdAt;
+        const formattedDate = dateStr 
+          ? new Date(dateStr).toLocaleDateString(undefined, {
+              month: 'short', day: 'numeric', year: 'numeric'
+            })
+          : "No date";
+
+        return (
           <Link
+            key={post.slug || index}
             href={`/post/${post.slug}`}
-            key={post.slug || post.title || index}
-            className="group"
+            className="flex items-center w-full p-2 rounded-lg hover:bg-secondary-light transition-colors duration-150 group"
+            prefetch={false}
           >
-            <div className="flex items-center w-full p-2 rounded-lg hover:bg-secondary-light transition-colors duration-200">
-              <div className="w-16 h-16 flex-none overflow-hidden rounded-md">
-                {post.featuredImage?.url ? (
-                  <LazyLoadImage
-                    alt={post.title || "Post image"}
-                    height={64}
-                    width={64}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    src={post.featuredImage.url}
-                    effect="blur"
-                    placeholderSrc={DEFAULT_FEATURED_IMAGE}
-                  />
-                ) : (
-                  <div className="flex items-center justify-center bg-secondary-light h-full w-full">
-                    <FaImage className="text-text-secondary" size={24} />
-                  </div>
-                )}
-              </div>
-              <div className="flex-grow ml-4">
-                <p
-                  className="text-text-secondary text-xs"
-                  suppressHydrationWarning
-                >
-                  {post.publishedAt
-                    ? moment(post.publishedAt).format("MMM DD, YYYY")
-                    : post.createdAt
-                    ? moment(post.createdAt).format("MMM DD, YYYY")
-                    : "No date"}
-                </p>
-                <h4 className="text-text-primary group-hover:text-primary transition-colors duration-200 font-medium line-clamp-2">
-                  {post.title || "Untitled Post"}
-                </h4>
-              </div>
+            <div className="w-12 h-12 flex-none overflow-hidden rounded-md bg-secondary-light">
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt=""
+                  width={48}
+                  height={48}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full w-full">
+                  <span className="text-text-secondary text-sm">📄</span>
+                </div>
+              )}
+            </div>
+            <div className="flex-grow ml-3 min-w-0">
+              <p className="text-xs text-text-secondary mb-0.5 font-medium">
+                {formattedDate}
+              </p>
+              <h4 className="text-text-primary font-medium text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-150">
+                {post.title}
+              </h4>
             </div>
           </Link>
-        ))
-      ) : (
-        // No posts found
-        <p className="text-text-secondary text-center py-4">
-          No posts available
-        </p>
-      )}
+        );
+      })}
     </div>
   );
 };
