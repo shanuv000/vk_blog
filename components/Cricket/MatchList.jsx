@@ -4,10 +4,50 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { BiCommentDetail, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { FiRefreshCw } from "react-icons/fi";
-import { IoLocationOutline } from "react-icons/io5";
+import { IoLocationOutline, IoCalendarOutline } from "react-icons/io5";
 import { ClipLoader } from "react-spinners";
 import ball from "../../public/cricket/ball.png";
 import Scorecard from "./Scorecard";
+
+/**
+ * Format match date to rich readable format
+ * @param {Object} match - Match data object
+ * @returns {string} - Formatted date string
+ */
+function formatMatchDate(match) {
+  // Try to use ISO date first for accurate parsing
+  if (match.matchStartTime?.startDateISO) {
+    try {
+      const date = new Date(match.matchStartTime.startDateISO);
+      return date.toLocaleDateString('en-IN', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (e) {
+      // Fall through to other options
+    }
+  }
+  
+  // Fall back to time field
+  if (match.time && match.time !== 'N/A' && match.time !== 'LIVE') {
+    return match.time;
+  }
+  
+  // Use matchStartTime display values
+  if (match.matchStartTime) {
+    const parts = [];
+    if (match.matchStartTime.date) parts.push(match.matchStartTime.date);
+    if (match.matchStartTime.time) parts.push(match.matchStartTime.time);
+    if (parts.length > 0) return parts.join(' at ');
+  }
+  
+  return null;
+}
 
 /**
  * MatchList component displays cricket matches with filtering by tournament
@@ -308,9 +348,22 @@ const MatchList = ({
                     {/* Batting team */}
                     {match.playingTeamBat && match.playingTeamBat !== "N/A" && (
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-urtechy-red to-urtechy-orange flex items-center justify-center text-white font-bold text-xs mr-3">
-                          {match.playingTeamBat.substring(0, 2).toUpperCase()}
-                        </div>
+                        {match.team1Icon ? (
+                          <div className="w-8 h-8 mr-3 relative overflow-hidden rounded-full bg-gray-100">
+                            <Image
+                              src={match.team1Icon}
+                              alt={match.playingTeamBat}
+                              width={32}
+                              height={32}
+                              className="object-cover"
+                              unoptimized
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-urtechy-red to-urtechy-orange flex items-center justify-center text-white font-bold text-xs mr-3">
+                            {match.playingTeamBat.substring(0, 2).toUpperCase()}
+                          </div>
+                        )}
                         <div>
                           <h2 className="text-base font-bold text-gray-800">
                             {match.playingTeamBat}
@@ -326,11 +379,24 @@ const MatchList = ({
                     {match.playingTeamBall &&
                       match.playingTeamBall !== "N/A" && (
                         <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs mr-3">
-                            {match.playingTeamBall
-                              .substring(0, 2)
-                              .toUpperCase()}
-                          </div>
+                          {match.team2Icon ? (
+                            <div className="w-8 h-8 mr-3 relative overflow-hidden rounded-full bg-gray-100">
+                              <Image
+                                src={match.team2Icon}
+                                alt={match.playingTeamBall}
+                                width={32}
+                                height={32}
+                                className="object-cover"
+                                unoptimized
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs mr-3">
+                              {match.playingTeamBall
+                                .substring(0, 2)
+                                .toUpperCase()}
+                            </div>
+                          )}
                           <div>
                             <h2 className="text-base font-medium text-gray-700">
                               {match.playingTeamBall}
@@ -346,12 +412,45 @@ const MatchList = ({
                       )}
                   </div>
 
-                  {/* Match status */}
-                  {match.matchDetails && (
-                    <div className="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-700 self-start">
-                      {match.matchDetails}
-                    </div>
-                  )}
+                  {/* Match status badge */}
+                  <div className="flex flex-col items-end gap-2 self-start">
+                    {/* Status Badge - LIVE, COMPLETED, or UPCOMING */}
+                    {match.matchStatus === "live" && (
+                      <div className="flex items-center px-3 py-1 bg-green-100 rounded-full text-sm font-bold text-green-700">
+                        <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
+                        LIVE
+                      </div>
+                    )}
+                    {match.matchStatus === "completed" && (
+                      <div className="flex items-center px-3 py-1 bg-gray-200 rounded-full text-sm font-bold text-gray-700">
+                        <svg className="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        COMPLETED
+                      </div>
+                    )}
+                    {match.matchStatus === "upcoming" && (
+                      <div className="flex items-center px-3 py-1 bg-blue-100 rounded-full text-sm font-bold text-blue-700">
+                        <IoCalendarOutline className="w-3 h-3 mr-1.5" />
+                        UPCOMING
+                      </div>
+                    )}
+                    
+                    {/* Result for completed matches */}
+                    {match.matchStatus === "completed" && match.result && (
+                      <div className="px-3 py-1 bg-urtechy-red/10 rounded-full text-sm font-semibold text-urtechy-red max-w-[200px] text-right">
+                        {match.result}
+                      </div>
+                    )}
+                    
+                    {/* Rich Date Display */}
+                    {formatMatchDate(match) && (
+                      <div className="flex items-center text-xs text-gray-500">
+                        <IoCalendarOutline className="w-3 h-3 mr-1" />
+                        {formatMatchDate(match)}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Match info */}

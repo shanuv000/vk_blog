@@ -174,6 +174,12 @@ const nextConfig = {
         hostname: "video.twimg.com",
         pathname: "**",
       },
+      // Cricbuzz CDN for team icons
+      {
+        protocol: "https",
+        hostname: "static.cricbuzz.com",
+        pathname: "**",
+      },
     ],
 
     // Enable image optimization in production

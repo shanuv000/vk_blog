@@ -201,23 +201,17 @@ export const DataProvider = ({ children }) => {
     return response.data || [];
   }, []);
 
-  // const {
-  //   data: recentScores,
-  //   error: recentScoresError,
-  //   loading: loadingRecentScores,
-  //   refetch: fetchRecentScores,
-  // } = useFetchData(`${API_BASE}recent-scores`, (response) => {
-  //   if (response && response.data && Array.isArray(response.data)) {
-  //     return response.data;
-  //   }
-  //   return response.data || [];
-  // }, []);
-
-  // Temporarily disabled
-  const recentScores = [];
-  const recentScoresError = null;
-  const loadingRecentScores = false;
-  const fetchRecentScores = () => {};
+  const {
+    data: recentScores,
+    error: recentScoresError,
+    loading: loadingRecentScores,
+    refetch: fetchRecentScores,
+  } = useFetchData(`${API_BASE}recent-scores`, (response) => {
+    if (response && response.data && Array.isArray(response.data)) {
+      return response.data;
+    }
+    return response.data || [];
+  }, []);
 
   const {
     data: schedule,

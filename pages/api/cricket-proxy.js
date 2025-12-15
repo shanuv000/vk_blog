@@ -20,14 +20,22 @@ function extractHeading(match) {
     return "ODI Matches";
   }
 
-  // T20 matches (including T20I, WBBL, etc.)
+  // T20 matches (including T20I, WBBL, BBL, etc.)
   if (
     matchDetails.includes("T20") ||
     location.includes("T20") ||
     matchDetails.includes("Big Bash") ||
-    location.includes("Big Bash")
+    location.includes("Big Bash") ||
+    matchDetails.includes("BBL") ||
+    matchDetails.includes("ILT20") ||
+    matchDetails.includes("International League")
   ) {
     return "T20 Matches";
+  }
+
+  // Plunket Shield (New Zealand domestic)
+  if (matchDetails.includes("Plunket Shield") || location.includes("Plunket")) {
+    return "Domestic Matches";
   }
 
   // Group stage matches (World Cup, Asia Cup, etc.)
@@ -54,6 +62,16 @@ function extractHeading(match) {
     return "Women's Cricket";
   }
 
+  // SEA Games
+  if (matchDetails.includes("SEA Games") || location.includes("SEA Games")) {
+    return "SEA Games";
+  }
+
+  // U19 matches
+  if (matchDetails.includes("U19") || location.includes("U19")) {
+    return "U19 Matches";
+  }
+
   // Default category
   return "Other Matches";
 }
@@ -61,16 +79,22 @@ function extractHeading(match) {
 /**
  * Add heading field to all matches in the response data
  * @param {Object} data - API response data
+ * @param {string} endpoint - The API endpoint being processed
  * @returns {Object} - Modified data with heading field added
  */
-function addHeadingToMatches(data) {
+function addHeadingToMatches(data, endpoint) {
   if (!data || !data.data || !Array.isArray(data.data)) {
     return data;
   }
 
+  let matches = data.data;
+
+  // No filtering for live-scores - show all matches from the endpoint
+  // The matchStatus field will indicate if a match is live, completed, or upcoming
+
   return {
     ...data,
-    data: data.data.map((match) => ({
+    data: matches.map((match) => ({
       ...match,
       heading: extractHeading(match),
     })),
@@ -157,7 +181,7 @@ export default async function handler(req, res) {
           data.data = data.data.slice(0, 20);
         }
 
-        const dataWithHeadings = addHeadingToMatches(data);
+        const dataWithHeadings = addHeadingToMatches(data, endpoint);
         return res.status(200).json(dataWithHeadings);
       }
 
@@ -191,7 +215,7 @@ export default async function handler(req, res) {
 
           if (backupResponse.ok) {
             const data = await backupResponse.json();
-            const dataWithHeadings = addHeadingToMatches(data);
+            const dataWithHeadings = addHeadingToMatches(data, endpoint);
             return res.status(200).json(dataWithHeadings);
           }
         } catch (backupError) {
