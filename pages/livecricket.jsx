@@ -5,14 +5,17 @@ import { motion } from "framer-motion";
 import { FiActivity } from "react-icons/fi";
 import ShowCricket from "../components/Cricket/ShowCricket";
 import ball from "../public/cricket/ball.png";
-import { useData } from "../store/HandleApiContext";
+import { CricketDataProvider, useCricketData } from "../store/CricketDataContext";
 
 /**
  * LiveCricket page component
  * Premium mobile-first design with glassmorphism effects
+ * CricketDataProvider ensures cricket APIs only fetch on this page
  */
-const LiveCricket = () => {
-  const { isLiveScore } = useData();
+
+// Inner component that uses cricket data
+const LiveCricketContent = () => {
+  const { isLiveScore } = useCricketData();
 
   return (
     <>
@@ -214,6 +217,16 @@ const LiveCricket = () => {
         }
       `}</style>
     </>
+  );
+};
+
+// Wrapper component with CricketDataProvider
+// Cricket APIs ONLY fetch when this page is mounted
+const LiveCricket = () => {
+  return (
+    <CricketDataProvider>
+      <LiveCricketContent />
+    </CricketDataProvider>
   );
 };
 

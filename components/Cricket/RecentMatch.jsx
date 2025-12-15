@@ -1,7 +1,7 @@
 import React from "react";
 import MatchList from "./MatchList";
 import useMatchData from "../../hooks/useMatchData";
-import { useData } from "../../store/HandleApiContext";
+import { useCricketData } from "../../store/CricketDataContext";
 
 const RecentMatch = () => {
   const {
@@ -9,7 +9,7 @@ const RecentMatch = () => {
     recentScoresError,
     loadingRecentScores,
     fetchRecentScores,
-  } = useData();
+  } = useCricketData();
   const {
     headings,
     selectedHeading,

@@ -1,7 +1,7 @@
 import React from "react";
 import MatchList from "./MatchList";
 import useMatchData from "../../hooks/useMatchData";
-import { useData } from "../../store/HandleApiContext";
+import { useCricketData } from "../../store/CricketDataContext";
 
 const UpcomingMatch = () => {
   const {
@@ -9,7 +9,7 @@ const UpcomingMatch = () => {
     upcomingMatchesError,
     loadingUpcomingMatches,
     fetchUpcomingMatches,
-  } = useData();
+  } = useCricketData();
   const {
     headings,
     selectedHeading,
