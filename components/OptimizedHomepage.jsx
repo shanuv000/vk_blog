@@ -80,63 +80,64 @@ const OptimizedFeaturedPosts = () => {
 };
 
 /**
- * Optimized PostWidget that uses shared data
+ * Optimized PostWidget that uses shared data with image optimization
  */
 const OptimizedPostWidget = () => {
   const { data, loading } = useContext(HomepageDataContext);
 
   if (loading.recentPosts) {
     return (
-      <div className="space-y-4">
-        <LoadingSpinner
-          size="small"
-          type="dots"
-          message="Loading recent posts..."
-        />
-        <div className="animate-pulse space-y-4">
-          {[1, 2, 3].map((item) => (
-            <div className="flex items-center w-full" key={item}>
-              <div className="w-16 h-16 bg-secondary-light rounded-md flex-none" />
-              <div className="flex-grow ml-4">
-                <div className="h-2 bg-secondary-light rounded w-1/4 mb-2" />
-                <div className="h-4 bg-secondary-light rounded w-3/4" />
-              </div>
+      <div className="space-y-3">
+        {[1, 2, 3, 4, 5].map((item) => (
+          <div className="flex items-center w-full p-2" key={item}>
+            <div className="w-12 h-12 bg-secondary-light rounded-md flex-none animate-pulse" />
+            <div className="flex-grow ml-3">
+              <div className="h-3 bg-secondary-light rounded w-3/4 animate-pulse" />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
-      {data.recentPosts.map((post, index) => (
-        <Link
-          key={post.slug || index}
-          href={`/post/${post.slug}`}
-          className="flex items-center w-full p-3 rounded-lg hover:bg-secondary-light transition-colors duration-200 group cursor-pointer"
-        >
-          <div className="w-14 h-14 flex-none overflow-hidden rounded-md">
-            {post.featuredImage?.url ? (
-              <img
-                src={post.featuredImage.url}
-                alt={post.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                loading="lazy"
-              />
-            ) : (
-              <div className="flex items-center justify-center bg-secondary-light h-full w-full">
-                <span className="text-text-secondary text-xl">📄</span>
-              </div>
-            )}
-          </div>
-          <div className="flex-grow ml-3 min-w-0">
-            <h4 className="text-text-primary font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
-              {post.title}
-            </h4>
-          </div>
-        </Link>
-      ))}
+    <div className="space-y-1">
+      {data.recentPosts.slice(0, 5).map((post, index) => {
+        // Use pre-computed thumbnail URL from API or fallback
+        const imageUrl = post.featuredImage?.thumbnailUrl || post.featuredImage?.url;
+        
+        return (
+          <Link
+            key={post.slug || index}
+            href={`/post/${post.slug}`}
+            className="flex items-center w-full p-2 rounded-lg hover:bg-secondary-light transition-colors duration-150 group"
+            prefetch={false}
+          >
+            <div className="w-12 h-12 flex-none overflow-hidden rounded-md bg-secondary-light">
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt=""
+                  width={48}
+                  height={48}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full w-full">
+                  <span className="text-text-secondary text-sm">📄</span>
+                </div>
+              )}
+            </div>
+            <div className="flex-grow ml-3 min-w-0">
+              <h4 className="text-text-primary font-medium text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-150">
+                {post.title}
+              </h4>
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 };

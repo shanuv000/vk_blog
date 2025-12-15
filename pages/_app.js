@@ -165,13 +165,6 @@ function MyApp({ Component, pageProps }) {
           <link rel="preconnect" href="https://www.google-analytics.com" />
         </Head>
 
-        {/* Microsoft Clarity - load after page interaction with delay */}
-        <Script
-          id="clarity-script"
-          strategy="lazyOnload" // Use lazyOnload for better performance
-          src="https://www.clarity.ms/tag/o2yidwokf0"
-        />
-
         <AnalyticsProvider measurementId={gaId}>
           <Layout>
             {/* Use key to force remount on route change */}
