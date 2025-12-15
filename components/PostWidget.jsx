@@ -43,7 +43,8 @@ const PostWidget = ({ categories, slug }) => {
       setSimilarPosts([]);
       setSimilarLoading(false);
     }
-  }, [slug, categories]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, JSON.stringify(categories)]);
 
   // Fetch recent posts on component mount
   useEffect(() => {

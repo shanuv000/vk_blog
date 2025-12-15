@@ -59,6 +59,7 @@ const SocialMediaEmbedder = dynamic(() => import("./SocialMediaEmbedder"), {
 });
 
 // Lazy load FAQ component - SSR enabled for SEO (reads faQs from Hygraph)
+// Lazy load FAQ component - SSR enabled for SEO (reads faQs from Hygraph)
 const FAQ = dynamic(() => import("./FAQ"), {
   loading: () => (
     <div className="mt-16 p-6 bg-gray-50 rounded-2xl animate-pulse">
@@ -70,8 +71,6 @@ const FAQ = dynamic(() => import("./FAQ"), {
   ),
 });
 
-import { useData } from "../store/HandleApiContext";
-
 // Import Testing component with no SSR to avoid hydration issues
 const Testing = dynamic(
   () => import("./AdditionalPosts/PostsAdditions").then((mod) => mod.Testing),
@@ -81,8 +80,6 @@ const Testing = dynamic(
 );
 
 const PostDetail = ({ post }) => {
-  const { data, fetchData } = useData();
-  const hasFetchedData = useRef(true);
   const [renderError, setRenderError] = useState(null);
   const [copied, setCopied] = useState(false);
 
@@ -105,15 +102,6 @@ const PostDetail = ({ post }) => {
       setRenderError(null);
     }
   }, [post]);
-
-  // Get data from Context
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    if (hasFetchedData.current == false && data == null) {
-      fetchData();
-      hasFetchedData.current = true;
-    }
-  }, []);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {

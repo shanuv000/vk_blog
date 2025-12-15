@@ -3,7 +3,7 @@
  * Consolidates all homepage API calls to prevent multiple requests
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   getDirectCategories,
   getDirectFeaturedPosts,
@@ -220,7 +220,7 @@ export const useHomepageData = () => {
   const hasAnyError = Object.keys(errors).length > 0;
   const isFullyLoaded = isInitialized && !isAnyLoading;
 
-  return {
+  return useMemo(() => ({
     // Data
     data,
 
@@ -243,5 +243,15 @@ export const useHomepageData = () => {
     // Computed values
     mainPostsCount: data.mainPosts.length,
     canLoadMore: pagination.hasMore && !loading.mainPosts,
-  };
+  }), [
+    data,
+    loading,
+    isAnyLoading,
+    isFullyLoaded,
+    errors,
+    hasAnyError,
+    pagination,
+    loadMoreMainPosts,
+    refresh
+  ]);
 };

@@ -605,119 +605,13 @@ const SocialMediaEmbedder = () => {
         }
       }
 
-      const preserveEmbeds = () => {
-        const persistentEmbeds = document.querySelectorAll(
-          '[data-persistent-embed="true"]'
-        );
 
-        const isMobileViewport = window.innerWidth <= 768;
-        if (isMobileViewport) {
-          const tweetIds = new Set();
-          const duplicateEmbeds = [];
+      // Removed global MutationObserver to prevent excessive DOM manipulation
+      // The content is largely static, so we don't need to watch for changes constantly
 
-          persistentEmbeds.forEach((embed) => {
-            const tweetId =
-              embed.getAttribute("data-tweet-id") ||
-              embed
-                .querySelector("[data-tweet-id]")
-                ?.getAttribute("data-tweet-id");
-
-            if (tweetId) {
-              if (tweetIds.has(tweetId)) {
-                duplicateEmbeds.push(embed);
-                log(`Found duplicate embed for tweet ${tweetId} on mobile`);
-              } else {
-                tweetIds.add(tweetId);
-              }
-            }
-          });
-
-          duplicateEmbeds.forEach((duplicate) => {
-            if (duplicate.parentNode) {
-              duplicate.parentNode.removeChild(duplicate);
-              log("Removed duplicate embed on mobile");
-            }
-          });
-        }
-
-        persistentEmbeds.forEach((embed) => {
-          if (!document.contains(embed)) {
-            return;
-          }
-
-          embed.setAttribute("data-preserved", "true");
-
-          const blockquoteId = embed.getAttribute("data-embed-stable");
-          if (blockquoteId) {
-            const originalBlockquote = document.getElementById(blockquoteId);
-            if (
-              originalBlockquote &&
-              originalBlockquote.parentNode &&
-              embed.parentNode !== originalBlockquote.parentNode
-            ) {
-              originalBlockquote.parentNode.insertBefore(
-                embed,
-                originalBlockquote.nextSibling
-              );
-              log(`Repositioned embed for ${blockquoteId} after DOM change`);
-            }
-          }
-        });
-      };
-
-      mutationObserver = new MutationObserver((mutations) => {
-        let shouldPreserve = false;
-        mutations.forEach((mutation) => {
-          if (
-            mutation.type === "childList" &&
-            (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)
-          ) {
-            shouldPreserve = true;
-          }
-        });
-
-        if (shouldPreserve) {
-          setTimeout(preserveEmbeds, 100);
-        }
-      });
-
-      mutationObserver.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
-
-      const isMobileViewport = window.innerWidth <= 768;
-      if (isMobileViewport) {
-        mobileCleanupInterval = setInterval(() => {
-          const allEmbeds = document.querySelectorAll("[data-tweet-id]");
-          const tweetIds = new Set();
-          const duplicates = [];
-
-          allEmbeds.forEach((embed) => {
-            const tweetId =
-              embed.getAttribute("data-tweet-id") ||
-              embed
-                .querySelector("[data-tweet-id]")
-                ?.getAttribute("data-tweet-id");
-
-            if (tweetId) {
-              if (tweetIds.has(tweetId)) {
-                duplicates.push(embed);
-              } else {
-                tweetIds.add(tweetId);
-              }
-            }
-          });
-
-          if (duplicates.length > 0) {
-            log(`Mobile cleanup: Found ${duplicates.length} duplicate embeds`);
-            duplicates.forEach((duplicate) => {
-              if (duplicate.parentNode) {
-                duplicate.parentNode.removeChild(duplicate);
-              }
-            });
-          }
-        }, 3000);
+      // Removed mobile cleanup interval which was polling every 3 seconds
+      if (process.env.NODE_ENV === "development") {
+        console.log("SocialMediaEmbedder: Optimized initialization (no observers)");
       }
 
       const loadSocialMediaScripts = (platforms = new Set()) => {
