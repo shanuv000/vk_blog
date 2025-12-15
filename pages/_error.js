@@ -2,8 +2,6 @@ import React from "react";
 import Error from "next/error";
 import Head from "next/head";
 import Link from "next/link";
-import * as Sentry from "@sentry/nextjs";
-
 
 function CustomError({ statusCode }) {
   return (
@@ -36,9 +34,6 @@ function CustomError({ statusCode }) {
 }
 
 CustomError.getInitialProps = async (contextData) => {
-  // Capture errors in Sentry
-  await Sentry.captureUnderscoreErrorException(contextData);
-
   // This will contain the status code of the response
   return Error.getInitialProps(contextData);
 };
