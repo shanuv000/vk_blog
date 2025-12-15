@@ -52,6 +52,8 @@ function MyApp({ Component, pageProps }) {
 
             // Prefetch data after critical resources are loaded
             // Only prefetch on good network and when tab is visible
+            // OPTIMIZATION: Skip prefetching on post pages - not needed there
+            const isPostPage = window.location.pathname.startsWith('/post/');
             const connection =
               navigator.connection ||
               navigator.mozConnection ||
@@ -60,7 +62,7 @@ function MyApp({ Component, pageProps }) {
               connection &&
               (connection.saveData ||
                 ["slow-2g", "2g"].includes(connection.effectiveType));
-            if (!document.hidden && !isSlow) {
+            if (!document.hidden && !isSlow && !isPostPage) {
               prefetchCommonQueries();
             }
 

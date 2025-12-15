@@ -5,11 +5,10 @@ import { useRouter } from "next/router";
 // Import components using the organization's established pattern
 import {
   PostDetail,
-  Categories,
-  PostWidget,
   Loader,
   SchemaManager,
 } from "../../components";
+import LazySidebar from "../../components/LazySidebar";
 
 // Import data hooks instead of direct service calls
 import { usePostDetails } from "../../hooks/useApolloQueries";
@@ -225,15 +224,12 @@ const PostDetails = ({ post, error, lastFetched }) => {
             </div>
           </div>
           <div className="col-span-1 lg:col-span-4">
-            <div className="relative lg:sticky top-8">
-              <PostWidget
-                slug={post.slug || ""}
-                categories={
-                  post.categories?.map((category) => category.slug) || []
-                }
-              />
-              <Categories />
-            </div>
+            <LazySidebar
+              slug={post.slug || ""}
+              categories={
+                post.categories?.map((category) => category.slug) || []
+              }
+            />
           </div>
         </div>
       </div>
@@ -254,15 +250,12 @@ const PostDetails = ({ post, error, lastFetched }) => {
             )}
           </div>
           <div className="col-span-1 lg:col-span-4">
-            <div className="relative lg:sticky top-8">
-              <PostWidget
-                slug={post.slug || ""}
-                categories={
-                  post.categories?.map((category) => category.slug) || []
-                }
-              />
-              <Categories />
-            </div>
+            <LazySidebar
+              slug={post.slug || ""}
+              categories={
+                post.categories?.map((category) => category.slug) || []
+              }
+            />
           </div>
         </div>
         {/* <Footer /> */}
