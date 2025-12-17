@@ -200,6 +200,59 @@ const LiveCricketContent = () => {
           >
             <ShowCricket />
           </motion.div>
+
+          {/* Promotional Banner for play.urtechy.com */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="mt-8 md:mt-12 max-w-4xl mx-auto"
+          >
+            <a
+              href="https://play.urtechy.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group"
+            >
+              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-emerald-500/10 p-6 md:p-8 backdrop-blur-xl hover:border-emerald-500/30 transition-all duration-300">
+                {/* Animated gradient background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    {/* Icon */}
+                    <div className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                      <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    
+                    {/* Text */}
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
+                        Play Cricket Games
+                      </h3>
+                      <p className="text-slate-400 text-sm md:text-base">
+                        Try our interactive cricket experience at{" "}
+                        <span className="text-emerald-400 font-semibold">play.urtechy.com</span>
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* CTA Button */}
+                  <div className="flex-shrink-0">
+                    <span className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 group-hover:shadow-emerald-500/40 group-hover:scale-105 transition-all duration-300">
+                      Play Now
+                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </motion.div>
         </div>
       </div>
 
