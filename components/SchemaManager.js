@@ -2,6 +2,7 @@ import React from "react";
 import ArticleSchema from "./ArticleSchema";
 import BreadcrumbSchema from "./BreadcrumbSchema";
 import ListItemSchema from "./ListItemSchema";
+import OrganizationSchema from "./OrganizationSchema";
 import WebsiteSchema from "./WebsiteSchema";
 
 /**
@@ -16,8 +17,9 @@ import WebsiteSchema from "./WebsiteSchema";
 const SchemaManager = ({ post, isHomePage = false, posts, categoryName }) => {
   return (
     <>
-      {/* Website schema for all pages */}
+      {/* Website and Organization schemas for all pages */}
       <WebsiteSchema />
+      <OrganizationSchema />
 
       {/* Article and Breadcrumb schemas for post pages */}
       {post && (
