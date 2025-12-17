@@ -24,10 +24,10 @@ const HomeSeo = ({ featuredPosts = [] }) => {
         description: description,
         images: [
           {
-            url: `${rootUrl}/logo/logo4.png`,
-            width: 573,
-            height: 600,
-            alt: "urTechy Blogs Logo",
+            url: `${rootUrl}/images/comp2.jpg`,
+            width: 1200,
+            height: 634,
+            alt: "urTechy Blogs - Tech, Entertainment & Sports News",
           },
         ],
         site_name: "urTechy Blogs",
@@ -35,7 +35,7 @@ const HomeSeo = ({ featuredPosts = [] }) => {
       twitter={{
         handle: "@shanuv000",
         site: "@Onlyblogs_",
-        cardType: "summary",
+        cardType: "summary_large_image",
       }}
       additionalMetaTags={[
         {
@@ -61,7 +61,7 @@ const HomeSeo = ({ featuredPosts = [] }) => {
         },
         {
           name: "twitter:image",
-          content: `${rootUrl}/logo/logo4.png`,
+          content: `${rootUrl}/images/comp2.jpg`,
         },
       ]}
       languageAlternates={[
