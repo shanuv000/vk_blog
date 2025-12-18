@@ -41,31 +41,11 @@ const OptimizedImage = ({
   const [imageSrc, setImageSrc] = useState(src);
   const imageRef = useRef(null);
 
-  // Generate blur data URL if not provided
-  const generateBlurDataURL = (width = 10, height = 10) => {
-    if (typeof window === "undefined") {
-      // Server-side fallback
-      return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSJyZ2JhKDE1NiwgMTYzLCAxNzUsIDAuMSkiLz4KPHN2Zz4K";
-    }
+  // Static blur data URL to prevent hydration mismatch between server and client
+  // Using a simple gray SVG placeholder that's identical on both server and client
+  const STATIC_BLUR_DATA_URL = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9InJnYmEoMTU2LDE2MywxNzUsMC4xKSIvPjwvc3ZnPg==";
 
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-
-    // Create a subtle gradient for the blur effect
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, "rgba(156, 163, 175, 0.1)");
-    gradient.addColorStop(0.5, "rgba(156, 163, 175, 0.2)");
-    gradient.addColorStop(1, "rgba(156, 163, 175, 0.1)");
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
-
-    return canvas.toDataURL();
-  };
-
-  const defaultBlurDataURL = blurDataURL || generateBlurDataURL();
+  const defaultBlurDataURL = blurDataURL || STATIC_BLUR_DATA_URL;
 
   // Handle image load success
   const handleLoad = (event) => {
