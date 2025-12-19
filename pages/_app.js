@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 
 import { ApolloProvider } from "@apollo/client";
+import { Analytics } from "@vercel/analytics/next";
 
 import { Layout } from "../components";
 import AnalyticsProvider from "../components/AnalyticsProvider";
@@ -174,6 +175,7 @@ function MyApp({ Component, pageProps }) {
               <Component {...pageProps} />
             </div>
           </Layout>
+          <Analytics />
         </AnalyticsProvider>
       </ErrorBoundary>
     </ApolloProvider>
