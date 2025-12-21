@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Head from "next/head";
 import Link from "next/link";
@@ -7,10 +7,25 @@ import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 
 export default function Custom404() {
+  const router = useRouter();
+
+  // Track 404 error in Google Analytics
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "page_not_found", {
+        page_path: router.asPath,
+        page_location: window.location.href,
+        page_referrer: document.referrer || "direct",
+        search_query: router.query?.q || null,
+      });
+    }
+  }, [router.asPath, router.query]);
+
   return (
     <>
       <Head>
         <title>Page Not Found | urTechy Blogs</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Head>
       <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16 text-center">
         <motion.div
@@ -34,3 +49,4 @@ export default function Custom404() {
     </>
   );
 }
+
