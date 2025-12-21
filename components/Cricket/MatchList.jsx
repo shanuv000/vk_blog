@@ -58,8 +58,7 @@ const MatchList = ({
 }) => {
   const [expandedMatchIndex, setExpandedMatchIndex] = useState(null);
 
-  const filteredMatches =
-    matches?.filter((match) => match.heading === selectedHeading) || [];
+  const filteredMatches = matches || [];
 
   const container = {
     hidden: { opacity: 0 },
@@ -146,7 +145,7 @@ const MatchList = ({
       </div>
 
       {/* Tournament Selector */}
-      {headings.length > 0 && (
+      {headings.length > 1 && (
         <div className="mb-6">
           <label className="block text-sm font-medium text-slate-400 mb-2">
             Tournament

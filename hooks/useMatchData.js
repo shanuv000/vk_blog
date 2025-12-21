@@ -13,13 +13,11 @@ const useMatchData = (fetchMatches, matches) => {
 
   useEffect(() => {
     if (matches && matches.length > 0) {
-      // Extract unique headings from matches
-      const uniqueHeadings = Array.from(
-        new Set(matches.map((match) => match.heading))
-      );
+      // API doesn't provide heading field - use "All Matches" as default
+      const uniqueHeadings = ['All Matches'];
       setHeadings(uniqueHeadings);
 
-      // Set the first heading as selected if not already set
+      // Set default heading
       if (!selectedHeading || !uniqueHeadings.includes(selectedHeading)) {
         setSelectedHeading(uniqueHeadings[0] || "");
       }

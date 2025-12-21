@@ -6,25 +6,17 @@ import { GiCricketBat } from "react-icons/gi";
 const Scorecard = ({ scorecard }) => {
   const [activeInning, setActiveInning] = useState(0);
 
-  // Deduplicate and organize innings
+  // Organize innings - use inningsId as primary key to avoid collisions
   const uniqueInnings = useMemo(() => {
     if (!scorecard || !Array.isArray(scorecard)) return [];
 
+    // Use inningsId as the key if available, otherwise use index
+    // This ensures T20/ODI matches (which don't have "1st Innings" in header) show both innings
     const inningsMap = new Map();
 
-    scorecard.forEach((inning) => {
-      const team = inning.teamName || "Unknown";
-      const header = inning.inningsHeader || "";
-      
-      let key = team;
-      if (header.includes("1st Innings") || header.includes("Innings 1")) {
-        key = `${team}_1`;
-      } else if (header.includes("2nd Innings") || header.includes("Innings 2")) {
-        key = `${team}_2`;
-      } else if (header.includes("Super Over")) {
-        key = `${team}_super`;
-      }
-
+    scorecard.forEach((inning, index) => {
+      // Prefer inningsId, fall back to index-based key
+      const key = inning.inningsId !== undefined ? `innings_${inning.inningsId}` : `innings_${index}`;
       inningsMap.set(key, inning);
     });
 
