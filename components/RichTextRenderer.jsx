@@ -1564,6 +1564,44 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 }
               },
             },
+            // Iframe renderer for embedded content (YouTube, etc.)
+            iframe: ({ url, width, height }) => {
+              // Check if it's a YouTube URL
+              const isYouTube =
+                url &&
+                (url.includes("youtube.com") ||
+                  url.includes("youtu.be") ||
+                  url.includes("youtube-nocookie.com"));
+
+              if (isYouTube) {
+                return (
+                  <div className="my-8">
+                    <CustomYouTubeEmbed videoId={url} title="YouTube Video" />
+                  </div>
+                );
+              }
+
+              // Generic responsive iframe for other embeds (Spotify, Maps, etc.)
+              const aspectRatio =
+                height && width ? `${(height / width) * 100}%` : "56.25%";
+
+              return (
+                <div
+                  className="my-8 relative w-full overflow-hidden rounded-lg shadow-md"
+                  style={{ paddingBottom: aspectRatio }}
+                >
+                  <iframe
+                    src={url}
+                    className="absolute inset-0 w-full h-full"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    loading="lazy"
+                    title="Embedded content"
+                  />
+                </div>
+              );
+            },
             // Table renderers
             table: ({ children }) => (
               <div className="overflow-x-auto my-8 rounded-lg border border-gray-200 shadow-sm">
