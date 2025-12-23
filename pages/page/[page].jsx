@@ -1,11 +1,14 @@
-// Production-optimized homepage with SSG pagination for SEO
+// Paginated homepage - /page/[page] route for pages 2+
 import { gql } from "graphql-request";
-import { getPostsWithOffset, getTotalPostsCount } from "../services/pagination";
-import { cdnClient } from "../services/hygraph";
-import OptimizedHomepage from "../components/OptimizedHomepage";
+import { getPostsWithOffset, getTotalPostsCount } from "../../services/pagination";
+import { cdnClient } from "../../services/hygraph";
+import OptimizedHomepage from "../../components/OptimizedHomepage";
 
 // Posts per page for pagination
 const POSTS_PER_PAGE = 10;
+
+// Maximum pages to pre-generate at build time
+const MAX_PREGENERATED_PAGES = 10;
 
 // GraphQL queries for sidebar and featured content
 const FEATURED_POSTS_QUERY = gql`
@@ -58,17 +61,68 @@ const CATEGORIES_QUERY = gql`
   }
 `;
 
-// Use the optimized homepage component for production
-export default function Home(props) {
+export default function PaginatedHome(props) {
   return <OptimizedHomepage {...props} />;
 }
 
-// Fetch data at build time with pagination support
-export async function getStaticProps() {
+// Generate static paths for first N pages
+export async function getStaticPaths() {
   try {
-    const page = 1;
+    const totalCount = await getTotalPostsCount();
+    const totalPages = Math.ceil(totalCount / POSTS_PER_PAGE);
+    
+    // Pre-generate first N pages (skip page 1 as it's handled by index.jsx)
+    const pagesToPreGenerate = Math.min(totalPages, MAX_PREGENERATED_PAGES);
+    
+    const paths = [];
+    for (let page = 2; page <= pagesToPreGenerate; page++) {
+      paths.push({ params: { page: page.toString() } });
+    }
 
-    // Fetch all data in parallel for performance
+    console.log(
+      `[Pagination SSG] Pre-generating ${paths.length} pages (2 to ${pagesToPreGenerate})`
+    );
+
+    return {
+      paths,
+      // Enable ISR for pages beyond the pre-generated ones
+      fallback: "blocking",
+    };
+  } catch (error) {
+    console.error("Error generating static paths:", error);
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
+}
+
+// Fetch data for each paginated page
+export async function getStaticProps({ params }) {
+  try {
+    const page = parseInt(params.page, 10);
+
+    // Validate page number
+    if (isNaN(page) || page < 1) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    // Redirect page 1 to homepage (canonical URL)
+    if (page === 1) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: true,
+        },
+      };
+    }
+
+    // Fetch all data in parallel
     const [postsResult, featuredResult, recentResult, categoriesResult] =
       await Promise.allSettled([
         getPostsWithOffset({ page, perPage: POSTS_PER_PAGE }),
@@ -80,8 +134,25 @@ export async function getStaticProps() {
     // Process results with fallbacks
     const postsData = postsResult.status === "fulfilled" 
       ? postsResult.value 
-      : { posts: [], totalPages: 0, totalCount: 0, currentPage: 1, hasNextPage: false, hasPrevPage: false, perPage: POSTS_PER_PAGE };
-    
+      : { posts: [], totalPages: 0, totalCount: 0, currentPage: page, hasNextPage: false, hasPrevPage: true, perPage: POSTS_PER_PAGE };
+
+    // If page is beyond total pages, redirect to last page
+    if (page > postsData.totalPages && postsData.totalPages > 0) {
+      return {
+        redirect: {
+          destination: postsData.totalPages === 1 ? "/" : `/page/${postsData.totalPages}`,
+          permanent: false,
+        },
+      };
+    }
+
+    // Return 404 if no posts found
+    if (postsData.posts.length === 0 && postsData.totalCount === 0) {
+      return {
+        notFound: true,
+      };
+    }
+
     const featuredPosts = featuredResult.status === "fulfilled" 
       ? (featuredResult.value.posts || []).map(post => ({
           ...post,
@@ -107,16 +178,13 @@ export async function getStaticProps() {
       ? categoriesResult.value.categories || []
       : [];
 
-    // Log for build debugging
     console.log(
-      `[Homepage SSG] Page ${page}: ${postsData.posts.length} posts, ${featuredPosts.length} featured, ${recentPosts.length} recent, ${categories.length} categories`
+      `[Pagination SSG] Page ${page}: ${postsData.posts.length} posts, ${featuredPosts.length} featured, ${recentPosts.length} recent, ${categories.length} categories`
     );
 
     return {
       props: {
-        // Main posts for the page
         posts: postsData.posts,
-        // Pagination metadata
         pagination: {
           currentPage: postsData.currentPage,
           totalPages: postsData.totalPages,
@@ -125,34 +193,31 @@ export async function getStaticProps() {
           hasPrevPage: postsData.hasPrevPage,
           perPage: POSTS_PER_PAGE,
         },
-        // Sidebar and featured content
         featuredPosts,
         recentPosts,
         categories,
       },
-      // Revalidate every 5 minutes for fresh content
+      // Revalidate every 5 minutes
       revalidate: 300,
     };
   } catch (error) {
-    console.error("Error in getStaticProps for home page:", error);
+    console.error(`Error in getStaticProps for page ${params.page}:`, error);
 
-    // Return fallback props on error
     return {
       props: {
         posts: [],
         pagination: {
-          currentPage: 1,
+          currentPage: parseInt(params.page, 10) || 1,
           totalPages: 0,
           totalCount: 0,
           hasNextPage: false,
-          hasPrevPage: false,
+          hasPrevPage: true,
           perPage: POSTS_PER_PAGE,
         },
         featuredPosts: [],
         recentPosts: [],
         categories: [],
       },
-      // Shorter revalidation time for error cases
       revalidate: 60,
     };
   }

@@ -306,3 +306,157 @@ export const getCategoryPostsPaginated = async (slug, options = {}) => {
     };
   }
 };
+
+/**
+ * Get posts with offset-based pagination (for SSR/page numbers)
+ * @param {Object} options - Pagination options
+ * @param {number} options.page - Page number (1-indexed)
+ * @param {number} options.perPage - Posts per page (default: 10)
+ * @returns {Object} - { posts, totalCount, totalPages, currentPage, hasNextPage, hasPrevPage }
+ */
+export const getPostsWithOffset = async (options = {}) => {
+  const { page = 1, perPage = 10 } = options;
+
+  // Validate inputs
+  const pageNum = Math.max(1, parseInt(page, 10) || 1);
+  const postsPerPage = Math.min(50, Math.max(1, parseInt(perPage, 10) || 10));
+  const skip = (pageNum - 1) * postsPerPage;
+
+  const query = gql`
+    query GetPostsWithOffset($first: Int!, $skip: Int!) {
+      postsConnection(
+        first: $first
+        skip: $skip
+        orderBy: publishedAt_DESC
+      ) {
+        edges {
+          node {
+            author {
+              bio
+              name
+              id
+              photo {
+                url
+              }
+            }
+            publishedAt
+            createdAt
+            slug
+            title
+            excerpt
+            featuredImage {
+              url
+            }
+            categories {
+              name
+              slug
+            }
+            tags {
+              id
+              name
+              slug
+              color {
+                hex
+              }
+            }
+          }
+        }
+        aggregate {
+          count
+        }
+      }
+    }
+  `;
+
+  try {
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[getPostsWithOffset] Fetching page ${pageNum} (skip: ${skip}, first: ${postsPerPage})`
+      );
+    }
+
+    const result = await cdnClient.request(query, {
+      first: postsPerPage,
+      skip: skip,
+    });
+
+    const totalCount = result.postsConnection.aggregate.count;
+    const totalPages = Math.ceil(totalCount / postsPerPage);
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[getPostsWithOffset] Fetched ${result.postsConnection.edges.length} posts (page ${pageNum} of ${totalPages})`
+      );
+    }
+
+    return {
+      posts: result.postsConnection.edges,
+      totalCount,
+      totalPages,
+      currentPage: pageNum,
+      hasNextPage: pageNum < totalPages,
+      hasPrevPage: pageNum > 1,
+      perPage: postsPerPage,
+    };
+  } catch (error) {
+    // Check if the error contains actual data (proxy response format)
+    if (error.response && error.response.postsConnection) {
+      const data = error.response.postsConnection;
+      const totalCount = data.aggregate.count;
+      const totalPages = Math.ceil(totalCount / postsPerPage);
+
+      return {
+        posts: data.edges,
+        totalCount,
+        totalPages,
+        currentPage: pageNum,
+        hasNextPage: pageNum < totalPages,
+        hasPrevPage: pageNum > 1,
+        perPage: postsPerPage,
+      };
+    }
+
+    console.error(
+      "[getPostsWithOffset] Error fetching posts:",
+      error.message || error
+    );
+
+    return {
+      posts: [],
+      totalCount: 0,
+      totalPages: 0,
+      currentPage: pageNum,
+      hasNextPage: false,
+      hasPrevPage: false,
+      perPage: postsPerPage,
+    };
+  }
+};
+
+/**
+ * Get total pages count for pagination
+ * @param {number} perPage - Posts per page
+ * @returns {Promise<number>} - Total number of pages
+ */
+export const getTotalPostsCount = async () => {
+  const query = gql`
+    query GetTotalPostsCount {
+      postsConnection {
+        aggregate {
+          count
+        }
+      }
+    }
+  `;
+
+  try {
+    const result = await cdnClient.request(query);
+    return result.postsConnection.aggregate.count;
+  } catch (error) {
+    if (error.response && error.response.postsConnection) {
+      return error.response.postsConnection.aggregate.count;
+    }
+    console.error("[getTotalPostsCount] Error:", error.message || error);
+    return 0;
+  }
+};

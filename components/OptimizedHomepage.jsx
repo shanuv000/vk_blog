@@ -1,21 +1,18 @@
 /**
- * Optimized Homepage Component with Unified Data Loading
- * This prevents multiple Hygraph API calls by consolidating data loading
+ * Optimized Homepage Component with SSR Pagination
+ * SEO-optimized with server-side rendering and classic pagination
  */
 
-import React, { createContext, useContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
-import InfiniteScroll from "react-infinite-scroll-component";
 import {
   PostCard,
   Categories,
-  PostWidget,
   FeaturedCarouselGrid,
   EnhancedFeaturedPostCard,
 } from "../components";
 import {
   InitialPageLoader,
-  InfiniteScrollLoader,
   ApiErrorState,
   EmptyState,
 } from "../components/ApiLoadingStates";
@@ -23,18 +20,13 @@ import HomeSeo from "../components/HomeSeo";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NewsletterCTA from "../components/NewsletterCTA";
 import SchemaManager from "../components/SchemaManager";
-import { useHomepageData } from "../hooks/useHomepageData";
-
-// Create context for sharing homepage data across components
-const HomepageDataContext = createContext(null);
+import Pagination from "../components/Pagination";
 
 /**
- * Optimized FeaturedPosts component that uses shared data
+ * Optimized FeaturedPosts component
  */
-const OptimizedFeaturedPosts = () => {
-  const { data, loading } = useContext(HomepageDataContext);
-
-  if (loading.featuredPosts) {
+const OptimizedFeaturedPosts = ({ featuredPosts = [], loading = false }) => {
+  if (loading) {
     return (
       <div className="mb-12 bg-secondary-light/10 rounded-2xl p-8">
         <div className="animate-pulse">
@@ -49,7 +41,7 @@ const OptimizedFeaturedPosts = () => {
     );
   }
 
-  if (!data.featuredPosts.length) {
+  if (!featuredPosts.length) {
     return null;
   }
 
@@ -66,7 +58,7 @@ const OptimizedFeaturedPosts = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.featuredPosts.slice(0, 6).map((post, index) => (
+        {featuredPosts.slice(0, 6).map((post, index) => (
           <EnhancedFeaturedPostCard
             key={post.slug || index}
             post={post}
@@ -80,12 +72,10 @@ const OptimizedFeaturedPosts = () => {
 };
 
 /**
- * Optimized PostWidget that uses shared data with image optimization
+ * Optimized PostWidget that uses props data with image optimization
  */
-const OptimizedPostWidget = () => {
-  const { data, loading } = useContext(HomepageDataContext);
-
-  if (loading.recentPosts) {
+const OptimizedPostWidget = ({ recentPosts = [], loading = false }) => {
+  if (loading) {
     return (
       <div className="space-y-3">
         {[1, 2, 3, 4, 5].map((item) => (
@@ -102,10 +92,10 @@ const OptimizedPostWidget = () => {
 
   return (
     <div className="space-y-1">
-      {data.recentPosts.slice(0, 5).map((post, index) => {
-        // Use pre-computed thumbnail URL from API or fallback
-        const imageUrl = post.featuredImage?.thumbnailUrl || post.featuredImage?.url;
-        
+      {recentPosts.slice(0, 5).map((post, index) => {
+        const imageUrl =
+          post.featuredImage?.thumbnailUrl || post.featuredImage?.url;
+
         return (
           <Link
             key={post.slug || index}
@@ -143,12 +133,10 @@ const OptimizedPostWidget = () => {
 };
 
 /**
- * Optimized Categories that uses shared data
+ * Optimized Categories component
  */
-const OptimizedCategories = () => {
-  const { data, loading } = useContext(HomepageDataContext);
-
-  if (loading.categories) {
+const OptimizedCategories = ({ categories = [], loading = false }) => {
+  if (loading) {
     return (
       <div className="space-y-4">
         <LoadingSpinner
@@ -171,7 +159,7 @@ const OptimizedCategories = () => {
 
   return (
     <div className="space-y-2">
-      {data.categories.map((category) => (
+      {categories.map((category) => (
         <div key={category.slug} className="group">
           <a
             href={`/category/${category.slug}`}
@@ -189,167 +177,128 @@ const OptimizedCategories = () => {
 };
 
 /**
- * Main Optimized Homepage Component
- * Memoized handlers to prevent flickering from re-renders
+ * Main Optimized Homepage Component with SSR Pagination
  */
-export default function OptimizedHomepage({ initialPosts }) {
-  const homepageData = useHomepageData(initialPosts);
-
+export default function OptimizedHomepage({
+  posts = [],
+  pagination = {},
+  featuredPosts = [],
+  recentPosts = [],
+  categories = [],
+}) {
   const {
-    data,
-    loading,
-    isAnyLoading,
-    isFullyLoaded,
-    errors,
-    hasAnyError,
-    pagination,
-    loadMoreMainPosts,
-    refresh,
-    mainPostsCount,
-    canLoadMore,
-  } = homepageData;
+    currentPage = 1,
+    totalPages = 1,
+    totalCount = 0,
+    hasNextPage = false,
+    hasPrevPage = false,
+  } = pagination;
 
   // Memoize featured posts to pass as stable reference to carousel
-  const memoizedFeaturedPosts = useMemo(
-    () => data.featuredPosts,
-    [data.featuredPosts]
-  );
+  const memoizedFeaturedPosts = useMemo(() => featuredPosts, [featuredPosts]);
 
-  // Show enhanced loading state during initial load
-  if (!isFullyLoaded && isAnyLoading && data.mainPosts.length === 0) {
-    return <InitialPageLoader message="Loading latest posts..." />;
-  }
+  // Check if we have any data
+  const hasData = posts.length > 0;
+  const isPageOne = currentPage === 1;
 
-  // Show enhanced error state
-  if (hasAnyError && data.mainPosts.length === 0) {
+  // Get the base path for pagination links
+  const paginationBasePath = isPageOne ? "/" : "/page";
+
+  // Show empty state if no posts
+  if (!hasData && totalCount === 0) {
     return (
-      <ApiErrorState
-        error={errors.general || errors.mainPosts}
-        onRetry={refresh}
-        title="Failed to Load Homepage Data"
-      />
+      <>
+        <HomeSeo featuredPosts={featuredPosts.slice(0, 5)} currentPage={currentPage} totalPages={totalPages} />
+        <EmptyState
+          title="No Articles Found"
+          message="We couldn't find any articles. Please check back later."
+        />
+      </>
     );
   }
 
   return (
-    <HomepageDataContext.Provider value={homepageData}>
-      <>
-        {/* SEO and Schema */}
-        <HomeSeo featuredPosts={data.featuredPosts.slice(0, 5)} />
-        <SchemaManager
-          isHomePage
-          posts={data.mainPosts.map((post) => post.node)}
-        />
+    <>
+      {/* SEO and Schema */}
+      <HomeSeo
+        featuredPosts={featuredPosts.slice(0, 5)}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+      <SchemaManager isHomePage posts={posts.map((post) => post.node)} />
 
-        <div>
-          {/* Featured Carousel Grid Section */}
-          {!loading.featuredPosts &&
-          !errors.featuredPosts &&
-          data.featuredPosts.length > 0 ? (
-            <FeaturedCarouselGrid
-              featuredPosts={memoizedFeaturedPosts}
-              autoplayInterval={6000}
-              showStats={true}
-              maxGridItems={6}
-            />
-          ) : loading.featuredPosts ? (
-            <div className="mb-12 h-[70vh] min-h-[500px] bg-gray-900 rounded-2xl shadow-2xl flex items-center justify-center">
-              <div className="text-center text-white">
-                <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary mb-4"></div>
-                <p className="text-lg">Loading featured posts...</p>
+      <div>
+        {/* Featured Carousel Grid Section - only on page 1 */}
+        {isPageOne && featuredPosts.length > 0 && (
+          <FeaturedCarouselGrid
+            featuredPosts={memoizedFeaturedPosts}
+            autoplayInterval={6000}
+            showStats={true}
+            maxGridItems={6}
+          />
+        )}
+
+        {/* Newsletter CTA - only on page 1 */}
+        {isPageOne && <NewsletterCTA />}
+
+        {/* Main content */}
+        <div className="mb-12 mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Posts column */}
+            <div className="lg:col-span-8 col-span-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 mb-8 pb-4 border-b border-border">
+                <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-primary">
+                  {isPageOne ? "Latest Articles" : `Articles - Page ${currentPage}`}
+                </h2>
+                {totalCount > 0 && (
+                  <span className="text-sm font-medium text-text-secondary bg-secondary-light px-3 py-1 rounded-full">
+                    {totalCount} {totalCount === 1 ? "article" : "articles"}
+                  </span>
+                )}
               </div>
+
+              {/* Posts grid */}
+              <div className="space-y-8">
+                {posts.map((post, index) => (
+                  <PostCard key={post.node.slug || index} post={post.node} />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                showPageInfo={true}
+              />
             </div>
-          ) : null}
 
-          {/* Newsletter CTA - Engagement section */}
-          <NewsletterCTA />
-
-          {/* Main content */}
-          <div className="mb-12 mt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              {/* Posts column */}
-              <div className="lg:col-span-8 col-span-1">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 mb-8 pb-4 border-b border-border">
-                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-primary">
-                    Latest Articles
-                  </h2>
-                  {pagination.totalCount > 0 && (
-                    <span className="text-sm font-medium text-text-secondary bg-secondary-light px-3 py-1 rounded-full">
-                      {mainPostsCount} of {pagination.totalCount}
-                    </span>
-                  )}
+            {/* Sidebar */}
+            <div className="lg:col-span-4 col-span-1">
+              <div className="lg:sticky relative top-8 space-y-6">
+                {/* Recent posts widget */}
+                <div className="bg-secondary rounded-xl border border-border shadow-card overflow-hidden">
+                  <h3 className="text-xl font-heading font-bold px-6 py-4 border-b border-border text-text-primary">
+                    Recent Posts
+                  </h3>
+                  <div className="p-5">
+                    <OptimizedPostWidget recentPosts={recentPosts} />
+                  </div>
                 </div>
 
-                <InfiniteScroll
-                  dataLength={data.mainPosts.length}
-                  next={loadMoreMainPosts}
-                  hasMore={canLoadMore}
-                  loader={<InfiniteScrollLoader count={3} />}
-                  endMessage={
-                    <div className="text-center py-12 mb-8 mt-8 border-t border-border">
-                      <div className="inline-flex items-center space-x-2 text-text-secondary">
-                        <span>
-                          🎉 You've reached the end! No more posts to load.
-                        </span>
-                      </div>
-                    </div>
-                  }
-                  refreshFunction={refresh}
-                  pullDownToRefresh={false}
-                  className="space-y-8"
-                >
-                  {data.mainPosts.map((post, index) => (
-                    <PostCard key={post.node.slug || index} post={post.node} />
-                  ))}
-                </InfiniteScroll>
-              </div>
-
-              {/* Sidebar */}
-              <div className="lg:col-span-4 col-span-1">
-                <div className="lg:sticky relative top-8 space-y-6">
-                  {/* Recent posts widget */}
-                  <div className="bg-secondary rounded-xl border border-border shadow-card overflow-hidden">
-                    <h3 className="text-xl font-heading font-bold px-6 py-4 border-b border-border text-text-primary">
-                      Recent Posts
-                    </h3>
-                    <div className="p-5">
-                      <OptimizedPostWidget />
-                    </div>
-                  </div>
-
-                  {/* Categories widget */}
-                  <div className="bg-secondary rounded-xl border border-border shadow-card overflow-hidden">
-                    <h3 className="text-xl font-heading font-bold px-6 py-4 border-b border-border text-text-primary">
-                      Categories
-                    </h3>
-                    <div className="p-5">
-                      <OptimizedCategories />
-                    </div>
+                {/* Categories widget */}
+                <div className="bg-secondary rounded-xl border border-border shadow-card overflow-hidden">
+                  <h3 className="text-xl font-heading font-bold px-6 py-4 border-b border-border text-text-primary">
+                    Categories
+                  </h3>
+                  <div className="p-5">
+                    <OptimizedCategories categories={categories} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </>
-    </HomepageDataContext.Provider>
+      </div>
+    </>
   );
-}
-
-// Keep the same getStaticProps for SEO
-export async function getStaticProps() {
-  try {
-    return {
-      props: {
-        initialPosts: [], // Empty since we load client-side
-      },
-      revalidate: 180, // 3 minutes
-    };
-  } catch (error) {
-    console.error("Error in getStaticProps for home page:", error);
-    return {
-      props: { initialPosts: [] },
-      revalidate: 120,
-    };
-  }
 }
