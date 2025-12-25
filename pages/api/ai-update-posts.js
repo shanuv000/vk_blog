@@ -25,9 +25,11 @@ const getHygraphClient = () => {
 };
 
 // Query to get posts with AI updates enabled
+// Note: Removed the original `first: 5` limit to update ALL AI-enabled posts
+// Using first: 100 as a practical max to handle large amounts of posts
 const GET_AI_ENABLED_POSTS = `
   query GetAIEnabledPosts {
-    posts(where: { aiAutoUpdate: true }, first: 5, orderBy: createdAt_DESC) {
+    posts(where: { aiAutoUpdate: true }, first: 100, orderBy: createdAt_DESC) {
       id
       slug
       title
