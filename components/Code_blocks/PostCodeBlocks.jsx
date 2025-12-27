@@ -114,34 +114,57 @@ export const getContentFragment = (index, text, obj, type) => {
         </div>
       );
     case "iframe":
-      return (
-        <>
-          {isYoutubeUrl(obj.url) ? (
-            <CustomYouTubeEmbed videoId={obj.url} title="YouTube Video" />
-          ) : (
-            <div className="relative pt-[56.25%] my-4">
-              <ReactPlayer
-                className="absolute top-0 left-0 rounded-lg overflow-hidden shadow-md"
-                url={obj.url}
-                width="100%"
-                height="100%"
-                loop
-                playing
-                muted // Mute the video for autoplay
-                controls
-                light={obj.thumbnail || false}
-                config={{
-                  file: {
-                    attributes: {
-                      poster: obj.thumbnail || "",
-                    },
+      // Handle YouTube URLs
+      if (isYoutubeUrl(obj.url)) {
+        return <CustomYouTubeEmbed videoId={obj.url} title="YouTube Video" />;
+      }
+      // Handle Google Sheets URLs
+      else if (isGoogleSheetsUrl(obj.url)) {
+        return (
+          <div 
+            key={index} 
+            className="my-6 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700"
+          >
+            <iframe
+              src={obj.url}
+              title="Google Sheets"
+              className="w-full bg-white"
+              style={{ 
+                minHeight: "400px",
+                height: obj.height || "500px"
+              }}
+              frameBorder="0"
+              loading="lazy"
+              allowFullScreen
+            />
+          </div>
+        );
+      }
+      // Default: use ReactPlayer for other video URLs
+      else {
+        return (
+          <div className="relative pt-[56.25%] my-4">
+            <ReactPlayer
+              className="absolute top-0 left-0 rounded-lg overflow-hidden shadow-md"
+              url={obj.url}
+              width="100%"
+              height="100%"
+              loop
+              playing
+              muted // Mute the video for autoplay
+              controls
+              light={obj.thumbnail || false}
+              config={{
+                file: {
+                  attributes: {
+                    poster: obj.thumbnail || "",
                   },
-                }}
-              />
-            </div>
-          )}
-        </>
-      );
+                },
+              }}
+            />
+          </div>
+        );
+      }
     case "block-quote":
       return (
         <div key={index} className="">
@@ -212,6 +235,12 @@ function isYoutubeUrl(url) {
   const youtubeRegex =
     /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
   return youtubeRegex.test(url);
+}
+
+// Google Sheets validator
+function isGoogleSheetsUrl(url) {
+  if (!url) return false;
+  return url.includes("docs.google.com/spreadsheets");
 }
 
 // show Lists
