@@ -15,6 +15,7 @@ import {
 import CustomYouTubeEmbed from "./CustomYouTubeEmbed";
 import FacebookEmbed from "./FacebookEmbed";
 import InstagramEmbed from "./InstagramEmbed";
+import GoogleSheetsTable from "./GoogleSheetsTable";
 import { getOptimizedImageUrl } from "../lib/image-config";
 import {
   extractImageDimensions,
@@ -1564,7 +1565,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 }
               },
             },
-            // Iframe renderer for embedded content (YouTube, etc.)
+            // Iframe renderer for embedded content (YouTube, Google Sheets, etc.)
             iframe: ({ url, width, height }) => {
               // Check if it's a YouTube URL
               const isYouTube =
@@ -1577,6 +1578,18 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 return (
                   <div className="my-8">
                     <CustomYouTubeEmbed videoId={url} title="YouTube Video" />
+                  </div>
+                );
+              }
+
+              // Check if it's a Google Sheets URL
+              const isGoogleSheets =
+                url && url.includes("docs.google.com/spreadsheets");
+
+              if (isGoogleSheets) {
+                return (
+                  <div className="my-8">
+                    <GoogleSheetsTable url={url} />
                   </div>
                 );
               }

@@ -8,6 +8,7 @@ import Paragraph from "./Paragraph";
 import CustomYouTubeEmbed from "../CustomYouTubeEmbed";
 import FacebookEmbed from "../FacebookEmbed";
 import InstagramEmbed from "../InstagramEmbed";
+import GoogleSheetsTable from "../GoogleSheetsTable";
 
 // Intersection Observer Hook
 const useInView = (options) => {
@@ -120,25 +121,7 @@ export const getContentFragment = (index, text, obj, type) => {
       }
       // Handle Google Sheets URLs
       else if (isGoogleSheetsUrl(obj.url)) {
-        return (
-          <div 
-            key={index} 
-            className="my-6 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700"
-          >
-            <iframe
-              src={obj.url}
-              title="Google Sheets"
-              className="w-full bg-white"
-              style={{ 
-                minHeight: "400px",
-                height: obj.height || "500px"
-              }}
-              frameBorder="0"
-              loading="lazy"
-              allowFullScreen
-            />
-          </div>
-        );
+        return <GoogleSheetsTable key={index} url={obj.url} />;
       }
       // Default: use ReactPlayer for other video URLs
       else {
