@@ -234,7 +234,6 @@ export default function OptimizedHomepage({
             featuredPosts={memoizedFeaturedPosts}
             autoplayInterval={6000}
             showStats={true}
-            maxGridItems={6}
           />
         )}
 

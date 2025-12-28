@@ -1,6 +1,6 @@
 /**
- * Featured Carousel Grid - Hybrid carousel with grid preview
- * Shows main hero with thumbnails grid below
+ * Featured Carousel - Hero carousel component
+ * Shows main hero with navigation controls and autoplay
  * Optimized for Hygraph MVP data structure
  */
 
@@ -12,12 +12,10 @@ import {
   FaArrowRight,
   FaClock,
   FaUser,
-  FaBookmark,
   FaChevronLeft,
   FaChevronRight,
   FaPlay,
   FaPause,
-  FaEye,
   FaFire,
   FaTrophy,
 } from "react-icons/fa";
@@ -87,16 +85,15 @@ const getPostData = (post) => {
 };
 
 /**
- * Featured Carousel Grid Component
+ * Featured Carousel Component
  * Memoized to prevent unnecessary re-renders
- * Shows a clean, limited selection in grid for better UX
+ * Shows a clean, impactful hero carousel for featured posts
  */
 const FeaturedCarouselGrid = memo(
   ({
     featuredPosts = [],
     autoplayInterval = 6000,
     showStats = true,
-    maxGridItems = 6, // Limit grid items for cleaner UX
   }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAutoplay, setIsAutoplay] = useState(true);
@@ -113,20 +110,7 @@ const FeaturedCarouselGrid = memo(
       [featuredPosts]
     );
 
-    // Limit posts for grid display - show current post + next items up to maxGridItems
-    const gridPosts = React.useMemo(() => {
-      if (validPosts.length <= maxGridItems) {
-        return validPosts;
-      }
 
-      // Show current post and next items, wrapping around if needed
-      const posts = [];
-      for (let i = 0; i < maxGridItems; i++) {
-        const index = (currentIndex + i) % validPosts.length;
-        posts.push({ ...validPosts[index], originalIndex: index });
-      }
-      return posts;
-    }, [validPosts, currentIndex, maxGridItems]);
 
     // Update ref when posts change
     useEffect(() => {
@@ -147,13 +131,7 @@ const FeaturedCarouselGrid = memo(
       );
     }, []);
 
-    const goToSlide = useCallback(
-      (index) => {
-        setDirection(index > currentIndex ? 1 : -1);
-        setCurrentIndex(index);
-      },
-      [currentIndex]
-    );
+
 
     // Autoplay logic - fixed dependencies to prevent infinite loops
     useEffect(() => {
@@ -433,175 +411,42 @@ const FeaturedCarouselGrid = memo(
               />
             </div>
           )}
-        </div>
 
-        {/* Thumbnail Grid - Limited & Clean */}
-        <div className="relative">
-          {/* Grid Header */}
-          <div className="flex items-center justify-between mb-4 px-2">
-            <div className="flex items-center gap-2">
-              <FaFire className="text-primary text-lg" />
-              <h3 className="text-lg font-bold text-text-primary">
-                More Featured Posts
-              </h3>
-              <span className="text-sm text-gray-500">
-                ({currentIndex + 1} of {validPosts.length})
+          {/* Dot Indicators */}
+          {validPosts.length > 1 && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+              {validPosts.slice(0, 8).map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setDirection(idx > currentIndex ? 1 : -1);
+                    setCurrentIndex(idx);
+                  }}
+                  className={`rounded-full transition-all duration-300 ${
+                    idx === currentIndex
+                      ? "w-6 h-2.5 bg-primary"
+                      : "w-2.5 h-2.5 bg-white/50 hover:bg-white/80"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  aria-current={idx === currentIndex ? "true" : "false"}
+                />
+              ))}
+              {validPosts.length > 8 && (
+                <span className="text-white/60 text-xs ml-1">
+                  +{validPosts.length - 8}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Slide Counter */}
+          {validPosts.length > 1 && (
+            <div className="absolute bottom-6 left-6 z-20 bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full">
+              <span className="text-white/90 text-sm font-medium">
+                {currentIndex + 1} / {validPosts.length}
               </span>
             </div>
-
-            {validPosts.length > maxGridItems && (
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <span className="hidden sm:inline">
-                  Showing {maxGridItems} of {validPosts.length}
-                </span>
-                <div className="flex gap-1">
-                  <button
-                    onClick={prevSlide}
-                    className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors active:scale-95 touch-manipulation"
-                    title="Previous posts"
-                    aria-label="Previous posts"
-                  >
-                    <FaChevronLeft className="text-xs" />
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors active:scale-95 touch-manipulation"
-                    title="Next posts"
-                    aria-label="Next posts"
-                  >
-                    <FaChevronRight className="text-xs" />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Grid - Responsive & Clean with larger thumbnails */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
-            {gridPosts.map((post, idx) => {
-              const postData = getPostData(post);
-              const isActive = post.originalIndex === currentIndex;
-              const displayIndex =
-                post.originalIndex !== undefined ? post.originalIndex : idx;
-
-              return (
-                <motion.div
-                  key={`grid-${post.originalIndex || idx}`}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  whileHover={{ scale: 1.03, y: -4 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() =>
-                    goToSlide(
-                      post.originalIndex !== undefined
-                        ? post.originalIndex
-                        : displayIndex
-                    )
-                  }
-                  className={`relative group cursor-pointer rounded-xl overflow-hidden shadow-lg transition-all duration-300 touch-manipulation ${
-                    isActive
-                      ? "ring-4 ring-primary shadow-2xl shadow-primary/30"
-                      : "hover:ring-2 hover:ring-gray-300 dark:hover:ring-gray-600"
-                  }`}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`View ${postData.title}`}
-                >
-                  {/* Image Container with Fixed Aspect Ratio */}
-                  <div className="relative w-full aspect-video bg-gray-800">
-                    <SimpleImage
-                      src={postData.featuredImage}
-                      alt={postData.title}
-                      fill
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                      className={`object-cover transition-all duration-300 ${
-                        isActive ? "" : "group-hover:scale-110"
-                      }`}
-                      fallbackSrc={DEFAULT_FEATURED_IMAGE}
-                      priority={idx < 3}
-                    />
-
-                    {/* Overlay */}
-                    <div
-                      className={`absolute inset-0 transition-all duration-300 ${
-                        isActive
-                          ? "bg-primary/30"
-                          : "bg-black/40 group-hover:bg-black/20"
-                      }`}
-                    />
-
-                    {/* Active Indicator */}
-                    {isActive && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute inset-0 flex items-center justify-center z-10"
-                      >
-                        <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-xl">
-                          <FaEye className="text-white text-xl" />
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Number Badge */}
-                    {!isActive && (
-                      <div className="absolute top-2 left-2 w-8 h-8 bg-black/70 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 z-10">
-                        <span className="text-white font-bold text-sm">
-                          {displayIndex + 1}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Trending Badge for top 3 */}
-                    {displayIndex < 3 && !isActive && (
-                      <div className="absolute top-2 right-2 z-10">
-                        <div className="bg-red-500/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1">
-                          <FaFire className="text-white text-xs" />
-                          <span className="text-white text-xs font-bold">
-                            Hot
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Title - Cleaner layout */}
-                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/95 via-black/80 to-transparent">
-                      <h3
-                        className={`text-white font-semibold leading-tight line-clamp-2 transition-all duration-300 ${
-                          isActive ? "text-sm" : "text-xs group-hover:text-sm"
-                        }`}
-                      >
-                        {postData.title}
-                      </h3>
-                      {isActive && postData.categories.length > 0 && (
-                        <span className="inline-block mt-1 text-xs text-primary-light font-medium">
-                          {postData.categories[0].name}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Legend - Simplified */}
-        <div className="flex items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400 mt-6">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-primary"></div>
-            <span className="text-xs sm:text-sm">Currently Viewing</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-2">
-            <FaFire className="text-red-500" />
-            <span className="text-xs sm:text-sm">Trending Posts</span>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <span className="text-gray-400">Space</span>
-            <span className="text-xs sm:text-sm">Pause/Play</span>
-          </div>
+          )}
         </div>
       </section>
     );

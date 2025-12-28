@@ -10,7 +10,7 @@ const POSTS_PER_PAGE = 10;
 // GraphQL queries for sidebar and featured content
 const FEATURED_POSTS_QUERY = gql`
   query GetFeaturedPosts {
-    posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
+    posts(where: { featuredpost: true }, first: 6, orderBy: createdAt_DESC) {
       title
       slug
       excerpt
