@@ -1036,54 +1036,38 @@ const SocialMediaEmbedder = () => {
 
       cleanupStaleFlags();
 
+      // OPTIMIZED: Reduced from 3 passes (11 seconds total) to 2 passes (4 seconds total)
+      // This significantly reduces DOM manipulation overhead
       firstPassTimeout = setTimeout(() => {
         if (process.env.NODE_ENV === "development") {
-          console.log("Starting first pass of embed extraction...");
+          console.log("Starting optimized embed extraction (single primary pass)...");
         }
         const extractedEmbeds = extractSocialMediaUrls();
         enqueueEmbeds(extractedEmbeds);
         loadSocialMediaScripts(new Set(extractedEmbeds.map((e) => e.platform)));
 
-        log(`First pass found ${extractedEmbeds.length} social media embeds`);
+        log(`Primary pass found ${extractedEmbeds.length} social media embeds`);
 
-        if (process.env.NODE_ENV === "development") {
-          const allBlockquotes = document.querySelectorAll("blockquote");
-          log(`Total blockquotes found: ${allBlockquotes.length}`);
-          allBlockquotes.forEach((bq, i) => {
-            log(`Blockquote ${i}:`, bq.textContent.trim().substring(0, 100));
-          });
-        }
-
-        if (extractedEmbeds.length > 0) {
+        if (process.env.NODE_ENV === "development" && extractedEmbeds.length > 0) {
           extractedEmbeds.forEach((embed, i) => {
             log(`Embed ${i}: Platform=${embed.platform}, URL=${embed.url}`);
           });
         }
 
+        // Only run a second pass if needed for late-loading dynamic content
+        // This catches any embeds that might have been added via client-side hydration
         secondPassTimeout = setTimeout(() => {
           const newExtractedEmbeds = extractSocialMediaUrls();
-          log(
-            `Second pass found ${newExtractedEmbeds.length} social media embeds`
-          );
-
-          enqueueEmbeds(newExtractedEmbeds);
-          loadSocialMediaScripts(
-            new Set(newExtractedEmbeds.map((e) => e.platform))
-          );
-
-          thirdPassTimeout = setTimeout(() => {
-            const finalExtractedEmbeds = extractSocialMediaUrls();
-            log(
-              `Final pass found ${finalExtractedEmbeds.length} social media embeds`
-            );
-
-            enqueueEmbeds(finalExtractedEmbeds);
+          if (newExtractedEmbeds.length > 0) {
+            log(`Secondary pass found ${newExtractedEmbeds.length} additional embeds`);
+            enqueueEmbeds(newExtractedEmbeds);
             loadSocialMediaScripts(
-              new Set(finalExtractedEmbeds.map((e) => e.platform))
+              new Set(newExtractedEmbeds.map((e) => e.platform))
             );
-          }, 5000);
-        }, 3000);
-      }, 3000);
+          }
+          // Third pass removed - unnecessary for static content
+        }, 2500);
+      }, 1500);
     } catch (componentError) {
       console.error(
         "SocialMediaEmbedder: Error during initialization:",

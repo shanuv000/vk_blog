@@ -50,21 +50,21 @@ const TwitterEmbed = ({ tweetId, useApiVersion = true }) => {
 
       // Check if script is already being loaded
       if (document.querySelector('script[src*="platform.twitter.com/widgets.js"]')) {
-        // Wait for it to load
+        // OPTIMIZED: Increased interval from 100ms to 500ms (80% fewer checks)
         const checkInterval = setInterval(() => {
           if (window.twttr?.widgets?.createTweet) {
             clearInterval(checkInterval);
             renderTweet();
           }
-        }, 100);
+        }, 500);
         
-        // Timeout after 10 seconds
+        // OPTIMIZED: Reduced timeout from 10s to 5s
         setTimeout(() => {
           clearInterval(checkInterval);
           if (!window.twttr?.widgets?.createTweet) {
             setError(true);
           }
-        }, 10000);
+        }, 5000);
         return;
       }
 

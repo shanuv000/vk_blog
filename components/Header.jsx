@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -60,6 +60,7 @@ const Header = () => {
 
   // Refs for dropdown handling
   const dropdownRefs = useRef({});
+  const scrollThrottleRef = useRef(false);
 
   // Smart category hierarchy - 8 parent categories with subcategories
   const dropdownData = {
@@ -88,17 +89,25 @@ const Header = () => {
     }),
   };
 
-  // Handle header visibility on scroll
-  const controlHeader = () => {
-    if (typeof window !== "undefined") {
-      if (window.scrollY > lastScrollY && window.scrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
+  // Handle header visibility on scroll - OPTIMIZED with throttling
+  const controlHeader = useCallback(() => {
+    // Use requestAnimationFrame throttling to prevent excessive updates
+    if (scrollThrottleRef.current) return;
+    
+    scrollThrottleRef.current = true;
+    requestAnimationFrame(() => {
+      if (typeof window !== "undefined") {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          setIsVisible(false);
+        } else {
+          setIsVisible(true);
+        }
+        setLastScrollY(currentScrollY);
       }
-      setLastScrollY(window.scrollY);
-    }
-  };
+      scrollThrottleRef.current = false;
+    });
+  }, [lastScrollY]);
 
   // Handle clicks outside of dropdowns
   useEffect(() => {
@@ -119,13 +128,13 @@ const Header = () => {
     };
   }, [activeDropdowns.desktop]);
 
-  // Add scroll event listener
+  // Add scroll event listener - OPTIMIZED with passive option
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.addEventListener("scroll", controlHeader);
+      window.addEventListener("scroll", controlHeader, { passive: true });
       return () => window.removeEventListener("scroll", controlHeader);
     }
-  }, [lastScrollY]);
+  }, [controlHeader]);
 
   // Navigation items
   const navItems = [
@@ -207,15 +216,7 @@ const Header = () => {
             className="text-[#5865F2] hover:text-[#4752C4] transition-colors"
             whileHover={{ scale: 1.1, rotate: 10 }}
             whileTap={{ scale: 0.9 }}
-            animate={{
-              rotate: [0, -10, 10, -10, 10, 0],
-              transition: {
-                duration: 2,
-                repeat: Infinity,
-                repeatDelay: 3,
-                ease: "easeInOut",
-              },
-            }}
+            /* OPTIMIZED: Removed infinite animation - now only animates on interaction */
           >
             <FaDiscord size={24} />
           </motion.a>
@@ -238,15 +239,7 @@ const Header = () => {
             className="text-[#5865F2] hover:text-[#4752C4] transition-colors mr-2"
             whileHover={{ scale: 1.1, rotate: 10 }}
             whileTap={{ scale: 0.9 }}
-            animate={{
-              rotate: [0, -10, 10, -10, 10, 0],
-              transition: {
-                duration: 2,
-                repeat: Infinity,
-                repeatDelay: 3,
-                ease: "easeInOut",
-              },
-            }}
+            /* OPTIMIZED: Removed infinite animation - now only animates on interaction */
             title="Join our Discord"
           >
             <FaDiscord size={28} />

@@ -82,8 +82,8 @@ const TwitterOEmbed = ({ tweetId, className = "" }) => {
         if (data.html) {
           setHtml(data.html);
 
-          // After setting HTML, tell Twitter to process the embed
-          setTimeout(() => {
+          // OPTIMIZED: Use requestAnimationFrame instead of setTimeout for better scheduling
+          requestAnimationFrame(() => {
             if (window.twttr?.widgets?.load) {
               try {
                 window.twttr.widgets.load(containerRef.current);
@@ -91,7 +91,7 @@ const TwitterOEmbed = ({ tweetId, className = "" }) => {
                 console.error("Failed to load Twitter widgets:", e);
               }
             }
-          }, 100);
+          });
         } else {
           throw new Error("No HTML in response");
         }

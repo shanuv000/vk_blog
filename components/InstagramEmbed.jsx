@@ -100,12 +100,13 @@ const InstagramEmbed = ({ url }) => {
 
   // Set a timeout to handle cases where the embed doesn't load
   useEffect(() => {
+    // OPTIMIZED: Reduced from 8s to 5s for faster fallback
     const timeoutId = setTimeout(() => {
       if (loading) {
         // Instagram embed failed to load, try fallback
         directEmbedFallback();
       }
-    }, 8000); // 8 second timeout
+    }, 5000);
 
     return () => clearTimeout(timeoutId);
   }, [cleanUrl, loading]);
