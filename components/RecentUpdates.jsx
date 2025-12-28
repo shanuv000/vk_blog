@@ -61,6 +61,94 @@ const RecentUpdates = ({ updates }) => {
       .trim();
   };
 
+  // Parse markdown formatting and return React elements
+  const parseMarkdown = (text) => {
+    if (!text) return null;
+    
+    const elements = [];
+    let remaining = text;
+    let keyIndex = 0;
+
+    // Process text with regex to find markdown patterns
+    while (remaining.length > 0) {
+      // Find the first occurrence of any markdown pattern
+      const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+      const italicMatch = remaining.match(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/);
+      const codeMatch = remaining.match(/`([^`]+)`/);
+      
+      // Determine which pattern comes first
+      let firstMatch = null;
+      let matchType = null;
+      
+      const patterns = [
+        { match: boldMatch, type: 'bold', tag: 'strong' },
+        { match: italicMatch, type: 'italic', tag: 'em' },
+        { match: codeMatch, type: 'code', tag: 'code' }
+      ].filter(p => p.match);
+      
+      // Find earliest match
+      patterns.forEach(p => {
+        if (!firstMatch || (p.match && p.match.index < firstMatch.match.index)) {
+          firstMatch = p;
+          matchType = p.type;
+        }
+      });
+
+      if (firstMatch && firstMatch.match) {
+        // Add text before the match
+        if (firstMatch.match.index > 0) {
+          elements.push(
+            <span key={`text-${keyIndex++}`}>
+              {remaining.substring(0, firstMatch.match.index)}
+            </span>
+          );
+        }
+
+        // Add the formatted element with premium styling
+        const content = firstMatch.match[1];
+        if (matchType === 'bold') {
+          elements.push(
+            <strong 
+              key={`bold-${keyIndex++}`} 
+              className="update-highlight-bold"
+            >
+              {content}
+            </strong>
+          );
+        } else if (matchType === 'italic') {
+          elements.push(
+            <em 
+              key={`italic-${keyIndex++}`} 
+              className="update-highlight-italic"
+            >
+              {content}
+            </em>
+          );
+        } else if (matchType === 'code') {
+          elements.push(
+            <code 
+              key={`code-${keyIndex++}`} 
+              className="update-highlight-code"
+            >
+              {content}
+            </code>
+          );
+        }
+
+        // Continue with the rest of the text
+        remaining = remaining.substring(firstMatch.match.index + firstMatch.match[0].length);
+      } else {
+        // No more matches, add remaining text
+        elements.push(
+          <span key={`text-${keyIndex++}`}>{remaining}</span>
+        );
+        remaining = "";
+      }
+    }
+
+    return elements.length > 0 ? elements : text;
+  };
+
   const updateText = cleanText(latestUpdate.text);
   const shouldTruncate = updateText.length > 200;
   const displayText = shouldTruncate && !isExpanded 
@@ -91,7 +179,7 @@ const RecentUpdates = ({ updates }) => {
           </span>
         </div>
         
-        <p className="recent-update-text">{displayText}</p>
+        <p className="recent-update-text">{parseMarkdown(displayText)}</p>
         
         {shouldTruncate && (
           <button 
@@ -144,7 +232,7 @@ const RecentUpdates = ({ updates }) => {
                   <span className="previous-update-date">
                     {formatRelativeTime(update.timestamp)}
                   </span>
-                  <p className="previous-update-text">{cleanText(update.text)}</p>
+                  <p className="previous-update-text">{parseMarkdown(cleanText(update.text))}</p>
                 </div>
               </div>
             ))}
@@ -283,6 +371,48 @@ const RecentUpdates = ({ updates }) => {
 
         :global(.dark) .recent-update-text {
           color: #e2e8f0;
+        }
+
+        /* Premium Markdown Formatting Styles */
+        :global(.update-highlight-bold) {
+          font-weight: 700;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          position: relative;
+        }
+
+        :global(.dark) :global(.update-highlight-bold) {
+          background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+        }
+
+        :global(.update-highlight-italic) {
+          font-style: italic;
+          color: #7c3aed;
+          font-weight: 500;
+        }
+
+        :global(.dark) :global(.update-highlight-italic) {
+          color: #c4b5fd;
+        }
+
+        :global(.update-highlight-code) {
+          font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
+          font-size: 0.875em;
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+          color: #5b21b6;
+          padding: 0.15em 0.4em;
+          border-radius: 6px;
+          border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        :global(.dark) :global(.update-highlight-code) {
+          background: linear-gradient(135deg, rgba(165, 180, 252, 0.15) 0%, rgba(196, 181, 253, 0.15) 100%);
+          color: #c4b5fd;
+          border-color: rgba(165, 180, 252, 0.2);
         }
 
         .read-more-btn {
