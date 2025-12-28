@@ -5,91 +5,17 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import {
-  PostCard,
-  Categories,
-  FeaturedCarouselGrid,
-  EnhancedFeaturedPostCard,
-} from "../components";
-import {
-  InitialPageLoader,
-  ApiErrorState,
-  EmptyState,
-} from "../components/ApiLoadingStates";
-import HomeSeo from "../components/HomeSeo";
-import LoadingSpinner from "../components/LoadingSpinner";
+import { PostCard, FeaturedCarouselGrid } from "../components";
+import { EmptyState } from "../components/ApiLoadingStates";
+import HomeSeo from "../components/HomeSeo.js";
 import NewsletterCTA from "../components/NewsletterCTA";
 import SchemaManager from "../components/SchemaManager";
 import Pagination from "../components/Pagination";
 
 /**
- * Optimized FeaturedPosts component
- */
-const OptimizedFeaturedPosts = ({ featuredPosts = [], loading = false }) => {
-  if (loading) {
-    return (
-      <div className="mb-12 bg-secondary-light/10 rounded-2xl p-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-secondary-light rounded w-64 mx-auto mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-64 bg-secondary-light rounded-lg" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!featuredPosts.length) {
-    return null;
-  }
-
-  return (
-    <section className="mb-12 bg-gradient-to-r from-secondary-light/10 to-transparent rounded-2xl p-6 md:p-8">
-      <header className="mb-8 text-center">
-        <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-primary">
-          <span className="text-gradient">Featured Content</span>
-        </h2>
-        <div className="mt-2 w-24 h-1 bg-gradient-to-r from-primary to-primary-light rounded-full mx-auto" />
-        <p className="mt-4 text-text-secondary text-base">
-          Discover our most popular and engaging articles
-        </p>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {featuredPosts.slice(0, 6).map((post, index) => (
-          <EnhancedFeaturedPostCard
-            key={post.slug || index}
-            post={post}
-            index={index}
-            variant={index === 0 ? "large" : index < 3 ? "default" : "compact"}
-          />
-        ))}
-      </div>
-    </section>
-  );
-};
-
-/**
  * Optimized PostWidget that uses props data with image optimization
  */
-const OptimizedPostWidget = ({ recentPosts = [], loading = false }) => {
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div className="flex items-center w-full p-2" key={item}>
-            <div className="w-12 h-12 bg-secondary-light rounded-md flex-none animate-pulse" />
-            <div className="flex-grow ml-3">
-              <div className="h-3 bg-secondary-light rounded w-3/4 animate-pulse" />
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
+const OptimizedPostWidget = ({ recentPosts = [] }) => {
   return (
     <div className="space-y-1">
       {recentPosts.slice(0, 5).map((post, index) => {
@@ -133,35 +59,14 @@ const OptimizedPostWidget = ({ recentPosts = [], loading = false }) => {
 };
 
 /**
- * Optimized Categories component
+ * Optimized Categories component with proper Next.js Link
  */
-const OptimizedCategories = ({ categories = [], loading = false }) => {
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        <LoadingSpinner
-          size="small"
-          type="pulse"
-          message="Loading categories..."
-        />
-        <div className="animate-pulse w-full">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <div
-              key={item}
-              className="h-4 bg-secondary-light rounded mb-3"
-              style={{ width: `${Math.floor(Math.random() * 40) + 60}%` }}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
+const OptimizedCategories = ({ categories = [] }) => {
   return (
     <div className="space-y-2">
       {categories.map((category) => (
         <div key={category.slug} className="group">
-          <a
+          <Link
             href={`/category/${category.slug}`}
             className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-secondary-light transition-colors duration-200 group-hover:text-primary"
           >
@@ -169,7 +74,7 @@ const OptimizedCategories = ({ categories = [], loading = false }) => {
             <span className="text-text-secondary group-hover:text-primary">
               →
             </span>
-          </a>
+          </Link>
         </div>
       ))}
     </div>
@@ -190,8 +95,6 @@ export default function OptimizedHomepage({
     currentPage = 1,
     totalPages = 1,
     totalCount = 0,
-    hasNextPage = false,
-    hasPrevPage = false,
   } = pagination;
 
   // Memoize featured posts to pass as stable reference to carousel
@@ -200,9 +103,6 @@ export default function OptimizedHomepage({
   // Check if we have any data
   const hasData = posts.length > 0;
   const isPageOne = currentPage === 1;
-
-  // Get the base path for pagination links
-  const paginationBasePath = isPageOne ? "/" : "/page";
 
   // Show empty state if no posts
   if (!hasData && totalCount === 0) {
@@ -273,7 +173,7 @@ export default function OptimizedHomepage({
 
             {/* Sidebar */}
             <div className="lg:col-span-4 col-span-1">
-              <div className="lg:sticky relative top-8 space-y-6">
+              <div className="lg:sticky lg:top-8 space-y-6">
                 {/* Recent posts widget */}
                 <div className="bg-secondary rounded-xl border border-border shadow-card overflow-hidden">
                   <h3 className="text-xl font-heading font-bold px-6 py-4 border-b border-border text-text-primary">
