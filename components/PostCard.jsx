@@ -64,11 +64,21 @@ const PostCard = ({ post = {} }) => {
         <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">
           <FaCalendarAlt size={10} />
           <span suppressHydrationWarning>
-            {safePost.createdAt
-              ? moment(safePost.createdAt).format("MMM DD, YYYY")
-              : safePost.publishedAt
-              ? moment(safePost.publishedAt).format("MMM DD, YYYY")
-              : "No date"}
+            {(() => {
+              const now = moment();
+              const publishedDate = safePost.publishedAt ? moment(safePost.publishedAt) : null;
+              const createdDate = safePost.createdAt ? moment(safePost.createdAt) : null;
+              
+              let displayDate;
+              // If publishedAt is in the future, use createdAt instead
+              if (publishedDate && publishedDate.isAfter(now)) {
+                displayDate = createdDate || publishedDate;
+              } else {
+                displayDate = publishedDate || createdDate;
+              }
+
+              return displayDate ? displayDate.format("MMM DD, YYYY") : "No date";
+            })()}
           </span>
         </div>
       </div>

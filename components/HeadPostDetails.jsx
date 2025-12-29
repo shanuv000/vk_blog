@@ -28,7 +28,18 @@ const HeadPostDetails = ({ post }) => {
         />
         <meta
           property="article:published_time"
-          content={post.publishedAt || post.createdAt}
+          content={
+            (() => {
+              const now = new Date();
+              const publishedDate = post.publishedAt ? new Date(post.publishedAt) : null;
+              const createdDate = post.createdAt ? new Date(post.createdAt) : null;
+              
+              if (publishedDate && publishedDate > now) {
+                return (createdDate || publishedDate).toISOString();
+              }
+              return (publishedDate || createdDate)?.toISOString() || "";
+            })()
+          }
         />
         <meta
           property="article:modified_time"

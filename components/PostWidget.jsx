@@ -115,10 +115,20 @@ const PostWidget = ({ categories, slug }) => {
         const imageUrl = post.featuredImage?.thumbnailUrl || 
           (post.featuredImage?.url ? `${post.featuredImage.url}?w=112&h=112&q=75&fit=crop&auto=format` : null);
         
-        // Simple date formatter
-        const dateStr = post.publishedAt || post.createdAt;
-        const formattedDate = dateStr 
-          ? new Date(dateStr).toLocaleDateString(undefined, {
+        // Smart date logic: use publishedAt unless it's in the future, then fallback to createdAt
+        const now = new Date();
+        const publishedDate = post.publishedAt ? new Date(post.publishedAt) : null;
+        const createdDate = post.createdAt ? new Date(post.createdAt) : null;
+        
+        let displayDate;
+        if (publishedDate && publishedDate > now) {
+          displayDate = createdDate || publishedDate;
+        } else {
+          displayDate = publishedDate || createdDate;
+        }
+        
+        const formattedDate = displayDate 
+          ? displayDate.toLocaleDateString(undefined, {
               month: 'short', day: 'numeric', year: 'numeric'
             })
           : "No date";

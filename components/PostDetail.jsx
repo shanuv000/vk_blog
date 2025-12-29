@@ -365,7 +365,44 @@ const PostDetail = ({ post }) => {
                   {(() => {
                     try {
                       return (
-                        <div className="prose prose-lg prose-slate max-w-none prose-p:leading-[1.8] prose-li:leading-relaxed prose-headings:font-heading prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-md prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+                        <div className="prose prose-xl prose-slate max-w-none
+                          /* Enhanced Base Typography */
+                          prose-p:text-[1.125rem] prose-p:leading-[1.9] prose-p:tracking-[0.01em] prose-p:text-gray-700 prose-p:mb-7
+                          prose-li:text-[1.125rem] prose-li:leading-[1.85] prose-li:text-gray-700 prose-li:mb-2
+                          
+                          /* Premium Headings */
+                          prose-headings:font-heading prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-gray-900
+                          prose-h2:text-3xl prose-h2:mt-14 prose-h2:mb-6
+                          prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-5
+                          prose-h4:text-xl prose-h4:mt-8 prose-h4:mb-4
+                          
+                          /* Refined Links */
+                          prose-a:text-primary prose-a:font-medium prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary prose-a:transition-colors
+                          
+                          /* Better Images */
+                          prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-10
+                          
+                          /* Elegant Blockquotes */
+                          prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-gray-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:my-8 prose-blockquote:text-[1.1rem] prose-blockquote:italic prose-blockquote:text-gray-600 prose-blockquote:not-italic prose-blockquote:font-normal
+                          
+                          /* Clean Code Styling */
+                          prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:text-[0.9em] prose-code:font-mono prose-code:text-gray-800 prose-code:before:content-none prose-code:after:content-none
+                          prose-pre:bg-gray-900 prose-pre:rounded-xl prose-pre:shadow-lg prose-pre:my-8
+                          
+                          /* Better Lists */
+                          prose-ul:my-6 prose-ol:my-6
+                          prose-ul:pl-6 prose-ol:pl-6
+                          
+                          /* Horizontal Rules */
+                          prose-hr:border-gray-200 prose-hr:my-12
+                          
+                          /* Strong and Emphasis */
+                          prose-strong:text-gray-900 prose-strong:font-semibold
+                          prose-em:text-gray-700
+                          
+                          /* First paragraph styling */
+                          first:prose-p:text-xl first:prose-p:text-gray-600
+                        ">
                           <RichTextRenderer
                             content={post.content}
                             references={

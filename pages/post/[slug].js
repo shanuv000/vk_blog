@@ -8,7 +8,6 @@ import {
   Loader,
   SchemaManager,
 } from "../../components";
-import LazySidebar from "../../components/LazySidebar";
 
 // Import data hooks instead of direct service calls
 import { usePostDetails } from "../../hooks/useApolloQueries";
@@ -240,25 +239,15 @@ const PostDetails = ({ post, error, lastFetched }) => {
     <>
       {/* Add structured data */}
       <SchemaManager post={post} />
+      {/* Centered content layout - removed sidebar for cleaner reading experience */}
       <div className="sm:container mx-auto px-0 sm:px-4 lg:px-10 mb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12">
-          <div className="col-span-1 lg:col-span-8">
-            <PostDetail post={post} />
-            {/* Ensure slug and createdAt exist before passing to AdjacentPosts */}
-            {post.slug && post.createdAt && (
-              <AdjacentPosts slug={post.slug} createdAt={post.createdAt} />
-            )}
-          </div>
-          <div className="col-span-1 lg:col-span-4">
-            <LazySidebar
-              slug={post.slug || ""}
-              categories={
-                post.categories?.map((category) => category.slug) || []
-              }
-            />
-          </div>
+        <div className="max-w-4xl mx-auto">
+          <PostDetail post={post} />
+          {/* Ensure slug and createdAt exist before passing to AdjacentPosts */}
+          {post.slug && post.createdAt && (
+            <AdjacentPosts slug={post.slug} createdAt={post.createdAt} />
+          )}
         </div>
-        {/* <Footer /> */}
       </div>
     </>
   );

@@ -592,3 +592,132 @@ export const getRecentPosts = async () => {
   const result = await fetchFromCDN(query);
   return result.posts;
 };
+
+/**
+ * Get all categories with their latest posts
+ * Used for the Categories Hub page
+ */
+export const getCategoriesWithPosts = async (postsPerCategory = 4) => {
+  return deduplicate(`getCategoriesWithPosts:${postsPerCategory}`, async () => {
+    // First, get all categories
+    const categoriesQuery = gql`
+      query GetCategoriesForHub {
+        categories(where: { show: true }, orderBy: name_ASC) {
+          name
+          slug
+        }
+      }
+    `;
+
+    try {
+      const categoriesResult = await fetchFromCDN(categoriesQuery);
+      
+      if (!categoriesResult?.categories?.length) {
+        console.warn("[getCategoriesWithPosts] No categories found");
+        return [];
+      }
+
+      // For each category, fetch its posts
+      const categoriesWithPosts = await Promise.all(
+        categoriesResult.categories.map(async (category) => {
+          const postsQuery = gql`
+            query GetCategoryPosts($slug: String!, $limit: Int!) {
+              posts(
+                where: { categories_some: { slug: $slug } }
+                first: $limit
+                orderBy: publishedAt_DESC
+              ) {
+                title
+                slug
+                excerpt
+                createdAt
+                publishedAt
+                featuredImage {
+                  url
+                }
+                author {
+                  name
+                  photo {
+                    url
+                  }
+                }
+                categories {
+                  name
+                  slug
+                }
+              }
+            }
+          `;
+
+          try {
+            const postsResult = await fetchFromCDN(postsQuery, {
+              slug: category.slug,
+              limit: postsPerCategory,
+            });
+
+            return {
+              ...category,
+              posts: postsResult.posts || [],
+            };
+          } catch (error) {
+            console.error(
+              `[getCategoriesWithPosts] Error fetching posts for ${category.slug}:`,
+              error
+            );
+            return {
+              ...category,
+              posts: [],
+            };
+          }
+        })
+      );
+
+      // Filter out categories with no posts
+      return categoriesWithPosts.filter((cat) => cat.posts.length > 0);
+    } catch (error) {
+      console.error("[getCategoriesWithPosts] Error:", error);
+      return [];
+    }
+  });
+};
+
+/**
+ * Get popular/trending posts (using recent posts as proxy since views aren't tracked)
+ * Used for the Categories Hub page trending section
+ */
+export const getPopularPosts = async (limit = 12) => {
+  return deduplicate(`getPopularPosts:${limit}`, async () => {
+    const query = gql`
+      query GetPopularPosts($limit: Int!) {
+        posts(orderBy: publishedAt_DESC, first: $limit) {
+          title
+          slug
+          excerpt
+          createdAt
+          publishedAt
+          featuredImage {
+            url
+          }
+          author {
+            name
+            photo {
+              url
+            }
+          }
+          categories {
+            name
+            slug
+          }
+        }
+      }
+    `;
+
+    try {
+      const result = await fetchFromCDN(query, { limit });
+      return result.posts || [];
+    } catch (error) {
+      console.error("[getPopularPosts] Error:", error);
+      return [];
+    }
+  });
+};
