@@ -1,16 +1,21 @@
 /**
  * Optimized Homepage Component with SSR Pagination
  * SEO-optimized with server-side rendering and classic pagination
+ * 
+ * Updated: Magazine-style layout with lighter components
  */
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import { PostCard, FeaturedCarouselGrid } from "../components";
+import { PostCard } from "../components";
 import { EmptyState } from "../components/ApiLoadingStates";
 import HomeSeo from "../components/HomeSeo.js";
 import NewsletterCTA from "../components/NewsletterCTA";
 import SchemaManager from "../components/SchemaManager";
 import Pagination from "../components/Pagination";
+import HeroFeatureGrid from "./HeroFeatureGrid";
+import BreakingNewsStrip from "./BreakingNewsStrip";
+import TopStoriesSection from "./TopStoriesSection";
 
 /**
  * Optimized PostWidget that uses props data with image optimization
@@ -128,20 +133,26 @@ export default function OptimizedHomepage({
       <SchemaManager isHomePage posts={posts.map((post) => post.node)} />
 
       <div>
-        {/* Featured Carousel Grid Section - only on page 1 */}
+        {/* Breaking News Strip - only on page 1 */}
+        {isPageOne && recentPosts.length > 0 && (
+          <BreakingNewsStrip posts={recentPosts} label="LATEST" />
+        )}
+
+        {/* Hero Feature Grid - replaces heavy carousel, only on page 1 */}
         {isPageOne && featuredPosts.length > 0 && (
-          <FeaturedCarouselGrid
-            featuredPosts={memoizedFeaturedPosts}
-            autoplayInterval={6000}
-            showStats={true}
+          <HeroFeatureGrid posts={memoizedFeaturedPosts} />
+        )}
+
+        {/* Top Stories Section - only on page 1 */}
+        {isPageOne && posts.length > 3 && (
+          <TopStoriesSection 
+            posts={posts.slice(0, 6)} 
+            title="Top Stories" 
           />
         )}
 
-        {/* Newsletter CTA - only on page 1 */}
-        {isPageOne && <NewsletterCTA />}
-
         {/* Main content */}
-        <div className="mb-12 mt-8">
+        <div className="mb-8 mt-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Posts column */}
             <div className="lg:col-span-8 col-span-1">
@@ -197,6 +208,9 @@ export default function OptimizedHomepage({
             </div>
           </div>
         </div>
+
+        {/* Newsletter CTA - at the bottom, only on page 1 */}
+        {isPageOne && <NewsletterCTA />}
       </div>
     </>
   );
