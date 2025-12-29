@@ -2,19 +2,16 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { PostCard, Categories, Loader } from "../../components";
+import { Categories, Loader } from "../../components";
+import MagazineCategoryLayout from "../../components/MagazineCategoryLayout";
 import {
   CategorySwitchLoader,
-  InfiniteScrollLoader,
   ApiErrorState,
   EmptyState,
 } from "../../components/ApiLoadingStates";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import PostCardSkeleton from "../../components/PostCardSkeleton";
 import SchemaManager from "../../components/SchemaManager";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
-import { getCategories, getCategoryPost } from "../../services";
+import { getCategories } from "../../services";
 import {
   getCategoryInfo,
   getCategoryBreadcrumb,
@@ -208,67 +205,17 @@ const CategoryPost = ({ initialPosts }) => {
             ) : null;
           })()}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <div className="col-span-1 lg:col-span-8">
-            <h1 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-text-primary border-b border-secondary-light pb-4">
-              {(() => {
-                const categoryInfo = getCategoryInfo(categorySlug);
-                return (
-                  <span className="flex items-center">
-                    {categoryInfo?.icon && (
-                      <span className="mr-3 text-4xl">{categoryInfo.icon}</span>
-                    )}
-                    {actualCategoryName || "Category"} Articles
-                  </span>
-                );
-              })()}
-              {totalCount > 0 && (
-                <span className="text-sm font-normal text-text-secondary ml-2">
-                  ({postsCount} of {totalCount})
-                </span>
-              )}
-            </h1>
-
-            <InfiniteScroll
-              dataLength={posts.length}
-              next={loadMorePosts}
-              hasMore={hasMore}
-              loader={<InfiniteScrollLoader count={3} />}
-              endMessage={
-                <div className="text-center py-8">
-                  <div className="inline-flex items-center space-x-2 text-text-secondary">
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>
-                      🎉 You've reached the end! No more posts in this category.
-                    </span>
-                  </div>
-                </div>
-              }
-              refreshFunction={loadInitialPosts}
-              pullDownToRefresh={false}
-              className="space-y-8"
-            >
-              {posts.map((post, index) => (
-                <PostCard key={post.node.slug || index} post={post.node} />
-              ))}
-            </InfiniteScroll>
-          </div>
-          <div className="col-span-1 lg:col-span-4">
-            <div className="relative lg:sticky top-8">
-              <Categories />
-            </div>
-          </div>
-        </div>
+        {/* Magazine-Style Layout */}
+        <MagazineCategoryLayout
+          posts={posts}
+          hasMore={hasMore}
+          loadMorePosts={loadMorePosts}
+          loadInitialPosts={loadInitialPosts}
+          categoryName={actualCategoryName || categoryName}
+          totalCount={totalCount}
+          postsCount={postsCount}
+          sidebarContent={<Categories />}
+        />
       </div>
     </>
   );
