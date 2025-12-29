@@ -14,6 +14,7 @@ import RichTextRenderer from "./RichTextRenderer";
 import Navbar_post_details from "./Social_post_details";
 import TagList from "./TagList";
 import RecentUpdates from "./RecentUpdates";
+import NewsletterCTA from "./NewsletterCTA";
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
@@ -474,6 +475,9 @@ const PostDetail = ({ post }) => {
                 <Comments postSlug={post.slug} />
               </section>
             )}
+
+            {/* Newsletter CTA - After Comments */}
+            <NewsletterCTA />
           </div>
         </article>
       </main>

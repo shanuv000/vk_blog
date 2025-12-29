@@ -268,90 +268,82 @@ const Comments = ({ postSlug }) => {
         </div>
       </form>
 
-      {/* Comments List */}
-      <div className="border-t border-gray-100 pt-8">
-        <div className="flex justify-between items-center mb-6">
-          <h4 className="text-lg font-semibold text-gray-800">
-            Recent Comments
-          </h4>
+      {/* Comments List - Hide section when no comments */}
+      {(isLoading || comments.length > 0) && (
+        <div className="border-t border-gray-100 pt-8">
+          <div className="flex justify-between items-center mb-6">
+            <h4 className="text-lg font-semibold text-gray-800">
+              Recent Comments
+            </h4>
 
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              fetchComments();
-            }}
-            className="text-sm text-primary flex items-center hover:text-primary-dark transition-colors font-medium"
-            disabled={isLoading}
-          >
-            <FaRedo className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`} />
-            {isLoading ? "Refreshing..." : "Refresh"}
-          </button>
-        </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                fetchComments();
+              }}
+              className="text-sm text-primary flex items-center hover:text-primary-dark transition-colors font-medium"
+              disabled={isLoading}
+            >
+              <FaRedo className={`mr-1.5 ${isLoading ? "animate-spin" : ""}`} />
+              {isLoading ? "Refreshing..." : "Refresh"}
+            </button>
+          </div>
 
-        <div className="space-y-6">
-          {isLoading ? (
-            <div className="text-center py-12">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em]" />
-              <p className="mt-4 text-gray-500 font-medium">Loading conversation...</p>
-            </div>
-          ) : comments.length > 0 ? (
-            <AnimatePresence mode="popLayout">
-              {comments.map((comment) => (
-                <motion.div
-                  key={comment.id}
-                  className="group bg-gray-50 rounded-2xl p-5 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-gray-100"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  layout
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                        {comment.name
-                          ? comment.name.charAt(0).toUpperCase()
-                          : "A"}
-                      </div>
-                    </div>
-                    <div className="flex-grow min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
-                          <h5 className="font-bold text-gray-900 truncate">
-                            {comment.name || "Anonymous"}
-                          </h5>
-                          {comment.isLocal && (
-                            <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase tracking-wider rounded-full">
-                              New
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-xs text-gray-400 font-medium whitespace-nowrap">
-                          {comment.createdAt
-                            ? moment(comment.createdAt).fromNow()
-                            : "Just now"}
-                        </span>
-                      </div>
-                      <div className="prose prose-sm prose-slate max-w-none text-gray-600 leading-relaxed">
-                        <p className="whitespace-pre-line">{comment.content}</p>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          ) : (
-            <div className="text-center py-12 px-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-              <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400">
-                <FaPaperPlane />
+          <div className="space-y-6">
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em]" />
+                <p className="mt-4 text-gray-500 font-medium">Loading conversation...</p>
               </div>
-              <h5 className="text-gray-900 font-medium mb-1">No comments yet</h5>
-              <p className="text-gray-500 text-sm">
-                Be the first to share your thoughts on this article!
-              </p>
-            </div>
-          )}
+            ) : (
+              <AnimatePresence mode="popLayout">
+                {comments.map((comment) => (
+                  <motion.div
+                    key={comment.id}
+                    className="group bg-gray-50 rounded-2xl p-5 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-gray-100"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    layout
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                          {comment.name
+                            ? comment.name.charAt(0).toUpperCase()
+                            : "A"}
+                        </div>
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <h5 className="font-bold text-gray-900 truncate">
+                              {comment.name || "Anonymous"}
+                            </h5>
+                            {comment.isLocal && (
+                              <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                                New
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs text-gray-400 font-medium whitespace-nowrap">
+                            {comment.createdAt
+                              ? moment(comment.createdAt).fromNow()
+                              : "Just now"}
+                          </span>
+                        </div>
+                        <div className="prose prose-sm prose-slate max-w-none text-gray-600 leading-relaxed">
+                          <p className="whitespace-pre-line">{comment.content}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </motion.div>
   );
 };

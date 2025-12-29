@@ -349,16 +349,6 @@ const NavbarPostDetails = ({ post }) => {
           </div>
         </div>
 
-        {/* Debug Info (only in development) */}
-        {process.env.NODE_ENV === "development" && (
-          <div className="mt-4 p-3 bg-gray-100 rounded-lg text-xs font-mono text-gray-500 border border-gray-200">
-            <div className="font-bold mb-2">Debug Info</div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>Shortened: {isShortened ? "YES" : "NO"}</div>
-            </div>
-          </div>
-        )}
-
         {/* Toast notification */}
         {showToast && (
           <Toast
