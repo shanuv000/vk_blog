@@ -5,11 +5,11 @@
 
 import React from "react";
 import Link from "next/link";
-import moment from "moment";
 import { FaCalendarAlt } from "react-icons/fa";
 import OptimizedImage from "./OptimizedImage";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { getOptimizedImageUrl } from "../lib/image-config";
+import { getPostDisplayDate } from "../lib/date-utils";
 
 const PostCardHorizontal = ({ post, index = 0, showCategory = false }) => {
   if (!post) return null;
@@ -18,18 +18,7 @@ const PostCardHorizontal = ({ post, index = 0, showCategory = false }) => {
   const categoryName = post.categories?.[0]?.name;
   const categorySlug = post.categories?.[0]?.slug;
 
-  // Smart date logic: use publishedAt unless it's in the future, then fallback to createdAt
-  const getDisplayDate = () => {
-    const now = moment();
-    const publishedDate = post.publishedAt ? moment(post.publishedAt) : null;
-    const createdDate = post.createdAt ? moment(post.createdAt) : null;
 
-    // If publishedAt is in the future, use createdAt instead
-    if (publishedDate && publishedDate.isAfter(now)) {
-      return createdDate || publishedDate;
-    }
-    return publishedDate || createdDate;
-  };
 
   return (
     <Link href={`/post/${post.slug}`} className="block group">
@@ -66,7 +55,7 @@ const PostCardHorizontal = ({ post, index = 0, showCategory = false }) => {
           <div className="flex items-center gap-1.5 text-xs text-text-tertiary mt-2">
             <FaCalendarAlt size={10} />
             <span suppressHydrationWarning>
-              {getDisplayDate()?.format("MMM DD, YYYY") || "No date"}
+              {getPostDisplayDate(post)}
             </span>
           </div>
         </div>

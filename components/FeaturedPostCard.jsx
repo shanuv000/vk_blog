@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import moment from "moment";
 import { FaCalendarAlt, FaBookmark, FaArrowRight } from "react-icons/fa";
+import { formatDate } from "../lib/date-utils";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { FeaturedImageSkeleton } from "./ImageSkeletons";
 import OptimizedImage from "./OptimizedImage";
@@ -106,7 +106,7 @@ const FeaturedPostCard = ({ post = {}, priority = false, index = 0 }) => {
                   <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
                     <FaCalendarAlt size={12} className="text-primary-light" />
                     <span className="font-medium">
-                      {moment(safePost.createdAt).format("MMM DD, YYYY")}
+                      {formatDate(safePost.createdAt)}
                     </span>
                   </div>
                 )}

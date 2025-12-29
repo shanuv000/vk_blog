@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import moment from "moment";
+import { formatDate } from "../lib/date-utils";
 import {
   FaCalendarAlt,
   FaBookmark,
@@ -216,7 +216,7 @@ const EnhancedFeaturedPostCard = ({
                   </span>
                   {safePost.createdAt && (
                     <span className="text-xs text-gray-500">
-                      {moment(safePost.createdAt).format("MMM DD, YYYY")}
+                      {formatDate(safePost.createdAt)}
                     </span>
                   )}
                 </div>

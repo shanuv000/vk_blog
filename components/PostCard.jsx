@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import moment from "moment";
+import { getPostDisplayDate } from "../lib/date-utils";
 import { FaUser, FaCalendarAlt } from "react-icons/fa";
 import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { PostCardImageSkeleton } from "./ImageSkeletons";
@@ -64,21 +64,7 @@ const PostCard = ({ post = {} }) => {
         <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">
           <FaCalendarAlt size={10} />
           <span suppressHydrationWarning>
-            {(() => {
-              const now = moment();
-              const publishedDate = safePost.publishedAt ? moment(safePost.publishedAt) : null;
-              const createdDate = safePost.createdAt ? moment(safePost.createdAt) : null;
-              
-              let displayDate;
-              // If publishedAt is in the future, use createdAt instead
-              if (publishedDate && publishedDate.isAfter(now)) {
-                displayDate = createdDate || publishedDate;
-              } else {
-                displayDate = publishedDate || createdDate;
-              }
-
-              return displayDate ? displayDate.format("MMM DD, YYYY") : "No date";
-            })()}
+            {getPostDisplayDate(safePost)}
           </span>
         </div>
       </div>

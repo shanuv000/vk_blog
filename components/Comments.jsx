@@ -8,8 +8,8 @@ import React, {
 } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
-import moment from "moment";
 import { FaPaperPlane, FaUser, FaRedo, FaSpinner } from "react-icons/fa";
+import { getRelativeTime } from "../lib/date-utils";
 
 // Import the unified service that tries multiple methods
 import {
@@ -327,9 +327,7 @@ const Comments = ({ postSlug }) => {
                             )}
                           </div>
                           <span className="text-xs text-gray-400 font-medium whitespace-nowrap">
-                            {comment.createdAt
-                              ? moment(comment.createdAt).fromNow()
-                              : "Just now"}
+                            {getRelativeTime(comment.createdAt) || "Just now"}
                           </span>
                         </div>
                         <div className="prose prose-sm prose-slate max-w-none text-gray-600 leading-relaxed">

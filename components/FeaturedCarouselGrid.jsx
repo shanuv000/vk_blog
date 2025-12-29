@@ -7,7 +7,6 @@
 import React, { useState, useEffect, useRef, memo, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import moment from "moment";
 import {
   FaArrowRight,
   FaClock,
@@ -22,6 +21,7 @@ import {
 
 import SimpleImage from "../components/SimpleImage";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import { formatDate } from "../lib/date-utils";
 
 /**
  * Calculate reading time from content
@@ -338,7 +338,7 @@ const FeaturedCarouselGrid = memo(
                       </div>
                       {currentPost.createdAt && (
                         <span className="font-medium" suppressHydrationWarning>
-                          {moment(currentPost.createdAt).format("MMM DD, YYYY")}
+                          {formatDate(currentPost.createdAt)}
                         </span>
                       )}
                     </div>

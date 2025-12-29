@@ -7,7 +7,6 @@
 import React, { useState, useEffect, useRef, memo, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import moment from "moment";
 import {
   FaArrowRight,
   FaClock,
@@ -25,6 +24,7 @@ import {
 
 import OptimizedImage from "./OptimizedImage";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
+import { formatDate } from "../lib/date-utils";
 
 /**
  * Calculate reading time from content
@@ -389,7 +389,7 @@ const FeaturedHeroCarousel = memo(
                     {currentPost.createdAt && (
                       <div className="flex items-center gap-2">
                         <span className="font-medium">
-                          {moment(currentPost.createdAt).format("MMM DD, YYYY")}
+                          {formatDate(currentPost.createdAt)}
                         </span>
                       </div>
                     )}

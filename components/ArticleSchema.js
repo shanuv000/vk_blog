@@ -1,7 +1,7 @@
 import React from "react";
-import moment from "moment";
 import { DEFAULT_AVATAR, DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import JsonLd from "./JsonLd";
+import { toISOString } from "../lib/date-utils";
 
 /**
  * ArticleSchema component for generating Article schema structured data
@@ -54,8 +54,8 @@ const ArticleSchema = ({ post }) => {
     headline: post.title,
     description: post.excerpt,
     image: post.featuredImage?.url || DEFAULT_FEATURED_IMAGE,
-    datePublished: moment(datePublished).toISOString(),
-    dateModified: moment(dateModified).toISOString(),
+    datePublished: toISOString(datePublished) || new Date().toISOString(),
+    dateModified: toISOString(dateModified) || toISOString(datePublished) || new Date().toISOString(),
     author,
     publisher,
     mainEntityOfPage: {

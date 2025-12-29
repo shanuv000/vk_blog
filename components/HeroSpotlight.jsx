@@ -7,7 +7,6 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
-import moment from "moment";
 import {
   FaArrowRight,
   FaClock,
@@ -20,6 +19,7 @@ import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import HeroSpotlightSkeleton from "./HeroSpotlightSkeleton";
 import OptimizedImage from "./OptimizedImage";
 import { IMAGE_CONFIGS, getOptimizedImageUrl } from "../lib/image-config";
+import { formatDate } from "../lib/date-utils";
 import styles from "../styles/HeroSpotlight.module.css";
 
 // Calculate reading time with better accuracy
@@ -257,7 +257,7 @@ const HeroSpotlight = ({
               {heroData.createdAt && (
                 <div className={`${styles.metaItem}`}>
                   <span>
-                    {moment(heroData.createdAt).format("MMM DD, YYYY")}
+                    {formatDate(heroData.createdAt)}
                   </span>
                 </div>
               )}

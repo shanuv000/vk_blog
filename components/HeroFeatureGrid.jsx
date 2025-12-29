@@ -5,11 +5,11 @@
 
 import React from "react";
 import Link from "next/link";
-import moment from "moment";
 import { FaCalendarAlt, FaUser, FaClock } from "react-icons/fa";
 import OptimizedImage from "./OptimizedImage";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 import { getOptimizedImageUrl } from "../lib/image-config";
+import { getPostDisplayDate } from "../lib/date-utils";
 
 // Calculate reading time estimate
 const calculateReadingTime = (content = "", title = "") => {
@@ -19,17 +19,7 @@ const calculateReadingTime = (content = "", title = "") => {
   return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 };
 
-// Smart date logic: use publishedAt unless it's in the future, then fallback to createdAt
-const getSmartDate = (post) => {
-  const now = moment();
-  const publishedDate = post.publishedAt ? moment(post.publishedAt) : null;
-  const createdDate = post.createdAt ? moment(post.createdAt) : null;
 
-  if (publishedDate && publishedDate.isAfter(now)) {
-    return createdDate || publishedDate;
-  }
-  return publishedDate || createdDate;
-};
 
 // Large featured card component
 const LargeFeatureCard = ({ post }) => {
@@ -85,7 +75,7 @@ const LargeFeatureCard = ({ post }) => {
             <div className="flex items-center gap-1.5">
               <FaCalendarAlt size={12} />
               <span suppressHydrationWarning>
-                {getSmartDate(post)?.format("MMM DD, YYYY") || "No date"}
+                {getPostDisplayDate(post)}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -140,7 +130,7 @@ const SecondaryFeatureCard = ({ post }) => {
           <div className="flex items-center gap-1.5 text-xs text-gray-300 mt-2">
             <FaCalendarAlt size={10} />
             <span suppressHydrationWarning>
-              {getSmartDate(post)?.format("MMM DD, YYYY") || "No date"}
+              {getPostDisplayDate(post)}
             </span>
           </div>
         </div>

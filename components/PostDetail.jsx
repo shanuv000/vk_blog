@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useSpring } from "framer-motion";
-import moment from "moment";
 import Link from "next/link";
 import { FaArrowLeft, FaRegClock, FaRegCalendarAlt } from "react-icons/fa";
 import { FaXTwitter, FaFacebook, FaLink, FaCheck } from "react-icons/fa6";
+import { formatDate } from "../lib/date-utils";
 import { DEFAULT_FEATURED_IMAGE, DEFAULT_AVATAR } from "./DefaultAvatar";
 import ErrorBoundary from "./ErrorBoundary";
 import FloatingShareBar from "./FloatingShareBar";
@@ -222,9 +222,7 @@ const PostDetail = ({ post }) => {
               <div className="flex items-center">
                 <FaRegCalendarAlt className="mr-2 text-gray-400" />
                 <span suppressHydrationWarning>
-                  {post.createdAt
-                    ? moment(post.createdAt).format("MMMM D, YYYY")
-                    : "Date unavailable"}
+                  {formatDate(post.createdAt, 'full') || "Date unavailable"}
                 </span>
               </div>
               {readingTime && (

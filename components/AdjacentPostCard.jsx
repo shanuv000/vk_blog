@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import moment from "moment";
+import { formatDate } from "../lib/date-utils";
 import { DEFAULT_FEATURED_IMAGE } from "./DefaultAvatar";
 
 
@@ -39,11 +39,8 @@ const AdjacentPostCard = ({ post, position }) => (
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.4 }}
-        suppressHydrationWarning
       >
-        {post.createdAt
-          ? moment(post.createdAt).format("MMM DD, YYYY")
-          : "No date"}
+        {formatDate(post.createdAt)}
       </motion.p>
       <motion.p
         className="text-white text-shadow font-semibold text-2xl text-center"
