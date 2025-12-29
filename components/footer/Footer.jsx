@@ -91,7 +91,7 @@ const Footer = () => {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="https://www.instagram.com/lifepoem8/"
+                  href="https://www.instagram.com/urtechys/"
                   title="Instagram"
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition-colors duration-300 shadow-md"
                   target="_blank"
@@ -139,7 +139,7 @@ const Footer = () => {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="https://www.facebook.com/shanuv00000"
+                  href="https://www.facebook.com/urtechyTech"
                   title="Facebook"
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors duration-300 shadow-md"
                   target="_blank"
