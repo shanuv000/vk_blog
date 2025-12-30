@@ -3,21 +3,8 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 
 /**
- * SpotifyEmbed - Mobile-optimized Spotify player component with lazy loading
+ * SpotifyEmbed - Premium Spotify player component with lazy loading
  * Supports: tracks, albums, playlists, episodes, and shows (podcasts)
- *
- * Features:
- * - Intersection Observer for lazy loading
- * - Click-to-load preview card
- * - Fully responsive & mobile-optimized
- * - Touch-friendly interactions
- * - Loading states and error handling
- *
- * @param {string} url - Spotify URL (regular or embed format)
- * @param {string} type - Optional: 'track', 'album', 'playlist', 'episode', 'show'
- * @param {string} theme - Optional: 'dark' or 'light' (default: 0 = dark)
- * @param {boolean} compact - Optional: Use compact player height
- * @param {boolean} autoLoad - Optional: Auto-load without click (default: false)
  */
 const SpotifyEmbed = ({
   url,
@@ -30,6 +17,7 @@ const SpotifyEmbed = ({
   const [shouldLoad, setShouldLoad] = useState(autoLoad);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef(null);
 
   // Intersection Observer for lazy loading
@@ -47,17 +35,16 @@ const SpotifyEmbed = ({
         });
       },
       {
-        rootMargin: "100px", // Start loading 100px before it enters viewport
+        rootMargin: "100px",
         threshold: 0.1,
       }
     );
 
     observer.observe(container);
-
     return () => observer.disconnect();
   }, []);
 
-  // Parse Spotify URL and extract embed information
+  // Parse Spotify URL
   const embedInfo = useMemo(() => {
     if (!url) return null;
 
@@ -84,34 +71,23 @@ const SpotifyEmbed = ({
         }
       }
 
-      if (providedType) {
-        type = providedType;
-      }
-
-      if (!type || !id) {
-        console.warn("Could not parse Spotify URL:", url);
-        return null;
-      }
+      if (providedType) type = providedType;
+      if (!type || !id) return null;
 
       const themeParam = theme === "light" ? "1" : "0";
       const embedUrl = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=${themeParam}`;
 
       return { type, id, embedUrl };
     } catch (error) {
-      console.error("Error parsing Spotify URL:", error);
       return null;
     }
   }, [url, providedType, theme]);
 
-  // Determine player height based on content type - Mobile optimized
+  // Player height
   const playerHeight = useMemo(() => {
     if (!embedInfo) return 152;
+    if (compact) return 152;
 
-    if (compact) {
-      return 152;
-    }
-
-    // Slightly smaller heights on mobile for better fit
     switch (embedInfo.type) {
       case "track":
         return 152;
@@ -126,51 +102,42 @@ const SpotifyEmbed = ({
     }
   }, [embedInfo, compact]);
 
-  // Get content type label
-  const contentTypeLabel = useMemo(() => {
-    if (!embedInfo) return "Spotify content";
+  // Content type info
+  const contentInfo = useMemo(() => {
+    if (!embedInfo) return { label: "Content", icon: "🎵", color: "#1DB954" };
 
-    const labels = {
-      track: "Track",
-      album: "Album",
-      playlist: "Playlist",
-      episode: "Podcast Episode",
-      show: "Podcast",
+    const info = {
+      track: { label: "Play Track", icon: "🎵", color: "#1DB954" },
+      album: { label: "Play Album", icon: "💿", color: "#1DB954" },
+      playlist: { label: "Play Playlist", icon: "📀", color: "#1DB954" },
+      episode: { label: "Listen Now", icon: "🎙️", color: "#1DB954" },
+      show: { label: "Listen to Podcast", icon: "🎧", color: "#1DB954" },
     };
 
-    return labels[embedInfo.type] || "Content";
+    return info[embedInfo.type] || info.track;
   }, [embedInfo]);
 
-  // Handle click/tap to load
-  const handleLoadClick = () => {
-    setShouldLoad(true);
-  };
+  const handleLoadClick = () => setShouldLoad(true);
 
-  // Error state - Mobile optimized
+  // Error state
   if (!embedInfo || hasError) {
     return (
       <div className="my-6 sm:my-8 mx-auto max-w-2xl px-4 sm:px-0">
-        <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 text-center shadow-lg border border-gray-700">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3">
-            <SpotifyIcon className="w-6 h-6 sm:w-8 sm:h-8 text-green-500" />
-            <span className="text-white font-medium text-sm sm:text-base">
-              Spotify
-            </span>
+        <div className="relative overflow-hidden rounded-2xl bg-[#121212] p-6 sm:p-8 text-center border border-white/10">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <SpotifyLogo className="w-8 h-8" />
           </div>
-          <p className="text-gray-400 text-xs sm:text-sm">
-            {hasError
-              ? "Unable to load Spotify content"
-              : "Invalid Spotify URL"}
+          <p className="text-white/60 text-sm mb-4">
+            {hasError ? "Unable to load content" : "Invalid Spotify URL"}
           </p>
           {url && (
             <a
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 px-4 py-2.5 sm:py-2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white text-sm font-medium rounded-full transition-colors touch-manipulation"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#1DB954] hover:bg-[#1ed760] active:scale-95 text-black font-bold text-sm rounded-full transition-all duration-200"
             >
               Open in Spotify
-              <ExternalLinkIcon className="w-4 h-4" />
             </a>
           )}
         </div>
@@ -183,84 +150,140 @@ const SpotifyEmbed = ({
       ref={containerRef}
       className="my-6 sm:my-8 mx-auto max-w-2xl px-4 sm:px-0"
     >
-      {/* Click-to-load preview card - Mobile optimized */}
+      {/* Premium Click-to-load Preview */}
       {isVisible && !shouldLoad && (
         <button
           onClick={handleLoadClick}
-          className="w-full group cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-xl touch-manipulation"
-          aria-label={`Load Spotify ${contentTypeLabel}`}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="w-full group focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:ring-offset-2 focus:ring-offset-black rounded-2xl touch-manipulation"
+          aria-label={`Load Spotify ${contentInfo.label}`}
         >
           <div
-            className="relative overflow-hidden rounded-xl shadow-lg transition-all duration-300 group-hover:shadow-xl sm:group-hover:scale-[1.02] active:scale-[0.98]"
+            className="relative overflow-hidden rounded-2xl transition-all duration-500 ease-out"
             style={{ height: playerHeight }}
           >
-            {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
+            {/* Premium gradient background */}
+            <div className="absolute inset-0 bg-[#121212]" />
+            
+            {/* Animated gradient overlay */}
+            <div 
+              className="absolute inset-0 opacity-60 transition-opacity duration-500"
+              style={{
+                background: `
+                  radial-gradient(ellipse 80% 50% at 50% -20%, rgba(29, 185, 84, 0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse 60% 40% at 100% 100%, rgba(29, 185, 84, 0.1) 0%, transparent 50%),
+                  radial-gradient(ellipse 40% 30% at 0% 100%, rgba(29, 185, 84, 0.08) 0%, transparent 50%)
+                `,
+              }}
+            />
 
-            {/* Spotify pattern overlay */}
-            <div className="absolute inset-0 opacity-10">
-              <div
-                className="w-full h-full"
-                style={{
-                  backgroundImage: `radial-gradient(circle at 20% 80%, rgba(30, 215, 96, 0.3) 0%, transparent 50%),
-                                    radial-gradient(circle at 80% 20%, rgba(30, 215, 96, 0.2) 0%, transparent 50%)`,
-                }}
-              />
-            </div>
+            {/* Hover glow effect */}
+            <div 
+              className={`absolute inset-0 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+              style={{
+                background: 'radial-gradient(circle at 50% 50%, rgba(29, 185, 84, 0.2) 0%, transparent 70%)',
+              }}
+            />
 
-            {/* Content - Mobile responsive */}
-            <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-6">
-              {/* Spotify logo and play button - Responsive sizes */}
-              <div className="relative mb-3 sm:mb-4">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 active:scale-95 transition-transform duration-300">
-                  <PlayIcon className="w-7 h-7 sm:w-8 sm:h-8 text-black ml-0.5 sm:ml-1" />
-                </div>
-                {/* Spotify icon badge */}
-                <div className="absolute -bottom-0.5 -right-0.5 sm:-bottom-1 sm:-right-1 w-5 h-5 sm:w-6 sm:h-6 bg-black rounded-full flex items-center justify-center border-2 border-gray-800">
-                  <SpotifyIcon className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
+            {/* Content Container */}
+            <div className="relative h-full flex flex-col items-center justify-center p-6 sm:p-8">
+              
+              {/* Sound wave animation bars */}
+              <div className="absolute top-4 left-4 flex items-end gap-1 h-6">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className={`w-1 bg-[#1DB954]/40 rounded-full transition-all duration-300 ${isHovered ? 'animate-pulse' : ''}`}
+                    style={{
+                      height: `${12 + (i % 3) * 8}px`,
+                      animationDelay: `${i * 0.1}s`,
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Spotify Logo top right */}
+              <div className="absolute top-4 right-4">
+                <SpotifyLogo className="w-6 h-6 sm:w-7 sm:h-7 opacity-60 group-hover:opacity-100 transition-opacity" />
+              </div>
+
+              {/* Main Play Button */}
+              <div className="relative mb-5 sm:mb-6">
+                {/* Glow ring */}
+                <div 
+                  className={`absolute -inset-3 rounded-full bg-[#1DB954]/20 blur-xl transition-all duration-500 ${isHovered ? 'scale-150 opacity-100' : 'scale-100 opacity-0'}`}
+                />
+                
+                {/* Play button */}
+                <div className={`relative w-16 h-16 sm:w-20 sm:h-20 bg-[#1DB954] rounded-full flex items-center justify-center shadow-2xl shadow-[#1DB954]/30 transition-all duration-300 ${isHovered ? 'scale-110' : 'scale-100'} active:scale-95`}>
+                  <svg 
+                    className="w-7 h-7 sm:w-8 sm:h-8 text-black ml-1" 
+                    viewBox="0 0 24 24" 
+                    fill="currentColor"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
                 </div>
               </div>
 
-              {/* Text - Responsive */}
-              <p className="text-white font-semibold text-base sm:text-lg mb-0.5 sm:mb-1">
-                {contentTypeLabel}
-              </p>
-              <p className="text-gray-400 text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
-                <SpotifyIcon className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
-                <span className="hidden xs:inline">Click to load</span>
-                <span className="xs:hidden">Tap to play</span>
-              </p>
+              {/* Text Content */}
+              <div className="text-center space-y-2">
+                <p className="text-white font-bold text-lg sm:text-xl tracking-tight">
+                  {contentInfo.label}
+                </p>
+                <p className="text-white/50 text-sm flex items-center justify-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#1DB954] animate-pulse" />
+                  Tap to stream on Spotify
+                </p>
+              </div>
 
-              {/* Powered by - Hidden on very small screens */}
-              <div className="absolute bottom-3 sm:bottom-4 left-0 right-0 hidden sm:flex justify-center">
-                <span className="text-[10px] sm:text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Powered by Spotify
-                </span>
+              {/* Bottom decorative line */}
+              <div className="absolute bottom-0 left-0 right-0 h-[2px]">
+                <div 
+                  className={`h-full bg-gradient-to-r from-transparent via-[#1DB954] to-transparent transition-all duration-500 ${isHovered ? 'opacity-100' : 'opacity-30'}`}
+                />
               </div>
             </div>
 
-            {/* Border glow effect */}
-            <div className="absolute inset-0 rounded-xl border border-gray-700 group-hover:border-green-500/50 group-active:border-green-500 transition-colors pointer-events-none" />
+            {/* Border */}
+            <div className={`absolute inset-0 rounded-2xl border transition-all duration-300 pointer-events-none ${isHovered ? 'border-[#1DB954]/50' : 'border-white/10'}`} />
           </div>
         </button>
       )}
 
-      {/* Loading skeleton - Mobile optimized */}
+      {/* Loading State */}
       {isVisible && shouldLoad && !isLoaded && (
         <div
-          className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl animate-pulse flex items-center justify-center"
+          className="relative overflow-hidden rounded-2xl bg-[#121212] flex items-center justify-center"
           style={{ height: playerHeight }}
         >
-          <div className="flex items-center gap-2 sm:gap-3">
-            <SpotifyIcon className="w-8 h-8 sm:w-10 sm:h-10 text-green-500 animate-bounce" />
-            <span className="text-gray-400 text-xs sm:text-sm">
-              Loading {contentTypeLabel}...
-            </span>
+          {/* Loading animation */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative">
+              <SpotifyLogo className="w-12 h-12 animate-pulse" />
+              <div className="absolute inset-0 rounded-full border-2 border-[#1DB954]/30 border-t-[#1DB954] animate-spin" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-white/60 text-sm">Loading</span>
+              <span className="flex gap-1">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="w-1 h-1 rounded-full bg-[#1DB954] animate-bounce"
+                    style={{ animationDelay: `${i * 0.15}s` }}
+                  />
+                ))}
+              </span>
+            </div>
           </div>
+          
+          {/* Border */}
+          <div className="absolute inset-0 rounded-2xl border border-white/10 pointer-events-none" />
         </div>
       )}
 
-      {/* Spotify iframe - Responsive */}
+      {/* Spotify Iframe */}
       {isVisible && shouldLoad && (
         <iframe
           src={embedInfo.embedUrl}
@@ -269,71 +292,40 @@ const SpotifyEmbed = ({
           frameBorder="0"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
-          title={`Spotify ${contentTypeLabel}`}
-          className={`rounded-xl shadow-lg transition-opacity duration-300 ${
+          title={`Spotify ${contentInfo.label}`}
+          className={`rounded-2xl shadow-xl transition-opacity duration-500 ${
             isLoaded ? "opacity-100" : "opacity-0 absolute"
           }`}
           style={{
             colorScheme: "normal",
             position: isLoaded ? "relative" : "absolute",
-            // Ensure touch scrolling works within iframe on iOS
-            WebkitOverflowScrolling: "touch",
           }}
           onLoad={() => setIsLoaded(true)}
           onError={() => setHasError(true)}
         />
       )}
 
-      {/* Placeholder when not visible yet - Mobile optimized */}
+      {/* Placeholder */}
       {!isVisible && (
         <div
-          className="bg-gray-800/50 rounded-xl flex items-center justify-center"
+          className="rounded-2xl bg-[#121212]/50 flex items-center justify-center border border-white/5"
           style={{ height: playerHeight }}
         >
-          <div className="flex items-center gap-2 text-gray-500">
-            <SpotifyIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span className="text-xs sm:text-sm">Spotify Player</span>
-          </div>
+          <SpotifyLogo className="w-8 h-8 opacity-30" />
         </div>
       )}
     </div>
   );
 };
 
-// Spotify Logo Icon
-const SpotifyIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+// Spotify Logo Component
+const SpotifyLogo = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="#1DB954">
     <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
   </svg>
 );
 
-// Play Icon
-const PlayIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M8 5v14l11-7z" />
-  </svg>
-);
-
-// External Link Icon
-const ExternalLinkIcon = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-    />
-  </svg>
-);
-
-/**
- * Utility function to check if a URL is a Spotify URL
- */
+// Utility functions
 export const isSpotifyUrl = (url) => {
   if (!url) return false;
   return (
@@ -343,17 +335,12 @@ export const isSpotifyUrl = (url) => {
   );
 };
 
-/**
- * Utility function to convert regular Spotify URL to embed URL
- */
 export const getSpotifyEmbedUrl = (url, theme = "dark") => {
   if (!url) return null;
 
   const patterns = {
-    regular:
-      /open\.spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/,
-    embed:
-      /open\.spotify\.com\/embed\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/,
+    regular: /open\.spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/,
+    embed: /open\.spotify\.com\/embed\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/,
   };
 
   const embedMatch = url.match(patterns.embed);
