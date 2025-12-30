@@ -16,6 +16,7 @@ import CustomYouTubeEmbed from "./CustomYouTubeEmbed";
 import FacebookEmbed from "./FacebookEmbed";
 import InstagramEmbed from "./InstagramEmbed";
 import GoogleSheetsTable from "./GoogleSheetsTable";
+import SpotifyEmbed, { isSpotifyUrl } from "./SpotifyEmbed";
 import { getOptimizedImageUrl } from "../lib/image-config";
 import {
   extractImageDimensions,
@@ -1565,7 +1566,7 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 }
               },
             },
-            // Iframe renderer for embedded content (YouTube, Google Sheets, etc.)
+            // Iframe renderer for embedded content (YouTube, Google Sheets, Spotify, etc.)
             iframe: ({ url, width, height }) => {
               // Check if it's a YouTube URL
               const isYouTube =
@@ -1594,7 +1595,12 @@ const RichTextRenderer = ({ content, references = [] }) => {
                 );
               }
 
-              // Generic responsive iframe for other embeds (Spotify, Maps, etc.)
+              // Check if it's a Spotify URL (track, album, playlist, episode, show)
+              if (isSpotifyUrl(url)) {
+                return <SpotifyEmbed url={url} theme="dark" />;
+              }
+
+              // Generic responsive iframe for other embeds (Maps, etc.)
               const aspectRatio =
                 height && width ? `${(height / width) * 100}%` : "56.25%";
 

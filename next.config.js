@@ -23,7 +23,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               // Frame/embed sources
-              "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://www.facebook.com https://web.facebook.com https://www.instagram.com https://instagram.com https://urtechy-35294.firebaseapp.com https://docs.google.com;",
+              "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://www.facebook.com https://web.facebook.com https://www.instagram.com https://instagram.com https://urtechy-35294.firebaseapp.com https://docs.google.com https://open.spotify.com;",
               // Scripts - Added Google Analytics, Clarity, Firebase, Google APIs, Cloudflare
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://platform.twitter.com https://connect.facebook.net https://www.instagram.com https://instagram.com https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://apis.google.com https://static.cloudflareinsights.com;",
               // Images - CRITICAL: Allow images from Hygraph and other CDNs
