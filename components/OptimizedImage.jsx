@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { IMAGE_CONFIGS } from "../lib/image-config";
+import { getBlurDataURL, getRawImageUrl } from "../lib/cloudinary-loader";
 
 /**
  * OptimizedImage Component
@@ -41,11 +42,14 @@ const OptimizedImage = ({
   const [imageSrc, setImageSrc] = useState(src);
   const imageRef = useRef(null);
 
-  // Static blur data URL to prevent hydration mismatch between server and client
-  // Using a simple gray SVG placeholder that's identical on both server and client
-  const STATIC_BLUR_DATA_URL = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9InJnYmEoMTU2LDE2MywxNzUsMC4xKSIvPjwvc3ZnPg==";
+  // Generate blur placeholder - use Cloudinary for external images
+  const getBlurPlaceholder = () => {
+    if (blurDataURL) return blurDataURL;
+    // Use Cloudinary blur for external URLs, static for local
+    return getBlurDataURL(src);
+  };
 
-  const defaultBlurDataURL = blurDataURL || STATIC_BLUR_DATA_URL;
+  const defaultBlurDataURL = getBlurPlaceholder();
 
   // Handle image load success
   const handleLoad = (event) => {
@@ -54,13 +58,25 @@ const OptimizedImage = ({
     onLoad?.(event);
   };
 
-  // Handle image load error
+  // Handle image load error with Cloudinary fallback
   const handleError = (event) => {
     console.warn(`Image failed to load: ${imageSrc}`);
     setHasError(true);
     setIsLoading(false);
 
-    // Try fallback image if not already using it
+    // Try raw URL fallback (bypassing Cloudinary) if not already using fallback
+    if (imageSrc === src && src !== fallbackSrc) {
+      const rawUrl = getRawImageUrl(src);
+      if (rawUrl && rawUrl !== imageSrc) {
+        console.log(`Trying raw URL fallback: ${rawUrl}`);
+        setImageSrc(rawUrl);
+        setHasError(false);
+        setIsLoading(true);
+        return;
+      }
+    }
+
+    // Try final fallback image
     if (imageSrc !== fallbackSrc) {
       setImageSrc(fallbackSrc);
       setHasError(false);
