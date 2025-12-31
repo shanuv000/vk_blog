@@ -169,22 +169,13 @@ export const FEATURED_POSTS_QUERY = gql`
     posts(where: { featuredpost: true }, first: 12, orderBy: createdAt_DESC) {
       author {
         name
-        # Include id if available, but it's optional
         id
         photo {
-          url(
-            transformation: {
-              image: { resize: { width: 150, height: 150, fit: cover } }
-            }
-          )
+          url
         }
       }
       featuredImage {
-        url(
-          transformation: {
-            image: { resize: { width: 800, height: 600, fit: cover } }
-          }
-        )
+        url
         width
         height
       }

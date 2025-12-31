@@ -21,14 +21,12 @@ export const validateLimit = (limit, min = 1, max = 50, defaultValue = 12) => {
   return validated;
 };
 
-// Optimized image transformation parameters
+// Image transformation parameters removed to avoid Hygraph 402 quota errors
+// Next.js handles all image optimization via next/image component
 const IMAGE_TRANSFORMS = {
-  featuredImage:
-    "transformation: { image: { resize: { width: 800, height: 600, fit: cover } } }",
-  authorPhoto:
-    "transformation: { image: { resize: { width: 150, height: 150, fit: cover } } }",
-  thumbnail:
-    "transformation: { image: { resize: { width: 400, height: 300, fit: cover } } }",
+  featuredImage: "",
+  authorPhoto: "",
+  thumbnail: "",
 };
 
 // Base query fragments for reusability
@@ -38,7 +36,7 @@ export const QUERY_FRAGMENTS = {
       name
       id
       photo {
-        url(${IMAGE_TRANSFORMS.authorPhoto})
+        url
       }
     }
   `,
@@ -49,14 +47,14 @@ export const QUERY_FRAGMENTS = {
       bio
       id
       photo {
-        url(${IMAGE_TRANSFORMS.authorPhoto})
+        url
       }
     }
   `,
 
   featuredImageOptimized: `
     featuredImage {
-      url(${IMAGE_TRANSFORMS.featuredImage})
+      url
       width
       height
     }
@@ -64,7 +62,7 @@ export const QUERY_FRAGMENTS = {
 
   thumbnailImage: `
     featuredImage {
-      url(${IMAGE_TRANSFORMS.thumbnail})
+      url
     }
   `,
 
