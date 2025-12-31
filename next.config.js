@@ -26,8 +26,8 @@ const nextConfig = {
               "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://www.facebook.com https://web.facebook.com https://www.instagram.com https://instagram.com https://urtechy-35294.firebaseapp.com https://docs.google.com https://open.spotify.com;",
               // Scripts - Added Google Analytics, Clarity, Firebase, Google APIs, Cloudflare
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://platform.twitter.com https://connect.facebook.net https://www.instagram.com https://instagram.com https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://apis.google.com https://static.cloudflareinsights.com;",
-              // Images - CRITICAL: Allow images from Hygraph and other CDNs
-              "img-src 'self' data: https: blob: https://*.graphassets.com https://*.hygraph.com https://*.graphcms.com https://pbs.twimg.com https://video.twimg.com https://www.google-analytics.com;",
+              // Images - CRITICAL: Allow images from Hygraph, Cloudinary and other CDNs
+              "img-src 'self' data: https: blob: https://*.cloudinary.com https://res.cloudinary.com https://*.graphassets.com https://*.hygraph.com https://*.graphcms.com https://pbs.twimg.com https://video.twimg.com https://www.google-analytics.com;",
               // XHR/fetch targets - Added Sentry, Firebase, Google Analytics, Clarity, Hygraph APIs
               "connect-src 'self' https://syndication.twitter.com https://api.twitter.com https://graph.facebook.com https://www.instagram.com https://instagram.com https://firebase.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://firebaseinstallations.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://api-ap-south-1.hygraph.com https://ap-south-1.cdn.hygraph.com https://*.hygraph.com https://*.graphassets.com https://cloudflareinsights.com https://static.cloudflareinsights.com https://vitals.vercel-insights.com https://docs.google.com https://*.googleusercontent.com;",
             ].join(" "),
@@ -37,9 +37,14 @@ const nextConfig = {
     ];
   },
 
-  // Enhanced image configuration with advanced optimizations
+  // Enhanced image configuration with Cloudinary optimization
+  // Using Cloudinary provides 25K free transforms/month (5x Vercel's 5K limit)
   images: {
-    // Modern image formats with priority order (AVIF first for best compression)
+    // Use custom Cloudinary loader for image optimization
+    loader: "custom",
+    loaderFile: "./lib/cloudinary-loader.js",
+
+    // Modern image formats (Cloudinary handles this automatically via f_auto)
     formats: ["image/avif", "image/webp"],
 
     // Optimized device sizes for responsive images
@@ -51,8 +56,6 @@ const nextConfig = {
       1200, // Medium desktop
       1440, // Large desktop
       1920, // Full HD
-      2048, // 2K displays
-      3840, // 4K displays
     ],
 
     // Optimized image sizes for different use cases
@@ -65,8 +68,6 @@ const nextConfig = {
       128, // Avatar large
       256, // Thumbnails
       384, // Small images
-      512, // Medium images
-      768, // Large images
     ],
 
     // Extended cache time for better performance (7 days)
@@ -77,9 +78,7 @@ const nextConfig = {
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
 
-    // Image optimization settings
-    loader: "default",
-    path: "/_next/image",
+    // Disable static image imports optimization (handled by Cloudinary)
     disableStaticImages: false,
 
     // Enhanced remote patterns for flexible image sources
