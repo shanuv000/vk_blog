@@ -37,14 +37,14 @@ const nextConfig = {
     ];
   },
 
-  // Image configuration - Using unoptimized mode
-  // Cloudinary Strict Transformations was blocking fetch requests (401 errors)
-  // Images will load directly from Hygraph CDN without optimization
+  // Enhanced image configuration with Cloudinary optimization
+  // Using Cloudinary provides 25K free transforms/month (5x Vercel's 5K limit)
   images: {
-    // Disable all image optimization - load images directly from source
-    unoptimized: true,
+    // Use custom Cloudinary loader for image optimization
+    loader: "custom",
+    loaderFile: "./lib/cloudinary-loader.js",
 
-    // Keep formats for reference (not used when unoptimized)
+    // Modern image formats (Cloudinary handles this automatically via f_auto)
     formats: ["image/avif", "image/webp"],
 
     // Optimized device sizes for responsive images
