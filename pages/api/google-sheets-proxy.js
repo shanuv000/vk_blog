@@ -1,7 +1,11 @@
 // API route to proxy Google Sheets CSV requests
 // This bypasses CORS restrictions by fetching from the server
+import { setCorsHeaders } from "../../lib/cors";
 
 export default async function handler(req, res) {
+  // Handle CORS for external domains
+  if (setCorsHeaders(req, res)) return;
+  
   const { url } = req.query;
 
   if (!url) {
