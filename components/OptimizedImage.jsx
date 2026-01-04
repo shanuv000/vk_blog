@@ -37,7 +37,8 @@ const OptimizedImage = ({
   blurDataURL,
   ...props
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  // Priority images start as loaded (they're preloaded by Next.js)
+  const [isLoading, setIsLoading] = useState(!priority);
   const [hasError, setHasError] = useState(false);
   const [imageSrc, setImageSrc] = useState(src);
   const imageRef = useRef(null);
@@ -128,9 +129,9 @@ const OptimizedImage = ({
       } ${containerClassName}`}
       ref={imageRef}
     >
-      {/* Loading skeleton */}
+      {/* Loading skeleton - skip for priority images (they preload) */}
       <AnimatePresence>
-        {isLoading && showSkeleton && (
+        {isLoading && showSkeleton && !priority && (
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -142,14 +143,14 @@ const OptimizedImage = ({
         )}
       </AnimatePresence>
 
-      {/* Main image */}
+      {/* Main image - instant rendering for priority images */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoading ? 0 : 1 }}
+        initial={{ opacity: priority ? 1 : 0 }}
+        animate={{ opacity: priority || !isLoading ? 1 : 0 }}
         transition={{
-          duration: 0.5,
+          duration: priority ? 0 : 0.5,
           ease: [0.4, 0, 0.2, 1],
-          delay: 0.1,
+          delay: 0,
         }}
         className="relative w-full h-full"
       >
