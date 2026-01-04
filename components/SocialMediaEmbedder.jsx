@@ -179,6 +179,9 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
 
     // Store blockquote reference for cleanup
     const blockquoteRef = blockquote;
+    
+    // Store the current pathname to detect navigation during cleanup
+    const initialPathname = window.location.pathname;
 
     // Mark the embed as persistent to prevent cleanup during DOM changes
     if (embedContainer) {
@@ -196,7 +199,19 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
     // Cleanup function - only run when component is actually unmounting
     return () => {
       try {
-        // Check if this is a real unmount or just a DOM change/navigation
+        // CRITICAL FIX: Check if we've navigated to a different page
+        // If so, skip ALL cleanup to prevent orphaned blockquotes
+        const currentPathname = window.location.pathname;
+        const hasNavigated = currentPathname !== initialPathname;
+        
+        if (hasNavigated) {
+          log(
+            `Skipping cleanup for ${blockquoteId} - navigation detected (${initialPathname} → ${currentPathname})`
+          );
+          return;
+        }
+
+        // Check if this is a real unmount or just a DOM change
         const isRealUnmount = !document.querySelector(
           `[data-embed-stable="${blockquoteId}"]`
         );
@@ -210,6 +225,12 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
 
         // Add a longer delay to prevent cleanup during navigation/DOM changes
         setTimeout(() => {
+          // Re-check navigation status after delay
+          if (window.location.pathname !== initialPathname) {
+            log(`Skipping delayed cleanup - navigation occurred`);
+            return;
+          }
+          
           // Triple-check that we still need to clean up and it's not just a navigation
           const embedStillExists = document.querySelector(
             `[data-embed-stable="${blockquoteId}"]`
@@ -236,6 +257,12 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
 
         // Only restore blockquote if we're actually unmounting AND the embed is gone
         setTimeout(() => {
+          // Re-check navigation status after longer delay
+          if (window.location.pathname !== initialPathname) {
+            log(`Skipping blockquote restoration - navigation occurred`);
+            return;
+          }
+          
           // Check if this is really an unmount situation
           const embedStillInDOM = document.querySelector(
             `[data-embed-stable="${blockquoteId}"]`
@@ -252,14 +279,16 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
 
             if (!blockquoteInDOM) {
               // The blockquote was completely removed, try to restore it
+              // CRITICAL FIX: Only restore if article container exists
+              // NEVER fallback to document.body - this causes orphaned blockquotes
               const articleContent = document.querySelector(
                 '.article-content, .blog-content, div[class*="first-letter"]'
               );
-              const parent = articleContent || document.body;
 
-              if (parent) {
+              // Only proceed if we found the article container
+              if (articleContent) {
                 try {
-                  parent.appendChild(blockquoteRef);
+                  articleContent.appendChild(blockquoteRef);
                   blockquoteRef.style.display = ""; // Make it visible
                   log(`Restored blockquote ${blockquoteId} during cleanup`);
                 } catch (appendError) {
@@ -268,6 +297,11 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
                     appendError
                   );
                 }
+              } else {
+                // No article container means we've likely navigated - skip restoration
+                log(
+                  `Skipping blockquote restoration for ${blockquoteId} - no article container found (likely navigated)`
+                );
               }
             } else {
               // If the blockquote is still in the DOM (was just hidden), make it visible
