@@ -104,6 +104,13 @@ const optimizeImageUrls = (data) => {
 // Enhanced performance monitoring and optimization
 const performanceMonitor = {
   requests: new Map(),
+  metrics: {
+    totalRequests: 0,
+    successfulRequests: 0,
+    failedRequests: 0,
+    cachedRequests: 0,
+    totalResponseTime: 0,
+  },
 
   startRequest: (queryId) => {
     performanceMonitor.requests.set(queryId, {
@@ -120,6 +127,18 @@ const performanceMonitor = {
     const request = performanceMonitor.requests.get(queryId);
     if (request) {
       const duration = Date.now() - request.startTime;
+
+      // Update metrics
+      performanceMonitor.metrics.totalRequests++;
+      if (success) {
+        performanceMonitor.metrics.successfulRequests++;
+      } else {
+        performanceMonitor.metrics.failedRequests++;
+      }
+      if (fromCache) {
+        performanceMonitor.metrics.cachedRequests++;
+      }
+      performanceMonitor.metrics.totalResponseTime += duration;
 
       if (process.env.NODE_ENV === "development") {
         console.log(
@@ -139,7 +158,39 @@ const performanceMonitor = {
       performanceMonitor.requests.delete(queryId);
     }
   },
+
+  getMetrics: () => {
+    const { totalRequests, successfulRequests, failedRequests, cachedRequests, totalResponseTime } = performanceMonitor.metrics;
+    return {
+      totalRequests,
+      successfulRequests,
+      failedRequests,
+      cachedRequests,
+      averageResponseTime: totalRequests > 0 ? totalResponseTime / totalRequests : 0,
+      successRate: totalRequests > 0 ? (successfulRequests / totalRequests) * 100 : 100,
+      cacheHitRate: totalRequests > 0 ? (cachedRequests / totalRequests) * 100 : 0,
+      cacheStats: {
+        hits: cachedRequests,
+        misses: totalRequests - cachedRequests,
+      },
+    };
+  },
+
+  reset: () => {
+    performanceMonitor.metrics = {
+      totalRequests: 0,
+      successfulRequests: 0,
+      failedRequests: 0,
+      cachedRequests: 0,
+      totalResponseTime: 0,
+    };
+    performanceMonitor.requests.clear();
+  },
 };
+
+// Export performanceMonitor for use in monitoring API
+export { performanceMonitor };
+
 
 // Helper function for read-only operations with caching (uses CDN for better performance)
 export const fetchFromCDN = async (query, variables = {}, useCache = true) => {

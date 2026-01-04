@@ -19,6 +19,8 @@ import { useApollo, getApolloStats } from "../lib/apollo-client";
 
 // Import prefetch function
 import { prefetchCommonQueries } from "../services/hygraph";
+// Import resetRendered to clear tweet registry on navigation
+import { resetRendered } from "../utils/renderedTweets";
 // Import Web Vitals for performance monitoring
 
 function MyApp({ Component, pageProps }) {
@@ -26,6 +28,19 @@ function MyApp({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps.initialApolloState);
   // Use router to help with hydration issues
   const router = useRouter();
+
+  // Clear tweet registry on route changes to prevent duplicate tracking
+  useEffect(() => {
+    const handleRouteChange = () => {
+      resetRendered();
+    };
+    
+    router.events.on('routeChangeStart', handleRouteChange);
+    
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router.events]);
 
   // Preload critical resources and prefetch data
   useEffect(() => {

@@ -9,10 +9,11 @@ import {
   FaWhatsapp,
   FaLinkedin,
   FaPinterest,
-  FaInfoCircle,
+  FaCircleInfo,
   FaClock,
-  FaCheckCircle,
+  FaCircleCheck,
 } from "react-icons/fa6";
+
 
 import {
   DEFAULT_FEATURED_IMAGE,
@@ -175,7 +176,7 @@ const EnhancedSocialSharePost = ({ post }) => {
           <div className="flex items-center gap-2">
             {isShortened ? (
               <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                <FaCheckCircle size={12} />
+              <FaCircleCheck size={12} />
                 <span>Short URL</span>
               </div>
             ) : (
