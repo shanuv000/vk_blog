@@ -335,141 +335,137 @@ const InPlaceEmbed = ({ url, platform, blockquoteId }) => {
       className={`social-media-embed-wrapper ${platform}`}
       style={{ width: "100%" }}
     >
-      {platform === "facebook" && (
-        <>
-          <div
-            className="embed-title"
-            style={{
-              fontSize: "14px",
-              color: "#444",
-              textAlign: "center",
-              padding: "8px 0",
-              backgroundColor: "#f8f9fa",
-              borderBottom: "1px solid #eaeaea",
-            }}
-          >
-            Facebook Post
-          </div>
+      {platform === "facebook" && (() => {
+        // Check if this is a video URL
+        const isVideoUrl = url && (
+          url.includes('fb.watch') ||
+          url.includes('/videos/') ||
+          url.includes('/watch') ||
+          url.includes('/share/v/') ||
+          url.includes('/reel/')
+        );
+        
+        return (
           <div
             className="facebook-embed-container"
-            style={{ minHeight: "550px" }}
-          >
-            <FacebookEmbed
-              url={url}
-              width="100%"
-              height={550}
-              containerTagName="div"
-              protocol=""
-              injectScript
-            />
-            {/* Fallback for Facebook embed */}
-            <div
-              className="facebook-fallback"
-              style={{ marginTop: "10px", textAlign: "center" }}
-            >
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "inline-block",
-                  color: "#1877f2",
-                  textDecoration: "none",
-                  fontWeight: "500",
-                  padding: "8px 16px",
-                  border: "1px solid #dbdbdb",
-                  borderRadius: "4px",
-                  marginTop: "10px",
-                }}
-              >
-                View on Facebook
-              </a>
-            </div>
-          </div>
-        </>
-      )}
-      {platform === "instagram" && (
-        <>
-          <div
-            className="embed-title"
             style={{
-              fontSize: "14px",
-              color: "#444",
-              textAlign: "center",
-              padding: "8px 0",
-              backgroundColor: "#f8f9fa",
-              borderBottom: "1px solid #eaeaea",
+              maxWidth: "550px",
+              margin: "0 auto",
+              borderRadius: "12px",
+              overflow: "hidden",
+              background: "#fafafa",
             }}
           >
-            Instagram Post
+            {isVideoUrl ? (
+              <iframe
+                src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&width=500&show_text=false`}
+                width="100%"
+                height="280"
+                style={{ border: "none", overflow: "hidden", display: "block" }}
+                scrolling="no"
+                frameBorder="0"
+                allowFullScreen={true}
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                loading="lazy"
+              />
+            ) : (
+              <FacebookEmbed
+                url={url}
+                width="100%"
+                containerTagName="div"
+                protocol=""
+                injectScript
+                placeholderDisabled={false}
+                placeholder={
+                  <div style={{
+                    padding: "16px",
+                    background: "#fff",
+                    borderRadius: "12px",
+                    animation: "pulse 1.5s ease-in-out infinite",
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#e4e6eb" }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ height: "12px", background: "#e4e6eb", borderRadius: "4px", width: "60%", marginBottom: "6px" }} />
+                        <div style={{ height: "10px", background: "#e4e6eb", borderRadius: "4px", width: "40%" }} />
+                      </div>
+                    </div>
+                    <div style={{ height: "200px", background: "#e4e6eb", borderRadius: "8px", marginBottom: "12px" }} />
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <div style={{ height: "32px", background: "#e4e6eb", borderRadius: "4px", flex: 1 }} />
+                      <div style={{ height: "32px", background: "#e4e6eb", borderRadius: "4px", flex: 1 }} />
+                      <div style={{ height: "32px", background: "#e4e6eb", borderRadius: "4px", flex: 1 }} />
+                    </div>
+                  </div>
+                }
+              />
+            )}
           </div>
-          <div
-            className="instagram-embed-container"
-            style={{ minHeight: "500px" }}
-          >
-            <InstagramEmbed
-              url={url}
-              width="100%"
-              captioned
-              containerTagName="div"
-              protocol=""
-              injectScript
-            />
-            {/* Fallback for Instagram embed */}
-            <div
-              className="instagram-fallback"
-              style={{ marginTop: "10px", textAlign: "center" }}
-            >
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "inline-block",
-                  color: "#0095f6",
-                  textDecoration: "none",
-                  fontWeight: "500",
-                  padding: "8px 16px",
-                  border: "1px solid #dbdbdb",
-                  borderRadius: "4px",
-                  marginTop: "10px",
-                }}
-              >
-                View on Instagram
-              </a>
-            </div>
-          </div>
-        </>
+        );
+      })()}
+      {platform === "instagram" && (
+        <div
+          className="instagram-embed-container"
+          style={{
+            maxWidth: "550px",
+            margin: "0 auto",
+            borderRadius: "12px",
+            overflow: "hidden",
+            background: "#fafafa",
+          }}
+        >
+          <InstagramEmbed
+            url={url}
+            width="100%"
+            captioned
+            containerTagName="div"
+            protocol=""
+            injectScript
+            placeholderDisabled={false}
+            placeholder={
+              <div style={{
+                padding: "16px",
+                background: "#fff",
+                borderRadius: "12px",
+                animation: "pulse 1.5s ease-in-out infinite",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                  <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#e4e6eb" }} />
+                  <div style={{ height: "12px", background: "#e4e6eb", borderRadius: "4px", width: "120px" }} />
+                </div>
+                <div style={{ height: "300px", background: "#e4e6eb", borderRadius: "4px", marginBottom: "12px" }} />
+                <div style={{ display: "flex", gap: "16px", marginBottom: "12px" }}>
+                  <div style={{ width: "24px", height: "24px", background: "#e4e6eb", borderRadius: "4px" }} />
+                  <div style={{ width: "24px", height: "24px", background: "#e4e6eb", borderRadius: "4px" }} />
+                  <div style={{ width: "24px", height: "24px", background: "#e4e6eb", borderRadius: "4px" }} />
+                </div>
+                <div style={{ height: "10px", background: "#e4e6eb", borderRadius: "4px", width: "80%", marginBottom: "6px" }} />
+                <div style={{ height: "10px", background: "#e4e6eb", borderRadius: "4px", width: "60%" }} />
+              </div>
+            }
+          />
+        </div>
       )}
       {platform === "twitter" && (
-        <>
-          {/* No title for Twitter embeds to avoid extra bar */}
-          <div className="twitter-embed-container">
-            {/* Extract ID if it's a URL */}
-            {(() => {
-              let tweetId = url;
-              // Try to extract ID if it looks like a URL
-              if (url && (url.includes('twitter.com') || url.includes('x.com'))) {
-                const match = url.match(/(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/);
-                if (match && match[1]) {
-                  tweetId = match[1];
-                }
+        <div
+          className="twitter-embed-container"
+          style={{
+            maxWidth: "550px",
+            margin: "0 auto",
+          }}
+        >
+          {(() => {
+            let tweetId = url;
+            // Try to extract ID if it looks like a URL
+            if (url && (url.includes('twitter.com') || url.includes('x.com'))) {
+              const match = url.match(/(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/);
+              if (match && match[1]) {
+                tweetId = match[1];
               }
-              return <TwitterEmbed tweetId={tweetId} />;
-            })()}
-            {/* Fallback for Twitter embed */}
-            <div className="twitter-fallback">
-              <a
-                href={`https://twitter.com/i/status/${url}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="twitter-fallback-link"
-              >
-                View on Twitter
-              </a>
-            </div>
-          </div>
-        </>
+            }
+            return <TwitterEmbed tweetId={tweetId} />;
+          })()}
+        </div>
       )}
       {/* No debug info in production */}
     </div>,
@@ -837,16 +833,34 @@ const SocialMediaEmbedder = () => {
           font-weight: 500;
         }
 
+        /* Skeleton loading animation */
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        /* Smooth embed loading transition */
+        .social-media-embed-container iframe {
+          opacity: 0;
+          animation: fadeIn 0.3s ease forwards;
+          animation-delay: 0.2s;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
         @media (max-width: 768px) {
           .social-media-embed-container {
             width: 100%;
             padding: 0 6px;
-            margin: 1.25rem auto;
+            margin: 1rem auto;
           }
 
           .social-media-embed-wrapper iframe[src*="facebook.com"],
           .social-media-embed-wrapper iframe[src*="instagram.com"] {
-            min-height: 480px !important;
+            min-height: 400px !important;
           }
 
           .social-media-embed-wrapper.twitter .twitter-embed-root {

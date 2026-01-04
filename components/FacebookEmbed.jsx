@@ -75,22 +75,32 @@ const FacebookEmbed = ({ url }) => {
     );
   }
 
+  // Check if this is a video URL (fb.watch, /videos/, /watch, /share/v/, /reel/)
+  const isVideoUrl = cleanUrl && (
+    cleanUrl.includes('fb.watch') ||
+    cleanUrl.includes('/videos/') ||
+    cleanUrl.includes('/watch') ||
+    cleanUrl.includes('/share/v/') ||
+    cleanUrl.includes('/reel/')
+  );
+
   // Direct embed fallback using iframe
   const directEmbedFallback = () => {
     try {
       // Create a Facebook embed iframe
       const iframe = document.createElement("iframe");
-      iframe.setAttribute(
-        "src",
-        `https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(
-          cleanUrl
-        )}&width=500`
-      );
+      
+      // Use video.php for videos, post.php for regular posts
+      const pluginUrl = isVideoUrl
+        ? `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(cleanUrl)}&width=500&show_text=false`
+        : `https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(cleanUrl)}&width=500`;
+      
+      iframe.setAttribute("src", pluginUrl);
       iframe.setAttribute("width", "100%");
-      iframe.setAttribute("height", "500px");
+      iframe.setAttribute("height", isVideoUrl ? "280px" : "500px");
       iframe.setAttribute("frameBorder", "0");
       iframe.setAttribute("allowTransparency", "true");
-      iframe.setAttribute("allow", "encrypted-media");
+      iframe.setAttribute("allow", "encrypted-media; autoplay; fullscreen");
       iframe.style.overflow = "hidden";
 
       // Clear any existing content and append the iframe
@@ -104,6 +114,7 @@ const FacebookEmbed = ({ url }) => {
       setError(true);
     }
   };
+
 
   // Set a timeout to handle cases where the embed doesn't load
   useEffect(() => {
