@@ -5,9 +5,11 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { FaDiscord } from "react-icons/fa6";
+import { FiSearch } from "react-icons/fi";
 import { useIsLiveCricket } from "../hooks/useCricketData";
 import { getDirectCategories } from "../services/direct-api";
 import { CATEGORY_HIERARCHY } from "../utils/categoryHierarchy";
+import SearchModal from "./SearchModal";
 
 const Header = () => {
   // Use direct API for categories
@@ -57,10 +59,15 @@ const Header = () => {
     desktop: null,
     mobile: null,
   });
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  
+  // Responsive categories state - how many categories to show inline
+  const [visibleCategoryCount, setVisibleCategoryCount] = useState(5);
 
   // Refs for dropdown handling
   const dropdownRefs = useRef({});
   const scrollThrottleRef = useRef(false);
+  const navRef = useRef(null);
 
 
 
@@ -103,6 +110,19 @@ const Header = () => {
     };
   }, [activeDropdowns.desktop]);
 
+  // Global keyboard shortcut for search (Ctrl+K / Cmd+K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Add scroll event listener - OPTIMIZED with passive option
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -111,15 +131,71 @@ const Header = () => {
     }
   }, [controlHeader]);
 
-  // Main categories to show inline (top 5)
-  const mainCategories = CATEGORY_HIERARCHY.slice(0, 5);
-  
-  // Remaining categories for "More" dropdown
-  const moreCategories = CATEGORY_HIERARCHY.slice(5);
+  // Responsive category calculation using ResizeObserver
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    const calculateVisibleCategories = () => {
+      const navElement = navRef.current;
+      if (!navElement) return;
+      
+      // Get available width (nav container width)
+      const navWidth = navElement.offsetWidth;
+      
+      // Estimated widths for nav elements (in pixels)
+      const DISCORD_WIDTH = 45;      // Discord icon
+      const CATEGORY_WIDTH = 100;    // Average category link width
+      const MORE_WIDTH = 75;         // "More" dropdown
+      const CRICKET_WIDTH = 100;     // Cricket link (with live indicator space)
+      const ABOUT_CONTACT_WIDTH = 160; // About + Contact
+      const SEARCH_WIDTH = 50;       // Search icon button
+      const SPACING = 16;            // Gaps between items
+      
+      // Fixed elements that always show
+      const fixedWidth = DISCORD_WIDTH + MORE_WIDTH + CRICKET_WIDTH + ABOUT_CONTACT_WIDTH + SEARCH_WIDTH + (SPACING * 6);
+      
+      // Available width for categories
+      const availableForCategories = navWidth - fixedWidth;
+      
+      // Calculate how many categories fit
+      const maxCategories = Math.max(0, Math.floor(availableForCategories / (CATEGORY_WIDTH + SPACING)));
+      
+      // Clamp between 0 and total categories available
+      const newCount = Math.min(maxCategories, CATEGORY_HIERARCHY.length);
+      
+      setVisibleCategoryCount(newCount);
+    };
+    
+    // Initial calculation
+    calculateVisibleCategories();
+    
+    // ResizeObserver for responsive updates
+    const resizeObserver = new ResizeObserver(() => {
+      calculateVisibleCategories();
+    });
+    
+    if (navRef.current) {
+      resizeObserver.observe(navRef.current);
+    }
+    
+    // Also recalculate on window resize (fallback)
+    window.addEventListener("resize", calculateVisibleCategories);
+    
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", calculateVisibleCategories);
+    };
+  }, []);
 
-  // Navigation items - now with inline categories
+  // Dynamic main categories based on available space
+  const mainCategories = CATEGORY_HIERARCHY.slice(0, visibleCategoryCount);
+  
+  // Remaining categories go to "More" dropdown
+  const moreCategories = CATEGORY_HIERARCHY.slice(visibleCategoryCount);
+
+  // Navigation items - dynamically built based on available space
   const navItems = [
-    // Main category links (inline)
+    // Main category links (inline) - count varies by screen width
     ...mainCategories.map((cat) => ({
       name: cat.name,
       href: `/category/${cat.slug}`,
@@ -127,8 +203,8 @@ const Header = () => {
       icon: cat.icon,
       isCategory: true,
     })),
-    // More dropdown for remaining categories
-    { name: "More", key: "more", isDropdown: true },
+    // More dropdown (only if there are overflow categories)
+    ...(moreCategories.length > 0 ? [{ name: "More", key: "more", isDropdown: true }] : []),
     // Cricket with live indicator
     { name: "Cricket", href: "/livecricket", key: "cricket", isLive: isLive },
     // About & Contact
@@ -210,7 +286,15 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu Icon & Discord Icon (Mobile) */}
-        <div className="lg:hidden flex items-center space-x-4">
+        <div className="lg:hidden flex items-center space-x-3">
+          {/* Search Icon (Mobile) - Large touch target */}
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="text-text-primary hover:text-primary active:text-primary transition-colors p-2.5 -mr-1"
+            aria-label="Search"
+          >
+            <FiSearch size={22} />
+          </button>
           <motion.a
             href="https://discord.gg/SquXBvz3Q"
             target="_blank"
@@ -218,7 +302,6 @@ const Header = () => {
             className="text-[#5865F2] hover:text-[#4752C4] transition-colors"
             whileHover={{ scale: 1.1, rotate: 10 }}
             whileTap={{ scale: 0.9 }}
-            /* OPTIMIZED: Removed infinite animation - now only animates on interaction */
           >
             <FaDiscord size={24} />
           </motion.a>
@@ -232,7 +315,7 @@ const Header = () => {
         </div>
 
         {/* Navigation Items (Desktop) */}
-        <nav className="hidden lg:flex items-center space-x-2 xl:space-x-4">
+        <nav ref={navRef} className="hidden lg:flex items-center space-x-2 xl:space-x-3 flex-1 justify-end">
           {/* Discord Icon (Desktop) */}
           <motion.a
             href="https://discord.gg/SquXBvz3Q"
@@ -338,8 +421,22 @@ const Header = () => {
               </Link>
             )
           )}
+          
+          {/* Premium Search Button (Desktop) - Icon only */}
+          <motion.button
+            onClick={() => setIsSearchOpen(true)}
+            className="p-2.5 text-text-secondary hover:text-primary bg-secondary-light/50 hover:bg-primary/10 rounded-xl border border-border hover:border-primary/30 transition-all duration-200"
+            title="Search (⌘K)"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiSearch className="w-5 h-5" />
+          </motion.button>
         </nav>
       </header>
+
+      {/* Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Mobile Menu Drawer - Rendered outside header for proper z-index */}
       <AnimatePresence>
