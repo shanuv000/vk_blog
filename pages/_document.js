@@ -29,6 +29,11 @@ class MyDocument extends Document {
             href="https://fonts.gstatic.com"
             crossOrigin="anonymous"
           />
+          {/* Google Fonts - loaded here for better SSR performance */}
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+          />
           <link rel="preconnect" href="https://ap-south-1.cdn.hygraph.com" />
           <link rel="preconnect" href="https://media.graphassets.com" />
 

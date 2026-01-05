@@ -131,19 +131,6 @@ function MyApp({ Component, pageProps }) {
           />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-          {/* Optimized font loading - preload critical fonts */}
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
-            crossOrigin="anonymous"
-          />
-          {/* Load fonts directly with display=swap for optimal CLS */}
-          <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet"
-          />
-
           {/* Default images - using prefetch instead of preload */}
           <link rel="prefetch" href={DEFAULT_FEATURED_IMAGE} />
 
