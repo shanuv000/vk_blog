@@ -142,32 +142,56 @@ const Header = () => {
       // Get available width (nav container width)
       const navWidth = navElement.offsetWidth;
       
-      // Estimated widths for nav elements (in pixels)
-      const DISCORD_WIDTH = 45;      // Discord icon
-      const CATEGORY_WIDTH = 100;    // Average category link width
-      const MORE_WIDTH = 75;         // "More" dropdown
-      const CRICKET_WIDTH = 100;     // Cricket link (with live indicator space)
-      const ABOUT_CONTACT_WIDTH = 160; // About + Contact
-      const SEARCH_WIDTH = 50;       // Search icon button
-      const SPACING = 16;            // Gaps between items
+      // Fixed elements widths (measured more accurately)
+      const DISCORD_WIDTH = 50;        // Discord icon + margin
+      const MORE_DROPDOWN_WIDTH = 80;  // "More" text + dropdown icon + padding
+      const CRICKET_WIDTH = 110;       // "Cricket" + live indicator space
+      const ABOUT_WIDTH = 80;          // "About" button
+      const CONTACT_WIDTH = 90;        // "Contact" button  
+      const SEARCH_WIDTH = 55;         // Search icon button
+      const ITEM_GAP = 12;             // gap between items (space-x-2 = 8px, xl:space-x-3 = 12px)
       
-      // Fixed elements that always show
-      const fixedWidth = DISCORD_WIDTH + MORE_WIDTH + CRICKET_WIDTH + ABOUT_CONTACT_WIDTH + SEARCH_WIDTH + (SPACING * 6);
+      // Total fixed elements width (always present)
+      const fixedItemsCount = 5; // Discord, More, Cricket, About, Contact, Search (More only if categories overflow)
+      const fixedWidth = DISCORD_WIDTH + CRICKET_WIDTH + ABOUT_WIDTH + CONTACT_WIDTH + SEARCH_WIDTH + (ITEM_GAP * fixedItemsCount);
+      
+      // Reserve space for "More" dropdown (always needed unless all categories fit)
+      const reserveMoreDropdown = MORE_DROPDOWN_WIDTH + ITEM_GAP;
       
       // Available width for categories
-      const availableForCategories = navWidth - fixedWidth;
+      const availableForCategories = navWidth - fixedWidth - reserveMoreDropdown;
       
-      // Calculate how many categories fit
-      const maxCategories = Math.max(0, Math.floor(availableForCategories / (CATEGORY_WIDTH + SPACING)));
+      // Calculate actual width needed for each category based on name length
+      // Approximate: 8px per character + 32px padding (px-4 = 16px * 2)
+      const CHAR_WIDTH = 8;
+      const CATEGORY_PADDING = 32;
       
-      // Clamp between 0 and total categories available
-      const newCount = Math.min(maxCategories, CATEGORY_HIERARCHY.length);
+      let usedWidth = 0;
+      let count = 0;
+      
+      for (const category of CATEGORY_HIERARCHY) {
+        const categoryWidth = (category.name.length * CHAR_WIDTH) + CATEGORY_PADDING + ITEM_GAP;
+        if (usedWidth + categoryWidth <= availableForCategories) {
+          usedWidth += categoryWidth;
+          count++;
+        } else {
+          break;
+        }
+      }
+      
+      // Ensure at least 0 categories, max all categories
+      const newCount = Math.min(count, CATEGORY_HIERARCHY.length);
+      
+      // Debug logging in development
+      if (process.env.NODE_ENV === "development") {
+        console.log(`[Header] Nav width: ${navWidth}px, Fixed: ${fixedWidth}px, Available: ${availableForCategories}px, Showing: ${newCount} categories`);
+      }
       
       setVisibleCategoryCount(newCount);
     };
     
-    // Initial calculation
-    calculateVisibleCategories();
+    // Initial calculation after a short delay to ensure DOM is ready
+    const initialTimer = setTimeout(calculateVisibleCategories, 100);
     
     // ResizeObserver for responsive updates
     const resizeObserver = new ResizeObserver(() => {
@@ -182,6 +206,7 @@ const Header = () => {
     window.addEventListener("resize", calculateVisibleCategories);
     
     return () => {
+      clearTimeout(initialTimer);
       resizeObserver.disconnect();
       window.removeEventListener("resize", calculateVisibleCategories);
     };
