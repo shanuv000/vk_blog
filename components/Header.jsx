@@ -62,32 +62,7 @@ const Header = () => {
   const dropdownRefs = useRef({});
   const scrollThrottleRef = useRef(false);
 
-  // Smart category hierarchy - 8 parent categories with subcategories
-  const dropdownData = {
-    Blog: CATEGORY_HIERARCHY.flatMap((parent) => {
-      const items = [
-        {
-          name: parent.name,
-          href: `/category/${parent.slug}`,
-          isParent: true,
-          icon: parent.icon,
-        },
-      ];
 
-      // Add subcategories indented
-      if (parent.subcategories && parent.subcategories.length > 0) {
-        parent.subcategories.forEach((sub) => {
-          items.push({
-            name: `  • ${sub.name}`,
-            href: `/category/${sub.slug}`,
-            isParent: false,
-          });
-        });
-      }
-
-      return items;
-    }),
-  };
 
   // Handle header visibility on scroll - OPTIMIZED with throttling
   const controlHeader = useCallback(() => {
@@ -136,13 +111,40 @@ const Header = () => {
     }
   }, [controlHeader]);
 
-  // Navigation items
+  // Main categories to show inline (top 5)
+  const mainCategories = CATEGORY_HIERARCHY.slice(0, 5);
+  
+  // Remaining categories for "More" dropdown
+  const moreCategories = CATEGORY_HIERARCHY.slice(5);
+
+  // Navigation items - now with inline categories
   const navItems = [
-    { name: "Blog", key: "blog", isDropdown: true },
+    // Main category links (inline)
+    ...mainCategories.map((cat) => ({
+      name: cat.name,
+      href: `/category/${cat.slug}`,
+      key: cat.slug,
+      icon: cat.icon,
+      isCategory: true,
+    })),
+    // More dropdown for remaining categories
+    { name: "More", key: "more", isDropdown: true },
+    // Cricket with live indicator
     { name: "Cricket", href: "/livecricket", key: "cricket", isLive: isLive },
+    // About & Contact
     { name: "About", href: "/about", key: "about" },
     { name: "Contact", href: "/contact", key: "contact" },
   ];
+
+  // Dropdown data for "More" and subcategories
+  const dropdownData = {
+    More: moreCategories.map((cat) => ({
+      name: cat.name,
+      href: `/category/${cat.slug}`,
+      icon: cat.icon,
+      isParent: true,
+    })),
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
