@@ -4,6 +4,12 @@
 
 /* Modern, performance-optimized global styles */
 
+/* Font fallback sizing to reduce CLS during font swap */
+/* This ensures system fonts have similar metrics to our custom fonts */
+:root {
+  --font-fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -138,19 +138,11 @@ function MyApp({ Component, pageProps }) {
             href="https://fonts.gstatic.com"
             crossOrigin="anonymous"
           />
-          {/* Preload critical font weights for faster LCP */}
+          {/* Load fonts directly with display=swap for optimal CLS */}
           <link
-            rel="preload"
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            as="style"
-            onLoad="this.onload=null;this.rel='stylesheet'"
+            rel="stylesheet"
           />
-          <noscript>
-            <link
-              href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-              rel="stylesheet"
-            />
-          </noscript>
 
           {/* Default images - using prefetch instead of preload */}
           <link rel="prefetch" href={DEFAULT_FEATURED_IMAGE} />

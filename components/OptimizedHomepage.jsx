@@ -133,9 +133,13 @@ export default function OptimizedHomepage({
       <SchemaManager isHomePage posts={posts.map((post) => post.node)} />
 
       <div>
-        {/* Breaking News Strip - only on page 1 */}
-        {isPageOne && recentPosts.length > 0 && (
-          <BreakingNewsStrip posts={recentPosts} label="LATEST" />
+        {/* Breaking News Strip - only on page 1, with reserved height for CLS prevention */}
+        {isPageOne && (
+          <div className="min-h-[44px] sm:min-h-[48px]">
+            {recentPosts.length > 0 && (
+              <BreakingNewsStrip posts={recentPosts} label="LATEST" />
+            )}
+          </div>
         )}
 
         {/* Hero Feature Grid - replaces heavy carousel, only on page 1 */}
