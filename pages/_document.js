@@ -29,17 +29,34 @@ class MyDocument extends Document {
             href="https://fonts.gstatic.com"
             crossOrigin="anonymous"
           />
-          {/* Google Fonts - loaded here for better SSR performance */}
+
+          {/* Google Fonts - Optimized loading with preload for critical font */}
+          <link
+            rel="preload"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            as="style"
+          />
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
             rel="stylesheet"
+            media="print"
+            onLoad="this.media='all'"
           />
+          <noscript>
+            <link
+              href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+              rel="stylesheet"
+            />
+          </noscript>
+
           <link rel="preconnect" href="https://ap-south-1.cdn.hygraph.com" />
           <link rel="preconnect" href="https://media.graphassets.com" />
 
-          {/* DNS prefetch for analytics (lower priority) */}
+          {/* DNS prefetch for analytics and ads (lower priority) */}
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
           <link rel="dns-prefetch" href="https://www.clarity.ms" />
+          <link rel="dns-prefetch" href="https://pl28428839.effectivegatecpm.com" />
+          <link rel="dns-prefetch" href="https://openairtowhardworking.com" />
         </Head>
         <body>
           <Main />

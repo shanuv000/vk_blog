@@ -1,19 +1,37 @@
 import { useEffect, useState } from 'react';
-import Script from 'next/script';
 
 /**
- * Native Banner Ad Component - Optimized for Fast Loading
+ * Native Banner Ad Component - Performance Optimized
  * 
- * Uses 'afterInteractive' strategy for faster script loading.
+ * Loads ad script after a short delay to not block initial rendering.
+ * Uses vanilla JS for maximum performance.
  */
 const NativeBannerAd = ({ className = '' }) => {
     const [mounted, setMounted] = useState(false);
+    const [scriptLoaded, setScriptLoaded] = useState(false);
 
     const containerId = 'container-1f24392931355411bbd46ad36048cd1a';
     const scriptUrl = 'https://pl28428839.effectivegatecpm.com/1f24392931355411bbd46ad36048cd1a/invoke.js';
 
     useEffect(() => {
         setMounted(true);
+
+        // Load ad script after a short delay to not block main thread
+        const timer = setTimeout(() => {
+            if (document.getElementById('adsterra-native-script')) {
+                setScriptLoaded(true);
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.id = 'adsterra-native-script';
+            script.src = scriptUrl;
+            script.async = true;
+            script.onload = () => setScriptLoaded(true);
+            document.body.appendChild(script);
+        }, 100); // Small delay to let critical content render first
+
+        return () => clearTimeout(timer);
     }, []);
 
     if (!mounted) return null;
@@ -53,12 +71,6 @@ const NativeBannerAd = ({ className = '' }) => {
                     visibility: 'visible',
                     minHeight: '90px',
                 }}
-            />
-
-            {/* Load script - 'afterInteractive' loads right after page becomes interactive */}
-            <Script
-                src={scriptUrl}
-                strategy="afterInteractive"
             />
         </div>
     );
