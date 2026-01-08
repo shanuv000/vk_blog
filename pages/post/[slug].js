@@ -13,6 +13,7 @@ import {
 import { usePostDetails } from "../../hooks/useApolloQueries";
 import { AdjacentPosts } from "../../sections";
 import { getPosts, getPostDetails } from "../../services";
+import NativeBannerAd from "../../components/NativeBannerAd";
 
 // Import post validation utilities
 import {
@@ -172,21 +173,19 @@ const PostDetails = ({ post, error, lastFetched }) => {
                               <p className="text-yellow-700 mb-1">
                                 Raw:{" "}
                                 {debugInfo.hasRaw
-                                  ? `${debugInfo.rawType} (${
-                                      debugInfo.rawType === "string"
-                                        ? "needs parsing"
-                                        : "ready to use"
-                                    })`
+                                  ? `${debugInfo.rawType} (${debugInfo.rawType === "string"
+                                    ? "needs parsing"
+                                    : "ready to use"
+                                  })`
                                   : "missing"}
                               </p>
                               <p className="text-yellow-700 mb-1">
                                 JSON:{" "}
                                 {debugInfo.hasJson
-                                  ? `${debugInfo.jsonType} (${
-                                      debugInfo.jsonType === "string"
-                                        ? "needs parsing"
-                                        : "ready to use"
-                                    })`
+                                  ? `${debugInfo.jsonType} (${debugInfo.jsonType === "string"
+                                    ? "needs parsing"
+                                    : "ready to use"
+                                  })`
                                   : "missing"}
                               </p>
                               <p className="text-yellow-700 mt-2 font-semibold">
@@ -243,6 +242,10 @@ const PostDetails = ({ post, error, lastFetched }) => {
       <div className="sm:container mx-auto px-0 sm:px-4 lg:px-10 mb-8">
         <div className="max-w-4xl mx-auto">
           <PostDetail post={post} />
+
+          {/* Native Banner Ad - placed after article content for maximum engagement */}
+          <NativeBannerAd lazyLoad={true} lazyLoadOffset={300} />
+
           {/* Ensure slug and createdAt exist before passing to AdjacentPosts */}
           {post.slug && post.createdAt && (
             <AdjacentPosts slug={post.slug} createdAt={post.createdAt} />
@@ -543,8 +546,7 @@ export async function getStaticProps({ params }) {
 
     if (process.env.NODE_ENV === "development") {
       console.log(
-        `[getStaticProps] Successfully fetched post data for slug: ${
-          params.slug
+        `[getStaticProps] Successfully fetched post data for slug: ${params.slug
         }, title: ${data.title || "NO TITLE"}`
       );
     }

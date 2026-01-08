@@ -4,7 +4,6 @@ import "../styles/globals.scss";
 import "../styles/medium-typography.css";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Script from "next/script";
 
 import { ApolloProvider } from "@apollo/client";
 
@@ -13,6 +12,7 @@ import AnalyticsProvider from "../components/AnalyticsProvider";
 import { DEFAULT_FEATURED_IMAGE } from "../components/DefaultAvatar";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { initWebVitals } from "../components/WebVitals";
+import AdsterraPopunder from "../components/AdsterraPopunder";
 import { useApollo, getApolloStats } from "../lib/apollo-client";
 
 // Add this to fix hydration issues
@@ -34,9 +34,9 @@ function MyApp({ Component, pageProps }) {
     const handleRouteChange = () => {
       resetRendered();
     };
-    
+
     router.events.on('routeChangeStart', handleRouteChange);
-    
+
     return () => {
       router.events.off('routeChangeStart', handleRouteChange);
     };
@@ -170,15 +170,19 @@ function MyApp({ Component, pageProps }) {
           </Layout>
         </AnalyticsProvider>
       </ErrorBoundary>
-      
-      {/* Adsterra Popunder Ad Script
-          - strategy="afterInteractive": Loads after page is interactive (won't hurt LCP/FID)
-          - Placed globally in _app.js for site-wide coverage
-          - Popunders trigger on user interaction, so afterInteractive is perfect
+
+      {/* Smart Adsterra Popunder with intelligent controls:
+          - Session frequency cap: Only once per session
+          - Page exclusions: Not on contact, about, terms, search, admin
+          - Engagement delay: 30 seconds before showing
+          - Mobile exclusion: Skips on mobile devices
+          - First-visit protection: Only for returning visitors
       */}
-      <Script
-        src="https://pl28427626.effectivegatecpm.com/d2/ec/38/d2ec385d28d06dcda520b6866b029b4b.js"
-        strategy="afterInteractive"
+      <AdsterraPopunder
+        delaySeconds={15}
+        excludedPages={['/contact', '/about', '/terms', '/search', '/admin']}
+        excludeMobile={true}
+        excludeFirstVisit={false}
       />
     </ApolloProvider>
   );
