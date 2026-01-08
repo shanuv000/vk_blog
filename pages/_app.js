@@ -170,6 +170,16 @@ function MyApp({ Component, pageProps }) {
           </Layout>
         </AnalyticsProvider>
       </ErrorBoundary>
+      
+      {/* Adsterra Popunder Ad Script
+          - strategy="afterInteractive": Loads after page is interactive (won't hurt LCP/FID)
+          - Placed globally in _app.js for site-wide coverage
+          - Popunders trigger on user interaction, so afterInteractive is perfect
+      */}
+      <Script
+        src="https://pl28427626.effectivegatecpm.com/d2/ec/38/d2ec385d28d06dcda520b6866b029b4b.js"
+        strategy="afterInteractive"
+      />
     </ApolloProvider>
   );
 }
