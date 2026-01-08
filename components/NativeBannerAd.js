@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import Script from 'next/script';
 
 /**
- * Content Promotion Section (Native Banner Ad)
+ * Native Banner Ad Component - Optimized for Fast Loading
  * 
- * Simple, reliable native banner that loads after article content.
- * Class names obfuscated to avoid adblocker CSS injection.
+ * Uses 'afterInteractive' strategy for faster script loading.
  */
 const NativeBannerAd = ({ className = '' }) => {
     const [mounted, setMounted] = useState(false);
@@ -23,8 +22,8 @@ const NativeBannerAd = ({ className = '' }) => {
         <div
             className={`content-promo-wrapper ${className}`}
             style={{
-                margin: '32px 0',
-                padding: '24px 0',
+                margin: '24px 0',
+                padding: '16px 0',
                 borderTop: '1px solid #e5e7eb',
                 borderBottom: '1px solid #e5e7eb',
                 textAlign: 'center',
@@ -36,11 +35,11 @@ const NativeBannerAd = ({ className = '' }) => {
             {/* Label */}
             <div
                 style={{
-                    fontSize: '11px',
+                    fontSize: '10px',
                     color: '#9ca3af',
                     textTransform: 'uppercase',
                     letterSpacing: '0.1em',
-                    marginBottom: '16px',
+                    marginBottom: '12px',
                 }}
             >
                 Recommended
@@ -49,19 +48,17 @@ const NativeBannerAd = ({ className = '' }) => {
             {/* Container */}
             <div
                 id={containerId}
-                className="promo-container"
                 style={{
                     display: 'block',
                     visibility: 'visible',
-                    minHeight: '100px',
+                    minHeight: '90px',
                 }}
             />
 
-            {/* Load script */}
+            {/* Load script - 'afterInteractive' loads right after page becomes interactive */}
             <Script
                 src={scriptUrl}
-                strategy="lazyOnload"
-                async
+                strategy="afterInteractive"
             />
         </div>
     );
