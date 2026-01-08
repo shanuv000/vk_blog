@@ -2,15 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import Script from 'next/script';
 
 /**
- * In-Article Native Banner Ad Component
+ * In-Article Content Separator Component (Native Banner Ad)
  * 
- * This component injects ads between paragraphs in article content.
- * Uses direct script injection for maximum compatibility.
- * 
- * @param {Object} props
- * @param {React.RefObject} props.contentRef - Reference to the article content container
- * @param {number} [props.insertAfterParagraph=3] - Insert ad after this many paragraphs
- * @param {number} [props.maxAds=2] - Maximum number of in-article ads to show
+ * Injects content separators between paragraphs.
+ * Class names are obfuscated to avoid adblocker CSS injection.
  */
 const InArticleAds = ({
     contentRef,
@@ -19,33 +14,29 @@ const InArticleAds = ({
 }) => {
     const [adsReady, setAdsReady] = useState(false);
     const insertedRef = useRef(false);
-    const adContainerRefs = useRef([]);
+    const containerRefs = useRef([]);
 
     // Adsterra Native Banner config
     const scriptUrl = 'https://pl28428839.effectivegatecpm.com/1f24392931355411bbd46ad36048cd1a/invoke.js';
 
     useEffect(() => {
-        // Skip on server
         if (typeof window === 'undefined' || typeof document === 'undefined') return;
         if (insertedRef.current) return;
 
-        // Function to insert ads
         const insertAds = () => {
             const contentContainer = contentRef?.current;
             if (!contentContainer) return false;
 
-            // Find all paragraphs
             const paragraphs = contentContainer.querySelectorAll('p');
             if (paragraphs.length < insertAfterParagraph) return false;
 
             let adsPlaced = 0;
             const positions = [];
 
-            // Calculate positions
             for (let i = insertAfterParagraph - 1; i < paragraphs.length && adsPlaced < maxAds; i += insertAfterParagraph + 2) {
                 const p = paragraphs[i];
                 if (!p || p.textContent.trim().length < 30) continue;
-                if (p.nextElementSibling?.getAttribute('data-ad-slot')) continue;
+                if (p.nextElementSibling?.getAttribute('data-content-break')) continue;
 
                 positions.push({ index: i, element: p });
                 adsPlaced++;
@@ -53,13 +44,14 @@ const InArticleAds = ({
 
             if (positions.length === 0) return false;
 
-            // Insert ad containers with unique IDs
             positions.forEach((pos, index) => {
-                const uniqueId = `native-banner-${Date.now()}-${index}`;
+                const uniqueId = `cb-${Date.now()}-${index}`;
 
-                const adWrapper = document.createElement('div');
-                adWrapper.setAttribute('data-ad-slot', index.toString());
-                adWrapper.style.cssText = `
+                // Use generic class names to avoid adblocker detection
+                const wrapper = document.createElement('div');
+                wrapper.setAttribute('data-content-break', index.toString());
+                wrapper.className = 'content-break-section';
+                wrapper.style.cssText = `
           margin: 24px 0 !important;
           padding: 16px 8px !important;
           border-top: 1px solid #e5e7eb !important;
@@ -74,7 +66,7 @@ const InArticleAds = ({
           overflow: hidden !important;
         `;
 
-                adWrapper.innerHTML = `
+                wrapper.innerHTML = `
           <div style="
             font-size: 10px !important;
             color: #9ca3af !important;
@@ -82,12 +74,12 @@ const InArticleAds = ({
             letter-spacing: 0.1em !important;
             margin-bottom: 12px !important;
             display: block !important;
-          ">— Ad —</div>
-          <div id="${uniqueId}" style="display: block !important;"></div>
+          ">—</div>
+          <div id="${uniqueId}" class="promo-container" style="display: block !important;"></div>
         `;
 
-                pos.element.parentNode.insertBefore(adWrapper, pos.element.nextSibling);
-                adContainerRefs.current.push({ wrapper: adWrapper, containerId: uniqueId });
+                pos.element.parentNode.insertBefore(wrapper, pos.element.nextSibling);
+                containerRefs.current.push({ wrapper, containerId: uniqueId });
             });
 
             insertedRef.current = true;
@@ -95,7 +87,6 @@ const InArticleAds = ({
             return true;
         };
 
-        // Try immediately, then with delays
         if (!insertAds()) {
             const timer1 = setTimeout(() => {
                 if (!insertAds()) {
@@ -106,17 +97,15 @@ const InArticleAds = ({
             return () => clearTimeout(timer1);
         }
 
-        // Cleanup
         return () => {
-            adContainerRefs.current.forEach(({ wrapper }) => {
+            containerRefs.current.forEach(({ wrapper }) => {
                 if (wrapper?.parentNode) wrapper.parentNode.removeChild(wrapper);
             });
-            adContainerRefs.current = [];
+            containerRefs.current = [];
             insertedRef.current = false;
         };
     }, [contentRef, insertAfterParagraph, maxAds]);
 
-    // Load script after containers are ready
     if (!adsReady) return null;
 
     return (
@@ -124,11 +113,6 @@ const InArticleAds = ({
             src={scriptUrl}
             strategy="lazyOnload"
             async
-            onLoad={() => {
-                if (typeof window !== 'undefined') {
-                    console.log('[InArticleAds] Script loaded');
-                }
-            }}
         />
     );
 };

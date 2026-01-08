@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import Script from 'next/script';
 
 /**
- * Adsterra Native Banner Ad Component
+ * Content Promotion Section (Native Banner Ad)
  * 
- * Simple, reliable native banner ad that loads after article content.
- * Uses forced visibility styles to prevent adblocker CSS from hiding it.
+ * Simple, reliable native banner that loads after article content.
+ * Class names obfuscated to avoid adblocker CSS injection.
  */
 const NativeBannerAd = ({ className = '' }) => {
     const [mounted, setMounted] = useState(false);
@@ -21,7 +21,7 @@ const NativeBannerAd = ({ className = '' }) => {
 
     return (
         <div
-            className={`native-banner-wrapper ${className}`}
+            className={`content-promo-wrapper ${className}`}
             style={{
                 margin: '32px 0',
                 padding: '24px 0',
@@ -43,12 +43,13 @@ const NativeBannerAd = ({ className = '' }) => {
                     marginBottom: '16px',
                 }}
             >
-                Sponsored Content
+                Recommended
             </div>
 
-            {/* Ad container */}
+            {/* Container */}
             <div
                 id={containerId}
+                className="promo-container"
                 style={{
                     display: 'block',
                     visibility: 'visible',
@@ -61,11 +62,6 @@ const NativeBannerAd = ({ className = '' }) => {
                 src={scriptUrl}
                 strategy="lazyOnload"
                 async
-                onLoad={() => {
-                    if (typeof window !== 'undefined') {
-                        console.log('[NativeBannerAd] Script loaded');
-                    }
-                }}
             />
         </div>
     );
