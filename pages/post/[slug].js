@@ -13,7 +13,7 @@ import {
 import { usePostDetails } from "../../hooks/useApolloQueries";
 import { AdjacentPosts } from "../../sections";
 import { getPosts, getPostDetails } from "../../services";
-import NativeBannerAd from "../../components/NativeBannerAd";
+// NativeBannerAd moved to InArticleAds for between-paragraph placement
 
 // Import post validation utilities
 import {
@@ -243,8 +243,7 @@ const PostDetails = ({ post, error, lastFetched }) => {
         <div className="max-w-4xl mx-auto">
           <PostDetail post={post} />
 
-          {/* Native Banner Ad - placed after article content for maximum engagement */}
-          <NativeBannerAd lazyLoad={true} lazyLoadOffset={300} />
+          {/* Native Banner Ad is now placed between paragraphs via InArticleAds in PostDetail.jsx */}
 
           {/* Ensure slug and createdAt exist before passing to AdjacentPosts */}
           {post.slug && post.createdAt && (
