@@ -16,6 +16,7 @@ import {
   getCategoryInfo,
   getCategoryBreadcrumb,
 } from "../../utils/categoryHierarchy";
+import NativeBannerAd from "../../components/NativeBannerAd";
 
 // Enhanced loading components
 
@@ -111,9 +112,8 @@ const CategoryPost = ({ initialPosts }) => {
   const title = actualCategoryName
     ? `${actualCategoryName} Articles - urTechy Blogs`
     : "Category - urTechy Blogs";
-  const description = `Browse our collection of ${
-    actualCategoryName || "articles"
-  } on urTechy Blogs. Stay updated with the latest insights and expert analysis.`;
+  const description = `Browse our collection of ${actualCategoryName || "articles"
+    } on urTechy Blogs. Stay updated with the latest insights and expert analysis.`;
 
   return (
     <>
@@ -145,11 +145,9 @@ const CategoryPost = ({ initialPosts }) => {
         additionalMetaTags={[
           {
             name: "keywords",
-            content: `${
-              actualCategoryName || "articles"
-            }, urTechy, blogs, technology, news, ${
-              actualCategoryName ? actualCategoryName.toLowerCase() : "category"
-            }`,
+            content: `${actualCategoryName || "articles"
+              }, urTechy, blogs, technology, news, ${actualCategoryName ? actualCategoryName.toLowerCase() : "category"
+              }`,
           },
           {
             name: "author",
@@ -204,6 +202,9 @@ const CategoryPost = ({ initialPosts }) => {
               </nav>
             ) : null;
           })()}
+
+        {/* Native Banner Ad - before category posts */}
+        <NativeBannerAd />
 
         {/* Magazine-Style Layout */}
         <MagazineCategoryLayout

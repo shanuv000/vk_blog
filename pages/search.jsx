@@ -10,6 +10,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { FiSearch, FiArrowLeft } from "react-icons/fi";
 import { useSearch } from "../hooks/useSearch";
+import NativeBannerAd from "../components/NativeBannerAd";
 
 // Date formatting utility
 const formatDate = (dateString) => {
@@ -46,7 +47,7 @@ const SearchResultCard = ({ post }) => {
         <h2 className="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors line-clamp-2 mb-2">
           {post.title}
         </h2>
-        
+
         {post.excerpt && (
           <p className="text-text-secondary text-sm line-clamp-2 mb-3">
             {post.excerpt}
@@ -133,7 +134,7 @@ export default function SearchPage() {
   };
 
   // SEO
-  const pageTitle = query 
+  const pageTitle = query
     ? `Search results for "${query}" | urTechy Blogs`
     : "Search | urTechy Blogs";
   const pageDescription = query
@@ -201,6 +202,9 @@ export default function SearchPage() {
 
           {/* Loading State */}
           {loading && <SearchSkeleton />}
+
+          {/* Native Banner Ad - shown when there are results */}
+          {!loading && !error && results.length > 0 && <NativeBannerAd />}
 
           {/* Error State */}
           {error && !loading && (

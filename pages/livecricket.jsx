@@ -6,6 +6,7 @@ import { FiActivity } from "react-icons/fi";
 import ShowCricket from "../components/Cricket/ShowCricket";
 import ball from "../public/cricket/ball.png";
 import { CricketDataProvider, useCricketData } from "../store/CricketDataContext";
+import NativeBannerAd from "../components/NativeBannerAd";
 
 /**
  * LiveCricket page component
@@ -35,7 +36,7 @@ const LiveCricketContent = () => {
       <div className="min-h-screen bg-gradient-to-br from-[#0f0f1a] via-[#1a1a2e] to-[#16213e] relative overflow-hidden">
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full" 
+          <div className="absolute top-0 left-0 w-full h-full"
             style={{
               backgroundImage: `radial-gradient(circle at 25% 25%, rgba(244, 63, 94, 0.15) 0%, transparent 50%),
                                radial-gradient(circle at 75% 75%, rgba(245, 158, 11, 0.15) 0%, transparent 50%)`
@@ -79,7 +80,7 @@ const LiveCricketContent = () => {
           >
             {/* Glassmorphism Header Card */}
             <div className="relative w-full max-w-2xl">
-              <motion.div 
+              <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-rose-500/30 to-amber-500/30 rounded-2xl blur-xl"
                 animate={{
                   opacity: [0.5, 0.8, 0.5],
@@ -90,7 +91,7 @@ const LiveCricketContent = () => {
                   ease: "easeInOut",
                 }}
               />
-              
+
               <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 md:p-8">
                 {/* Logo and Title */}
                 <div className="flex items-center justify-center gap-4 mb-4">
@@ -111,7 +112,7 @@ const LiveCricketContent = () => {
                       priority
                     />
                   </motion.div>
-                  
+
                   <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold">
                     <span className="bg-gradient-to-r from-rose-400 via-amber-400 to-rose-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
                       Cricket Hub
@@ -121,7 +122,7 @@ const LiveCricketContent = () => {
 
                 {/* Decorative Line */}
                 <div className="flex justify-center mb-4">
-                  <motion.div 
+                  <motion.div
                     className="h-1 w-24 bg-gradient-to-r from-rose-500 to-amber-500 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: 96 }}
@@ -161,7 +162,7 @@ const LiveCricketContent = () => {
 
                 {/* Quick Stats */}
                 <div className="flex justify-center gap-6 mt-6">
-                  <motion.div 
+                  <motion.div
                     className="text-center"
                     whileHover={{ scale: 1.05 }}
                   >
@@ -172,7 +173,7 @@ const LiveCricketContent = () => {
                     <div className="text-xs text-slate-400">Updates</div>
                   </motion.div>
                   <div className="w-px h-12 bg-white/10" />
-                  <motion.div 
+                  <motion.div
                     className="text-center"
                     whileHover={{ scale: 1.05 }}
                   >
@@ -180,7 +181,7 @@ const LiveCricketContent = () => {
                     <div className="text-xs text-slate-400">Leagues</div>
                   </motion.div>
                   <div className="w-px h-12 bg-white/10" />
-                  <motion.div 
+                  <motion.div
                     className="text-center"
                     whileHover={{ scale: 1.05 }}
                   >
@@ -198,6 +199,9 @@ const LiveCricketContent = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
+            {/* Native Banner Ad - before cricket widget */}
+            <NativeBannerAd />
+
             <ShowCricket />
           </motion.div>
 
@@ -217,7 +221,7 @@ const LiveCricketContent = () => {
               <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-emerald-500/10 p-6 md:p-8 backdrop-blur-xl hover:border-emerald-500/30 transition-all duration-300">
                 {/* Animated gradient background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
+
                 <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
                     {/* Icon */}
@@ -227,7 +231,7 @@ const LiveCricketContent = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    
+
                     {/* Text */}
                     <div>
                       <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
@@ -239,7 +243,7 @@ const LiveCricketContent = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   {/* CTA Button */}
                   <div className="flex-shrink-0">
                     <span className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 group-hover:shadow-emerald-500/40 group-hover:scale-105 transition-all duration-300">

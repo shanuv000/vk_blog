@@ -16,6 +16,7 @@ import Pagination from "../components/Pagination";
 import HeroFeatureGrid from "./HeroFeatureGrid";
 import BreakingNewsStrip from "./BreakingNewsStrip";
 import TopStoriesSection from "./TopStoriesSection";
+import NativeBannerAd from "./NativeBannerAd";
 
 /**
  * Optimized PostWidget that uses props data with image optimization
@@ -149,11 +150,14 @@ export default function OptimizedHomepage({
 
         {/* Top Stories Section - only on page 1 */}
         {isPageOne && posts.length > 3 && (
-          <TopStoriesSection 
-            posts={posts.slice(0, 6)} 
-            title="Top Stories" 
+          <TopStoriesSection
+            posts={posts.slice(0, 6)}
+            title="Top Stories"
           />
         )}
+
+        {/* Native Banner Ad - between Top Stories and Latest Articles */}
+        {isPageOne && <NativeBannerAd />}
 
         {/* Main content */}
         <div className="mb-8 mt-8">
