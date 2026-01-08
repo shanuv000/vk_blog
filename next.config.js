@@ -317,8 +317,17 @@ const nextConfig = {
       "react-icons",
       "lucide-react",
       "@fortawesome/react-fontawesome",
+      "framer-motion",
+      "date-fns",
     ],
     // optimizeCss: true, // Disabled - requires critters package
+  },
+
+  // Modularize imports for better tree-shaking
+  modularizeImports: {
+    "react-icons": {
+      transform: "react-icons/{{member}}",
+    },
   },
 
   // Removed experimental features that were causing issues
