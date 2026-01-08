@@ -15,6 +15,7 @@ import Navbar_post_details from "./Social_post_details";
 import TagList from "./TagList";
 import RecentUpdates from "./RecentUpdates";
 import NewsletterCTA from "./NewsletterCTA";
+import InArticleAds from "./InArticleAds";
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
@@ -83,12 +84,13 @@ const Testing = dynamic(
 const PostDetail = ({ post }) => {
   const [renderError, setRenderError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const articleContentRef = useRef(null);
 
   const readingTime = post?.content?.raw
     ? Math.max(
-        1,
-        Math.ceil(post.content.raw.toString().split(/\s+/).length / 200)
-      )
+      1,
+      Math.ceil(post.content.raw.toString().split(/\s+/).length / 200)
+    )
     : null;
   const heroImage = post?.featuredImage?.url || DEFAULT_FEATURED_IMAGE;
   const postUrl = `https://blog.urtechy.com/post/${post?.slug || ""}`;
@@ -172,8 +174,8 @@ const PostDetail = ({ post }) => {
           <nav className="mb-8" aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-2 text-sm">
               <li>
-                <Link 
-                  href="/" 
+                <Link
+                  href="/"
                   className="text-gray-500 hover:text-primary transition-colors"
                 >
                   Home
@@ -183,7 +185,7 @@ const PostDetail = ({ post }) => {
               {post.categories?.[0] && (
                 <>
                   <li>
-                    <Link 
+                    <Link
                       href={`/category/${post.categories[0].slug}`}
                       className="text-gray-500 hover:text-primary transition-colors"
                     >
@@ -267,11 +269,10 @@ const PostDetail = ({ post }) => {
                       console.error("Copy failed:", error);
                     }
                   }}
-                  className={`p-2.5 rounded-full transition-all ${
-                    copied 
-                      ? "bg-green-100 text-green-600" 
+                  className={`p-2.5 rounded-full transition-all ${copied
+                      ? "bg-green-100 text-green-600"
                       : "text-gray-400 hover:bg-gray-100 hover:text-primary"
-                  }`}
+                    }`}
                   title={copied ? "Copied!" : "Copy link"}
                   aria-label="Copy link"
                 >
@@ -307,7 +308,7 @@ const PostDetail = ({ post }) => {
           <div className="max-w-3xl mx-auto">
             {/* Author Info Section */}
             {post.author && (
-              <motion.div 
+              <motion.div
                 className="flex items-center gap-4 p-5 bg-gray-50 rounded-2xl mb-10"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -401,7 +402,7 @@ const PostDetail = ({ post }) => {
                           
                           /* First paragraph styling */
                           first:prose-p:text-xl first:prose-p:text-gray-600
-                        ">
+                        " ref={articleContentRef}>
                           <RichTextRenderer
                             content={post.content}
                             references={
@@ -428,6 +429,13 @@ const PostDetail = ({ post }) => {
                 </p>
               )}
             </section>
+
+            {/* In-Article Native Banner Ads - inserted between paragraphs */}
+            <InArticleAds
+              contentRef={articleContentRef}
+              insertAfterParagraph={3}
+              maxAds={2}
+            />
 
             {/* Tags Section */}
             {post.tags && post.tags.length > 0 && (
