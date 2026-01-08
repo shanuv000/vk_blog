@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import Script from 'next/script';
 
 /**
- * Smart Adsterra Popunder Component
+ * Smart Adsterra Anti-Adblock Popunder Component
+ * 
+ * Uses Adsterra's anti-adblock script that bypasses carrier-level blocking (like Jio).
  * 
  * Features:
+ * - Anti-adblock technology
  * - Session-based frequency cap
  * - Page exclusions
  * - Engagement delay
- * - Mobile exclusion
+ * - Mobile exclusion (optional)
  */
 const AdsterraPopunder = ({
-    scriptUrl = "https://pl28427626.effectivegatecpm.com/d2/ec/38/d2ec385d28d06dcda520b6866b029b4b.js",
+    // Anti-adblock script URL from Adsterra
+    scriptUrl = "https://openairtowhardworking.com/d2/ec/38/d2ec385d28d06dcda520b6866b029b4b.js",
     delaySeconds = 15,
     excludedPages = ['/contact', '/about', '/terms', '/search', '/admin'],
     excludeMobile = true,
-    excludeFirstVisit = false, // Changed default to false
+    excludeFirstVisit = false,
 }) => {
     const [shouldShowAd, setShouldShowAd] = useState(false);
-    const router = useRouter();
 
     useEffect(() => {
         // Only run on client
@@ -36,7 +38,7 @@ const AdsterraPopunder = ({
             return;
         }
 
-        // Check 3: Mobile detection
+        // Check 3: Mobile detection (optional)
         if (excludeMobile) {
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
                 || window.innerWidth < 768;
@@ -72,8 +74,6 @@ const AdsterraPopunder = ({
         <Script
             src={scriptUrl}
             strategy="afterInteractive"
-            onLoad={() => console.log('[Popunder] Loaded')}
-            onError={(e) => console.error('[Popunder] Error:', e)}
         />
     );
 };
