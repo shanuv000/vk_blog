@@ -52,11 +52,9 @@ class MyDocument extends Document {
           <link rel="preconnect" href="https://ap-south-1.cdn.hygraph.com" />
           <link rel="preconnect" href="https://media.graphassets.com" />
 
-          {/* DNS prefetch for analytics and ads (lower priority) */}
+          {/* DNS prefetch for analytics (lower priority) */}
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
           <link rel="dns-prefetch" href="https://www.clarity.ms" />
-          <link rel="dns-prefetch" href="https://pl28428839.effectivegatecpm.com" />
-          <link rel="dns-prefetch" href="https://openairtowhardworking.com" />
         </Head>
         <body>
           <Main />

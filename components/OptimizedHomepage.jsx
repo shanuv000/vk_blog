@@ -16,7 +16,7 @@ import Pagination from "../components/Pagination";
 import HeroFeatureGrid from "./HeroFeatureGrid";
 import BreakingNewsStrip from "./BreakingNewsStrip";
 import TopStoriesSection from "./TopStoriesSection";
-import NativeBannerAd from "./NativeBannerAd";
+
 
 /**
  * Optimized PostWidget that uses props data with image optimization
@@ -156,8 +156,7 @@ export default function OptimizedHomepage({
           />
         )}
 
-        {/* Native Banner Ad - between Top Stories and Latest Articles */}
-        {isPageOne && <NativeBannerAd />}
+
 
         {/* Main content */}
         <div className="mb-8 mt-8">

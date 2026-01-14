@@ -1,0 +1,119 @@
+[
+    {
+        "slug": "react2shell-cve-2025-55182-rce-analysis",
+        "inserts": [
+            {
+                "sentence": "This vulnerability arrives in the wake of other major 2025 security incidents, such as the [MongoBleed memory leak] that exposed thousands of databases.",
+                "linkUrl": "/post/mongobleed-cve-2025-14847-mongodb-memory-leak-exposed-databases",
+                "anchorText": "MongoBleed memory leak",
+                "placement": "Introduction"
+            },
+            {
+                "sentence": "Developers following our [React and Next.js guide] should immediately audit their dependencies to prevent this exploit.",
+                "linkUrl": "/post/getting-started-react-nextjs",
+                "anchorText": "React and Next.js guide",
+                "placement": "Mitigation"
+            }
+        ]
+    },
+    {
+        "slug": "epstein-files-explained-documents-transparency",
+        "inserts": [
+            {
+                "sentence": "Discerning fact from fiction is critical in high-profile cases, similar to the misinformation challenges seen after the [Bondi Beach terror attack].",
+                "linkUrl": "/post/bondi-beach-terror-attack-unseen-truths",
+                "anchorText": "Bondi Beach terror attack",
+                "placement": "Media"
+            }
+        ]
+    },
+    {
+        "slug": "ai-memory-demand-pc-upgrade-costs",
+        "inserts": [
+            {
+                "sentence": "The demand for high-performance memory is largely driven by AI infrastructure expansion from giants discussed in our analysis of [OpenAI and Microsoft IPO talks].",
+                "linkUrl": "/post/openai-microsoft-ipo-talks-2025",
+                "anchorText": "OpenAI and Microsoft IPO talks",
+                "placement": "Demand"
+            },
+            {
+                "sentence": "Global supply chains remain fragile, further complicated by geopolitical shifts such as the [US-China trade truce].",
+                "linkUrl": "/post/us-china-trade-truce-trump-drug-price-policy-2025",
+                "anchorText": "US-China trade truce",
+                "placement": "Supply"
+            }
+        ]
+    },
+    {
+        "slug": "bgmi-1-9-holi-update-free-rewards-download-links-storage",
+        "inserts": [
+            {
+                "sentence": "Players looking for more battle royale content should also check out the massive changes in the [Apex Legends Season 12 patch notes].",
+                "linkUrl": "/post/apex-legends-season-12-patch-notes",
+                "anchorText": "Apex Legends Season 12 patch notes",
+                "placement": "Conclusion"
+            }
+        ]
+    },
+    {
+        "slug": "getting-started-react-nextjs",
+        "inserts": [
+            {
+                "sentence": "When setting up your environment, be aware of security best practices to avoid vulnerabilities like the [React2Shell RCE].",
+                "linkUrl": "/post/react2shell-cve-2025-55182-rce-analysis",
+                "anchorText": "React2Shell RCE",
+                "placement": "Overview"
+            },
+            {
+                "sentence": "For your backend database, ensure you secure your MongoDB instances to prevent leaks similar to [MongoBleed CVE-2025-14847].",
+                "linkUrl": "/post/mongobleed-cve-2025-14847-mongodb-memory-leak-exposed-databases",
+                "anchorText": "MongoBleed CVE-2025-14847",
+                "placement": "Database"
+            }
+        ]
+    },
+    {
+        "slug": "mongobleed-cve-2025-14847-mongodb-memory-leak-exposed-databases",
+        "inserts": [
+            {
+                "sentence": "This is the second major database-related concern this year, following closely on the heels of the [React2Shell vulnerability].",
+                "linkUrl": "/post/react2shell-cve-2025-55182-rce-analysis",
+                "anchorText": "React2Shell vulnerability",
+                "placement": "Introduction"
+            }
+        ]
+    },
+    {
+        "slug": "from-max-to-hbo-max",
+        "inserts": [
+            {
+                "sentence": "The platform continues to host major blockbusters, including upcoming Marvel hits discussed in our [Thor 4 trailer prediction].",
+                "linkUrl": "/post/thor-4-love-and-thunder-trailer-release-date-prediction",
+                "anchorText": "Thor 4 trailer prediction",
+                "placement": "Conclusion"
+            }
+        ]
+    },
+    {
+        "slug": "apex-legends-players-disappointed-by-one-odd-feature-about-new-legends-design",
+        "inserts": [
+            {
+                "sentence": "This design controversy arrives alongside the major gameplay changes detailed in the [Apex Legends Season 12 patch notes].",
+                "linkUrl": "/post/apex-legends-season-12-patch-notes",
+                "anchorText": "Apex Legends Season 12 patch notes",
+                "placement": "Introduction"
+            }
+        ]
+    },
+    {
+        "slug": "record-26632-crore-sip-inflows-april-2025",
+        "inserts": [
+            {
+                "sentence": "Investor confidence is also being shaped by global tech movements, such as the anticipation surrounding [OpenAI and Microsoft IPOs].",
+                "linkUrl": "/post/openai-microsoft-ipo-talks-2025",
+                "anchorText": "OpenAI and Microsoft IPOs",
+                "placement": "Impact"
+            }
+        ]
+    }
+]

@@ -16,7 +16,7 @@ import {
   getCategoryInfo,
   getCategoryBreadcrumb,
 } from "../../utils/categoryHierarchy";
-import NativeBannerAd from "../../components/NativeBannerAd";
+
 
 // Enhanced loading components
 
@@ -203,8 +203,7 @@ const CategoryPost = ({ initialPosts }) => {
             ) : null;
           })()}
 
-        {/* Native Banner Ad - before category posts */}
-        <NativeBannerAd />
+
 
         {/* Magazine-Style Layout */}
         <MagazineCategoryLayout

@@ -10,7 +10,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { FiSearch, FiArrowLeft } from "react-icons/fi";
 import { useSearch } from "../hooks/useSearch";
-import NativeBannerAd from "../components/NativeBannerAd";
+
 
 // Date formatting utility
 const formatDate = (dateString) => {
@@ -204,7 +204,7 @@ export default function SearchPage() {
           {loading && <SearchSkeleton />}
 
           {/* Native Banner Ad - shown when there are results */}
-          {!loading && !error && results.length > 0 && <NativeBannerAd />}
+
 
           {/* Error State */}
           {error && !loading && (

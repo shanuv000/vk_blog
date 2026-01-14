@@ -6,7 +6,7 @@ import { FiActivity } from "react-icons/fi";
 import ShowCricket from "../components/Cricket/ShowCricket";
 import ball from "../public/cricket/ball.png";
 import { CricketDataProvider, useCricketData } from "../store/CricketDataContext";
-import NativeBannerAd from "../components/NativeBannerAd";
+
 
 /**
  * LiveCricket page component
@@ -200,7 +200,7 @@ const LiveCricketContent = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
           >
             {/* Native Banner Ad - before cricket widget */}
-            <NativeBannerAd />
+
 
             <ShowCricket />
           </motion.div>

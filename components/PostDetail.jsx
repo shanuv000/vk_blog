@@ -15,7 +15,7 @@ import Navbar_post_details from "./Social_post_details";
 import TagList from "./TagList";
 import RecentUpdates from "./RecentUpdates";
 import NewsletterCTA from "./NewsletterCTA";
-import InArticleAds from "./InArticleAds";
+
 
 // Lazy load Comments component to improve initial page load performance
 const Comments = dynamic(() => import("./Comments"), {
@@ -270,8 +270,8 @@ const PostDetail = ({ post }) => {
                     }
                   }}
                   className={`p-2.5 rounded-full transition-all ${copied
-                      ? "bg-green-100 text-green-600"
-                      : "text-gray-400 hover:bg-gray-100 hover:text-primary"
+                    ? "bg-green-100 text-green-600"
+                    : "text-gray-400 hover:bg-gray-100 hover:text-primary"
                     }`}
                   title={copied ? "Copied!" : "Copy link"}
                   aria-label="Copy link"
@@ -430,12 +430,7 @@ const PostDetail = ({ post }) => {
               )}
             </section>
 
-            {/* In-Article Native Banner Ads - inserted between paragraphs */}
-            <InArticleAds
-              contentRef={articleContentRef}
-              insertAfterParagraph={3}
-              maxAds={2}
-            />
+
 
             {/* Tags Section */}
             {post.tags && post.tags.length > 0 && (

@@ -12,7 +12,7 @@ import AnalyticsProvider from "../components/AnalyticsProvider";
 import { DEFAULT_FEATURED_IMAGE } from "../components/DefaultAvatar";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { initWebVitals } from "../components/WebVitals";
-import AdsterraPopunder from "../components/AdsterraPopunder";
+
 import { useApollo, getApolloStats } from "../lib/apollo-client";
 
 // Add this to fix hydration issues
@@ -171,19 +171,7 @@ function MyApp({ Component, pageProps }) {
         </AnalyticsProvider>
       </ErrorBoundary>
 
-      {/* Smart Adsterra Popunder with intelligent controls:
-          - Session frequency cap: Only once per session
-          - Page exclusions: Not on contact, about, terms, search, admin
-          - Engagement delay: 30 seconds before showing
-          - Mobile exclusion: Skips on mobile devices
-          - First-visit protection: Only for returning visitors
-      */}
-      <AdsterraPopunder
-        delaySeconds={15}
-        excludedPages={['/contact', '/about', '/terms', '/search', '/admin']}
-        excludeMobile={true}
-        excludeFirstVisit={false}
-      />
+
     </ApolloProvider>
   );
 }
