@@ -18,15 +18,15 @@ const CricketDataContext = createContext({
   liveScores: [],
   liveScoresError: null,
   loadingLiveScores: true,
-  fetchLiveScores: () => {},
+  fetchLiveScores: () => { },
   recentScores: [],
   recentScoresError: null,
   loadingRecentScores: true,
-  fetchRecentScores: () => {},
+  fetchRecentScores: () => { },
   upcomingMatches: [],
   upcomingMatchesError: null,
   loadingUpcomingMatches: true,
-  fetchUpcomingMatches: () => {},
+  fetchUpcomingMatches: () => { },
   isLiveScore: false,
 });
 
@@ -48,7 +48,7 @@ const useVisibilityAwareFetch = (
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dataExist, setDataExist] = useState(false);
-  
+
   const retryCount = useRef(0);
   const intervalRef = useRef(null);
   const isVisibleRef = useRef(true);
@@ -65,7 +65,10 @@ const useVisibilityAwareFetch = (
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await axios.get(`${API_BASE}${endpoint}`, {
+      // Support absolute URLs (BF) or relative endpoints (Legacy Proxy)
+      const url = endpoint.startsWith('/') ? endpoint : `${API_BASE}${endpoint}`;
+
+      const response = await axios.get(url, {
         signal: controller.signal,
         params: { _t: Date.now() },
       });
@@ -141,7 +144,7 @@ const useVisibilityAwareFetch = (
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      
+
       if (autoRefreshInterval && isVisibleRef.current) {
         intervalRef.current = setInterval(() => {
           if (isVisibleRef.current) {
@@ -188,6 +191,7 @@ const useVisibilityAwareFetch = (
  */
 export const CricketDataProvider = ({ children }) => {
   // Live scores with auto-refresh (visibility-aware)
+  // UPDATED: Using new BFF endpoint /api/scores/live
   const {
     data: liveScores,
     error: liveScoresError,
@@ -195,7 +199,7 @@ export const CricketDataProvider = ({ children }) => {
     refetch: fetchLiveScores,
     dataExist: isLiveScore,
   } = useVisibilityAwareFetch(
-    "live-scores",
+    "/api/scores/live",
     (response) => response?.data || [],
     [],
     LIVE_REFRESH_INTERVAL // Auto-refresh every 60s, pauses when hidden

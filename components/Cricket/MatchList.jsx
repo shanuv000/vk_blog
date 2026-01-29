@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import { BiCommentDetail, BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { BiCommentDetail, BiChevronDown, BiChevronUp, BiLoaderAlt } from "react-icons/bi";
 import { FiRefreshCw, FiExternalLink } from "react-icons/fi";
 import { IoLocationOutline, IoCalendarOutline, IoTrophyOutline } from "react-icons/io5";
 import ball from "../../public/cricket/ball.png";
@@ -27,18 +28,18 @@ function formatMatchDate(match) {
       // Fall through
     }
   }
-  
+
   if (match.time && match.time !== 'N/A' && match.time !== 'LIVE') {
     return match.time;
   }
-  
+
   if (match.matchStartTime) {
     const parts = [];
     if (match.matchStartTime.date) parts.push(match.matchStartTime.date);
     if (match.matchStartTime.time) parts.push(match.matchStartTime.time);
     if (parts.length > 0) return parts.join(' • ');
   }
-  
+
   return null;
 }
 
@@ -56,7 +57,9 @@ const MatchList = ({
   selectedHeading,
   setSelectedHeading,
 }) => {
-  const [expandedMatchIndex, setExpandedMatchIndex] = useState(null);
+  const [expandedMatchId, setExpandedMatchId] = useState(null);
+  const [loadingScorecard, setLoadingScorecard] = useState({});
+  const [matchScorecards, setMatchScorecards] = useState({});
 
   const filteredMatches = matches || [];
 
@@ -73,8 +76,43 @@ const MatchList = ({
     show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
-  const toggleScorecard = (index) => {
-    setExpandedMatchIndex(expandedMatchIndex === index ? null : index);
+  const toggleScorecard = async (matchId) => {
+    // If closing
+    if (expandedMatchId === matchId) {
+      setExpandedMatchId(null);
+      return;
+    }
+
+    // Opening new match
+    setExpandedMatchId(matchId);
+
+    // If we already have data, don't fetch again
+    if (matchScorecards[matchId]) {
+      return;
+    }
+
+    // Fetch data
+    try {
+      setLoadingScorecard((prev) => ({ ...prev, [matchId]: true }));
+      const response = await axios.get(`/api/scores/match/${matchId}`);
+
+      // The API returns { data: { ...scorecardData } } or just the data depending on proxy
+      // Based on our proxy implementation, it returns the upstream data directly or wrapped.
+      // Let's handle both.
+      const scorecardData = response.data.data?.data || response.data.data || response.data;
+
+      // Check if we got valid innings data
+      if (scorecardData) {
+        setMatchScorecards((prev) => ({
+          ...prev,
+          [matchId]: scorecardData.innings || []
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to fetch scorecard", err);
+    } finally {
+      setLoadingScorecard((prev) => ({ ...prev, [matchId]: false }));
+    }
   };
 
   // Empty state
@@ -135,9 +173,8 @@ const MatchList = ({
           whileHover={{ scale: 1.1, rotate: 180 }}
           whileTap={{ scale: 0.9 }}
           onClick={onRefresh}
-          className={`p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all ${
-            isRefreshing ? "animate-spin" : ""
-          }`}
+          className={`p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all ${isRefreshing ? "animate-spin" : ""
+            }`}
           disabled={isRefreshing}
         >
           <FiRefreshCw className="w-5 h-5" />
@@ -215,13 +252,13 @@ const MatchList = ({
         /* Premium Skeleton Loader - Instant visual feedback */
         <div className="space-y-4 animate-pulse">
           {[1, 2, 3].map((i) => (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden"
             >
               {/* Shimmer effect */}
               <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-              
+
               {/* Card Header Skeleton */}
               <div className="border-b border-white/10 bg-white/5 px-4 py-3 flex items-center justify-between">
                 <div className="h-4 w-32 bg-white/10 rounded-lg" />
@@ -238,7 +275,7 @@ const MatchList = ({
                   </div>
                   <div className="h-6 w-16 bg-rose-500/20 rounded-lg" />
                 </div>
-                
+
                 {/* Team 2 */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -256,7 +293,7 @@ const MatchList = ({
               </div>
             </div>
           ))}
-          
+
           {/* Loading Text */}
           <p className="text-center text-sm text-slate-500 mt-4">
             Fetching latest updates...
@@ -296,19 +333,18 @@ const MatchList = ({
         >
           {filteredMatches.map((match, index) => (
             <motion.div
-              key={`${match.heading}-${index}`}
+              key={match.matchId || `${match.heading}-${index}`}
               variants={item}
               className="relative group"
             >
               {/* Card Glow */}
-              <div className={`absolute inset-0 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                match.matchStatus === "live" 
-                  ? "bg-emerald-500/20" 
-                  : match.matchStatus === "completed"
+              <div className={`absolute inset-0 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${match.matchStatus === "live"
+                ? "bg-emerald-500/20"
+                : match.matchStatus === "completed"
                   ? "bg-slate-500/20"
                   : "bg-amber-500/20"
-              }`} />
-              
+                }`} />
+
               {/* Match Card */}
               <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300">
                 {/* Match Header */}
@@ -317,7 +353,7 @@ const MatchList = ({
                     <h4 className="text-sm md:text-base font-bold text-white truncate pr-2">
                       {match.title && match.title !== "N/A" ? match.title : match.heading || "Cricket Match"}
                     </h4>
-                    
+
                     {/* Status Badge */}
                     {match.matchStatus === "live" && (
                       <div className="flex items-center px-3 py-1 bg-emerald-500/20 rounded-full border border-emerald-500/30 shrink-0">
@@ -428,7 +464,7 @@ const MatchList = ({
                         <span>{formatMatchDate(match)}</span>
                       </div>
                     )}
-                    
+
                     {/* Location */}
                     {match.location && (
                       <div className="flex items-center gap-1 px-2 py-1 bg-white/5 rounded-lg">
@@ -449,28 +485,42 @@ const MatchList = ({
                   )}
 
                   {/* Scorecard Toggle */}
-                  {match.scorecard && match.scorecard.length > 0 && (
+                  {(match.hasScorecard || match.matchStatus === 'live' || match.matchStatus === 'completed') && (
                     <div className="mt-4 pt-4 border-t border-white/10">
                       <motion.button
-                        onClick={() => toggleScorecard(index)}
+                        onClick={() => toggleScorecard(match.matchId)}
                         className="flex items-center text-sm font-medium text-rose-400 hover:text-rose-300 transition-colors"
                         whileTap={{ scale: 0.95 }}
+                        disabled={loadingScorecard[match.matchId]}
                       >
-                        {expandedMatchIndex === index ? (
+                        {loadingScorecard[match.matchId] ? (
+                          <>Loading... <BiLoaderAlt className="ml-1 w-5 h-5 animate-spin" /></>
+                        ) : expandedMatchId === match.matchId ? (
                           <>Hide Scorecard <BiChevronUp className="ml-1 w-5 h-5" /></>
                         ) : (
                           <>View Scorecard <BiChevronDown className="ml-1 w-5 h-5" /></>
                         )}
                       </motion.button>
                       <AnimatePresence>
-                        {expandedMatchIndex === index && (
+                        {expandedMatchId === match.matchId && (
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.3 }}
                           >
-                            <Scorecard scorecard={match.scorecard} />
+                            {matchScorecards[match.matchId] ? (
+                              <Scorecard scorecard={matchScorecards[match.matchId]} />
+                            ) : (
+                              match.scorecard && match.scorecard.length > 0 ? (
+                                <Scorecard scorecard={match.scorecard} />
+                              ) : (
+                                !loadingScorecard[match.matchId] &&
+                                <div className="p-4 text-center text-slate-400 text-sm italic">
+                                  No detailed scorecard available yet.
+                                </div>
+                              )
+                            )}
                           </motion.div>
                         )}
                       </AnimatePresence>

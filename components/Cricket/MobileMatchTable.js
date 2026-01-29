@@ -45,7 +45,7 @@ const MobileMatchTable = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://api-sync.vercel.app/api/cricket/schedule"
+          "/api/cricket-proxy?endpoint=schedule"
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -113,22 +113,27 @@ const MobileMatchTable = () => {
     );
   }
 
-  // Error state
-  if (error) {
+  // Error state or Maintenance state
+  if (error || teams.length === 0) {
     return (
-      <div className="text-center py-8 px-4">
-        <div className="bg-red-500/10 border border-red-500/30 p-6 rounded-2xl">
-          <FaTimesCircle className="text-red-400 text-4xl mx-auto mb-4" />
+      <div className="text-center py-12 px-4">
+        <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
+          <div className="w-14 h-14 bg-gradient-to-br from-amber-500/20 to-rose-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <FaTrophy className="text-amber-400/80 text-2xl" />
+          </div>
           <h3 className="font-bold text-lg text-white mb-2">
-            Unable to Load Data
+            Points Table Updating
           </h3>
-          <p className="text-slate-400 mb-4">{error.message}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-xl font-medium"
-          >
-            Try Again
-          </button>
+          <p className="text-slate-400 mb-4 text-sm leading-relaxed">
+            Standings are being updated. Check back later.
+          </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg text-slate-400 text-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
+            System maintenance
+          </div>
         </div>
       </div>
     );
@@ -140,7 +145,7 @@ const MobileMatchTable = () => {
         {teams.map((team, index) => {
           const { name, isQualified } = getTeamNameAndStatus(team.team);
           const position = index + 1;
-          
+
           return (
             <motion.div
               key={index}
@@ -157,7 +162,7 @@ const MobileMatchTable = () => {
                 <div className="flex items-center gap-3">
                   {/* Position Badge */}
                   {getPositionBadge(position)}
-                  
+
                   {/* Team Icon */}
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-rose-500 to-amber-500 ring-2 ring-white/10">
                     {team.teamImage ? (
@@ -174,7 +179,7 @@ const MobileMatchTable = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Team Name */}
                   <div>
                     <div className="font-bold text-white">{name}</div>
@@ -186,7 +191,7 @@ const MobileMatchTable = () => {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Points & Chevron */}
                 <div className="flex items-center gap-3">
                   <div className="text-right">
@@ -200,7 +205,7 @@ const MobileMatchTable = () => {
                   )}
                 </div>
               </div>
-              
+
               {/* Stats Grid */}
               <div className="px-4 pb-4 grid grid-cols-3 gap-3">
                 <div className="bg-white/5 rounded-xl p-3 text-center">
@@ -216,25 +221,23 @@ const MobileMatchTable = () => {
                   <div className="text-xs text-red-400/70">Lost</div>
                 </div>
               </div>
-              
+
               {/* NRR Display */}
               <div className="px-4 pb-4">
-                <div className={`flex justify-between items-center px-4 py-2 rounded-xl ${
-                  parseFloat(team.netRunRate) >= 0 
-                    ? "bg-emerald-500/10 border border-emerald-500/20" 
-                    : "bg-red-500/10 border border-red-500/20"
-                }`}>
-                  <span className="text-sm text-slate-400">Net Run Rate</span>
-                  <span className={`font-bold ${
-                    parseFloat(team.netRunRate) >= 0 
-                      ? "text-emerald-400" 
-                      : "text-red-400"
+                <div className={`flex justify-between items-center px-4 py-2 rounded-xl ${parseFloat(team.netRunRate) >= 0
+                  ? "bg-emerald-500/10 border border-emerald-500/20"
+                  : "bg-red-500/10 border border-red-500/20"
                   }`}>
+                  <span className="text-sm text-slate-400">Net Run Rate</span>
+                  <span className={`font-bold ${parseFloat(team.netRunRate) >= 0
+                    ? "text-emerald-400"
+                    : "text-red-400"
+                    }`}>
                     {parseFloat(team.netRunRate) >= 0 ? "+" : ""}{team.netRunRate}
                   </span>
                 </div>
               </div>
-              
+
               {/* Expanded Match Details */}
               <AnimatePresence>
                 {expandedIndex === index && (

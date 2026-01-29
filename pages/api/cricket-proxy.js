@@ -140,11 +140,10 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
     // Forward the request to the cricket API
-    const apiUrl = `https://api-sync.vercel.app/api/cricket/${endpoint}`;
+    const apiUrl = `https://drop.urtechy.com/api/cricket/${endpoint}`;
 
     // Alternative API endpoints to try if the primary one fails
     const backupApiUrls = [
-      `https://cricket-api.vercel.app/api/${endpoint}`,
       `https://cricket-live-data.p.rapidapi.com/${endpoint}`,
     ];
 

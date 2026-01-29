@@ -72,7 +72,7 @@ The application uses a consistent layout structure defined in `components/Layout
 ### Data Sources
 
 1. **Blog Content**: Fetched from Hygraph via GraphQL
-2. **Cricket Data**: External API (api-sync.vercel.app)
+2. **Cricket Data**: External API (drop.urtechy.com)
 
 ### Data Fetching Strategy
 
