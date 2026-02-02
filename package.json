@@ -29,6 +29,7 @@
     "@next/third-parties": "^14.1.0",
     "@tailwindcss/typography": "^0.5.16",
     "@upstash/redis": "^1.35.7",
+    "@vercel/analytics": "^1.6.1",
     "axios": "^1.6.8",
     "chart.js": "^4.4.3",
     "date-fns": "^4.1.0",
