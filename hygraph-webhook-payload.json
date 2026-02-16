@@ -1,8 +1,0 @@
-{
-  "operation": "{{operation}}",
-  "data": {
-    "id": "{{id}}",
-    "slug": "{{slug}}",
-    "__typename": "{{__typename}}"
-  }
-}

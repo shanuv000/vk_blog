@@ -1,0 +1,147 @@
+\documentclass[10pt, a4paper]{article}
+
+% ── Encoding & Fonts ──────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% ── Page Geometry ─────────────────────────────────────────────────────────────
+\usepackage[top=0.3in, bottom=0.3in, left=0.45in, right=0.45in]{geometry}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% ── Colors ────────────────────────────────────────────────────────────────────
+\definecolor{linkblue}{HTML}{1A5276}
+\definecolor{rulecolor}{HTML}{2C3E50}
+
+% ── Hyperlink Setup ───────────────────────────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    urlcolor=linkblue,
+    pdfauthor={Vaibhav Kumar},
+    pdftitle={Vaibhav Kumar - Backend and Applied AI Engineer},
+}
+
+% ── Section Formatting (uppercase titles instead of \scshape to avoid font warning) ──
+\titleformat{\section}
+  {\normalsize\bfseries\color{rulecolor}}
+  {}{0em}{\MakeUppercase}
+  [\vspace{-6pt}\textcolor{rulecolor}{\rule{\textwidth}{0.5pt}}\vspace{-4pt}]
+
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+
+% ── List Configuration ────────────────────────────────────────────────────────
+\setlist[itemize]{
+  nosep,
+  left=0pt .. 12pt,
+  label=\textbullet,
+  itemsep=0.5pt,
+  parsep=0pt,
+  topsep=1pt,
+}
+
+% ── Paragraph & Spacing ──────────────────────────────────────────────────────
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\pagestyle{empty}
+
+% ── Custom Commands ───────────────────────────────────────────────────────────
+\newcommand{\resumeHeading}[4]{%
+  \textbf{#1} \hfill \textit{#2} \\[-1pt]
+  \textit{#3} \hfill #4 \vspace{1pt}%
+}
+
+\newcommand{\projectHeading}[2]{%
+  \textbf{#1} \hfill \textit{#2}%
+}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Header ────────────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Vaibhav Kumar} \\[3pt]
+  {\small
+  India \enspace$\vert$\enspace
+  \href{mailto:shanuv000@gmail.com}{shanuv000@gmail.com} \enspace$\vert$\enspace
+  \href{https://linkedin.com/in/shanuv000}{linkedin.com/in/shanuv000} \enspace$\vert$\enspace
+  \href{https://github.com/shanuv000}{github.com/shanuv000}}
+\end{center}
+
+\vspace{-4pt}
+
+% ── Summary ───────────────────────────────────────────────────────────────────
+\section{Summary}
+\vspace{-1pt}
+Backend-first engineer with 2+ years building production systems, scalable APIs, and applied AI integrations.
+Owns full deployment lifecycle on Linux infrastructure---API design, database modeling, Nginx, SSL, and process management. Builds systems that run in production, not prototypes in notebooks.
+
+% ── Technical Skills ──────────────────────────────────────────────────────────
+\section{Technical Skills}
+\vspace{-1pt}
+
+\textbf{Backend \& APIs:} Node.js, Express.js, REST API Design, JWT Auth, RBAC, System Design \\[1pt]
+\textbf{Infrastructure:} Linux VPS, Nginx, PM2, SSL/TLS, Firewall Hardening, CI/CD, Vercel \\[1pt]
+\textbf{Databases:} MongoDB, SQLite, Firebase, GraphQL (Hygraph / Apollo Client) \\[1pt]
+\textbf{AI \& Data:} Python, Pandas, NumPy, LLM APIs, LangGraph Multi-Agent Orchestration \\[1pt]
+\textbf{Frontend:} React.js, Next.js 14, Tailwind CSS, Framer Motion, SSG/ISR \\[1pt]
+\textbf{Tools:} Git, Docker, Sentry, Google Analytics, Cloudinary
+
+% ── Projects ──────────────────────────────────────────────────────────────────
+\section{Projects}
+\vspace{-1pt}
+
+% ── Goldfish ──
+\projectHeading{Goldfish --- LLM-Powered Algorithmic Trading System}{\href{https://github.com/shanuv000}{GitHub}}
+\begin{itemize}
+  \item Architected a multi-agent trading engine using \textbf{LangGraph}---specialized agents (analyst, risk manager, executor) collaborate through an orchestrated graph with human-in-the-loop validation before live orders.
+  \item Built execution bridge interfacing with Upstox broker API: order placement, position tracking, real-time P\&L, and automatic SL/TP enforcement.
+  \item Engineered risk engine with kill switches, per-trade exposure limits, daily drawdown caps, and circuit breakers that halt trading on anomalous behavior.
+  \item Implemented SQLite trade journaling with full audit trail---every signal, rationale, and outcome persisted for post-market analysis.
+  \item Deployed paper trading pipeline with cron-scheduled autonomous cycles on Linux VPS; 50+ validation cycles before live capital deployment.
+\end{itemize}
+
+\vspace{3pt}
+
+% ── urTechy ──
+\projectHeading{urTechy Blogs --- Production Content Platform}{\href{https://blog.urtechy.com}{blog.urtechy.com}}
+\begin{itemize}
+  \item Built and operate a Next.js 14 platform with SSG + ISR (60--300s revalidation), sub-2s loads via Cloudinary optimization and Apollo Client caching.
+  \item Designed API proxy layer (25+ routes): Hygraph GraphQL proxy, Firebase comments with multi-layer fallbacks, Telegram webhooks.
+  \item Implemented SEO infrastructure: JSON-LD structured data (Article, Breadcrumb, Organization), dynamic sitemaps, and per-page meta optimization.
+  \item Engineered 1600-line rich text renderer transforming Hygraph CMS into React---handles social embeds, code blocks, tables.
+  \item Deployed on Vercel (Mumbai) with cache headers, standalone output, chunk splitting, and Sentry error tracking.
+\end{itemize}
+
+\vspace{3pt}
+
+% ── SportsPulse ──
+\projectHeading{SportsPulse --- AI-Driven Sports Analytics Platform}{\href{https://github.com/shanuv000}{GitHub}}
+\begin{itemize}
+  \item Developed MERN-stack platform with real-time data pipelines ingesting live sports APIs and serving AI-generated insights via RESTful backend.
+  \item Built JWT-authenticated APIs with RBAC, rate limiting, and validation middleware; sub-200ms response times under concurrent load.
+\end{itemize}
+
+% ── Experience ────────────────────────────────────────────────────────────────
+\section{Experience}
+
+\resumeHeading{Independent Software Engineer}{2023 -- Present}{Backend Systems, Production Infrastructure, Applied AI}{Remote, India}
+\begin{itemize}
+  \item Own end-to-end delivery: architecture design, implementation, deployment, monitoring, and incident response for production services.
+  \item Manage Linux VPS infrastructure---Nginx reverse proxy, PM2 process management, SSL automation, firewall rules, zero-downtime deploys.
+  \item Integrate LLM APIs and multi-agent systems into production workflows with guardrails, validation layers, and fallback mechanisms.
+\end{itemize}
+
+% ── Education ─────────────────────────────────────────────────────────────────
+\section{Education}
+
+\textbf{Master of Computer Applications (AI \& ML)} \hfill 2023 -- 2025 \\[-1pt]
+Amity University Online \hfill CGPA: 8.30 / 10 \\[3pt]
+\textbf{Bachelor of Science in Information Technology} \hfill 2019 -- 2022 \\[-1pt]
+Ram Krishna Dwarika College, Patna
+
+\end{document}

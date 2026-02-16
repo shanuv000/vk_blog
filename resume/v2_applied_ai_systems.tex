@@ -1,0 +1,208 @@
+% ═══════════════════════════════════════════════════════════════════════════════
+% Resume V2 — Applied AI Systems Engineer
+% Target: Wellfound, AI startups, YC-backed companies, early-stage
+% Emphasis: LangGraph, multi-agent orchestration, risk engines, system invariants
+% ═══════════════════════════════════════════════════════════════════════════════
+\documentclass[10pt, a4paper]{article}
+
+% ── Encoding & Fonts ──────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% ── Page Geometry ─────────────────────────────────────────────────────────────
+\usepackage[
+  top=0.3in,
+  bottom=0.3in,
+  left=0.45in,
+  right=0.45in
+]{geometry}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% ── Colors ────────────────────────────────────────────────────────────────────
+\definecolor{linkblue}{HTML}{1A5276}
+\definecolor{heading}{HTML}{1B2631}
+
+% ── Hyperlink Setup ───────────────────────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  urlcolor=linkblue,
+  pdfauthor={Vaibhav Kumar},
+  pdftitle={Vaibhav Kumar -- Applied AI Systems Engineer},
+}
+
+% ── Section Formatting ────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\normalsize\bfseries\color{heading}}
+  {}{0em}{\MakeUppercase}
+  [\vspace{-6pt}\textcolor{heading}{\rule{\textwidth}{0.5pt}}\vspace{-4pt}]
+
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+
+% ── List Configuration ────────────────────────────────────────────────────────
+\setlist[itemize]{
+  nosep,
+  left=0pt .. 12pt,
+  label=\textbullet,
+  itemsep=0.5pt,
+  parsep=0pt,
+  topsep=1pt,
+}
+
+% ── Spacing ───────────────────────────────────────────────────────────────────
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\pagestyle{empty}
+
+% ── Custom Commands ───────────────────────────────────────────────────────────
+\newcommand{\entryHeading}[4]{%
+  \textbf{#1} \hfill \textit{#2} \\[-1pt]
+  \textit{#3} \hfill #4 \vspace{1pt}%
+}
+
+\newcommand{\projectTitle}[2]{%
+  \textbf{#1} \hfill \textit{#2}%
+}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Header ────────────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Vaibhav Kumar} \\[3pt]
+  {\small
+    India \enspace$|$\enspace
+    \href{mailto:shanuv000@gmail.com}{shanuv000@gmail.com} \enspace$|$\enspace
+    \href{https://linkedin.com/in/shanuv000}{linkedin.com/in/shanuv000} \enspace$|$\enspace
+    \href{https://github.com/shanuv000}{github.com/shanuv000}
+  }
+\end{center}
+
+\vspace{-4pt}
+
+% ── Summary ───────────────────────────────────────────────────────────────────
+\section{Summary}
+\vspace{-1pt}
+Applied AI systems engineer with 2+ years
+building production-grade multi-agent architectures,
+risk-controlled execution systems, and scalable backend infrastructure.
+Designs AI pipelines with system invariants, kill switches,
+and validation gates---ensuring reliability before live deployment.
+Strong backend foundation across Node.js, Python, and Linux infrastructure.
+
+% ── Technical Skills ──────────────────────────────────────────────────────────
+\section{Technical Skills}
+\vspace{-1pt}
+
+\textbf{AI \& Agents:}
+  LangGraph Multi-Agent Orchestration, LLM API Integration,
+  Python, Pandas, NumPy, Risk-Controlled Execution Systems \\[1pt]
+\textbf{Backend \& APIs:}
+  Node.js, Express.js, REST API Design, JWT Authentication,
+  RBAC, System Design \\[1pt]
+\textbf{Infrastructure:}
+  Linux VPS, Nginx, PM2, SSL/TLS, Firewall Hardening,
+  CI/CD, Cron Automation, Vercel \\[1pt]
+\textbf{Databases:}
+  MongoDB, SQLite, Firebase Realtime DB,
+  GraphQL (Hygraph / Apollo Client) \\[1pt]
+\textbf{Frontend:}
+  React.js, Next.js 14, Tailwind CSS, SSG/ISR \\[1pt]
+\textbf{Tools:}
+  Git, Docker, Sentry, Cloudinary
+
+% ── Projects (Goldfish leads in V2) ──────────────────────────────────────────
+\section{Projects}
+
+% ── Goldfish (primary in V2) ──
+\projectTitle
+  {Goldfish --- Multi-Agent Algorithmic Trading System}
+  {\href{https://github.com/shanuv000}{GitHub}}
+\begin{itemize}
+  \item Architected a \textbf{LangGraph} multi-agent system
+    where specialized agents (market analyst, risk manager, executor)
+    collaborate through an orchestrated state graph
+    with human-in-the-loop validation before live order placement.
+  \item Built production execution bridge
+    interfacing with Upstox broker API---handles order placement,
+    position tracking, real-time P\&L computation,
+    and automatic stop-loss/take-profit enforcement.
+  \item Engineered risk engine enforcing system invariants:
+    configurable kill switches, per-trade exposure limits,
+    daily drawdown caps, and circuit breakers
+    that halt all execution on anomalous behavior.
+  \item Implemented SQLite-based trade journaling
+    with full audit trail---every signal, agent rationale,
+    and execution outcome persisted
+    for post-market analysis and strategy refinement.
+  \item Deployed autonomous paper trading pipeline
+    on Linux VPS with cron-scheduled validation cycles;
+    50+ cycles completed before any live capital deployment.
+  \item Designed validation gate architecture:
+    confidence thresholds, win-rate requirements,
+    and drawdown limits must pass before system promotion to live trading.
+\end{itemize}
+
+\vspace{3pt}
+
+% ── urTechy (secondary in V2) ──
+\projectTitle
+  {urTechy Blogs --- Production Content Platform}
+  {\href{https://blog.urtechy.com}{blog.urtechy.com}}
+\begin{itemize}
+  \item Built and operate a Next.js 14 platform
+    with SSG + ISR, sub-2s loads via Cloudinary optimization,
+    Apollo caching, and 25+ API proxy routes.
+  \item Designed API layer handling
+    GraphQL proxying, Firebase comments with fallback chains,
+    webhook integrations, and real-time data aggregation.
+  \item Deployed on Vercel (Mumbai) with cache headers,
+    standalone output, Sentry monitoring,
+    and JSON-LD structured data for SEO.
+\end{itemize}
+
+\vspace{3pt}
+
+% ── SportsPulse ──
+\projectTitle
+  {SportsPulse --- AI Sports Analytics}
+  {\href{https://github.com/shanuv000}{GitHub}}
+\begin{itemize}
+  \item Developed MERN-stack analytics platform with real-time data pipelines
+    and JWT/RBAC-secured REST APIs delivering AI-driven insights.
+\end{itemize}
+
+% ── Experience ────────────────────────────────────────────────────────────────
+\section{Experience}
+
+\entryHeading
+  {Software Engineer (Independent)}
+  {2023 -- Present}
+  {Applied AI Systems \& Backend Infrastructure}
+  {Remote, India}
+\begin{itemize}
+  \item Build and deploy multi-agent AI systems
+    with production guardrails---validation gates, kill switches,
+    and fallback mechanisms ensuring reliability under real conditions.
+  \item Design and own backend services end-to-end:
+    API architecture, database modeling, deployment,
+    monitoring, and incident response.
+  \item Administer Linux VPS infrastructure:
+    Nginx, PM2, SSL automation, firewall hardening,
+    and cron-based autonomous execution pipelines.
+\end{itemize}
+
+% ── Education ─────────────────────────────────────────────────────────────────
+\section{Education}
+
+\textbf{Master of Computer Applications (AI \& ML)} \hfill 2023 -- 2025 \\[-1pt]
+Amity University Online \hfill CGPA: 8.30 / 10 \\[3pt]
+\textbf{Bachelor of Science in Information Technology} \hfill 2019 -- 2022 \\[-1pt]
+Ram Krishna Dwarika College, Patna
+
+\end{document}

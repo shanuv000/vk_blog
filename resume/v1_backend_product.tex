@@ -1,0 +1,203 @@
+% ═══════════════════════════════════════════════════════════════════════════════
+% Resume V1 — Backend Product Engineer
+% Target: Naukri, LinkedIn, Direct product company applications
+% Emphasis: Node.js, Express, REST APIs, System Design, Linux, Production Ops
+% ═══════════════════════════════════════════════════════════════════════════════
+\documentclass[10pt, a4paper]{article}
+
+% ── Encoding & Fonts ──────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% ── Page Geometry ─────────────────────────────────────────────────────────────
+\usepackage[
+  top=0.3in,
+  bottom=0.3in,
+  left=0.45in,
+  right=0.45in
+]{geometry}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% ── Colors ────────────────────────────────────────────────────────────────────
+\definecolor{linkblue}{HTML}{1A5276}
+\definecolor{heading}{HTML}{1B2631}
+
+% ── Hyperlink Setup ───────────────────────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  urlcolor=linkblue,
+  pdfauthor={Vaibhav Kumar},
+  pdftitle={Vaibhav Kumar -- Backend Product Engineer},
+}
+
+% ── Section Formatting ────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\normalsize\bfseries\color{heading}}
+  {}{0em}{\MakeUppercase}
+  [\vspace{-6pt}\textcolor{heading}{\rule{\textwidth}{0.5pt}}\vspace{-4pt}]
+
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+
+% ── List Configuration ────────────────────────────────────────────────────────
+\setlist[itemize]{
+  nosep,
+  left=0pt .. 12pt,
+  label=\textbullet,
+  itemsep=0.5pt,
+  parsep=0pt,
+  topsep=1pt,
+}
+
+% ── Spacing ───────────────────────────────────────────────────────────────────
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\pagestyle{empty}
+
+% ── Custom Commands ───────────────────────────────────────────────────────────
+\newcommand{\entryHeading}[4]{%
+  \textbf{#1} \hfill \textit{#2} \\[-1pt]
+  \textit{#3} \hfill #4 \vspace{1pt}%
+}
+
+\newcommand{\projectTitle}[2]{%
+  \textbf{#1} \hfill \textit{#2}%
+}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Header ────────────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Vaibhav Kumar} \\[3pt]
+  {\small
+    India \enspace$|$\enspace
+    \href{mailto:shanuv000@gmail.com}{shanuv000@gmail.com} \enspace$|$\enspace
+    \href{https://linkedin.com/in/shanuv000}{linkedin.com/in/shanuv000} \enspace$|$\enspace
+    \href{https://github.com/shanuv000}{github.com/shanuv000}
+  }
+\end{center}
+
+\vspace{-4pt}
+
+% ── Summary ───────────────────────────────────────────────────────────────────
+\section{Summary}
+\vspace{-1pt}
+Backend-focused product engineer with 2+ years
+building production APIs, scalable architectures, and deployment infrastructure.
+Owns systems end-to-end---from Express API design and MongoDB modeling
+to Nginx configuration, SSL, PM2 process management, and production monitoring.
+Integrates applied AI into backend workflows pragmatically.
+
+% ── Technical Skills ──────────────────────────────────────────────────────────
+\section{Technical Skills}
+\vspace{-1pt}
+
+\textbf{Backend \& APIs:}
+  Node.js, Express.js, REST API Design, JWT Authentication, RBAC,
+  System Design, WebSockets \\[1pt]
+\textbf{Infrastructure:}
+  Linux VPS Administration, Nginx, PM2, SSL/TLS,
+  UFW Firewall, CI/CD, Vercel, Zero-Downtime Deploys \\[1pt]
+\textbf{Databases:}
+  MongoDB, SQLite, Firebase Realtime DB,
+  GraphQL (Hygraph / Apollo Client) \\[1pt]
+\textbf{AI \& Data:}
+  Python, Pandas, NumPy, LLM API Integration,
+  LangGraph Multi-Agent Systems \\[1pt]
+\textbf{Frontend:}
+  React.js, Next.js 14, Tailwind CSS, SSG/ISR \\[1pt]
+\textbf{Tools:}
+  Git, Docker, Sentry, Cloudinary, Google Analytics
+
+% ── Experience ────────────────────────────────────────────────────────────────
+\section{Experience}
+
+\entryHeading
+  {Software Engineer (Independent)}
+  {2023 -- Present}
+  {Backend Systems \& Production Infrastructure}
+  {Remote, India}
+\begin{itemize}
+  \item Design and deploy production Node.js/Express APIs
+    with JWT authentication, role-based access control,
+    input validation, and rate limiting---serving real users at scale.
+  \item Administer Linux VPS infrastructure:
+    Nginx reverse proxy, PM2 clustering, SSL automation,
+    UFW firewall hardening, and zero-downtime deployment pipelines.
+  \item Architect MongoDB data models and query pipelines
+    optimized for read-heavy workloads with proper indexing and aggregation.
+  \item Integrate LLM APIs into backend services
+    with retry logic, validation layers, and fallback mechanisms
+    ensuring production reliability.
+\end{itemize}
+
+% ── Projects ──────────────────────────────────────────────────────────────────
+\section{Projects}
+
+% ── urTechy (lead project for V1) ──
+\projectTitle
+  {urTechy Blogs --- Production Content Platform}
+  {\href{https://blog.urtechy.com}{blog.urtechy.com}}
+\begin{itemize}
+  \item Built and operate a Next.js 14 platform
+    with SSG + ISR (60--300s revalidation),
+    sub-2s page loads via Cloudinary optimization
+    and Apollo Client caching layer.
+  \item Designed 25+ API routes:
+    Hygraph GraphQL proxy, Firebase comment system
+    with multi-layer fallbacks, webhook integrations,
+    and cricket score aggregation endpoints.
+  \item Implemented production SEO:
+    JSON-LD structured data, dynamic XML sitemaps,
+    news sitemaps, and per-page meta optimization.
+  \item Deployed on Vercel (Mumbai) with custom cache headers,
+    standalone output, chunk splitting, and Sentry monitoring.
+\end{itemize}
+
+\vspace{3pt}
+
+% ── Goldfish (secondary in V1) ──
+\projectTitle
+  {Goldfish --- LLM-Powered Trading System}
+  {\href{https://github.com/shanuv000}{GitHub}}
+\begin{itemize}
+  \item Built multi-agent execution system using LangGraph
+    with specialized agents collaborating through orchestrated graph
+    and human-in-the-loop validation before live orders.
+  \item Engineered execution bridge interfacing with Upstox broker API:
+    order placement, position tracking,
+    real-time P\&L, and automatic SL/TP enforcement.
+  \item Implemented risk engine
+    with kill switches, exposure limits, drawdown caps,
+    and circuit breakers; SQLite audit trail for every decision.
+\end{itemize}
+
+\vspace{3pt}
+
+% ── SportsPulse ──
+\projectTitle
+  {SportsPulse --- AI Sports Analytics}
+  {\href{https://github.com/shanuv000}{GitHub}}
+\begin{itemize}
+  \item Developed MERN-stack platform
+    with real-time data pipelines and AI-generated insights
+    served through authenticated RESTful APIs.
+  \item Built JWT-secured endpoints with RBAC, rate limiting,
+    and validation middleware; sub-200ms P95 response times.
+\end{itemize}
+
+% ── Education ─────────────────────────────────────────────────────────────────
+\section{Education}
+
+\textbf{Master of Computer Applications (AI \& ML)} \hfill 2023 -- 2025 \\[-1pt]
+Amity University Online \hfill CGPA: 8.30 / 10 \\[3pt]
+\textbf{Bachelor of Science in Information Technology} \hfill 2019 -- 2022 \\[-1pt]
+Ram Krishna Dwarika College, Patna
+
+\end{document}
